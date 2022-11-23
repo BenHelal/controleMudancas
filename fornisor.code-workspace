@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"name": "fornisor",
+			"uri": "sftp://root@10.100.1.198/var/www/html/fornisor"
+		},
+		{
+			"path": "../fornisor"
+		}
+	],
+	"settings": {}
+}

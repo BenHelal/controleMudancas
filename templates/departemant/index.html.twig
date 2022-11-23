@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="container" style="padding-left: 20px ;padding-right: 20px;">
+    <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="{{ asset('assets/logo.png')}}" alt="" width="72" height="72">
+        <h2>{{controller_name}}</h2>
+        <br>
+    </div>
+</div>
+
+    {% if creation == 'true' %}
+        
+        {{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
+            <div class = "row">
+                <div class="col-md-12 mb-3">
+                    {{ form_label(form.name) }}
+                    {{ form_widget(form.name, {'attr': {'class':'form-control'}}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <button class="btn btn-info mt-2 text-white">Enviar</button>
+                </div>
+            </div>
+        {{ form_end(form)}}
+    
+    {% elseif creation == 'false' %}
+    
+        {{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
+            <div class = "row">
+                <div class="col-md-12 mb-3">
+                    {{ form_label(form.name) }}
+                    {{ form_widget(form.name, {'attr': {'class':'form-control'}}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <button class="btn btn-info mt-2 text-white">Atualizar</button>
+                </div>
+            </div>
+        {{ form_end(form)}}
+    {% else %}
+        {% if dep is empty %}
+			<ul class="list-group">
+				<li class="list-group-item d-flex justify-content-between align-items-right">
+					<a href="{{path('newDep')}}">Adicionar novo departamento</a>
+				</li>
+			</ul>
+        {% else %}
+			<div class="form-group">
+				<label for="exampleFormControlInput1">Procurar</label>
+				<input type="text" class="form-control" id="myInput" placeholder="Procurar..">
+			</div>
+            {% for d in dep %}
+                <div id="myTable" class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">
+                                Nome do departamento:  
+                                {{d.name}}
+                            </h5>
+                        </div>
+                    </a>
+                </div>    
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+    
+	<script>
+		$(document).ready(function () {
+			$('#product_client').chosen({});
+		});
+
+		$(document).ready(function () {
+			$("#myInput").on("keyup", function () {
+				var value = $(this).val().toLowerCase();
+				$("#myTable a").filter(function () {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+				});
+			});
+		});
+	</script>
+{% endblock %}

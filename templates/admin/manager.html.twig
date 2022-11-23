@@ -1,0 +1,135 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block body %}
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+{{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
+<div class="row">
+    <div class="col-md-12 mb-3">
+        {{ form_label(form.persons) }}
+        {{ form_widget(form.persons) }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <button class="btn btn-info mt-2 text-white">Enviar</button>
+    </div>
+</div>
+{{ form_end(form)}}
+
+<div class="container-fluid">
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">lista de gerentes</h6>
+            <label for="exampleFormControlInput1">Procurar gerentes</label>
+            <input type="email" class="form-control" id="myInput" placeholder="Procurar..">
+
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+
+                {% for m in managers %}
+                <div id="myTable" class="list-group" style="width: 100%;">
+                    <div class="row" style="width: 100%;">
+                        <a href="#"
+                            class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <medium>Nome: {{m.person.name}}</medium>
+                            </div>
+                            <div class="d-flex w-100 justify-content-between">
+                                <medium>última conexão: {{m.person.lastConnection}}</medium>
+                            </div>
+                            <div class="d-flex w-100 justify-content-between">
+                                <medium>departamento: {{m.person.departemant}}</medium>
+                            </div>
+                            <div class="d-flex w-100 justify-content-between">
+                                <medium>Função: {% if m.person.role != ''  %}
+                                    {{m.person.role}}
+                                    {% else %}
+                                    gerente
+                                    {% endif %}</medium>
+                            </div>
+                            <input hidden type="text" id="name" value="{{m.person.name}}"/>
+                            <input hidden type="text" id="id" value="{{path('dm',{'id':m.id} )}}"/>
+                        </a>
+                    </div>
+                    <div class="row" style="width: 100%;">
+                        <a id="submit"  data-toggle="modal" data-target="#dm" class="list-group-item list-group-item-action flex-column align-items-start">
+                            remover {{m.person.name}} da lista de gerentes
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="dm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLongTitle">Excluir gerente</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <ul>
+                        <li>
+                            <h5>você tem certeza sobre excluir gerenciador :<h5>
+                            <ul>
+                                <li>
+                                    
+                                <h6 id="modal_body"></h6>
+                                    <h6>você vai deletar o gerente
+                                                              </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
+                <a id="del" class="btn btn-info mt-2 text-white">Confirme</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    new TomSelect("#manager_persons", {
+        maxItems: 9
+    });
+
+    $("#submit").click(function () {
+            var name = $("#name").val();
+           var str = "You Have Entered " 
+                + "Name: " + name 
+           ; $("#modal_body").html(str);
+        });
+
+
+    $("#del").click(function () {
+        var id = $("#id").val();
+        window.location.href = id});
+        
+
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable a").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+{% endblock %}

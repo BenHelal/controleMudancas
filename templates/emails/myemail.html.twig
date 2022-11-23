@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width">
+		<title>Welcome to the Space Bar!</title>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				font-family: Helvetica, Arial, sans-serif;
+			}
+
+			h1 {
+				background-color: #264459;
+				color: #ffffff;
+				padding: 10px 0;
+				font-weight: normal;
+			}
+
+			hr {
+				border: none;
+				border-top: 3px solid #264459;
+				margin: 20px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div style="margin : 60px" class="body">
+			<div class="container">
+				<div class="header text-center">
+					<a href="#homepage">
+						<img src="http://www.serdia.com.br/site/wp-content/themes/serdia/images/logotipo_serdia_1.png" class="logo" alt="SpaceBar Logo">
+					</a>
+				</div>
+				<div class="content">
+					<h1 class="text-center">Bom Dia</h1>
+					{% if demand == 'reject' %}
+
+						<p class="block">
+							Bem-vindo ao
+							<strong>Controle de Mudanças</strong>
+							<br>
+							{{per.getDepartemant()}}
+							departamento por
+							{{per.name}}
+							rejeita suas alterações agora<br>
+							Nome da Mudança:
+							{{mud.nomeMudanca}}<br>
+							Número da Mudança:
+							{{mud.id}}<br>
+							Data de Abertura: Solicitante:
+							{{mud.dataCreation}}<br>
+							Descrição da Mudança:
+							{{mud.descMudanca}}<br>
+							Justificativa:
+							{{mud.justif}}<br>
+							Área Responsável pela Mudança:
+							{{mud.areaResp}}
+						</p>
+					{% elseif demand == 'approved' %}
+						<p class="block">
+							Bem-vindo ao
+							<strong>Controle de Mudanças</strong>
+							<br>
+							{{per.getDepartemant()}}
+							departamento por
+							{{per.name}}
+							aprovou suas alterações agora Nome da Mudança:
+							{{mud.nomeMudanca}}<br>
+							Número da Mudança:
+							{{mud.id}}<br>
+							Data de Abertura: Solicitante:
+							{{mud.dataCreation}}<br>
+							Descrição da Mudança:
+							{{mud.descMudanca}}<br>
+							Justificativa:
+							{{mud.justif}}<br>
+							Área Responsável pela Mudança:
+							{{mud.areaResp}}
+
+						</p>
+					{% elseif demand == 'addManager' %}
+						<p class="block">
+							Bem-vindo ao
+							<strong>Controle de Mudanças</strong>
+							<br>
+							{{per.getDepartemant()}}
+							departamento por
+							{{per.name}}
+							te adicionar como gerente de mudancas
+							{{mud.nomeMudanca}}<br>
+							Número da Mudança:
+							{{mud.id}}<br>
+							Data de Abertura: Solicitante:
+							{{mud.dataCreation}}<br>
+							Descrição da Mudança:
+							{{mud.descMudanca}}<br>
+							Justificativa:
+							{{mud.justif}}<br>
+							Área Responsável pela Mudança:
+							{{mud.areaResp}}
+
+						</p>
+					{% elseif demand == 'Gestreject' %}
+						<p class="block">
+							Bem-vindo ao
+							<strong>Controle de Mudanças</strong>
+							<br>
+							O gestor de mudanças
+							{{per.name}}
+							rejeita suas alterações agora<br>
+							Nome da Mudança:
+							{{mud.nomeMudanca}}<br>
+							Número da Mudança:
+							{{mud.id}}<br>
+							Data de Abertura: Solicitante:
+							{{mud.dataCreation}}<br>
+							Descrição da Mudança:
+							{{mud.descMudanca}}<br>
+							Justificativa:
+							{{mud.justif}}<br>
+							Área Responsável pela Mudança:
+							{{mud.areaResp}}
+						</p>
+					{% elseif demand == 'Gestapproved' %}
+						<p class="block">
+							Bem-vindo ao
+							<strong>Controle de Mudanças</strong>
+							<br>
+							Por favor aprove como gerente do seu departamento
+							O gestor de mudanças
+							{{per.name}}
+							aprovou suas alterações agora<br>
+							Nome da Mudança:
+							{{mud.nomeMudanca}}<br>
+							Número da Mudança:
+							{{mud.id}}<br>
+							Data de Abertura: Solicitante:
+							{{mud.dataCreation}}<br>
+							Descrição da Mudança:
+							{{mud.descMudanca}}<br>
+							Justificativa:
+							{{mud.justif}}<br>
+							Área Responsável pela Mudança:
+							{{mud.areaResp}}
+						</p>
+					{% elseif demand == 'quality' %}
+						<p class="block">
+							Bem-vindo ao
+							<strong>controle de Mudanças
+							</strong>o Mudanças adicionado por
+							{{per.name}}
+							foi aprovado por todo o departamento .
+						</p>
+					{% else %}
+						<p class="block">
+							Bem-vindo ao
+							<strong>Controle de Mudanças</strong>
+							{{per.name}}
+							adicione novas mudancas e você será
+														                    o gerente do seu departamento
+														                    por favor aprovado
+						</p>
+					{% endif %}
+
+					<p class="block text-center">
+						<a href='http://localhost/updateMudancas/{{mud.id}}' class="btn">você pode verificar por favor ?</a>
+					</p>
+					<!--p class="block">
+										
+										[9/2 12:13 PM] Juliano Cassio
+										The email you send needs to look like this for Requester Manager, Approval Manager, Change Supervisor:
+										Bem-vindo ao Controle de Mudanças
+										Aprovação requerida por Juliano Cassio do Amaral para mudança:
+										Nome da Mudança:
+										 Número da Mudança:
+										 Data de Abertura: Solicitante:
+										 Descrição da Mudança:
+										Justificativa:
+										Área Responsável pela Mudança:
+										você pode verificar por favor ?
+										Enviado com ❤️ da Serdia Eletrônica Industrial 
+										
+										For impacted areas the email should look like this:
+										Bem-vindo ao Controle de Mudanças
+										A área a qual você é responsável foi indicada na mudança como impactada.  
+										Nome da Mudança:
+										Número da Mudança:
+										Data de Abertura: Solicitante:
+										Descrição da Mudança:
+										Justificativa:
+										Área Responsável pela Mudança:
+										você pode verificar por favor ?
+										Enviado com ❤️ da Serdia Eletrônica Industrial 
+										
+										
+										
+										
+										
+										                Check out our existing articles and share your thoughts in the comments!
+										            </p>
+										            <p class="block text-center">
+										                <a href="#homepage" class="btn">Get reading!</a>
+										            </p>
+										            <p class="block">
+										                We're so excited that you've decided to join us in our corner of the universe,
+										                it's a friendly one with other creative and insightful writers just like you!
+										                Need help from a friend? We're always just a message away.
+										            </p-->
+				</div>
+				<div class="footer">
+					<p class="block bottom text-center">
+						Enviado com ❤️ da Serdia eletrônica industrial sa sistema
+					</p>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>

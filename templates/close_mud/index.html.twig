@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
+<div class="container" style="padding-left: 20px ;padding-right: 20px;">
+    <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="{{ asset('assets/logo.png')}}" alt="" width="72" height="72">
+        <h2>Controle de Mudança</h2>
+        <br>
+    </div>
+</div>
+<div class="row">
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Tipo de Aprovação</th>
+      <th scope="col">Área</th>
+      <th scope="col">Nome do Aprovador</th>
+      <th scope="col">Status Aprovação</th>
+      <th scope="col">Comentário</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Gerente Solicitante</th>
+      <td>{{mud.addBy.departemant}}</td>
+      <td>{{mud.addBy.name}}</td>
+      <td>Aprovado</td>
+      <td>Está aprovado sem alteração</td>
+    </tr>
+    <tr>
+      <th scope="row">Gerente Aprovação</th>
+      {% if p == null %}
+      <td>ainda não verificado</td>
+      <td>ainda não verificado</td>
+      {% else %}
+        
+      <td>{{p.departemant}}</td>
+      <td>{{p.name}}</td>
+      {% endif %}
+      {% if mud.appMan == null %}
+        <td>ainda não verificado</td>
+      {% elseif mud.appMan %}
+        <td>Aprovado</td>
+      {% else %}
+        <td>rejeitado</td>  
+      {% endif %}
+      
+      {% if mud.appMan == null %}
+        <td></td>
+      {% else %}
+        <td>{{mud.comMan}}</td>  
+      {% endif %}
+    </tr>
+    
+    <tr>
+      <th scope="row">Gestor da Mudança</th>
+      {% if mud.mangerMudancas == null %}
+      <td>ainda não verificado</td>
+      <td>ainda não verificado</td>
+      {% else %}
+      <td>{{mud.mangerMudancas.departemant}}</td>
+      <td>{{mud.mangerMudancas.name}}</td>
+      {% endif %}
+      {% if mud.appGest == null %}
+        <td>ainda não verificado</td>
+      {% elseif mud.appGest %}
+        <td>Aprovado</td>
+      {% else %}
+        <td>rejeitado</td>  
+      {% endif %}
+      
+      {% if mud.appGest == null %}
+        <td></td>
+      {% else %}
+        <td>{{mud.comGest}}</td>  
+      {% endif %}
+    </tr>
+
+
+    {% for key, m in data %}
+    <tr>
+      <th scope="row">Área Impactada</th>
+      <td>{{m.name}}</td>
+      <td>{{ data2[key].name }}
+      {% if m.status =='created' %}
+        <td>ainda não verificado</td>
+      {% else %}
+      <td> {{m.status}}</td>
+      {% endif %}
+      <td>{{m.comment}}</td>
+    </tr> 
+    {% endfor %}
+  </tbody>
+</table>
+
+</div>
+{% endblock %}
