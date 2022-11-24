@@ -57,12 +57,15 @@ class AdminController extends AbstractController
                 return $this->redirectToRoute('app_mudancas');
             } else {
                 //get All list Mudancas 
-                $mudancas = $em->getRepository(Mudancas::class)->findAll();
                 //get ALL list Departemant
                 $dep = $em->getRepository(Departemant::class)->findAll();
                 //get All list mudancas
                 $depmud = $em->getRepository(DepartemantMudancass::class)->findAll();
                 $m = $em->getRepository(Manager::class)->findAll();
+
+
+                
+                $mudancas = $em->getRepository(Mudancas::class)->findAll();
                 $val = sizeof($mudancas);
                 $val2 = 0;
                 $arr = [];
@@ -76,7 +79,6 @@ class AdminController extends AbstractController
                 
                // dd($val2);
                 $val = intval($this->presentNotDone($val, $val2));
-                
                 $size = sizeof($mudancas);
                 return $this->render('admin/dash.html.twig', [
                     'controller_name' => 'AdminController',
@@ -351,7 +353,7 @@ class AdminController extends AbstractController
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
             $listrequest = $em->getRepository(Requestper::class)->findAll();
-
+            //dd($listrequest[0]->getPerson()->getName());
             $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
             return $this->render('admin/listrequest.html.twig', [
                 'controller_name' => 'Atualizar Mudancas',

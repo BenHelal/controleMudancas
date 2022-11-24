@@ -67,7 +67,21 @@ class MudancasController extends AbstractController
                 $mud =  $em->getRepository(Mudancas::class)->find($id);
                 array_push($listNotif, $mud);
             }
-
+            $mudancas = $em->getRepository(Mudancas::class)->findAll();
+            $val = sizeof($mudancas);
+            $val2 = 0;
+            $arr = [];
+            for ($i = 0; $i < sizeof($mudancas); $i++) {
+                array_push($arr, $mudancas[$i]->getId());
+                if ($mudancas[$i]->getDone() != 'Feito') {
+                    $val2 = $val2 + 1;
+                    
+                }
+            }
+            
+           // dd($val2);
+            $val = intval($this->presentNotDone($val, $val2));
+            $size = sizeof($mudancas);
 
             if ($req->getApproves() == 'yes') {
                 $dep =  $em->getRepository(Departemant::class)->findOneBy(['name' => $person->getDepartemant()]);
@@ -94,7 +108,8 @@ class MudancasController extends AbstractController
                         'login' => 'null',
                         'creation' => 'null',
                         'mud' => $mudancas,
-                        'manager' => true,
+                        'manager' => true,'percent' => $val,
+                        'size' => $size,
                         'gestor' => false,
                         'ln' => $listNotif,
                         'person' => $person
@@ -107,7 +122,18 @@ class MudancasController extends AbstractController
             return $this->redirectToRoute('log_employer');
         }
     }
-
+    public function presentNotDone($all, $notdone)
+    {
+        $val = $all - $notdone;
+        if ($val == 0) {
+            return 100;
+        } else {
+            $val2 = ($all - $notdone);
+            $val2 = $val2 / $all;
+            $val = $val2 * 100;
+            return $val;
+        }
+    }
     public function rejected(ManagerRegistry $doctrine, Request $request, $id)
     {
         $session = new Session();
