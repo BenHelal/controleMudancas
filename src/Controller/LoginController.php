@@ -139,8 +139,8 @@ class LoginController extends AbstractController
                 curl_close($ch);
                 $personJSON = $result;
                 $person = json_decode($personJSON);
-               // dd($person);
-                //echo $person->name;
+               //dd($person);
+                
                 if ($person != null) {
                     // Create token header as a JSON string
                     $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
@@ -248,6 +248,7 @@ class LoginController extends AbstractController
                 $person = json_decode($personJSON);
 
                 $p = $em->getRepository(Person::class)->findOneBy(['name' => $person->name]);
+                //dd($p);
                 if ($p->getRole() == null) {
                     return $this->redirectToRoute('app_mudancas');
                 } else {
