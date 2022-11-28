@@ -28,10 +28,6 @@
                             <div class="d-flex w-100 justify-content-between">
                                 <medium>Nome: {{m.name}}</medium>
                             </div>
-                            {% if m.email != null %}
-                            <div class="d-flex w-100 justify-content-between">
-                                <medium>Email: {{m.email ? m.email}}</medium>
-                            </div>{% endif %}
                             <div class="d-flex w-100 justify-content-between">
                                 <medium>última conexão: {{m.lastConnection}}</medium>
                             </div>
@@ -55,7 +51,6 @@
                                 </medium>
                             </div>
                         </a>
-                        <a href="{{path('ep',{'id':m.id} )}}" style="margin-left : 15px">Editar {{m.name}}</a>
                     </div>
                 </div>
                 {% endfor %}

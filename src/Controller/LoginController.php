@@ -50,10 +50,19 @@ class LoginController extends AbstractController
                     $person = new Person();
                     $person->setName($persons[$i]->name);
                     $person->setEmail($persons[$i]->email);
-                    $person->setDepartemant($persons[$i]->departemant);
+                    $dep =  $entityManager->getRepository(Departemant::class)->findOneBy(['name' => $persons[$i]->departemant]);  
+                    $person->setDepartemant($dep);
                     $entityManager = $doctrine->getManager();
                     $entityManager->persist($person);
                     $entityManager->flush();
+                }else{
+                    if ($person->getDepartemant() == null) {
+                        $dep =  $entityManager->getRepository(Departemant::class)->findOneBy(['name' => $persons[$i]->departemant]);  
+                        $person->setDepartemant($dep);
+                        $entityManager = $doctrine->getManager();
+                        $entityManager->persist($person);
+                        $entityManager->flush();
+                    }
                 }
             }
 
