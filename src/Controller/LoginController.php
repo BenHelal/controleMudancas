@@ -27,7 +27,7 @@ class LoginController extends AbstractController
         if ($session->get('token_jwt') == null) {  
 
             // update list of employer 
-            $url = 'https://intranet.serdia.com.br/a/users.php?sys=20&tk=24dbdb7659f46b318b543981f2b0784226b8bd54';
+            $url = 'https://intranet.serdia.com.br/a/users.php?sys=1&tk=24dbdb7659f46b318b543981f2b0784226b8bd54';
             $ch = curl_init($url);
             $data = array();
             $payload = json_encode(array("user" => $data));
@@ -51,73 +51,37 @@ class LoginController extends AbstractController
                     $person->setName($persons[$i]->name);
                     $person->setEmail($persons[$i]->email);
                     $dep =  $entityManager->getRepository(Departemant::class)->findOneBy(['name' => $persons[$i]->departemant]);  
-                    $person->setDepartemant($dep);
+                    if($dep == null) {
+                        $dep = new Departemant();
+                        $dep->setName($persons[$i]->departemant);
+                    }
+                    $person->setDepartemant($dep->getName());
                     $entityManager = $doctrine->getManager();
                     $entityManager->persist($person);
+                    $entityManager->persist($dep);
                     $entityManager->flush();
                 }else{
                     if ($person->getDepartemant() == null) {
                         $dep =  $entityManager->getRepository(Departemant::class)->findOneBy(['name' => $persons[$i]->departemant]);  
-                        $person->setDepartemant($dep);
+                        if($dep == null) {
+                            $dep = new Departemant();
+                            $dep->setName($persons[$i]->departemant);
+                        }
+                        $person->setDepartemant($dep->getName());
                         $entityManager = $doctrine->getManager();
                         $entityManager->persist($person);
+                        $entityManager->persist($dep);
+                        $entityManager->flush();
+                    }else{
+                        $dep =  $entityManager->getRepository(Departemant::class)->findOneBy(['name' => $persons[$i]->departemant]);  
+                        if($dep == null) {
+                            $dep = new Departemant();
+                            $dep->setName($persons[$i]->departemant);
+                        }
+                        $entityManager->persist($dep);
                         $entityManager->flush();
                     }
                 }
-            }
-
-            $entityManager = $doctrine->getManager();
-            //test if table departemant empty and update them 
-            $dep = $entityManager->getRepository(Departemant::class)->findAll();
-            if(sizeof($dep) == 0){
-                $dep = new Departemant();
-                $dep->setName('TI');
-                $entityManager->persist($dep);
-                $entityManager->flush();
-                
-                $dep = new Departemant();
-                $dep->setName('ENG. TESTE');
-                $entityManager->persist($dep);
-                
-                $entityManager->flush();
-                $dep = new Departemant();
-                $dep->setName('PRODUÇÃO PB');
-                $entityManager->persist($dep);
-
-                
-                $entityManager->flush();
-                $dep = new Departemant();
-                $dep->setName('COMERCIAL');
-                $entityManager->persist($dep);
-
-                
-                $entityManager->flush();
-                $dep = new Departemant();
-                $dep->setName('ENG. DA QUALIDADE');
-                $entityManager->persist($dep);
-
-                $entityManager->flush();
-                $dep = new Departemant();
-                $dep->setName('ENG PRODUTO');
-                $entityManager->persist($dep);
-                
-                $entityManager->flush();
-                $dep = new Departemant();
-                $dep->setName('ENG PROC. SMT');
-                $entityManager->persist($dep);
-                
-                $entityManager->flush();
-                $dep = new Departemant();
-                $dep->setName('ALMOXARIFADO');
-                $entityManager->persist($dep);
-                
-                $entityManager->flush();
-                $dep = new Departemant();
-                $dep->setName('PRODUÇÃO PTH');
-                $entityManager->persist($dep);
-                
-                $entityManager->flush();
-                
             }
             
             $entityManager = $doctrine->getManager();
@@ -131,7 +95,7 @@ class LoginController extends AbstractController
                 $username = $form["userName"]->getData();
                 $password = $form["password"]->getData();
                 $password = hash('whirlpool', $password);
-                $url = 'https://intranet.serdia.com.br/a/connection.php?sys=20&user=' . $username . '&pass=' . $password . '';
+                $url = 'https://intranet.serdia.com.br/a/connection.php?sys=1&user=' . $username . '&pass=' . $password . '';
                 // Create a new cURL resource
                 $ch = curl_init($url);
                 // Setup request to send json via POST

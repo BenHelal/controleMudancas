@@ -19,11 +19,7 @@ class Departemant
     private ?string $name = null;
 
     
-    #[ORM\OneToMany(targetEntity: Mudancas::class, mappedBy: 'areaResp')]
-    private ?Collection $mudanca = null;
-    
-    #[ORM\ManyToMany(targetEntity: Mudancas::class)]
-    private Collection $mudancas;
+  
 
 
     public function __construct()
@@ -53,35 +49,11 @@ class Departemant
         return $this->mudanca;
     }
 
-    public function setMudanca(?Mudancas $mudanca): self
-    {
-        $this->mudanca = $mudanca;
-        return $this;
-    }
+
 
     public function __toString(): string
     {
         return $this->name ?: '';
     }
 
-    public function addMudanca(Mudancas $mudanca): self
-    {
-        if (!$this->mudancas->contains($mudanca)) {
-            $this->mudancas->add($mudanca);
-            $mudanca->setAreaResp($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMudanca(Mudancas $mudanca): self
-    {
-        if ($this->mudancas->removeElement($mudanca)) {
-            // set the owning side to null (unless already changed)
-            if ($mudanca->getAreaResp() === $this) {
-                $mudanca->setAreaResp(null);
-            }
-        }
-        return $this;
-    }
 }

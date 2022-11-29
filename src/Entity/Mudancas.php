@@ -44,16 +44,6 @@ class Mudancas
     private ?string $nansenNumber = null;
     
 
-    #[ORM\ManyToOne(inversedBy: 'mudanca',cascade:['remove'])]
-    private ?Departemant $areaResp = null;
-    
-    
-    /**
-      * @ManyToMany(targetEntity="Departemant", inversedBy="mudancas")
-      * @JoinTable(name="departemant_mudancass")
-      **/
-    public Collection $areaImpact;
-
     #[ORM\ManyToOne]
     private ?Person $addBy = null;
 
@@ -103,6 +93,13 @@ class Mudancas
 
     #[ORM\Column(type:'datetime')]
     private $dataCreation;
+
+    #[ORM\ManyToMany(targetEntity: Sector::class)]
+    private Collection $areaImpact;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Sector $areaResp = null;
     
     public function __construct()
     {
@@ -219,42 +216,6 @@ class Mudancas
     public function setJustif(string $justif): self
     {
         $this->justif = $justif;
-
-        return $this;
-    }
-
-    public function getAreaResp(): ?Departemant
-    {
-        return $this->areaResp;
-    }
-
-    public function setAreaResp(?Departemant $areaResp): self
-    {
-        $this->areaResp = $areaResp;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Departemant>|Departemant[]
-     */
-    public function getAreaImpact(): Collection
-    {
-        return $this->areaImpact;
-    }
-
-    public function addAreaImpact(Departemant $areaImpact): self
-    {
-        if (!$this->areaImpact->contains($areaImpact)) {
-            $this->areaImpact->add($areaImpact);
-        }
-
-        return $this;
-    }
-
-    public function removeAreaImpact(Departemant $areaImpact): self
-    {
-        $this->areaImpact->removeElement($areaImpact);
 
         return $this;
     }
@@ -442,6 +403,42 @@ class Mudancas
     public function setDataCreation(\DateTimeInterface $dataCreation): self
     {
         $this->dataCreation = $dataCreation;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sector>
+     */
+    public function getAreaImpact(): Collection
+    {
+        return $this->areaImpact;
+    }
+
+    public function addAreaImpact(Sector $areaImpact): self
+    {
+        if (!$this->areaImpact->contains($areaImpact)) {
+            $this->areaImpact->add($areaImpact);
+        }
+
+        return $this;
+    }
+
+    public function removeAreaImpact(Sector $areaImpact): self
+    {
+        $this->areaImpact->removeElement($areaImpact);
+
+        return $this;
+    }
+
+    public function getAreaResp(): ?Sector
+    {
+        return $this->areaResp;
+    }
+
+    public function setAreaResp(?Sector $areaResp): self
+    {
+        $this->areaResp = $areaResp;
 
         return $this;
     }

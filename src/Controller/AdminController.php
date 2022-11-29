@@ -10,11 +10,13 @@ use App\Entity\Person;
 use App\Entity\Requestper;
 use App\Entity\Sector;
 use App\Form\AddPersonType;
+use App\Form\EditPersonType;
 use App\Form\ManagerType;
 use App\Form\PermissionType;
 use App\Form\PersonType;
 use App\Form\RequestadminType;
 use App\Form\RequestperType;
+use App\Form\SectorType;
 use App\Model\Class\FunctionUsers;
 use App\Model\Class\Sessions;
 use App\Model\Class\ThemeFn;
@@ -65,7 +67,7 @@ class AdminController extends AbstractController
                 $m = $em->getRepository(Manager::class)->findAll();
 
 
-                
+
                 $mudancas = $em->getRepository(Mudancas::class)->findAll();
                 $val = sizeof($mudancas);
                 $val2 = 0;
@@ -74,11 +76,10 @@ class AdminController extends AbstractController
                     array_push($arr, $mudancas[$i]->getId());
                     if ($mudancas[$i]->getDone() != 'Feito') {
                         $val2 = $val2 + 1;
-                        
                     }
                 }
-                
-               // dd($val2);
+
+                // dd($val2);
                 $val = intval($this->presentNotDone($val, $val2));
                 $size = sizeof($mudancas);
                 return $this->render('admin/dash.html.twig', [
@@ -515,13 +516,27 @@ class AdminController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $em->persist($person);
-                $em->flush();
+
+                //strtolower
+                //ucwords
+                $persName = strtolower($person->getName());
+                $persName = ucwords($persName);
+
+                $pers =  $em->getRepository(Person::class)->findOneBy(['name' => $persName]);
+                if ($pers == null) {
+                    $person->setName($persName);
+                    $em->persist($person);
+                    $em->flush();
+                } else {
+                    $pers->setEmail($person->getEmail());
+                    $em->flush();
+                }
                 return $this->redirectToRoute('lp');
             }
             return $this->render('admin/addperson.html.twig', [
                 'controller_name' => 'Admin',
                 'form' => $form->createView(),
+                'type' => 'add',
                 'sent' => 'false',
                 'p' => $per
             ]);
@@ -530,9 +545,9 @@ class AdminController extends AbstractController
         }
     }
 
-    
+
     #[Route('/editpersonmanual/{id}', name: 'ep')]
-    public function EditarPerson($id,ManagerRegistry $doctrine, Request $request)
+    public function EditarPerson($id, ManagerRegistry $doctrine, Request $request)
     {
         $session = new Session();
         $session = $request->getSession();
@@ -541,10 +556,10 @@ class AdminController extends AbstractController
             $em = $doctrine->getManager();
             $per =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
             $person =  $em->getRepository(Person::class)->find($id);
-            
+
             //dd($person);
 
-            $form = $this->createForm(AddPersonType::class, $person);
+            $form = $this->createForm(EditPersonType::class, $person);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $em->persist($person);
@@ -553,6 +568,7 @@ class AdminController extends AbstractController
             }
             return $this->render('admin/addperson.html.twig', [
                 'controller_name' => 'Admin',
+                'type' => 'update',
                 'form' => $form->createView(),
                 'sent' => 'false',
                 'p' => $per
@@ -634,7 +650,7 @@ class AdminController extends AbstractController
         }
     }
 
-    #[Route('/sectors', name:'app_sectors')]
+    #[Route('/sectors', name: 'app_sectors')]
     public  function sectorsList(ManagerRegistry $doctrine, Request $request)
     {
         $session = new Session();
@@ -647,7 +663,7 @@ class AdminController extends AbstractController
             return $this->render('admin/sectors.html.twig', [
                 'controller_name' => 'Atualizar Mudancas',
                 'login' => 'null',
-                'creation' => 'false',
+                'type' => 'list',
                 'p' => $person,
                 'list' => $list
             ]);
@@ -656,31 +672,64 @@ class AdminController extends AbstractController
         }
     }
 
-    #[Route('/add/sector', name:'add_sector')]
-    public  function sectorAdd(ManagerRegistry $doctrine, Request $request){
+    #[Route('/add/sector', name: 'add_sector')]
+    public  function sectorAdd(ManagerRegistry $doctrine, Request $request)
+    {
         $session = new Session();
         $session = $request->getSession();
 
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
-            $list = $em->getRepository(Sector::class)->findAll();
+            $sector = new Sector();
             $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+
+            $form = $this->createForm(SectorType::class, $sector);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $em->persist($sector);
+                $em->flush();
+                return $this->redirectToRoute('app_sectors');
+            }
             return $this->render('admin/sectors.html.twig', [
                 'controller_name' => 'Atualizar Mudancas',
                 'login' => 'null',
-                'creation' => 'false',
+                'type' => 'create',
                 'p' => $person,
-                'list' => $list
+                'form'  => $form->createView(),
             ]);
         } else {
             return $this->redirectToRoute('app_mudancas');
         }
     }
-    
-    #[Route('/sector/{id}', name:'app_sector')]
-    public  function sectorById($id,ManagerRegistry $doctrine, Request $request)
-    {
-        /**TODO */   
-    }
 
+    #[Route('/edit/sector/{id}', name: 'edit_sector')]
+    public  function sectorById($id, ManagerRegistry $doctrine, Request $request)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $sector = $em->getRepository(Sector::class)->find($id);
+            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            $form = $this->createForm(SectorType::class, $sector);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $em->persist($sector);
+                $em->flush();
+                return $this->redirectToRoute('app_sectors');
+            }
+            return $this->render('admin/sectors.html.twig', [
+                'controller_name' => 'Atualizar Mudancas',
+                'login' => 'null',
+                'type' => 'update',
+                'p' => $person,
+                'form' => $form->createView(),
+            ]);
+        } else {
+            return $this->redirectToRoute('app_mudancas');
+        }
+    }
 }

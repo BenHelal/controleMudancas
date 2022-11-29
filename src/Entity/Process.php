@@ -20,15 +20,11 @@ class Process
     #[ORM\JoinColumn(nullable: false)]
     private ?Mudancas $mudancas = null;
 
-    #[ORM\ManyToMany(targetEntity: Departemant::class)]
-    /**
-      * @ManyToMany(targetEntity="Departemant")
-      * @JoinTable(name="departemant_process")
-      **/
-    private Collection $departemant;
-
     #[ORM\Column(type: 'string', length: 255, nullable:true)]
     private $status;
+
+    #[ORM\ManyToMany(targetEntity: Sector::class)]
+    private Collection $departemant;
 
     public function __construct()
     {
@@ -65,14 +61,14 @@ class Process
     }
 
     /**
-     * @return Collection<int, Departemant>
+     * @return Collection<int, Sector>
      */
     public function getDepartemant(): Collection
     {
         return $this->departemant;
     }
 
-    public function addDepartemant(Departemant $departemant): self
+    public function addDepartemant(Sector $departemant): self
     {
         if (!$this->departemant->contains($departemant)) {
             $this->departemant->add($departemant);
@@ -81,10 +77,11 @@ class Process
         return $this;
     }
 
-    public function removeDepartemant(Departemant $departemant): self
+    public function removeDepartemant(Sector $departemant): self
     {
         $this->departemant->removeElement($departemant);
 
         return $this;
     }
+
 }

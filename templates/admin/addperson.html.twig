@@ -3,7 +3,11 @@
 {% block body %}
 <div class="card" style="margin: 50px">
   <div class="card-header">
+  {% if type == 'add' %}
     Adicionar manual do usuário
+  {% elseif type == 'update' %}
+    Editar manual do usuário
+  {% endif %}
     </div>
   <div class="card-body">
         {{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}

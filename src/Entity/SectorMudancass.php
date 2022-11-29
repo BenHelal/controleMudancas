@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\DepartemantMudancasRepository;
+use App\Repository\SectorMudancasRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: DepartemantMudancasRepository::class)]
-class DepartemantMudancass
+#[ORM\Entity(repositoryClass: SectortMudancasRepository::class)]
+class SectorMudancass
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,7 +19,7 @@ class DepartemantMudancass
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
-    private ?Departemant $Departemant = null;
+    private ?Sector $Sector = null;
 
     public function getId(): ?int
     {
@@ -38,14 +38,14 @@ class DepartemantMudancass
         return $this;
     }
 
-    public function getDepartemant(): ?Departemant
+    public function getSector(): ?Sector
     {
-        return $this->Departemant;
+        return $this->Sector;
     }
 
-    public function setDepartemant(?Departemant $Departemant): self
+    public function setDepartemant(?Sector $Sector): self
     {
-        $this->Departemant = $Departemant;
+        $this->Sector = $Sector;
 
         return $this;
     }

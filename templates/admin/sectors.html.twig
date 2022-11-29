@@ -1,74 +1,132 @@
 {% extends 'baseAdmin.html.twig' %}
 
 {% block body %}
-<link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
+
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css"/>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+
+	<div class="container-fluid">
+		{% if type == "list" %}
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">lista de Setor</h6>
+					<a class="btn btn-info mt-2 text-white" href="{{ path('add_sector') }}">Adicionar Setor</a>
+					<br>
+					<br>
+					<input type="email" class="form-control" id="myInput" placeholder="Procurar..">
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						{% for m in list %}
+							<div id="myTable" class="list-group" style="width: 100%;">
+								<div class="row" style="width: 100%;">
+									<a href="{{path('edit_sector',{'id':m.id} )}}" class="list-group-item list-group-item-action flex-column align-items-start">
+										<div class="d-flex w-100 justify-content-between">
+											<medium>Nome :
+												{{m.name}}</medium>
+										</div>
+										<div class="d-flex w-100 justify-content-between">
+											<medium>Nome Departamento :
+												{{m.Departemant.name}}</medium>
+										</div>
+										<div class="d-flex w-100 justify-content-between">
+											<medium>Nome Gerente :
+												{{m.manager.name}}</medium>
+										</div>
+										<div class="d-flex w-100 justify-content-between">
+											<medium>Nome Coordenador :
+												{{m.coordinator.name}}</medium>
+										</div>
+									</a>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		{% elseif type == "update" %}
+
+			<div class="card" style="margin: 50px">
+				<div class="card-header">
+					Editar Setor
+				</div>
+				<div class="card-body">
+					{{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
+					{{ form_label(form.name) }}
+					{{ form_widget(form.name, {'attr': {'class':'form-control'}}) }}
+
+					{{ form_label(form.Departemant) }}
+					{{ form_widget(form.Departemant, {'attr': {'class':'form-control'}}) }}
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+					{{ form_label(form.coordinator) }}
+					{{ form_widget(form.coordinator, {'attr': {'class':'form-control'}}) }}
+                    
+					{{ form_label(form.manager) }}
+					{{ form_widget(form.manager, {'attr': {'class':'form-control'}}) }}
 
-<div class="container-fluid">
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<button class="btn btn-info mt-2 text-white">Enviar</button>
+						</div>
+					</div>
 
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">lista de empregadors</h6>
-            <label for="exampleFormControlInput1">Procurar empregador</label>
-            <input type="email" class="form-control" id="myInput" placeholder="Procurar..">
+					{{ form_end(form)}}
+				</div>
+			</div>
+		{% elseif type == "create" %}
 
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
+			<div class="card" style="margin: 50px">
+				<div class="card-header">
+					Adicionar Setor
+				</div>
+				<div class="card-body">
+					{{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
+					{{ form_label(form.name) }}
+					{{ form_widget(form.name, {'attr': {'class':'form-control'}}) }}
 
-                {% for m in persons %}
-                <div id="myTable" class="list-group" style="width: 100%;">
-                    <div class="row" style="width: 100%;">
-                        <a href="{{path('dp',{'id':m.id} )}}"
-                            class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <medium>Nome: {{m.name}}</medium>
-                            </div>
-                            <div class="d-flex w-100 justify-content-between">
-                                <medium>última conexão: {{m.lastConnection}}</medium>
-                            </div>
-                            <div class="d-flex w-100 justify-content-between">
-                                <medium>departamento: {{m.departemant}}</medium>
-                            </div>
-                            <div class="d-flex w-100 justify-content-between">
-                                <medium>Função: {% if m.role == null %}
-                                                    sem Função
-                                                {% else %}
-                                                    {{m.role}}
-                                                {% endif %}
-                                </medium>
-                            </div>
-                            <div class="d-flex w-100 justify-content-between">
-                                <medium>Permissão:  {% if m.permission == null %}
-                                                        sem permissão
-                                                    {% else %}
-                                                        {{m.permission}}
-                                                    {% endif %}
-                                </medium>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-</div>
+					{{ form_label(form.Departemant) }}
+					{{ form_widget(form.Departemant, {'attr': {'class':'form-control'}}) }}
 
-<script>
-    $(document).ready(function () {
-        $("#myInput").on("keyup", function () {
 
-            var value = $(this).val().toLowerCase();
-            
-            $("#myTable a").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-</script>
+					{{ form_label(form.coordinator) }}
+					{{ form_widget(form.coordinator, {'attr': {'class':'form-control'}}) }}
+                    
+					{{ form_label(form.manager) }}
+					{{ form_widget(form.manager, {'attr': {'class':'form-control'}}) }}
+
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<button class="btn btn-info mt-2 text-white">Enviar</button>
+						</div>
+					</div>
+
+					{{ form_end(form)}}
+				</div>
+			</div>
+		{% endif %}
+
+	</div>
+
+	<script>
+
+    
+		$(document).ready(function () {
+$('#sector_Departemant').chosen({});
+});
+		$(document).ready(function () {
+$("#myInput").on("keyup", function () {
+
+var value = $(this).val().toLowerCase();
+
+$("#myTable a").filter(function () {
+$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+});
+});
+});
+	</script>
 {% endblock %}

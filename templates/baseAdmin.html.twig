@@ -20,6 +20,7 @@
     <!-- Custom styles for this template-->
     <link href="{{ asset('admin/css/sb-admin-2.min.css')}}" rel="stylesheet">
 
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css"/>
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
 
@@ -77,7 +78,8 @@
                         <h6 class="collapse-header">Gerenciamento:</h6>
                         <a class="collapse-item" href="{{ path('managers') }}">lista de gerência</a>
                         <a class="collapse-item" href="{{ path('lp') }}">lista de usuário</a>
-                        <a class="collapse-item" href="{{ path('addperson') }}">adicionar novo usuário</a>
+                        <a class="collapse-item" href="{{ path('addperson') }}">adicionar novo usuário</a> 
+                        <a class="collapse-item" href="{{ path('app_sectors')}}">lista de setor</a>
                         <a class="collapse-item" href="{{ path('listrequest')}}">lista de solicitação</a>
                     </div>
                 </div>

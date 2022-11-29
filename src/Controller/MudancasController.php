@@ -266,16 +266,15 @@ class MudancasController extends AbstractController
     #[Route('/createMudancas', name: 'cm')]
     public function create(ManagerRegistry $doctrine, Request $request): Response
     {
-
         $session = new Session();
         $session = $request->getSession();
-
         //$request->header_remove();
         if ($session->get('token_jwt') != '') {
             $em = $doctrine->getManager();
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $req =  $em->getRepository(Requestper::class)->findOneBy(['person' => $person]);
             $manager = $em->getRepository(Manager::class)->findOneBy(['person' => $person]);
+            
             if ($req->getApproves() == 'yes') {
                 if ($person->getPermission() != 'ler') {
                     $mud = new Mudancas();
@@ -284,59 +283,14 @@ class MudancasController extends AbstractController
                     $time->format('Y-m-d H:i:s');
                     $mud->setDataCreation($time);
                     $mud->setAddBy($person);
-                    $mud->areaImpact = new ArrayCollection();
+                    //$mud->areaImpact = new ArrayCollection();
                     $form = $this->createForm(MudancasType::class, $mud);
                     $form->handleRequest($request);
-                    if ($form->isSubmitted() && $form->isValid()) {
-                        $v =  $form["areaImpact"]->getData();
-                        for ($i = 0; $i < sizeof($v); $i++) {
-                            $dm = new DepartemantMudancass();
-                            $dm->setMudancas($mud);
-                            $dm->setDepartemant($v[$i]);
-                            $em->persist($dm);
-
-                            $process = new Process();
-                            $process->setMudancas($mud);
-                            $process->setStatus('created');
-                            $em->persist($process);
-
-                            $dp = new DepartemantProcess();
-                            $dp->setDepartemant($v[$i]);
-                            $dp->setProcess($process);
-                            $em->persist($dp);
-                            //    $em->flush();
-                        }
-                        $em->flush();
-                        if ($manager != null || $mud->getNansenName() != null) {
-                            $this->approved($doctrine, $request, $mud->getId());
-                        } else {
-                            $conn = $doctrine->getConnection();
-                            //dd( $mud->getAreaImpact());
-                            foreach ($mud->getAreaImpact() as $di) {
-                                $sql = ' select * 
-                                FROM 
-                                person as p , 
-                                manager as m
-                                WHERE p.departemant = :dep and p.id = m.person_id';
-                                $stmt = $conn->prepare($sql);
-                                $resultSet = $stmt->executeQuery(['dep' => $di->getName()]);
-                                $ln =  $resultSet->fetchAllAssociative();
-
-                                if ($ln != null) {
-                                    $admin = $em->getRepository(Person::class)->findBy(['role' => 'admin']);
-                                    foreach ($admin as $a) {
-                                        $this->sendEmail($a->getEmail(), $a->getName(), $mud, $mud->getAddBy(), 'add');
-                                    }
-                                } else {
-                                    foreach ($ln as $a) {
-                                        $this->sendEmail($a->getEmail(), $a->getName(), $mud, $mud->getAddBy(), 'add');
-                                    }
-                                }
-                            }
-                        }
-                        //Create an instance; passing `true` enables exceptions
-                        return $this->redirectToRoute('app_mudancas');
+                    
+                    if ($form->isSubmitted() && $form->isValid()) { 
+                        dd($mud);
                     }
+
 
                     return $this->render('mudancas/index.html.twig', [
                         'controller_name' => 'Atualizar Mudancas',
@@ -358,8 +312,8 @@ class MudancasController extends AbstractController
         }
     }
 
-    #[Route('/updateMudancas/{id}', name: 'upm')]
-    public function update(ManagerRegistry $doctrine, Request $request, $id): Response
+    //#[Route('/updateMudancas/{id}', name: 'upm')]
+    /*public function update(ManagerRegistry $doctrine, Request $request, $id): Response
     {
         $session = new Session();
         $session = $request->getSession();
@@ -544,16 +498,6 @@ class MudancasController extends AbstractController
                         $dm =  $resultSet->fetchAllAssociative();
                         $em = $doctrine->getManager();
                         $v =  $form["areaImpact"]->getData();
-                        for ($i = 0; $i < sizeof($v); $i++) {
-                            if ($v[$i] != null) {
-                                $dm = new DepartemantMudancass();
-                                $dep = $em->getRepository(Departemant::class)->find($v[$i]->getId());
-                                $dm->setMudancas($mud);
-                                $dm->setDepartemant($dep);
-                                $em->persist($dm);
-                                $em->flush();
-                            }
-                        }
                         $em->persist($mud);
                         $em->flush();
                         return $this->redirectToRoute('app_mudancas');
@@ -591,10 +535,10 @@ class MudancasController extends AbstractController
                 and mud.id = ?
                 AND p.id = ?
                 and pr.status != "done" ;';*/
-        } else {
+      /*  } else {
             return $this->redirectToRoute('log_employer');
         }
-    }
+    }*/
 
     public function sendEmail($email, $name, $mud, $per, $demand)
     {

@@ -34,9 +34,8 @@ class Person
     #[ORM\Column(type: 'string', length: 255, nullable:true)]
     private $email;
 
-    #[ORM\ManyToOne(cascade:[])]
-    #[ORM\Column( nullable:true)]
-    private Departemant $departemant;
+    #[ORM\Column(length: 255)]
+    private ?string $departemant = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private  $lastConnection = null;
@@ -120,12 +119,12 @@ class Person
         return $this;
     }
 
-    public function getDepartemant(): ?Departemant
+    public function getDepartemant(): ?string
     {
         return $this->departemant;
     }
 
-    public function setDepartemant(Departemant $departemant): self
+    public function setDepartemant(string $departemant): self
     {
         $this->departemant = $departemant;
 
