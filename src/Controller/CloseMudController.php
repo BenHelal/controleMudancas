@@ -60,7 +60,6 @@ class CloseMudController extends AbstractController
                 $ln =  $resultSet2->fetchAllAssociative();
             }
             foreach ($dm as $key => $vale) {
-
                 $sql2 = 
                 '   select p.name 
                     FROM 
@@ -87,6 +86,8 @@ class CloseMudController extends AbstractController
             } else {
                 $pe = $em->getRepository(Person::class)->find($ln[0]['person_id']);
             }
+
+            //dd($ln);
 
             return $this->render('close_mud/index.html.twig', [
                 'controller_name' => 'CloseMudController',

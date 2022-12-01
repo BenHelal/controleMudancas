@@ -28,6 +28,21 @@ class SectorProcess
     #[ORM\JoinColumn(nullable: true)]
     private ?Person $person = null;
 
+    
+    #[ORM\Column(nullable: true)]
+    private ?bool $appSectorMan = null;
+
+    public function isAppSectorMan(): ?bool
+    {
+        return $this->appSectorMan;
+    }
+
+    public function setAppSectorMan(?bool $appSectorMan): self
+    {
+        $this->appSectorMan = $appSectorMan;
+
+        return $this;
+    }
     public function getComment()
     {
         return $this->comment;
