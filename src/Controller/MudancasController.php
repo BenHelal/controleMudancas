@@ -19,6 +19,7 @@ use App\Form\MudancasManagerType;
 use App\Form\MudancasType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\PseudoTypes\True_;
 use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -425,25 +426,32 @@ class MudancasController extends AbstractController
                 $manager = false;
                 $gestor = false;
 
+                // Request check
                 if ($req->getApproves() == 'yes') {
+                    
+                // Permission check
                     if ($person->getPermission() != 'ler') {
+                       
                         $sec = $em->getRepository(Sector::class)->findBy(['manager' => $person]);
                         $areaResp =  $mud->getAreaResp();
                         $gestMudancas = $mud->getMangerMudancas();
 
-
-
+                        // check the manager of the area Responsibla 
                         foreach ($sec as $key => $value) {
                             if ($value === $mud->getAreaResp()) {
                                 $manager = true;
                             }
                         }
 
+                        // check the manager of the Mudancas 
                         if ($mud->getMangerMudancas() != null) {
                             if ($mud->getMangerMudancas()->getId() == $person->getId()) {
                                 $gestor = true;
                             }
                         }
+
+                        
+                        // check which Form need 
                         $form = null;
                         if ($manager == true && $gestor == true) {
                             $form = $this->createForm(MudancasgestorType::class, $mud);
@@ -453,14 +461,18 @@ class MudancasController extends AbstractController
                             $form = $this->createForm(MudancasgestorType::class, $mud);
                         }
 
+                        
+                        // event listner 
                         $form->handleRequest($request);
 
                         if ($form->isSubmitted() && $form->isValid()) {
+                            // check if user is the manager of mudancas
                             if ($gestor) {
                                 $mud->setAreaResp($areaResp);
                                 $mud->setMangerMudancas($gestMudancas);   
                             }elseif ($gestor != true && $manager == true) {
                                 # code...  
+                                // check if user is the manager of AreaResp
                                 foreach ($mud->getAreaImpact() as $key => $value) {
                                     if($value == $areaResp){ 
                                         $conn = $doctrine->getConnection();
@@ -478,14 +490,19 @@ class MudancasController extends AbstractController
                                         $stmt->bindValue(1, $areaResp->getId());
                                         $stmt->bindValue(2, $mud->getId());
                                         $resultSet = $stmt->executeQuery();
+                                        
+                                        // get the id of the Porcess
                                         $dm =  $resultSet->fetchAllAssociative();
                                         //dd($dm);
                                         $SectorProcess = $em->getRepository(SectorProcess::class)->find($dm[0]["id"]);
                                         $SectorProcess->setComment($mud->getComMan());
+                                        $SectorProcess->setAppMan(True);
                                     }
                                 }
-                            }
-
+                            }    
+                            /**
+                             * check if the all dep confirm to clise the mudancas
+                             */
                             
 
                             $em->persist($mud);
