@@ -18,10 +18,6 @@ class Departemant
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    
-  
-
-
     public function __construct()
     {
     }

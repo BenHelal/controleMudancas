@@ -56,44 +56,41 @@ class AdminController extends AbstractController
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
             $p = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
-            if ($p->getRole() == null) {
-                return $this->redirectToRoute('app_mudancas');
-            } else {
-                //get All list Mudancas 
-                //get ALL list Departemant
-                $dep = $em->getRepository(Departemant::class)->findAll();
-                //get All list mudancas
-                $depmud = $em->getRepository(DepartemantMudancass::class)->findAll();
-                $m = $em->getRepository(Manager::class)->findAll();
-
-
-
-                $mudancas = $em->getRepository(Mudancas::class)->findAll();
-                $val = sizeof($mudancas);
-                $val2 = 0;
-                $arr = [];
-                for ($i = 0; $i < sizeof($mudancas); $i++) {
-                    array_push($arr, $mudancas[$i]->getId());
-                    if ($mudancas[$i]->getDone() != 'Feito') {
-                        $val2 = $val2 + 1;
+            if ($p != null) {
+                if ($p->getRole() == null) {
+                    return $this->redirectToRoute('app_mudancas');
+                } else {
+                    //get All list Mudancas 
+                    //get ALL list Departemant
+                    $dep = $em->getRepository(Departemant::class)->findAll();
+                    //get All list mudancas
+                    $m = $em->getRepository(Manager::class)->findAll();
+                    $mudancas = $em->getRepository(Mudancas::class)->findAll();
+                    $val = sizeof($mudancas);
+                    $val2 = 0;
+                    $arr = [];
+                    for ($i = 0; $i < sizeof($mudancas); $i++) {
+                        array_push($arr, $mudancas[$i]->getId());
+                        if ($mudancas[$i]->getDone() != 'Feito') {
+                            $val2 = $val2 + 1;
+                        }
                     }
+                    // dd($val2);
+                    $val = intval($this->presentNotDone($val, $val2));
+                    $size = sizeof($mudancas);
+                    return $this->render('admin/dash.html.twig', [
+                        'controller_name' => 'AdminController',
+                        'percent' => $val,
+                        'size' => $size,
+                        'mud' => $arr,
+                        'm' => $m,
+                        'p' => $p,
+                        'mudancas' => $mudancas
+                    ]);
                 }
-
-                // dd($val2);
-                $val = intval($this->presentNotDone($val, $val2));
-                $size = sizeof($mudancas);
-                return $this->render('admin/dash.html.twig', [
-                    'controller_name' => 'AdminController',
-                    'percent' => $val,
-                    'size' => $size,
-                    'mud' => $arr,
-                    'm' => $m,
-                    'p' => $p,
-                    'mudancas' => $mudancas
-                ]);
+            } else {
+                return $this->redirectToRoute('logoutAdmin');
             }
-        } else {
-            return $this->redirectToRoute('app_admin');
         }
     }
 
@@ -318,18 +315,7 @@ class AdminController extends AbstractController
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
             $m = $em->getRepository(Mudancas::class)->find($id);
-            $m->areaImpact = new ArrayCollection();
             $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
-            $conn = $doctrine->getConnection();
-            $sql = 'SELECT * FROM departemant_mudancass  where departemant_mudancass.mudancas_id = :mudancas';
-            $stmt = $conn->prepare($sql);
-            $resultSet = $stmt->executeQuery(['mudancas' => $m->getId()]);
-            $dm =  $resultSet->fetchAllAssociative();
-
-            for ($i = 0; $i < sizeof($dm); $i++) {
-                $dep = $em->getRepository(Departemant::class)->find($dm[$i]["departemant_id"]);
-                $m->addAreaImpact($dep);
-            }
 
             //dd($m);
             return $this->render('admin/displayMudancas.html.twig', [
@@ -476,7 +462,7 @@ class AdminController extends AbstractController
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
             foreach ($ln as $key => $value) {
-                $sql = 'Delete FROM departemant_process WHERE process_id = :mudancas_id ;';
+                $sql = 'Delete FROM sector_process WHERE process_id = :mudancas_id ;';
                 $stmt = $conn->prepare($sql);
                 $resultSet = $stmt->executeQuery(['mudancas_id' => $value['id']]);
                 $ln2 =  $resultSet->fetchAllAssociative();
@@ -486,7 +472,7 @@ class AdminController extends AbstractController
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln2 =  $resultSet->fetchAllAssociative();
 
-            $sql = 'Delete FROM departemant_mudancass WHERE mudancas_id = :mudancas_id ;';
+            $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();

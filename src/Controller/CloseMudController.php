@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Departemant;
 use App\Entity\Mudancas;
 use App\Entity\Person;
+use App\Entity\Sector;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,56 +28,66 @@ class CloseMudController extends AbstractController
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $mud = $em->getRepository(Mudancas::class)->find($id);
             $conn = $doctrine->getConnection();
-            $sql = 'SELECT * FROM departemant_mudancass  where departemant_mudancass.mudancas_id = :mudancas';
+            $sql = 'SELECT * FROM mudancas_sector  where mudancas_id = :mudancas';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas' => $mud->getId()]);
             $dm =  $resultSet->fetchAllAssociative();
+            $depOfUserAddMudancas = $em->getRepository(Departemant::class)->findBy(['name' => $person->getDepartemant()]);    
 
-            foreach($dm as $key => $vale){
-              
-            $sql2 = 'select * FROM 
-            person as p,
-            mudancas as mud , 
-            process as pr , 
-            departemant_process as dp , 
-            departemant as d  
-            WHERE mud.id = pr.mudancas_id 
-            and dp.process_id = pr.id 
-            and dp.person_id = p.id
-            AND dp.departemant_id = d.id 
-            and mud.id = ? ;';
-            $stmt2 = $conn->prepare($sql2);
-            $stmt2->bindValue(1, $mud->getId());
-            //$stmt2->bindValue(2, $dm[$key]['id']);
-            $resultSet2 = $stmt2->executeQuery();
-            $ln =  $resultSet2->fetchAllAssociative();
+            //$areaRespOfUserAddMudancas = $em->getRepository(Sector::class)->findBy(['Departemant' => $depOfUserAddMudancas]);
+            
+            foreach ($dm as $key => $vale) {
+
+                $sql2 = 
+                '   select * 
+                    FROM 
+                        person as p,
+                        mudancas as mud , 
+                        process as pr , 
+                        sector_process as dp , 
+                        sector as d  
+                    WHERE 
+                        mud.id = pr.mudancas_id and 
+                        dp.process_id = pr.id and 
+                        dp.person_id = p.id AND 
+                        dp.sector_id = d.id and 
+                        mud.id = ? ;';
+
+                $stmt2 = $conn->prepare($sql2);
+                $stmt2->bindValue(1, $mud->getId());
+                //$stmt2->bindValue(2, $dm[$key]['id']);
+                $resultSet2 = $stmt2->executeQuery();
+                $ln =  $resultSet2->fetchAllAssociative();
             }
-            foreach($dm as $key => $vale){
-              
-                $sql2 = 'select p.name FROM 
-                person as p,
-                mudancas as mud , 
-                process as pr , 
-                departemant_process as dp , 
-                departemant as d  
-                WHERE mud.id = pr.mudancas_id 
-                and dp.process_id = pr.id 
-                and dp.person_id = p.id
-                AND dp.departemant_id = d.id 
-                and mud.id = ? ;';
+            foreach ($dm as $key => $vale) {
+
+                $sql2 = 
+                '   select p.name 
+                    FROM 
+                        person as p,
+                        mudancas as mud , 
+                        process as pr , 
+                        sector_process as dp , 
+                        sector as d  
+                    WHERE 
+                        mud.id = pr.mudancas_id and 
+                        dp.process_id = pr.id and 
+                        dp.person_id = p.id AND 
+                        dp.sector_id = d.id and 
+                        mud.id = ? ;';
                 $stmt2 = $conn->prepare($sql2);
                 $stmt2->bindValue(1, $mud->getId());
                 //$stmt2->bindValue(2, $dm[$key]['id']);
                 $resultSet2 = $stmt2->executeQuery();
                 $ln2 =  $resultSet2->fetchAllAssociative();
-                }
-            
-            if($ln == null){
-                $pe = null;
-            }else{
-                $pe =$em->getRepository(Person::class)->find( $ln[0]['person_id']);
             }
-            
+
+            if ($ln == null) {
+                $pe = null;
+            } else {
+                $pe = $em->getRepository(Person::class)->find($ln[0]['person_id']);
+            }
+
             return $this->render('close_mud/index.html.twig', [
                 'controller_name' => 'CloseMudController',
                 'login' => 'false',

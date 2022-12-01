@@ -17,8 +17,7 @@
 								<div class="card-body">
 									<div class="row no-gutters align-items-center">
 										<div class="col mr-2">
-											<div class="text-xs font-weight-bold text-info text-uppercase mb-1">Porcentagem de mudanças
-																							                                de acabamento
+											<div class="text-xs font-weight-bold text-info text-uppercase mb-1">Porcentagem de mudanças de acabamento
 											</div>
 											<div class="row no-gutters align-items-center">
 												<div class="col-auto">
@@ -81,7 +80,7 @@
 				</ul>
 			{% endif %}
 		{% else %}
-		<br>
+			<br>
 			<div class="form-group">
 				<input type="email" class="form-control" id="myInput" placeholder="Procurar..">
 			</div>
@@ -101,7 +100,7 @@
 								{% for row in ln %}
 
 									<li class="list-group-item d-flex justify-content-between lh-condensed">
-										<a href="{{path('upm',{'id':row.id} )}}">
+										<a href="#">
 											<div>
 												<h6 class="my-0">Nome do Mudança:
 													{{row.nomeMudanca}}
@@ -123,9 +122,8 @@
 					<div class="col-md-8 order-md-1" style="padding-left: 0px;">
 					{% endif %}
 					{% for m in mud %}
-
 						<div id="myTable" class="list-group">
-							<a href="{{path('upm',{'id':m.id} )}}" class="list-group-item list-group-item-action flex-column align-items-start">
+							<a href="{{path('upm',{id: m.id})}}" class="list-group-item list-group-item-action flex-column align-items-start">
 								<div class="d-flex w-100 justify-content-between">
 									<h5 class="mb-1">Número da mudança:
 										{{m.id}}</h5>
@@ -140,6 +138,9 @@
 								</div>
 								<div class="d-flex w-100 justify-content-between">
 									<medium>Área impactada:
+										{% for row in m.areaImpact %}
+											{{row.name}} <br>
+										{% endfor %}
 									</medium>
 									<medium></medium>
 								</div>
@@ -211,21 +212,21 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row" id="selectAreaImapct">
 			<div class="col-md-12 mb-3">
 				{{ form_label(form.areaImpact) }}
 				{{ form_widget(form.areaImpact) }}
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row" id="selectAreaResp">
 			<div class="col-md-12 mb-3">
 				{{ form_label(form.areaResp) }}
 				{{ form_widget(form.areaResp,{'attr':{'class':'form-control','id':'test'}}) }}
 			</div>
 		</div>
 		{% if gestor %}
-			<div class="row">
+			<div class="row" id="gestorMudancas">
 				<div class="col-md-12 mb-3">
 					{{ form_label(form.mangerMudancas) }}
 					{{ form_widget(form.mangerMudancas,{'attr':{'class':'form-control','id':'testman'}}) }}
@@ -311,16 +312,13 @@
 		</div>
 
 
-		{% if (process != 'approved' and process != 'rejected') or ( process == 'approved' and  comments|length == 0 ) or (m.mangerMudancas.name == person.name)%}
 			<div class="row">
 				<div class="col-md-6 mb-3">
 					<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;
-																			border-color: #0c2c01;">Atualizar</button>
+																									border-color: #0c2c01;">Atualizar</button>
 				</div>
 			</div>
-			{% else %}
 
-		{% endif %}
 		{{ form_end(form) }}
 
 	{% else %}
@@ -394,8 +392,8 @@
 			<div class="row">
 				<div class="col-md-6 mb-3">
 					<button class="btn btn-info mt-2 text-white" style="
-																													    background-color: #0c2c01;
-																													    border-color: #0c2c01;">Adicionar</button>
+																																			    background-color: #0c2c01;
+																																			    border-color: #0c2c01;">Adicionar</button>
 				</div>
 			</div>
 		{% endif %}
@@ -403,144 +401,155 @@
 	{% endif %}
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script>
+
+
+
 		{% if  creation == 'false' %}
-{% if m.comMan == null %}
+			{% if m.comMan == null %}
+			{% elseif m.comMan != null and m.comGest == null %}
+				var form = document.getElementById("test");
+				var elements = form.elements;
+				for (var i = 0, len = 10; i < len; ++ i) {
+					console.log(elements[i]);
+					elements[i].readOnly = true;
+				}
+			{% else %}
+				var form = document.getElementById("test");
+				var elements = form.elements;
+				for (var i = 0, len = 9; i < len; ++ i) {
+					console.log(elements[i]);
+					elements[i].readOnly = true;
+				}
+			{% endif %}
+			{% if gestor %}
+				var nodes = document.getElementById("selectAreaResp").getElementsByTagName('*');
+    			for (var i = 0; i < nodes.length; i++) {
+        			nodes[i].disabled = true;
+    			}
 
-{% elseif m.comMan != null and m.comGest == null %}
-var form = document.getElementById("test");
-var elements = form.elements;
-for (var i = 0, len = 10; i < len; ++ i) {
-console.log(elements[i]);
-elements[i].readOnly = true;
-}
-{% else %}
-var form = document.getElementById("test");
-var elements = form.elements;
-for (var i = 0, len = 9; i < len; ++ i) {
-console.log(elements[i]);
-elements[i].readOnly = true;
-}
-{% endif %}
-{% endif %}
+				
+				var nodes = document.getElementById("gestorMudancas").getElementsByTagName('*');
+    			for (var i = 0; i < nodes.length; i++) {
+        			nodes[i].disabled = true;
+    			}
+			{% endif %}
+			
+		{% endif %}
 
+		{% if manager and(gestor == false) %}
+			$(document).ready(function () {
+				const box = document.getElementById('nanseForm');
+				if (document.getElementById('mudancas_manager_nansenName').value == '') {
+					document.getElementById("nansen").checked = false;
+					const box = document.getElementById('nanseForm');
+					if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+					} else {
+						box.style.display = 'none';
+					}
+				} else {
+					document.getElementById("nansen").checked = true;
+					const box = document.getElementById('nanseForm');
+					if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+					} else {
+						box.style.display = 'none';
+					}
+				}
+			});
 
-{% if manager and(gestor == false) %}
+			function validate() {
+				const box = document.getElementById('nanseForm');
+					if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+					} else {
+						document.getElementById('mudancas_manager_nansenName').value = '';
+						document.getElementById('mudancas_manager_nansenNumber').value = '';
+						box.style.display = 'none';
+					}
+			}
+		
+			new TomSelect("#mudancas_manager_areaImpact", {maxItems: 9});
+		{% elseif gestor %}
+			$(document).ready(function () {
+				const box = document.getElementById('nanseForm');
+				if (document.getElementById('mudancasgestor_nansenName').value == '') {
+					document.getElementById("nansen").checked = false;
+					const box = document.getElementById('nanseForm');
+			
+					if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+					} else {
+						box.style.display = 'none';
+					}
+				} else {
+					document.getElementById("nansen").checked = true;
+					const box = document.getElementById('nanseForm');
+					if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+					} else {
+						box.style.display = 'none';
+					}
+				}
+			});
 
-$(document).ready(function () {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('mudancas_manager_nansenName').value == '') {
-document.getElementById("nansen").checked = false;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-} else {
-document.getElementById("nansen").checked = true;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-}
-});
+			function validate() {
+				const box = document.getElementById('nanseForm');
+				if (document.getElementById('nansen').checked) {
+					box.style.display = 'block';
+				} else {
+					document.getElementById('mudancasgestor_nansenName').value = '';
+					document.getElementById('mudancasgestor_nansenNumber').value = '';
+					box.style.display = 'none';
+				}
+			}
+			
+			new TomSelect("#mudancasgestor_areaImpact", {maxItems: 9});
+		{% else %}
+			$(document).ready(function () {
+				const box = document.getElementById('nanseForm');
+				if (document.getElementById('mudancas_nansenName').value == '') {
+					document.getElementById("nansen").checked = false;
+					const box = document.getElementById('nanseForm');
+					if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+					} else {
+						box.style.display = 'none';
+					}
+				} else {
+					document.getElementById("nansen").checked = true;
+					const box = document.getElementById('nanseForm');
+					if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+					} else {
+						box.style.display = 'none';
+					}
+				}
+			});
 
-function validate() {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-document.getElementById('mudancas_manager_nansenName').value = '';
-document.getElementById('mudancas_manager_nansenNumber').value = '';
-box.style.display = 'none';
-}
-}
-new TomSelect("#mudancas_manager_areaImpact", {maxItems: 9});
+			function validate() {
+				const box = document.getElementById('nanseForm');
+				if (document.getElementById('nansen').checked) {
+					box.style.display = 'block';
+				} else {
+					document.getElementById('mudancas_nansenName').value = '';
+					document.getElementById('mudancas_nansenNumber').value = '';
+					box.style.display = 'none';
+				}
+			}
+			new TomSelect("#mudancas_areaImpact", {maxItems: 9});{% endif %}$(document).ready(function () {
+			$('#product_client').chosen({});
 
-{% elseif gestor %}
+			$("#myInput").on("keyup", function () {
+				var value = $(this).val().toLowerCase();
+				$("#myTable a").filter(function () {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+				});
+			});
+			});
 
-$(document).ready(function () {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('mudancasgestor_nansenName').value == '') {
-document.getElementById("nansen").checked = false;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-} else {
-document.getElementById("nansen").checked = true;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-}
-});
-
-function validate() {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-document.getElementById('mudancasgestor_nansenName').value = '';
-document.getElementById('mudancasgestor_nansenNumber').value = '';
-box.style.display = 'none';
-}
-}
-new TomSelect("#mudancasgestor_areaImpact", {maxItems: 9});
-
-{% else %}
-
-$(document).ready(function () {
-
-const box = document.getElementById('nanseForm');
-if (document.getElementById('mudancas_nansenName').value == '') {
-document.getElementById("nansen").checked = false;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-} else {
-document.getElementById("nansen").checked = true;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-}
-});
-function validate() {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-document.getElementById('mudancas_nansenName').value = '';
-document.getElementById('mudancas_nansenNumber').value = '';
-box.style.display = 'none';
-}
-}
-new TomSelect("#mudancas_areaImpact", {maxItems: 9});{% endif %}$(document).ready(function () {
-$('#product_client').chosen({});
-
-
-$("#myInput").on("keyup", function () {
-var value = $(this).val().toLowerCase();
-$("#myTable a").filter(function () {
-$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-});
-});
-});
-
-function emailChecker() {
-swal({title: "Tome cuidado ?", text: "Mudancas adicionado pelo Empregador não tinha Email!", icon: "warning", buttons: true});
-}
+		function emailChecker() {
+			swal({title: "Tome cuidado ?", text: "Mudancas adicionado pelo Empregador não tinha Email!", icon: "warning", buttons: true});
+		}
 	</script>
 {% endblock %}

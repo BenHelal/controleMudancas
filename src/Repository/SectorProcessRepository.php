@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\DepartemantProcess;
+use App\Entity\SectorProcess;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<DepartemantProcess>
+ * @extends ServiceEntityRepository<SectorProcess>
  *
- * @method DepartemantProcess|null find($id, $lockMode = null, $lockVersion = null)
- * @method DepartemantProcess|null findOneBy(array $criteria, array $orderBy = null)
- * @method DepartemantProcess[]    findAll()
- * @method DepartemantProcess[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method SectorProcess|null find($id, $lockMode = null, $lockVersion = null)
+ * @method SectorProcess|null findOneBy(array $criteria, array $orderBy = null)
+ * @method SectorProcess[]    findAll()
+ * @method SectorProcess[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class DepartemantProcessRepository extends ServiceEntityRepository
+class SectorProcessRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, DepartemantProcess::class);
+        parent::__construct($registry, SectorProcess::class);
     }
 
-    public function add(DepartemantProcess $entity, bool $flush = false): void
+    public function add(SectorProcess $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class DepartemantProcessRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(DepartemantProcess $entity, bool $flush = false): void
+    public function remove(SectorProcess $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class DepartemantProcessRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return DepartemantProcess[] Returns an array of DepartemantProcess objects
+     * @return SectorProcess[] Returns an array of DepartemantProcess objects
      */
     public function findByExampleField($value): array
     {

@@ -23,12 +23,8 @@ class Process
     #[ORM\Column(type: 'string', length: 255, nullable:true)]
     private $status;
 
-    #[ORM\ManyToMany(targetEntity: Sector::class)]
-    private Collection $departemant;
-
     public function __construct()
     {
-        $this->departemant = new ArrayCollection();
     }
 
     
@@ -56,30 +52,6 @@ class Process
     public function setMudancas(Mudancas $mudancas): self
     {
         $this->mudancas = $mudancas;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Sector>
-     */
-    public function getDepartemant(): Collection
-    {
-        return $this->departemant;
-    }
-
-    public function addDepartemant(Sector $departemant): self
-    {
-        if (!$this->departemant->contains($departemant)) {
-            $this->departemant->add($departemant);
-        }
-
-        return $this;
-    }
-
-    public function removeDepartemant(Sector $departemant): self
-    {
-        $this->departemant->removeElement($departemant);
 
         return $this;
     }

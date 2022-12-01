@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Departemant;
 use App\Entity\Mudancas;
 use App\Entity\Person;
+use App\Entity\Sector;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -47,7 +48,7 @@ class MudancasManagerType extends AbstractType
                 'label' => 'Justificativa'
             ])
             ->add('areaImpact',EntityType::class,array(
-                'class' => Departemant::class,
+                'class' => Sector::class,
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
                 },
@@ -61,7 +62,7 @@ class MudancasManagerType extends AbstractType
                 'areaResp',
                 EntityType::class, 
                 array(
-                    'class' => Departemant::class,
+                    'class' => Sector::class,
                     'query_builder' => function(EntityRepository $er){
                         return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
                     },

@@ -24,11 +24,11 @@
                 <br>
                 Justificativa : {{m.justif}}
                 <br>
-                Área Responsável pela mudança : {{m.areaResp}}
+                Área Responsável pela mudança : {{m.areaResp.name}}
                 <br>
                 Área impactada :    
                 {% for row in m.areaImpact %}
-                {{row.name}}
+                    {{row.name}}
                 <br>
                 {% endfor %}
                 <br>
