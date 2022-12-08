@@ -2,13 +2,11 @@
 
 namespace App\Form;
 
-use App\Entity\Departemant;
 use App\Entity\Person;
+use App\Entity\Sector;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -24,16 +22,15 @@ class EditPersonType extends AbstractType
                 'label' => 'Email :'
             ))
             ->add(
-                'departemant',
+                'function',
                 EntityType::class,
                 array(
-                    'class' => Departemant::class,
+                    'class' => Sector::class,
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('s')->orderBy('s.id', 'DESC');
                     },
                     'choice_label' => 'name',
-                    'choice_value'=> 'name',
-                    'label' => 'Área Responsável pela mudança'
+                    'label' => 'Setor relacionado :'
                 )
             );
     }

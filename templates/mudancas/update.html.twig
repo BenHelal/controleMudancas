@@ -318,6 +318,8 @@
 		</div>
 
 
+	{% if update %}
+	
 		{% if person.permission == 'ler criar atualização' or person.permission =='tudo' %}
 			{% if m.done != 'Feito' %}
 				<div class="row">
@@ -326,6 +328,7 @@
 					</div>
 				</div>
 			{% endif %}
+		{% endif %}
 		{% endif %}
 		{{ form_end(form) }}
 

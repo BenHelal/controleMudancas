@@ -25,7 +25,6 @@ class LoginController extends AbstractController
         $session = $request->getSession();
         //test if he is connected before 
         if ($session->get('token_jwt') == null) {  
-
             // update list of employer 
             $url = 'https://intranet.serdia.com.br/a/users.php?sys=1&tk=24dbdb7659f46b318b543981f2b0784226b8bd54';
             $ch = curl_init($url);
@@ -82,11 +81,9 @@ class LoginController extends AbstractController
                         $entityManager->flush();
                     }
                 }
-            }
-            
+            }            
             $entityManager = $doctrine->getManager();
             $person =  $entityManager->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
-
             $person = new Person();
             $form = $this->createForm(PersonType::class, $person);
             $form->handleRequest($request);
@@ -112,8 +109,8 @@ class LoginController extends AbstractController
                 curl_close($ch);
                 $personJSON = $result;
                 $person = json_decode($personJSON);
-               //dd($person);
                 
+                //dd($person);
                 if ($person != null) {
                     // Create token header as a JSON string
                     $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
@@ -130,6 +127,7 @@ class LoginController extends AbstractController
                     // Create JWT
                     $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
                     $session = new Session();
+                    
                     $session->set('token_jwt', $jwt);
                     $session->set('name', $person->name);
                     $session->set('departemant', $person->departemant);
@@ -143,15 +141,11 @@ class LoginController extends AbstractController
                     $time->format('Y-m-d H:i:s');
                     $person->setLastConnection($time);
                     $em->persist($person);
-                    $em->flush();
-                    
+                    $em->flush();               
                     //dd($person->getPermission());
-
                     if($person->getPermission() == null){
-                        
                         return $this->redirectToRoute('app_request');
                     }else{
-                        
                         date_default_timezone_set("America/Sao_Paulo");
                         $time = new \DateTime();
                         $time->format('Y-m-d H:i:s');
@@ -203,7 +197,7 @@ class LoginController extends AbstractController
                 $username = $form["userName"]->getData();
                 $password = $form["password"]->getData();
                 $password = hash('whirlpool', $password);
-                $url = 'https://intranet.serdia.com.br/a/connection.php?sys=20&user=' . $username . '&pass=' . $password . '';
+                $url = 'https://intranet.serdia.com.br/a/connection.php?sys=1&user=' . $username . '&pass=' . $password . '';
                 $ch = curl_init($url);
                 $data = array();
                 $payload = json_encode(array("user" => $data));

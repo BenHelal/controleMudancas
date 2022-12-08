@@ -32,7 +32,7 @@
 								{% if person.permission != 'ler' %}
 								<ul class="nav navbar-nav">
 									<li class="dropdown">
-										<a class="dropdown-toggle nav-link dropdown-toggle" 
+										<a  class="navbar-brand dropdown-toggle nav-link dropdown-toggle" 
 										data-toggle="dropdown" aria-expanded="false" href="#">Criar</a>
 										<div class="dropdown-menu" role="menu">
 											<a class="dropdown-item" role="presentation" href="{{path('cm')}}">Mudança</a>
@@ -43,11 +43,12 @@
 								
 								<ul class="nav navbar-nav">
 									<li class="dropdown">
-										<a class="dropdown-toggle nav-link dropdown-toggle" 
+										<a class="navbar-brand dropdown-toggle nav-link dropdown-toggle" 
 										data-toggle="dropdown" aria-expanded="false" href="#">Consultar</a>
 										<div class="dropdown-menu" role="menu">
 											<a class="dropdown-item" role="presentation" href="{{path('app_departemant')}}">Departamento</a>
-											<a class="dropdown-item" role="presentation" href="{{path('app_mudancas')}}">Mudança</a>
+											<a class="dropdown-item" role="presentation" href="{{path('app_mudancas')}}">Mudanças</a>
+											<a class="dropdown-item" role="presentation" href="{{path('all_mud')}}">Todo Mudanças</a>
 										</div>
 									</li>
 								</ul>

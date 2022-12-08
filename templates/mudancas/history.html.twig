@@ -67,10 +67,6 @@
 	{% if creation == 'null' %}
 		{% if mud is empty %}
 			{% if person.permission == 'ler' %}
-				
-			<br>
-			<br>
-			<br>
 				<ul class="list-group">
 					<li class="list-group-item d-flex justify-content-between align-items-right">
 						<span>você não tem permissão para adicionar novas mudancas</span>
@@ -82,7 +78,6 @@
 						<a href="{{path('cm')}}">Adicionar novo Mudança</a>
 					</li>
 				</ul>
-				<span>Não há dados relacionados com o seu setor ou não há mudancas abertas</span>
 			{% endif %}
 		{% else %}
 			<br>
@@ -127,6 +122,7 @@
 					<div class="col-md-8 order-md-1" style="padding-left: 0px;">
 					{% endif %}
 					{% for m in mud %}
+						{% if m.done != 'Feito' %}
 						<div id="myTable" class="list-group">
 							<a href="{{path('upm',{id: m.id})}}" class="list-group-item list-group-item-action flex-column align-items-start">
 								<div class="d-flex w-100 justify-content-between">
@@ -152,6 +148,33 @@
 								</div>
 							</a>
 						</div>
+						{% else %}
+						<div style="    background-color: #94B0B4;" id="myTable" class="list-group">
+							<a  style="    background-color:  #94B0B4;" href="{{path('upm',{id: m.id})}}" class="list-group-item list-group-item-action flex-column align-items-start">
+								<div style="    background-color:  #94B0B4;"  class="d-flex w-100 justify-content-between">
+									<h5 class="mb-1">Número da mudança:
+										{{m.id}}</h5>
+									<medium>Nome da mudança:
+										{{m.nomeMudanca}}</medium>
+								</div>
+								<div style="    background-color: #94B0B4;"  class="d-flex w-100 justify-content-between">
+									<p class="mb-1">Descrição da Mudança:
+										{{m.descImpacto}}</p>
+									<medium>Descrição do Impacto:
+										{{m.descImpacto}}</medium>
+								</div>
+								<div style="    background-color:  #94B0B4;"  class="d-flex w-100 justify-content-between">
+									<medium>Área impactada:
+										{% for row in m.areaImpact %}
+											{{row.name}}
+											<br>
+										{% endfor %}
+									</medium>
+									<medium>{{m.done}}</medium>
+								</div>
+							</a>
+						</div>
+						{% endif %}
 					{% endfor %}
 					{% if manager %}
 

@@ -51,15 +51,35 @@ class MudancasController extends AbstractController
             if ($req ==  null) {
                 return $this->redirectToRoute('app_request');
             }
+            $dep = $em->getRepository(Departemant::class)->findOneBy(['name' => $person->getDepartemant()]);
+            $manager = $em->getRepository(Sector::class)->findOneBy(['manager' => $person]);
+            $mudanca = $em->getRepository(Mudancas::class)->findAll();
+            $mudancas = [];
+            //get the mudancas with the same Sector 
+
+            foreach ($mudanca as $key => $value) {
+                if ($value->getAreaResp() == $person->getFunction() && $value->getDone() != 'Feito') {
+                    array_push($mudancas, $value);
+                } else {
+
+                    foreach ($value->getAreaImpact() as $key => $val) {
+                        if ($val == $value->getAreaResp()) {
+                            if ($val == $person->getFunction() && $value->getDone() != 'Feito') {
+                                array_push($mudancas, $value);
+                            }
+                        } elseif ($val != $value->getAreaResp()) {
+                            if ($val == $person->getFunction() && $value->getDone() != 'Feito') {
+                                array_push($mudancas, $value);
+                            }
+                        }
+                    }
+                }
+            }
 
 
-
-
-            $manager = $em->getRepository(Manager::class)->findOneBy(['person' => $person]);
-            $mudancas = $em->getRepository(Mudancas::class)->findAll();
             $listNotif = [];
             $conn = $doctrine->getConnection();
-            $sql = ' 
+            $sql = '
                 select 
                     pr.id as idPr,
                     mud.id as idMud 
@@ -88,8 +108,6 @@ class MudancasController extends AbstractController
                 $mud =  $em->getRepository(Mudancas::class)->find($id);
                 array_push($listNotif, $mud);
             }
-
-            $mudancas = $em->getRepository(Mudancas::class)->findAll();
             $val = sizeof($mudancas);
             $val2 = 0;
             $arr = [];
@@ -156,135 +174,6 @@ class MudancasController extends AbstractController
         }
     }
 
-    /*
-    public function rejected(ManagerRegistry $doctrine, Request $request, $id)
-    {
-        $session = new Session();
-        $session = $request->getSession();
-        if ($session->get('token_jwt') != '') {
-            $em = $doctrine->getManager();
-            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
-            $req =  $em->getRepository(Requestper::class)->findOneBy(['person' => $person]);
-            $manager = $em->getRepository(Manager::class)->findOneBy(['person' => $person]);
-            if ($req->getApproves() == 'yes' && $manager != null) {
-                $mud =  $em->getRepository(Mudancas::class)->find($id);
-                $sql2 = 'select pr.id as idPr, mud.id as idMud 
-                FROM mudancas as mud , process as pr , departemant_process as dp , departemant as d , person as p 
-                WHERE mud.id = pr.mudancas_id 
-                and dp.process_id = pr.id 
-                AND dp.departemant_id = d.id 
-                and p.departemant = d.name 
-                and mud.id = ?
-                AND p.id = ? ;';
-                $conn = $doctrine->getConnection();
-                $stmt2 = $conn->prepare($sql2);
-                $stmt2->bindValue(1, $mud->getId());
-                $stmt2->bindValue(2, $person->getId());
-                $resultSet2 = $stmt2->executeQuery();
-                $ln =  $resultSet2->fetchAllAssociative();
-                if ($ln != null) {
-                    $process = $em->getRepository(Process::class)->find($ln[0]['idPr']);
-                    $process->setMudancas($mud);
-                    $process->setStatus('rejected');
-                    $em->persist($process);
-                    $em->flush();
-                    if ($process->getStatus() == 'rejected') {
-                        $mudancas = $em->getRepository(Mudancas::class)->find($ln[0]['idMud']);
-                        $mudancas->setDone('Feito');
-                        $em->persist($mudancas);
-                        $em->flush();
-                        $this->sendEmail($mud->getAddBy()->getEmail(), $mud->getAddBy()->getName(), $mud, $mud->getAddBy(), 'reject');
-                        return $this->redirectToRoute('app_mudancas');
-                    }
-                }
-            } else {
-                return $this->redirectToRoute('app_request');
-            }
-        } else {
-            return $this->redirectToRoute('log_employer');
-        }
-    }
-
-    public function approved(ManagerRegistry $doctrine, Request $request, $id)
-    {
-        $sendIt = false;
-        $session = new Session();
-        $session = $request->getSession();
-        if ($session->get('token_jwt') != '') {
-            $em = $doctrine->getManager();
-            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
-            $req =  $em->getRepository(Requestper::class)->findOneBy(['person' => $person]);
-            $manager = $em->getRepository(Manager::class)->findOneBy(['person' => $person]);
-            $dep = $em->getRepository(Departemant::class)->findOneBy(['name' => $person->getDepartemant()]);
-            if ($req->getApproves() == 'yes' && $manager != null) {
-                $mud =  $em->getRepository(Mudancas::class)->find($id);
-                $sql2 = 'select pr.id as idPr, mud.id as idMud, dp.id as dp
-                FROM mudancas as mud , process as pr , departemant_process as dp , departemant as d , person as p 
-                WHERE mud.id = pr.mudancas_id 
-                and dp.process_id = pr.id 
-                AND dp.departemant_id = d.id 
-                and p.departemant = d.name 
-                and mud.id = ?
-                AND p.id = ? ;';
-                $conn = $doctrine->getConnection();
-                $stmt2 = $conn->prepare($sql2);
-                $stmt2->bindValue(1, $mud->getId());
-                $stmt2->bindValue(2, $person->getId());
-                $resultSet2 = $stmt2->executeQuery();
-                $ln =  $resultSet2->fetchAllAssociative();
-                if ($ln != null) {
-                    $process = $em->getRepository(Process::class)->find($ln[0]['idPr']);
-                    $process->setMudancas($mud);
-                    $process->setStatus('approved');
-                    $em->persist($process);
-                    $em->flush();
-                    $pbym = $em->getRepository(Process::class)->findBy(['mudancas' => $mud]);
-                    $size = sizeof($pbym);
-                    $int = 0;
-                    foreach ($pbym as $p) {
-                        $p->getStatus() == 'approved' ? $int++ : $int;
-                    }
-                    if ($int == $size) {
-                        $mud->setDone('Feito');
-                        $em->persist($mud);
-                        $em->flush();
-                        $sql = ' select * 
-                                FROM 
-                                person as p , 
-                                manager as m
-                                WHERE p.departemant = :dep and p.id = m.person_id';
-                        $stmt = $conn->prepare($sql);
-                        $resultSet = $stmt->executeQuery(['dep' => 'ENG. DA QUALIDADE']);
-                        $ln =  $resultSet->fetchAllAssociative();
-
-                        if ($ln != null) {
-                            $admin = $em->getRepository(Person::class)->findBy(['role' => 'admin']);
-                            foreach ($admin as $a) {
-                                $this->sendEmail($a->getEmail(), $a->getName(), $mud, $mud->getAddBy(), 'add');
-                                return $this->redirectToRoute('app_mudancas');
-                            }
-                        } else {
-                            foreach ($ln as $a) {
-                                $this->sendEmail($a->getEmail(), $a->getName(), $mud, $mud->getAddBy(), 'add');
-                            }
-                            return $this->redirectToRoute('app_mudancas');
-                        }
-                        $this->sendEmail($mud->getAddBy()->getEmail(), $mud->getAddBy()->getName(), $mud, $mud->getAddBy(), 'quality');
-                        return $this->redirectToRoute('app_mudancas');
-                    }
-                    if ($process->getStatus() == 'approved' && $sendIt == false) {
-                        $sendIt = true;
-                        $this->sendEmail($mud->getAddBy()->getEmail(), $mud->getAddBy()->getName(), $mud, $mud->getAddBy(), 'apro');
-                        return $this->redirectToRoute('app_mudancas');
-                    }
-                }
-            } else {
-                return $this->redirectToRoute('app_request');
-            }
-        } else {
-            return $this->redirectToRoute('log_employer');
-        }
-    }*/
 
     #[Route('/createMudancas', name: 'cm')]
     public function create(ManagerRegistry $doctrine, Request $request): Response
@@ -420,18 +309,36 @@ class MudancasController extends AbstractController
             if ($mud == null) {
                 return $this->redirectToRoute('app_mudancas');
             } else {
-
+                
                 $process = $em->getRepository(Process::class)->find($id);
 
                 $manager = false;
                 $gestor = false;
-
                 // Request check
                 if ($req->getApproves() == 'yes') {
-                    
-                // Permission check
+                    // Permission check
                     if ($person->getPermission() != 'ler') {
-                       
+                        $mudancas = [];
+                        $update = false;
+                        if ($mud->getAreaResp() == $person->getFunction() && $mud->getDone() != 'Feito') {
+                                array_push($mudancas, $mud);
+                            } else {
+            
+                                foreach ($mud->getAreaImpact() as $key => $val) {
+                                    if ($val == $mud->getAreaResp()) {
+                                        if ($val == $person->getFunction() && $mud->getDone() != 'Feito') {
+                                            array_push($mudancas, $mud);
+                                        }
+                                    } elseif ($val != $mud->getAreaResp()) {
+                                        if ($val == $person->getFunction() && $mud->getDone() != 'Feito') {
+                                            array_push($mudancas, $mud);
+                                        }
+                                    }
+                                }
+                            }
+                        if (sizeof($mudancas) != 0) {
+                            $update = true;
+                        }
                         $sec = $em->getRepository(Sector::class)->findBy(['manager' => $person]);
                         $areaResp =  $mud->getAreaResp();
                         $gestMudancas = $mud->getMangerMudancas();
@@ -450,7 +357,7 @@ class MudancasController extends AbstractController
                             }
                         }
 
-                        
+
                         // check which Form need 
                         $form = null;
                         if ($manager == true && $gestor == true) {
@@ -459,22 +366,26 @@ class MudancasController extends AbstractController
                             $form = $this->createForm(MudancasManagerType::class, $mud);
                         } elseif ($manager != true && $gestor == true) {
                             $form = $this->createForm(MudancasgestorType::class, $mud);
+                        } else {
+                            $form = $this->createForm(MudancasType::class, $mud);
                         }
 
-                        
+
                         // event listner 
                         $form->handleRequest($request);
 
+                        //var of to check number of approved of area impacted
+                        $NumberApproved = 0;
                         if ($form->isSubmitted() && $form->isValid()) {
                             // check if user is the manager of mudancas
                             if ($gestor) {
                                 $mud->setAreaResp($areaResp);
-                                $mud->setMangerMudancas($gestMudancas);   
-                            }elseif ($gestor != true && $manager == true) {
+                                $mud->setMangerMudancas($gestMudancas);
+                            } elseif ($gestor != true && $manager == true) {
                                 # code...  
                                 // check if user is the manager of AreaResp
                                 foreach ($mud->getAreaImpact() as $key => $value) {
-                                    if($value == $areaResp){ 
+                                    if ($value == $areaResp) {
                                         $conn = $doctrine->getConnection();
                                         $sql = 'SELECT sp.id FROM 
                                             sector_process as sp,
@@ -490,33 +401,69 @@ class MudancasController extends AbstractController
                                         $stmt->bindValue(1, $areaResp->getId());
                                         $stmt->bindValue(2, $mud->getId());
                                         $resultSet = $stmt->executeQuery();
-                                        
+
                                         // get the id of the Porcess
                                         $dm =  $resultSet->fetchAllAssociative();
                                         //dd($dm);
                                         $SectorProcess = $em->getRepository(SectorProcess::class)->find($dm[0]["id"]);
                                         $SectorProcess->setComment($mud->getComMan());
-                                        $SectorProcess->setAppMan(True);
+                                        $SectorProcess->setAppSectorMan(True);
                                     }
                                 }
-                            }    
+                            }
                             /**
                              * check if the all dep confirm to clise the mudancas
                              */
-                            
+                            foreach ($mud->getAreaImpact() as $key => $value) {
+                                # code...
+                                $conn = $doctrine->getConnection();
+                                $sql = 'SELECT sp.id FROM 
+                                        sector_process as sp,
+                                        mudancas as mud,
+                                        process as p
+                                        where 
+                                        sp.sector_id = ? and
+                                        mud.id = ? and
+                                        p.mudancas_id =  mud.id and 
+                                        sp.process_id = p.id
+                                        ';
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bindValue(1, $value->getId());
+                                $stmt->bindValue(2, $mud->getId());
+                                $resultSet = $stmt->executeQuery();
 
+                                // get the id of the Porcess
+                                $dm =  $resultSet->fetchAllAssociative();
+                                $SectorProcess = $em->getRepository(SectorProcess::class)->find($dm[0]["id"]);
+                                if ($SectorProcess->isAppSectorMan()) {
+                                    $NumberApproved = $NumberApproved + 1;
+                                }
+                            }
+
+                            if ($NumberApproved == sizeof($mud->getAreaImpact())) {
+                                if ($mud->isAppMan()) {
+                                    if ($mud->isAppGest()) {
+                                        $mud->setDone('Feito');
+                                        date_default_timezone_set("America/Sao_Paulo");
+                                        $time = new \DateTime();
+                                        $time->format('Y-m-d H:i:s');
+                                        $mud->setDateOfImp($time);
+                                    }
+                                }
+                            }
                             $em->persist($mud);
                             $em->flush();
                             return $this->redirectToRoute('upm', ['id' => $id]);
                         }
 
 
-                        return $this->render('mudancas/index.html.twig', [
+                        return $this->render('mudancas/update.html.twig', [
                             'controller_name' => 'Atualizar Mudancas',
                             'login' => 'null',
                             'creation' => 'false',
                             'person' => $person,
                             'm' => $mud,
+                            'update' => $update,
                             'manager' => $manager,
                             'gestor' => $gestor,
                             'form' => $form->createView(),
@@ -532,6 +479,238 @@ class MudancasController extends AbstractController
             return $this->redirectToRoute('log_employer');
         }
     }
+
+
+    #[Route('/History/Mudancas', name: 'all_mud')]
+    public function all_mudancas(ManagerRegistry $doctrine, Request $request)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_jwt') != '') {
+            $em = $doctrine->getManager();
+            //dd($session->get('name'));
+            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+            $req =  $em->getRepository(Requestper::class)->findOneBy(['person' => $person]);
+            if ($req ==  null) {
+                return $this->redirectToRoute('app_request');
+            }
+            $dep = $em->getRepository(Departemant::class)->findOneBy(['name' => $person->getDepartemant()]);
+            $manager = $em->getRepository(Manager::class)->findOneBy(['person' => $person]);
+            $mudancas = $em->getRepository(Mudancas::class)->findAll();
+            $listNotif = [];
+            $conn = $doctrine->getConnection();
+            $sql = '
+                select 
+                    pr.id as idPr,
+                    mud.id as idMud 
+                FROM 
+                    mudancas as mud, 
+                    process as pr, 
+                    sector_process as dp,
+                    sector as d,
+                    person as p,
+                    departemant as dep
+                WHERE 
+                    mud.id = pr.mudancas_id AND 
+                    dp.process_id = pr.id AND 
+                    dp.sector_id = d.id AND
+                    d.departemant_id = dep.id AND
+                    dep.name = p.departemant AND
+                    p.id = :person AND 
+                    pr.status = "created"';
+            $stmt = $conn->prepare($sql);
+            //dd($person);
+            $resultSet = $stmt->executeQuery(['person' => $person->getId()]);
+            $ln =  $resultSet->fetchAllAssociative();
+
+            foreach ($ln as $notif) {
+                $id = $notif['idMud'];
+                $mud =  $em->getRepository(Mudancas::class)->find($id);
+                array_push($listNotif, $mud);
+            }
+
+            $mudancas = $em->getRepository(Mudancas::class)->findAll();
+            $val = sizeof($mudancas);
+            $val2 = 0;
+            $arr = [];
+            for ($i = 0; $i < sizeof($mudancas); $i++) {
+                array_push($arr, $mudancas[$i]->getId());
+                if ($mudancas[$i]->getDone() != 'Feito') {
+                    $val2 = $val2 + 1;
+                }
+            }
+            // dd($val2);
+            $val = intval($this->presentNotDone($val, $val2));
+            $size = sizeof($mudancas);
+
+            if ($req->getApproves() == 'yes') {
+                /*              $dep =  $em->getRepository(Departemant::class)->findOneBy(['name' => $person->getDepartemant()]);
+                // if($person->getRole()==)
+                $depMud = $em->getRepository(DepartemantMudancass::class)->findBy(['Departemant' => $dep]);
+                $mudancas = [];
+                foreach ($depMud as $dm) {
+                    array_push($mudancas, $dm->getMudancas());
+                }
+                */
+                if ($manager == null) {
+                    return $this->render('mudancas/history.html.twig', [
+                        'controller_name' => 'Mudancas',
+                        'login' => 'null',
+                        'creation' => 'null',
+                        'mud' => $mudancas,
+                        'manager' => false,
+                        'person' => $person,
+                        'gestor' => false
+                    ]);
+                } else {
+                    return $this->render('mudancas/history.html.twig', [
+                        'controller_name' => 'Mudancas',
+                        'login' => 'null',
+                        'creation' => 'null',
+                        'mud' => $mudancas,
+                        'manager' => true, 'percent' => $val,
+                        'size' => $size,
+                        'gestor' => false,
+                        'ln' => $listNotif,
+                        'person' => $person
+                    ]);
+                }
+            } else {
+                return $this->redirectToRoute('app_request');
+            }
+        } else {
+            return $this->redirectToRoute('log_employer');
+        }
+    }
+    /*
+    public function rejected(ManagerRegistry $doctrine, Request $request, $id)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_jwt') != '') {
+            $em = $doctrine->getManager();
+            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+            $req =  $em->getRepository(Requestper::class)->findOneBy(['person' => $person]);
+            $manager = $em->getRepository(Manager::class)->findOneBy(['person' => $person]);
+            if ($req->getApproves() == 'yes' && $manager != null) {
+                $mud =  $em->getRepository(Mudancas::class)->find($id);
+                $sql2 = 'select pr.id as idPr, mud.id as idMud 
+                FROM mudancas as mud , process as pr , departemant_process as dp , departemant as d , person as p 
+                WHERE mud.id = pr.mudancas_id 
+                and dp.process_id = pr.id 
+                AND dp.departemant_id = d.id 
+                and p.departemant = d.name 
+                and mud.id = ?
+                AND p.id = ? ;';
+                $conn = $doctrine->getConnection();
+                $stmt2 = $conn->prepare($sql2);
+                $stmt2->bindValue(1, $mud->getId());
+                $stmt2->bindValue(2, $person->getId());
+                $resultSet2 = $stmt2->executeQuery();
+                $ln =  $resultSet2->fetchAllAssociative();
+                if ($ln != null) {
+                    $process = $em->getRepository(Process::class)->find($ln[0]['idPr']);
+                    $process->setMudancas($mud);
+                    $process->setStatus('rejected');
+                    $em->persist($process);
+                    $em->flush();
+                    if ($process->getStatus() == 'rejected') {
+                        $mudancas = $em->getRepository(Mudancas::class)->find($ln[0]['idMud']);
+                        $mudancas->setDone('Feito');
+                        $em->persist($mudancas);
+                        $em->flush();
+                        $this->sendEmail($mud->getAddBy()->getEmail(), $mud->getAddBy()->getName(), $mud, $mud->getAddBy(), 'reject');
+                        return $this->redirectToRoute('app_mudancas');
+                    }
+                }
+            } else {
+                return $this->redirectToRoute('app_request');
+            }
+        } else {
+            return $this->redirectToRoute('log_employer');
+        }
+    }
+
+    public function approved(ManagerRegistry $doctrine, Request $request, $id)
+    {
+        $sendIt = false;
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_jwt') != '') {
+            $em = $doctrine->getManager();
+            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+            $req =  $em->getRepository(Requestper::class)->findOneBy(['person' => $person]);
+            $manager = $em->getRepository(Manager::class)->findOneBy(['person' => $person]);
+            $dep = $em->getRepository(Departemant::class)->findOneBy(['name' => $person->getDepartemant()]);
+            if ($req->getApproves() == 'yes' && $manager != null) {
+                $mud =  $em->getRepository(Mudancas::class)->find($id);
+                $sql2 = 'select pr.id as idPr, mud.id as idMud, dp.id as dp
+                FROM mudancas as mud , process as pr , departemant_process as dp , departemant as d , person as p 
+                WHERE mud.id = pr.mudancas_id 
+                and dp.process_id = pr.id 
+                AND dp.departemant_id = d.id 
+                and p.departemant = d.name 
+                and mud.id = ?
+                AND p.id = ? ;';
+                $conn = $doctrine->getConnection();
+                $stmt2 = $conn->prepare($sql2);
+                $stmt2->bindValue(1, $mud->getId());
+                $stmt2->bindValue(2, $person->getId());
+                $resultSet2 = $stmt2->executeQuery();
+                $ln =  $resultSet2->fetchAllAssociative();
+                if ($ln != null) {
+                    $process = $em->getRepository(Process::class)->find($ln[0]['idPr']);
+                    $process->setMudancas($mud);
+                    $process->setStatus('approved');
+                    $em->persist($process);
+                    $em->flush();
+                    $pbym = $em->getRepository(Process::class)->findBy(['mudancas' => $mud]);
+                    $size = sizeof($pbym);
+                    $int = 0;
+                    foreach ($pbym as $p) {
+                        $p->getStatus() == 'approved' ? $int++ : $int;
+                    }
+                    if ($int == $size) {
+                        $mud->setDone('Feito');
+                        $em->persist($mud);
+                        $em->flush();
+                        $sql = ' select * 
+                                FROM 
+                                person as p , 
+                                manager as m
+                                WHERE p.departemant = :dep and p.id = m.person_id';
+                        $stmt = $conn->prepare($sql);
+                        $resultSet = $stmt->executeQuery(['dep' => 'ENG. DA QUALIDADE']);
+                        $ln =  $resultSet->fetchAllAssociative();
+
+                        if ($ln != null) {
+                            $admin = $em->getRepository(Person::class)->findBy(['role' => 'admin']);
+                            foreach ($admin as $a) {
+                                $this->sendEmail($a->getEmail(), $a->getName(), $mud, $mud->getAddBy(), 'add');
+                                return $this->redirectToRoute('app_mudancas');
+                            }
+                        } else {
+                            foreach ($ln as $a) {
+                                $this->sendEmail($a->getEmail(), $a->getName(), $mud, $mud->getAddBy(), 'add');
+                            }
+                            return $this->redirectToRoute('app_mudancas');
+                        }
+                        $this->sendEmail($mud->getAddBy()->getEmail(), $mud->getAddBy()->getName(), $mud, $mud->getAddBy(), 'quality');
+                        return $this->redirectToRoute('app_mudancas');
+                    }
+                    if ($process->getStatus() == 'approved' && $sendIt == false) {
+                        $sendIt = true;
+                        $this->sendEmail($mud->getAddBy()->getEmail(), $mud->getAddBy()->getName(), $mud, $mud->getAddBy(), 'apro');
+                        return $this->redirectToRoute('app_mudancas');
+                    }
+                }
+            } else {
+                return $this->redirectToRoute('app_request');
+            }
+        } else {
+            return $this->redirectToRoute('log_employer');
+        }
+    }*/
 
 
     /*#[Route('/updateMudancas/{id}', name: 'upm')]
@@ -732,8 +911,6 @@ class MudancasController extends AbstractController
                             $comments = $mud->getComGest();
                         }
                     }
-                    3 hours, 57 minutes, and 0 second
-                    1 hour, 37 minutes
                     return $this->render('mudancas/index.html.twig', [
                         'controller_name' => 'Atualizar Mudancas',
                         'login' => 'null',

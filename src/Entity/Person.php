@@ -40,6 +40,9 @@ class Person
     #[ORM\Column(type: 'datetime', nullable: true)]
     private  $lastConnection = null;
 
+    #[ORM\ManyToOne]
+    private ?Sector $function = null;
+
 
 
     public function getId(): ?int
@@ -143,6 +146,18 @@ class Person
     public function setLastConnection(?\DateTimeInterface $lastConnection): self
     {
         $this->lastConnection = $lastConnection;
+        return $this;
+    }
+
+    public function getFunction(): ?Sector
+    {
+        return $this->function;
+    }
+
+    public function setFunction(?Sector $function): self
+    {
+        $this->function = $function;
+
         return $this;
     }
 

@@ -13,13 +13,13 @@
         {{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
             {{ form_label(form.name) }}
             {{ form_widget(form.name, {'attr': {'class':'form-control'}}) }} 
-                    
+              <br>    
             {{ form_label(form.email) }}
             {{ form_widget(form.email, {'attr': {'class':'form-control'}}) }}
+            <br>
         
-        
-            {{ form_label(form.departemant) }}
-            {{ form_widget(form.departemant, {'attr': {'class':'form-control'}}) }}
+            {{ form_label(form.function) }}
+            {{ form_widget(form.function, {'attr': {'class':'form-control'}}) }}
         
             <div class="row">
                 <div class="col-md-6 mb-3">

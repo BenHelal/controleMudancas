@@ -49,7 +49,7 @@
 						<td>ainda não verificado</td>
 					{% else %}
 						<td>{{mud.areaResp.name}}</td>
-						<td>{{p.name}}</td>
+						<td>{{mud.areaResp.manager.name}}</td>
 					{% endif %}
 					{% if mud.appMan == null %}
 						<td>ainda não verificado</td>
@@ -87,11 +87,12 @@
 						<td>{{mud.comGest}}</td>
 					{% endif %}
 				</tr>
+				
 				{% for key, m in data %}
 					<tr>
 						<th scope="row">Área Impactada</th>
 						<td>{{m.name}}</td>
-						<td>{{data2[key].name }}
+						<td>{{data2[key].name }}</td>
 							{% if  m.app_sector_man  == null %}
 								<td>ainda não verificado</td>
 							{% elseif m.app_sector_man %}

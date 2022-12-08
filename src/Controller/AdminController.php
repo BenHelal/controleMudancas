@@ -581,9 +581,6 @@ class AdminController extends AbstractController
         }
     }
 
-
-
-
     /**Login Administrator  */
     #[Route('/login', name: 'app_login_admin')]
     public function login(ManagerRegistry $doctrine, Request $request): Response
