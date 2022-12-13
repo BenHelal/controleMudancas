@@ -58,10 +58,17 @@ class MudancasController extends AbstractController
             //get the mudancas with the same Sector 
 
             foreach ($mudanca as $key => $value) {
+                $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
+                $sp = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+                foreach ($sp as $key => $value2) {
+                    if($value2->isAppSectorMan() == false){
+                        $value->setDone('Feito');
+                    }
+                }
+
                 if ($value->getAreaResp() == $person->getFunction() && $value->getDone() != 'Feito') {
                     array_push($mudancas, $value);
                 } else {
-
                     foreach ($value->getAreaImpact() as $key => $val) {
                         if ($val == $value->getAreaResp()) {
                             if ($val == $person->getFunction() && $value->getDone() != 'Feito') {
