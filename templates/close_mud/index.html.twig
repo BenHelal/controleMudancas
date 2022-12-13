@@ -45,41 +45,45 @@
 				<tr>
 					<th scope="row">Gerente Aprovação</th>
 					{% if p == null %}
-						<td>ainda não verificado</td>
-						<td>ainda não verificado</td>
+						<td>Ainda não verificado</td>
+						<td>Ainda não verificado</td>
 					{% else %}
 						<td>{{mud.areaResp.name}}</td>
 						<td>{{mud.areaResp.manager.name}}</td>
 					{% endif %}
-					{% if mud.appMan == null %}
-						<td>ainda não verificado</td>
-					{% elseif mud.appMan %}
+
+					{% if mud.appMan == true and mud.comMan != null %}
 						<td>Aprovado</td>
-					{% else %}
-						<td>rejeitado</td>
+					{% elseif mud.appMan == false and mud.comMan != null %}
+						<td>Rejeitado</td>
+					{% elseif  mud.appMan == null  %}
+						<td>Ainda não verificado</td>
 					{% endif %}
 
-					{% if mud.appMan == null %}
-						<td></td>
-					{% else %}
+
+					{% if mud.appMan == true and mud.comMan != null %}
 						<td>{{mud.comMan}}</td>
+					{% elseif mud.appMan == false  and mud.comMan != null %}
+						<td>{{mud.comMan}}</td>
+					{%  elseif  mud.appMan == null  %}
+						<td>Ainda não comentário</td>
 					{% endif %}
 				</tr>
 				<tr>
 					<th scope="row">Gestor da Mudança</th>
 					{% if mud.mangerMudancas == null %}
-						<td>ainda não verificado</td>
-						<td>ainda não verificado</td>
+						<td>Ainda não verificado</td>
+						<td>Ainda não verificado</td>
 					{% else %}
 						<td>{{mud.mangerMudancas.departemant}}</td>
 						<td>{{mud.mangerMudancas.name}}</td>
 					{% endif %}
 					{% if mud.appGest == null %}
-						<td>ainda não verificado</td>
-					{% elseif mud.appGest %}
+						<td>Ainda não verificado</td>
+					{% elseif mud.appGest == true and mud.comGest != null %}
 						<td>Aprovado</td>
-					{% else %}
-						<td>rejeitado</td>
+					{% elseif mud.appGest == false   and mud.comGest != null%}
+						<td>Rejeitado</td>
 					{% endif %}
 					{% if mud.appGest == null %}
 						<td></td>
@@ -93,12 +97,12 @@
 						<th scope="row">Área Impactada</th>
 						<td>{{m.name}}</td>
 						<td>{{data2[key].name }}</td>
-							{% if  m.app_sector_man  == null %}
-								<td>ainda não verificado</td>
-							{% elseif m.app_sector_man %}
+							{% if  m.app_sector_man  == true and m.comment != null %}
 								<td>Aprovado</td>
-								{% else %}
-						<td>rejeitado</td>
+							{% elseif m.app_sector_man != true and m.comment != null %}
+								<td>Rejeitado</td>
+							{% elseif m.app_sector_man == null   %}
+								<td>Ainda não verificado</td>
 							{% endif %}
 						</td>
 						<td>{{m.comment}}</td>

@@ -105,16 +105,17 @@
 								{% for row in ln %}
 
 									<li class="list-group-item d-flex justify-content-between lh-condensed">
-										<a href="#">
+										<a href="{{path('app_notif',{id: row.id})}}">
 											<div>
 												<h6 class="my-0">Nome do Mudança:
 													{{row.nomeMudanca}}
 												</h6>
-												<small class="text-muted">Descrição breve:
-													{{row.descImpacto}}
+												
+												<small class="text-muted">Cod: {{row.id}}
 												</small>
 											</div>
-											<span class="text-muted"></span>
+											<span class="text-muted">Descrição breve:
+													{{row.descImpacto}}</span>
 										</a>
 									</li>
 
@@ -154,12 +155,9 @@
 						</div>
 					{% endfor %}
 					{% if manager %}
-
 					</div>
-
 				</div>
 			{% endif %}
-
 		{% endif %}
 	{% elseif creation == 'false' %}
 
@@ -408,6 +406,8 @@
 	{% endif %}
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script>
+
+
 {% if  creation == 'false' %}
 {% if m.comMan == null %}
 {% elseif m.comMan != null and m.comGest == null %}

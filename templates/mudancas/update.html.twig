@@ -67,10 +67,10 @@
 	{% if creation == 'null' %}
 		{% if mud is empty %}
 			{% if person.permission == 'ler' %}
-				
-			<br>
-			<br>
-			<br>
+
+				<br>
+				<br>
+				<br>
 				<ul class="list-group">
 					<li class="list-group-item d-flex justify-content-between align-items-right">
 						<span>você não tem permissão para adicionar novas mudancas</span>
@@ -318,17 +318,21 @@
 		</div>
 
 
-	{% if update %}
-	
-		{% if person.permission == 'ler criar atualização' or person.permission =='tudo' %}
-			{% if m.done != 'Feito' %}
-				<div class="row">
-					<div class="col-md-6 mb-3">
-						<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+		{% if update %}
+
+			{% if person.permission == 'ler criar atualização' or person.permission =='tudo' %}
+				{% if m.done != 'Feito' %}
+			{% if  manager == true %}
+				{% if  m.mangerMudancas == null %}
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+						</div>
 					</div>
-				</div>
+				{% endif %}
 			{% endif %}
-		{% endif %}
+				{% endif %}
+			{% endif %}
 		{% endif %}
 		{{ form_end(form) }}
 
@@ -399,32 +403,43 @@
 
 
 		{% if person.permission == 'ler criar atualização' or person.permission =='ler criar' or person.permission =='tudo' %}
-			<div class="row">
-				<div class="col-md-6 mb-3">
-					<button class="	btn btn-info mt-2 text-white" style="
-									background-color: #0c2c01;
-									border-color: #0c2c01;">Adicionar</button>
-				</div>
-			</div>
+
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<button id="btn" class="	btn btn-info mt-2 text-white" style="
+																	background-color: #0c2c01;
+																	border-color: #0c2c01;">Adicionar</button>
+						</div>
+					</div>
 		{% endif %}
 		{{ form_end(form) }}
 	{% endif %}
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script>
+		{% if gestor != true and manager == true %}
+{% if  m.mangerMudancas != null %}
+const mudancas_manager_mangerMudancas = document.getElementById('mudancas_manager_mangerMudancas');
+mudancas_manager_mangerMudancas.disabled = true;
+const mudancas_manager_appMan = document.getElementById('mudancas_manager_appMan');
+mudancas_manager_appMan.disabled = true;
+const mudancas_manager_comMan = document.getElementById('mudancas_manager_comMan');
+mudancas_manager_comMan.disabled = true;
+
+{% endif %}
+{% endif %}
+
 {% if  creation == 'false' %}
 {% if m.comMan == null %}
 {% elseif m.comMan != null and m.comGest == null %}
 var form = document.getElementById("test");
 var elements = form.elements;
 for (var i = 0, len = 10; i < len; ++ i) {
-console.log(elements[i]);
 elements[i].readOnly = true;
 }
 {% else %}
 var form = document.getElementById("test");
 var elements = form.elements;
 for (var i = 0, len = 9; i < len; ++ i) {
-console.log(elements[i]);
 elements[i].readOnly = true;
 }
 {% endif %}

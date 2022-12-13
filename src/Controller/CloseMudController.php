@@ -87,6 +87,8 @@ class CloseMudController extends AbstractController
                 $pe = $em->getRepository(Person::class)->find($ln[0]['person_id']);
             }
 
+            //dd($ln);
+
 
             return $this->render('close_mud/index.html.twig', [
                 'controller_name' => 'CloseMudController',

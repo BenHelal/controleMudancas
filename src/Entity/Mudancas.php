@@ -415,6 +415,14 @@ class Mudancas
         return $this->areaImpact;
     }
 
+    public function setAreaImpact(Collection $areaImpact): self
+    {
+        $this->areaImpact = $areaImpact;
+
+        return $this;
+    }
+
+
     public function addAreaImpact(Sector $areaImpact): self
     {
         if (!$this->areaImpact->contains($areaImpact)) {
