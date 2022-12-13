@@ -52,7 +52,7 @@ class MudancasController extends AbstractController
                 return $this->redirectToRoute('app_request');
             }
             $dep = $em->getRepository(Departemant::class)->findOneBy(['name' => $person->getDepartemant()]);
-            $manager = $em->getRepository(Sector::class)->findOneBy(['manager' => $person]);
+            $manager = $em->getRepository(Sector::class)->findBy(['manager' => $person]);
             $mudanca = $em->getRepository(Mudancas::class)->findAll();
             $mudancas = [];
             //get the mudancas with the same Sector 
@@ -75,6 +75,40 @@ class MudancasController extends AbstractController
                     }
                 }
             }
+
+            //get the mudancas with the sector 
+            //when the sector was manging with the user connected 
+            /**
+             * $find   = $collection->find('job LIKE :job AND age > :age');
+             * $result = $find
+             * ->bind(['job' => 'Teacher', 'age' => 20])
+             * ->sort('age DESC')
+             * ->limit(2)            
+             * ->execute();
+             */
+            $array = [];
+            foreach ($manager as $key => $ma) {
+                foreach ($mudancas as $key => $m) {
+                    foreach ($m->getAreaImpact() as $key => $value) {
+                        if ($array != null) {
+                            $test = 0;
+                            for ($i = 0; $i < sizeof($array); $i++) {
+                                if ($m == $array[$i]) {
+                                    $test++; 
+                                }
+                            }
+                            if($test == 0){
+                                array_push($array, $m);
+                            }
+                        } else {
+                            if ($value == $ma) {
+                                array_push($array, $m);
+                            }
+                        }
+                    }
+                }
+            }
+            //dd($array);
 
 
             $listNotif = [];
@@ -102,34 +136,27 @@ class MudancasController extends AbstractController
             //dd($person);
             $resultSet = $stmt->executeQuery(['person' => $person->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
-
             foreach ($ln as $notif) {
                 $id = $notif['idMud'];
                 $mud =  $em->getRepository(Mudancas::class)->find($id);
                 array_push($listNotif, $mud);
             }
-            $val = sizeof($mudancas);
+
+            
+            $val = sizeof($mudanca);
             $val2 = 0;
             $arr = [];
-            for ($i = 0; $i < sizeof($mudancas); $i++) {
-                array_push($arr, $mudancas[$i]->getId());
-                if ($mudancas[$i]->getDone() != 'Feito') {
+            for ($i = 0; $i < sizeof($mudanca); $i++) {
+                array_push($arr, $mudanca[$i]->getId());
+                if ($mudanca[$i]->getDone() != 'Feito') {
                     $val2 = $val2 + 1;
                 }
             }
             // dd($val2);
             $val = intval($this->presentNotDone($val, $val2));
-            $size = sizeof($mudancas);
+            $size = sizeof($mudanca);
 
             if ($req->getApproves() == 'yes') {
-                /*              $dep =  $em->getRepository(Departemant::class)->findOneBy(['name' => $person->getDepartemant()]);
-                // if($person->getRole()==)
-                $depMud = $em->getRepository(DepartemantMudancass::class)->findBy(['Departemant' => $dep]);
-                $mudancas = [];
-                foreach ($depMud as $dm) {
-                    array_push($mudancas, $dm->getMudancas());
-                }
-                */
                 if ($manager == null) {
                     return $this->render('mudancas/index.html.twig', [
                         'controller_name' => 'Mudancas',
@@ -146,10 +173,11 @@ class MudancasController extends AbstractController
                         'login' => 'null',
                         'creation' => 'null',
                         'mud' => $mudancas,
-                        'manager' => true, 'percent' => $val,
+                        'manager' => true,
+                        'percent' => $val,
                         'size' => $size,
                         'gestor' => false,
-                        'ln' => $listNotif,
+                        'ln' => $array,
                         'person' => $person
                     ]);
                 }
@@ -306,36 +334,56 @@ class MudancasController extends AbstractController
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $req =  $em->getRepository(Requestper::class)->findOneBy(['person' => $person]);
             $mud = $em->getRepository(Mudancas::class)->find($id);
+            $areaImpact =  $mud->getAreaImpact();
             if ($mud == null) {
                 return $this->redirectToRoute('app_mudancas');
             } else {
-                
-                $process = $em->getRepository(Process::class)->find($id);
-
+                $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
                 $manager = false;
                 $gestor = false;
                 // Request check
                 if ($req->getApproves() == 'yes') {
                     // Permission check
-                    if ($person->getPermission() != 'ler') {
+                    if ($person->getPermission() != 'ler') {     
+                        $sp = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+                        $itNull = true;
+                        $numberOfArea = 0;
+                        foreach ($sp as $key => $value) {
+                            if($value->isAppSectorMan() == false){
+                                $mud->setDone('Feito');
+                            }
+                            if($value->getComment() != null){
+                                $numberOfArea++;
+                            }
+                            
+                        }
+                        if($numberOfArea == sizeof($sp)){
+                            $itNull = false;
+                        }
+                        if($mud->getComMan() != null){
+                            if($mud->getComGest() != null){
+                                if(!$itNull){
+                                    $mud->setDone('Feito');
+                                }
+                            }
+                        }
                         $mudancas = [];
                         $update = false;
                         if ($mud->getAreaResp() == $person->getFunction() && $mud->getDone() != 'Feito') {
-                                array_push($mudancas, $mud);
-                            } else {
-            
-                                foreach ($mud->getAreaImpact() as $key => $val) {
-                                    if ($val == $mud->getAreaResp()) {
-                                        if ($val == $person->getFunction() && $mud->getDone() != 'Feito') {
-                                            array_push($mudancas, $mud);
-                                        }
-                                    } elseif ($val != $mud->getAreaResp()) {
-                                        if ($val == $person->getFunction() && $mud->getDone() != 'Feito') {
-                                            array_push($mudancas, $mud);
-                                        }
+                            array_push($mudancas, $mud);
+                        } else {
+                            foreach ($mud->getAreaImpact() as $key => $val) {
+                                if ($val == $mud->getAreaResp()) {
+                                    if ($val == $person->getFunction() && $mud->getDone() != 'Feito') {
+                                        array_push($mudancas, $mud);
+                                    }
+                                } elseif ($val != $mud->getAreaResp()) {
+                                    if ($val == $person->getFunction() && $mud->getDone() != 'Feito') {
+                                        array_push($mudancas, $mud);
                                     }
                                 }
                             }
+                        }
                         if (sizeof($mudancas) != 0) {
                             $update = true;
                         }
@@ -349,15 +397,12 @@ class MudancasController extends AbstractController
                                 $manager = true;
                             }
                         }
-
                         // check the manager of the Mudancas 
                         if ($mud->getMangerMudancas() != null) {
                             if ($mud->getMangerMudancas()->getId() == $person->getId()) {
                                 $gestor = true;
                             }
                         }
-
-
                         // check which Form need 
                         $form = null;
                         if ($manager == true && $gestor == true) {
@@ -369,11 +414,8 @@ class MudancasController extends AbstractController
                         } else {
                             $form = $this->createForm(MudancasType::class, $mud);
                         }
-
-
                         // event listner 
                         $form->handleRequest($request);
-
                         //var of to check number of approved of area impacted
                         $NumberApproved = 0;
                         if ($form->isSubmitted() && $form->isValid()) {
@@ -407,7 +449,7 @@ class MudancasController extends AbstractController
                                         //dd($dm);
                                         $SectorProcess = $em->getRepository(SectorProcess::class)->find($dm[0]["id"]);
                                         $SectorProcess->setComment($mud->getComMan());
-                                        $SectorProcess->setAppSectorMan(True);
+                                        $SectorProcess->setAppSectorMan($mud->isAppMan());
                                     }
                                 }
                             }
@@ -417,7 +459,7 @@ class MudancasController extends AbstractController
                             foreach ($mud->getAreaImpact() as $key => $value) {
                                 # code...
                                 $conn = $doctrine->getConnection();
-                                $sql = 'SELECT sp.id FROM 
+                                $sql2 = 'SELECT sp.id FROM 
                                         sector_process as sp,
                                         mudancas as mud,
                                         process as p
@@ -427,19 +469,25 @@ class MudancasController extends AbstractController
                                         p.mudancas_id =  mud.id and 
                                         sp.process_id = p.id
                                         ';
-                                $stmt = $conn->prepare($sql);
-                                $stmt->bindValue(1, $value->getId());
-                                $stmt->bindValue(2, $mud->getId());
-                                $resultSet = $stmt->executeQuery();
+                                $stmt2 = $conn->prepare($sql2);
+                                $stmt2->bindValue(1, $value->getId());
+                                $stmt2->bindValue(2, $mud->getId());
+                                $resultSet2 = $stmt2->executeQuery();
 
                                 // get the id of the Porcess
-                                $dm =  $resultSet->fetchAllAssociative();
-                                $SectorProcess = $em->getRepository(SectorProcess::class)->find($dm[0]["id"]);
-                                if ($SectorProcess->isAppSectorMan()) {
-                                    $NumberApproved = $NumberApproved + 1;
+                                $dm2 =  $resultSet2->fetchAllAssociative();
+                                
+                                try{
+                                    if(isset($dm) && ($dm!==null)){
+                                    $SectorProcess = $em->getRepository(SectorProcess::class)->find($dm[0]["id"]);
+                                    if ($SectorProcess->isAppSectorMan()) {
+                                        $NumberApproved = $NumberApproved + 1;
+                                    }}
+                                }catch(Exception $e){
+                                    
+                                
                                 }
                             }
-
                             if ($NumberApproved == sizeof($mud->getAreaImpact())) {
                                 if ($mud->isAppMan()) {
                                     if ($mud->isAppGest()) {
@@ -455,8 +503,6 @@ class MudancasController extends AbstractController
                             $em->flush();
                             return $this->redirectToRoute('upm', ['id' => $id]);
                         }
-
-
                         return $this->render('mudancas/update.html.twig', [
                             'controller_name' => 'Atualizar Mudancas',
                             'login' => 'null',
