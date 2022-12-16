@@ -18,7 +18,6 @@ class Email
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-
     #[ORM\Column(length: 255)]
     private ?string $body = null;
 
@@ -27,9 +26,6 @@ class Email
 
     #[ORM\ManyToMany(targetEntity: Person::class)]
     private Collection $sendTo;
-
-    #[ORM\Column(length: 255)]
-    private ?string $typeOfEmail = null;
 
     public function __construct()
     {
@@ -99,18 +95,6 @@ class Email
     public function removeSendTo(Person $sendTo): self
     {
         $this->sendTo->removeElement($sendTo);
-
-        return $this;
-    }
-
-    public function getTypeOfEmail(): ?string
-    {
-        return $this->typeOfEmail;
-    }
-
-    public function setTypeOfEmail(string $typeOfEmail): self
-    {
-        $this->typeOfEmail = $typeOfEmail;
 
         return $this;
     }
