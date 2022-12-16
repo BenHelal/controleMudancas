@@ -58,6 +58,7 @@ class NotifController extends AbstractController
 
                 foreach ($sps as $key => $sp) {
                     if ($sp->getSector()->getManager() == $person) {
+                        //if( $mudancas->getManager)
                         if ($oneOfSp != null) {
                             $sp->setComment($oneOfSp->getComment());
                             $sp->setAppSectorMan($oneOfSp->isAppSectorMan());

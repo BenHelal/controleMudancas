@@ -85,8 +85,8 @@ class MudancasManagerType extends AbstractType
             ))
             ->add('appMan', ChoiceType::class, [
                 'choices'  => [
-                    'Sim' => true,
-                    'Nao' => false,
+                    'Sim' => 1,
+                    'Nao' => 2,
                 ],
                 'label'    => 'Aprovado ?',
                 'required' => false,
@@ -94,8 +94,7 @@ class MudancasManagerType extends AbstractType
             ->add('comMan', null, [
                 'label'    => 'Comente :',
                 'required' => false,
-            ])
-            ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

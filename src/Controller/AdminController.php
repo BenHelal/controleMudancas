@@ -2,15 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\ConfigEmail;
 use App\Entity\Departemant;
 use App\Entity\DepartemantMudancass;
+use App\Entity\Email;
 use App\Entity\Manager;
 use App\Entity\Mudancas;
 use App\Entity\Person;
 use App\Entity\Requestper;
 use App\Entity\Sector;
 use App\Form\AddPersonType;
+use App\Form\ConfigemailType;
 use App\Form\EditPersonType;
+use App\Form\EmailType;
 use App\Form\ManagerType;
 use App\Form\PermissionType;
 use App\Form\PersonType;
@@ -45,7 +49,6 @@ class AdminController extends AbstractController
         $session->remove('admin_role');
         return $this->redirectToRoute('app_admin');
     }
-
 
     #[Route('/dashboard', name: 'dash_admin')]
     public function dash(ManagerRegistry $doctrine, Request $request): Response
@@ -708,6 +711,49 @@ class AdminController extends AbstractController
                 'controller_name' => 'Atualizar Mudancas',
                 'login' => 'null',
                 'type' => 'update',
+                'p' => $person,
+                'form' => $form->createView(),
+            ]);
+        } else {
+            return $this->redirectToRoute('app_mudancas');
+        }
+    }
+
+
+    #[Route('/email', name: 'email')]
+    public function emaill(ManagerRegistry $doctrine, Request $request){
+        $session = new Session();
+        $session = $request->getSession();
+
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            $email = $doctrine->getManager()->getRepository(ConfigEmail::class)->find(1);
+
+            if ($email == null) {
+                $email = new ConfigEmail();
+                $email->setHost('smtp.office365.com');
+                $email->setSmtpAuth(true);
+                $email->setPort(587);
+                $email->setUsername('noreply@serdia.com.br');
+                $email->setPassword('9BhAsZw8a8ZrnQzX');
+                $email->setEmailSystem('noreply@serdia.com.br');
+                $email->setTitleObj('Serdia Control Mudanças');
+                $email->setSubject('Control de mudanças');
+                $email->setChartSet('UTF-8');
+                $em->persist($email);
+                $em->flush();
+            }
+
+
+            $form = $this->createForm(ConfigemailType::class, $email);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em->flush();
+                return $this->redirectToRoute('email');
+            }
+            return $this->render('admin/email.html.twig', [
+                'controller_name' => 'Atualizar Mudancas',
                 'p' => $person,
                 'form' => $form->createView(),
             ]);

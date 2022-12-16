@@ -318,9 +318,9 @@
 		</div>
 
 
-		{% if update %}
 
 			{% if person.permission == 'ler criar atualização' or person.permission =='tudo' %}
+			{{m.done }}
 				{% if m.done != 'Feito' %}
 			{% if  manager == true %}
 				{% if  m.mangerMudancas == null %}
@@ -329,11 +329,16 @@
 							<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
 						</div>
 					</div>
+					{% elseif gestor %}
+						<div class="row">
+						<div class="col-md-6 mb-3">
+							<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+						</div>
+					</div>
 				{% endif %}
 			{% endif %}
 				{% endif %}
 			{% endif %}
-		{% endif %}
 		{{ form_end(form) }}
 
 	{% else %}

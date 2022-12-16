@@ -122,8 +122,8 @@ class MudancasgestorType extends AbstractType
             ])
             ->add('appGest', ChoiceType::class, [
                 'choices'  => [
-                    'Sim' => true,
-                    'Nao' => false,
+                    'Sim' => 1,
+                    'Nao' => 2,
                 ],
                 'label'    => 'Aprovado ?',
                 'required' => false,

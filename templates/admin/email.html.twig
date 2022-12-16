@@ -1,0 +1,55 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block body %}
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+
+	<div class="container-fluid">
+
+			<div class="card" style="margin: 50px">
+				<div class="card-header">
+					Configuração de e-mail 
+				</div>
+				<div class="card-body">
+					{{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
+					{{ form_label(form.host) }}
+					{{ form_widget(form.host, {'attr': {'class':'form-control'}}) }}
+
+					{{ form_label(form.smtpAuth) }}
+					{{ form_widget(form.smtpAuth, {'attr': {'class':'form-control'}}) }}
+
+
+					{{ form_label(form.port) }}
+					{{ form_widget(form.port, {'attr': {'class':'form-control'}}) }}
+                    
+					{{ form_label(form.username) }}
+					{{ form_widget(form.username, {'attr': {'class':'form-control'}}) }}
+					
+					{{ form_label(form.password) }}
+					{{ form_widget(form.password, {'attr': {'class':'form-control'}}) }}
+
+					{{ form_label(form.emailSystem) }}
+					{{ form_widget(form.emailSystem, {'attr': {'class':'form-control'}}) }}
+
+					{{ form_label(form.titleObj) }}
+					{{ form_widget(form.titleObj, {'attr': {'class':'form-control'}}) }}
+					
+					{{ form_label(form.subject) }}
+					{{ form_widget(form.subject, {'attr': {'class':'form-control'}}) }}
+
+					{{ form_label(form.chartSet) }}
+					{{ form_widget(form.chartSet, {'attr': {'class':'form-control'}}) }}
+					
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<button class="btn btn-info mt-2 text-white">Enviar</button>
+						</div>
+					</div>
+
+					{{ form_end(form)}}
+				</div>
+			</div>
+	</div>
+
+{% endblock %}

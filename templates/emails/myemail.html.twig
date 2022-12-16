@@ -38,7 +38,6 @@
 				<div class="content">
 					<h1 class="text-center">Bom Dia</h1>
 					{% if demand == 'reject' %}
-
 						<p class="block">
 							Bem-vindo ao
 							<strong>Controle de Mudanças</strong>
@@ -58,7 +57,7 @@
 							Justificativa:
 							{{mud.justif}}<br>
 							Área Responsável pela Mudança:
-							{{mud.areaResp}}
+							{{mud.areaResp.name}}
 						</p>
 					{% elseif demand == 'approved' %}
 						<p class="block">
@@ -79,8 +78,15 @@
 							Justificativa:
 							{{mud.justif}}<br>
 							Área Responsável pela Mudança:
+							{% if gestor %}
+							
 							{{mud.areaResp}}
 
+							{% else %}
+	
+							{{mud.areaResp.name}}
+							{% endif %}
+							
 						</p>
 					{% elseif demand == 'addManager' %}
 						<p class="block">
@@ -167,7 +173,7 @@
 					{% endif %}
 
 					<p class="block text-center">
-						<a href='http://localhost/updateMudancas/{{mud.id}}' class="btn">você pode verificar por favor ?</a>
+						<a href="#" class="btn">você pode verificar por favor ?</a>
 					</p>
 					<!--p class="block">
 										

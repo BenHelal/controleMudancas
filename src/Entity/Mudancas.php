@@ -86,10 +86,10 @@ class Mudancas
     private ?string $comGest = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $appMan = null;
+    private ?int $appMan = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $appGest = null;
+    private ?int $appGest = null;
 
     #[ORM\Column(type:'datetime')]
     private $dataCreation;
@@ -367,7 +367,7 @@ class Mudancas
         return $this;
     }
 
-    public function isAppMan(): ?bool
+    public function getAppMan()
     {
         return $this->appMan;
     }
@@ -379,7 +379,7 @@ class Mudancas
         return $this;
     }
 
-    public function isAppGest(): ?bool
+    public function getAppGest()
     {
         return $this->appGest;
     }

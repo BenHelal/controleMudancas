@@ -9,6 +9,12 @@
 
 		{% if creation == 'null' %}
 			{% if manager %}
+				<script>
+
+					setTimeout(function () {
+window.location.reload();
+}, 5000);
+				</script>
 				<link href="{{ asset('admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
 				<div class="py-5 text-center">
 					<div class="row">
@@ -65,12 +71,12 @@
 		{% endif %}
 	</div>
 	{% if creation == 'null' %}
-		{% if mud is empty %}
+		{% if mud is empty and manager == false %}
 			{% if person.permission == 'ler' %}
-				
-			<br>
-			<br>
-			<br>
+
+				<br>
+				<br>
+				<br>
 				<ul class="list-group">
 					<li class="list-group-item d-flex justify-content-between align-items-right">
 						<span>você não tem permissão para adicionar novas mudancas</span>
@@ -89,7 +95,6 @@
 			<div class="form-group">
 				<input type="email" class="form-control" id="myInput" placeholder="Procurar..">
 			</div>
-
 			{% if manager %}
 				<div class="row">
 					<div class="col-md-4 order-md-2 mb-4">
@@ -103,22 +108,24 @@
 								você não tem notificação
 							{% else %}
 								{% for row in ln %}
+									{% if row.done != 'Feito' %}
 
-									<li class="list-group-item d-flex justify-content-between lh-condensed">
-										<a href="{{path('app_notif',{id: row.id})}}">
-											<div>
-												<h6 class="my-0">Nome do Mudança:
-													{{row.nomeMudanca}}
-												</h6>
-												
-												<small class="text-muted">Cod: {{row.id}}
-												</small>
-											</div>
-											<span class="text-muted">Descrição breve:
+										<li class="list-group-item d-flex justify-content-between lh-condensed">
+											<a href="{{path('app_notif',{id: row.id})}}">
+												<div>
+													<h6 class="my-0">Nome do Mudança:
+														{{row.nomeMudanca}}
+													</h6>
+
+													<small class="text-muted">Cod:
+														{{row.id}}
+													</small>
+												</div>
+												<span class="text-muted">Descrição breve:
 													{{row.descImpacto}}</span>
-										</a>
-									</li>
-
+											</a>
+										</li>
+									{% endif %}
 								{% endfor %}
 
 							{% endif %}
@@ -127,33 +134,40 @@
 
 					<div class="col-md-8 order-md-1" style="padding-left: 0px;">
 					{% endif %}
-					{% for m in mud %}
-						<div id="myTable" class="list-group">
-							<a href="{{path('upm',{id: m.id})}}" class="list-group-item list-group-item-action flex-column align-items-start">
-								<div class="d-flex w-100 justify-content-between">
-									<h5 class="mb-1">Número da mudança:
-										{{m.id}}</h5>
-									<medium>Nome da mudança:
-										{{m.nomeMudanca}}</medium>
-								</div>
-								<div class="d-flex w-100 justify-content-between">
-									<p class="mb-1">Descrição da Mudança:
-										{{m.descImpacto}}</p>
-									<medium>Descrição do Impacto:
-										{{m.descImpacto}}</medium>
-								</div>
-								<div class="d-flex w-100 justify-content-between">
-									<medium>Área impactada:
-										{% for row in m.areaImpact %}
-											{{row.name}}
-											<br>
-										{% endfor %}
-									</medium>
-									<medium></medium>
-								</div>
-							</a>
-						</div>
-					{% endfor %}
+					{% if manager == false %}
+						{% else %}
+
+
+							{% for m in ln %}
+								{% if m.done != 'Feito' %}
+									<div id="myTable" class="list-group">
+										<a href="{{path('upm',{id: m.id})}}" class="list-group-item list-group-item-action flex-column align-items-start">
+											<div class="d-flex w-100 justify-content-between">
+												<h5 class="mb-1">Número da mudança:
+													{{m.id}}</h5>
+												<medium>Nome da mudança:
+													{{m.nomeMudanca}}</medium>
+											</div>
+											<div class="d-flex w-100 justify-content-between">
+												<p class="mb-1">Descrição da Mudança:
+													{{m.descImpacto}}</p>
+												<medium>Descrição do Impacto:
+													{{m.descImpacto}}</medium>
+											</div>
+											<div class="d-flex w-100 justify-content-between">
+												<medium>Área impactada:
+													{% for row in m.areaImpact %}
+														{{row.name}}
+														<br>
+													{% endfor %}
+												</medium>
+												<medium></medium>
+											</div>
+										</a>
+									</div>
+								{% endif %}
+							{% endfor %}
+					{% endif %}
 					{% if manager %}
 					</div>
 				</div>
@@ -397,8 +411,8 @@
 			<div class="row">
 				<div class="col-md-6 mb-3">
 					<button class="	btn btn-info mt-2 text-white" style="
-									background-color: #0c2c01;
-									border-color: #0c2c01;">Adicionar</button>
+															background-color: #0c2c01;
+															border-color: #0c2c01;">Adicionar</button>
 				</div>
 			</div>
 		{% endif %}
@@ -408,7 +422,7 @@
 	<script>
 
 
-{% if  creation == 'false' %}
+		{% if  creation == 'false' %}
 {% if m.comMan == null %}
 {% elseif m.comMan != null and m.comGest == null %}
 var form = document.getElementById("test");
