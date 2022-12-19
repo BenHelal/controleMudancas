@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\ConfigEmail;
 use App\Entity\Departemant;
-use App\Entity\DepartemantMudancass;
-use App\Entity\DepartemantProcess;
 use App\Entity\Manager;
 use App\Entity\Mudancas;
 use App\Entity\Person;
@@ -13,27 +11,17 @@ use App\Entity\Process;
 use App\Entity\Requestper;
 use App\Entity\Sector;
 use App\Entity\SectorProcess;
-use App\Form\Departemant2ProcessType;
-use App\Form\DepartemantProcessType;
 use App\Form\MudancasgestorType;
 use App\Form\MudancasManagerType;
 use App\Form\MudancasType;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
-use phpDocumentor\Reflection\PseudoTypes\True_;
-use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Routing\Annotation\Route;
-
-use function PHPUnit\Framework\isEmpty;
-
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 
@@ -60,6 +48,7 @@ class MudancasController extends AbstractController
             foreach ($mudanca as $key => $value) {
                 $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
                 $sp = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+
                 foreach ($sp as $key => $value2) {
 
                     if ($value2->isAppSectorMan() != null && $value2->isAppSectorMan() != true) {
@@ -73,18 +62,17 @@ class MudancasController extends AbstractController
                         $em->flush();
                     }
 
-
-
                     if ($value->getAreaResp() == $person->getFunction() && $value->getDone() != 'Feito') {
                         array_push($mudancas, $value);
-                    } else {
+                    }else{
                         foreach ($value->getAreaImpact() as $key => $val) {
                             if ($val == $value->getAreaResp()) {
                                 if ($val == $person->getFunction() && $value->getDone() != 'Feito') {
                                     array_push($mudancas, $value);
                                 }
                             } elseif ($val != $value->getAreaResp()) {
-                                if ($val == $person->getFunction() && $value->getDone() != 'Feito') {
+                                
+                                if ($val == $person->getFunction() && $value->getDone() != 'Feito' && $mudancas[sizeof($mudancas)-1] != $value  ) {
                                     array_push($mudancas, $value);
                                 }
                             }
@@ -158,7 +146,6 @@ class MudancasController extends AbstractController
                 $mud =  $em->getRepository(Mudancas::class)->find($id);
                 array_push($listNotif, $mud);
             }
-
 
             $val = sizeof($mudanca);
             $val2 = 0;
@@ -274,6 +261,10 @@ class MudancasController extends AbstractController
                             $areaImpact = $mud->getAreaImpact();
                             $areaResp = $mud->getAreaResp();
                             $theyAreTheSame = false;
+
+                            $mud->setManagerUserComment('Projeto Nansen');
+                            $mud->setManagerUserApp(1);
+
                             foreach ($areaImpact as $key => $value) {
                                 if ($value == $areaResp) {
                                     $theyAreTheSame = true;
@@ -294,6 +285,8 @@ class MudancasController extends AbstractController
                                 $em->flush();
                             }
                         } else {
+
+                            $mud->setManagerUserAdd($person->getFunction()->getManager());
                             $process->setMudancas($mud);
                             $process->setStatus('created');
                             $em->persist($process);

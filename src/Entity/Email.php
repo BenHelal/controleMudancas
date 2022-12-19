@@ -50,7 +50,6 @@ class Email
         return $this;
     }
 
- 
     public function getBody(): ?string
     {
         return $this->body;

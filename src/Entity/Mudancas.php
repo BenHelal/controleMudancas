@@ -100,6 +100,16 @@ class Mudancas
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Sector $areaResp = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Person $managerUserAdd = null;
+
+    #[ORM\Column(length: 1024, nullable: true)]
+    private ?string $managerUserComment = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $managerUserApp = null;
     
     public function __construct()
     {
@@ -447,6 +457,42 @@ class Mudancas
     public function setAreaResp(?Sector $areaResp): self
     {
         $this->areaResp = $areaResp;
+
+        return $this;
+    }
+
+    public function getManagerUserAdd(): ?Person
+    {
+        return $this->managerUserAdd;
+    }
+
+    public function setManagerUserAdd(?Person $managerUserAdd): self
+    {
+        $this->managerUserAdd = $managerUserAdd;
+
+        return $this;
+    }
+
+    public function getManagerUserComment(): ?string
+    {
+        return $this->managerUserComment;
+    }
+
+    public function setManagerUserComment(?string $managerUserComment): self
+    {
+        $this->managerUserComment = $managerUserComment;
+
+        return $this;
+    }
+
+    public function getManagerUserApp(): ?int
+    {
+        return $this->managerUserApp;
+    }
+
+    public function setManagerUserApp(?int $managerUserApp): self
+    {
+        $this->managerUserApp = $managerUserApp;
 
         return $this;
     }

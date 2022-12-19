@@ -133,11 +133,38 @@ window.location.reload();
 					</div>
 
 					<div class="col-md-8 order-md-1" style="padding-left: 0px;">
-					{% endif %}
-					{% if manager == false %}
+			{% endif %}
+					{% if manager == false  %}
+						{% for m in mud %}
+								{% if m.addBy.id == person.id %}
+									<div id="myTable" class="list-group">
+										<a href="{{path('upm',{id: m.id})}}" class="list-group-item list-group-item-action flex-column align-items-start">
+											<div class="d-flex w-100 justify-content-between">
+												<h5 class="mb-1">Número da mudança:
+													{{m.id}}</h5>
+												<medium>Nome da mudança:
+													{{m.nomeMudanca}}</medium>
+											</div>
+											<div class="d-flex w-100 justify-content-between">
+												<p class="mb-1">Descrição da Mudança:
+													{{m.descImpacto}}</p>
+												<medium>Descrição do Impacto:
+													{{m.descImpacto}}</medium>
+											</div>
+											<div class="d-flex w-100 justify-content-between">
+												<medium>Área impactada:
+													{% for row in m.areaImpact %}
+														{{row.name}}
+														<br>
+													{% endfor %}
+												</medium>
+												<medium></medium>
+											</div>
+										</a>
+									</div>
+								{% endif %}
+							{% endfor %}
 						{% else %}
-
-
 							{% for m in ln %}
 								{% if m.done != 'Feito' %}
 									<div id="myTable" class="list-group">

@@ -237,4 +237,14 @@ input[type=text]:placeholder {
   </div>
 </div>
 
+<script>
+function myFunction() {
+  var x = document.getElementById("person_password");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+<script>
 {% endblock %}

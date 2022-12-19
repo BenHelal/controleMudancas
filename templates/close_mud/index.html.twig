@@ -34,13 +34,52 @@
 			</thead>
 			<tbody>
 				<tr>
+					<th scope="row">Peticionário</th>
+					<td>
+						{% if mud.addBy.name != null %}
+							{{mud.addBy.departemant}}
+						{% endif %}
+					</td>
+					<td>
+						{% if mud.addBy != null %}
+							{{mud.addBy.name}}
+						{% endif %}
+					</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
 					<th scope="row">Gerente Solicitante</th>
 					<td>
-						{{mud.addBy.departemant}}
+						{% if mud.managerUserAdd != null %}
+							{{mud.managerUserAdd.departemant}}
+						{% endif %}
 					</td>
-					<td>{{mud.addBy.name}}</td>
-					<td></td>
-					<td></td>
+					<td>
+						{% if mud.managerUserAdd != null %}
+							{{mud.managerUserAdd.name}}
+						{% else %}
+							Projeto Nansen
+						{% endif %}
+					</td>
+					<td> 
+					{% if mud.managerUserApp != null %}
+						{% if mud.managerUserApp == 1 %}
+							Aprovado
+						{% elseif mud.managerUserApp == 2 %}
+							Rejeitado
+						{% endif %}
+					{% else %}
+							Ainda não verificado
+					{% endif %}
+					</td>
+					<td>
+					{% if mud.managerUserComment != null %}
+						{{mud.managerUserComment}}
+					{% else %}
+							Ainda não comentário
+					{% endif %}
+					</td>
 				</tr>
 				<tr>
 					<th scope="row">Gerente Aprovação</th>
