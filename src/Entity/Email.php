@@ -27,6 +27,9 @@ class Email
     #[ORM\ManyToMany(targetEntity: Person::class)]
     private Collection $sendTo;
 
+    #[ORM\ManyToOne(cascade: ['persist'])]
+    private ?Mudancas $mudancas = null;
+
     public function __construct()
     {
         $this->sendTo = new ArrayCollection();
@@ -94,6 +97,18 @@ class Email
     public function removeSendTo(Person $sendTo): self
     {
         $this->sendTo->removeElement($sendTo);
+
+        return $this;
+    }
+
+    public function getMudancas(): ?mudancas
+    {
+        return $this->mudancas;
+    }
+
+    public function setMudancas(?mudancas $mudancas): self
+    {
+        $this->mudancas = $mudancas;
 
         return $this;
     }
