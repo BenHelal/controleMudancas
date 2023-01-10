@@ -473,8 +473,17 @@ class AdminController extends AbstractController
             $sql = 'Delete FROM process WHERE mudancas_id = :mudancas_id ;';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-            $ln2 =  $resultSet->fetchAllAssociative();
+            $ln =  $resultSet->fetchAllAssociative();
 
+
+
+            $sql = 'DELETE em
+            FROM email em
+            WHERE em.mudancas_id = :email;';
+            $stmt = $conn->prepare($sql);
+            $resultSet = $stmt->executeQuery(['email' => $mudancas->getId()]);
+            $ln =  $resultSet->fetchAllAssociative();
+            
             $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);

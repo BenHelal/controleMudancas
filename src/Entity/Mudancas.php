@@ -43,7 +43,6 @@ class Mudancas
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $nansenNumber = null;
     
-
     #[ORM\ManyToOne]
     private ?Person $addBy = null;
 
@@ -113,7 +112,7 @@ class Mudancas
     
     public function __construct()
     {
-        $this->AreaResp = new ArrayCollection();
+        $this->areaResp = new ArrayCollection();
         $this->areaImpact = new ArrayCollection();
     }
 
@@ -179,7 +178,6 @@ class Mudancas
 
         return $this;
     }
-
     
     public function getDescMudanca(): ?string
     {
@@ -192,7 +190,6 @@ class Mudancas
 
         return $this;
     }
-
 
     public function getDescImpacto(): ?string
     {

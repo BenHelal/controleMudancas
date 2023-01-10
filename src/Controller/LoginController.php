@@ -110,8 +110,6 @@ class LoginController extends AbstractController
                 $personJSON = $result;
                 $person = json_decode($personJSON);
                 
-                //dd($password);
-                //dd($person);
                 if ($person != null) {
                     // Create token header as a JSON string
                     $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
@@ -143,7 +141,7 @@ class LoginController extends AbstractController
                     $person->setLastConnection($time);
                     $em->persist($person);
                     $em->flush();               
-                    //dd($person->getPermission());
+                    
                     if($person->getPermission() == null){
                         return $this->redirectToRoute('app_request');
                     }else{

@@ -30,14 +30,14 @@ class SectorProcess
 
     
     #[ORM\Column(nullable: true)]
-    private ?bool $appSectorMan = null;
+    private ?int $appSectorMan = null;
 
-    public function isAppSectorMan(): ?bool
+    public function getAppSectorMan(): ?int
     {
         return $this->appSectorMan;
     }
 
-    public function setAppSectorMan(?bool $appSectorMan): self
+    public function setAppSectorMan(?int $appSectorMan): self
     {
         $this->appSectorMan = $appSectorMan;
 

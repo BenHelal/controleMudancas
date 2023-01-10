@@ -24,16 +24,12 @@ class Email
     #[ORM\ManyToOne]
     private ?Person $SendBy = null;
 
-    #[ORM\ManyToMany(targetEntity: Person::class)]
-    private Collection $sendTo;
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    private ?Person $sendTo;
 
     #[ORM\ManyToOne(cascade: ['persist'])]
     private ?Mudancas $mudancas = null;
 
-    public function __construct()
-    {
-        $this->sendTo = new ArrayCollection();
-    }
 
 
     public function getId(): ?int
@@ -61,7 +57,6 @@ class Email
     public function setBody(string $body): self
     {
         $this->body = $body;
-
         return $this;
     }
 
@@ -73,31 +68,17 @@ class Email
     public function setSendBy(?Person $SendBy): self
     {
         $this->SendBy = $SendBy;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Person>
-     */
-    public function getSendTo(): Collection
+    public function getSendTo(): ?Person
     {
         return $this->sendTo;
     }
 
-    public function addSendTo(Person $sendTo): self
+    public function setSendTo(?Person $sendTo): self
     {
-        if (!$this->sendTo->contains($sendTo)) {
-            $this->sendTo->add($sendTo);
-        }
-
-        return $this;
-    }
-
-    public function removeSendTo(Person $sendTo): self
-    {
-        $this->sendTo->removeElement($sendTo);
-
+        $this->sendTo = $sendTo;
         return $this;
     }
 
