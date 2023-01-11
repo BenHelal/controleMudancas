@@ -18,6 +18,7 @@ class Sector
     private ?string $name = null;
 
     #[ORM\ManyToOne(cascade: [])]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Departemant $Departemant = null;
 
     #[ORM\ManyToOne]

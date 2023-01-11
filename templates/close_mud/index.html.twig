@@ -2,21 +2,11 @@
 
 
 {% block body %}
-	<link 
-		href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" 
-		rel="stylesheet">
-	<script 
-		src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js">
-	</script>
-	<div 
-		class="container" 
-		style="padding-left: 20px ;padding-right: 20px;">
+	<link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
+	<div class="container" style="padding-left: 20px ;padding-right: 20px;">
 		<div class="py-5 text-center">
-			<img  	class="d-block mx-auto mb-4" 
-					src="{{ asset('assets/logo.png')}}" 
-					alt="" 
-					width="72" 
-					height="72"/>
+			<img class="d-block mx-auto mb-4" src="{{ asset('assets/logo.png')}}" alt="" width="72" height="72"/>
 			<h2>Controle de Mudança</h2>
 			<br>
 		</div>
@@ -32,6 +22,8 @@
 					<th scope="col">Comentário</th>
 				</tr>
 			</thead>
+
+
 			<tbody>
 				<tr>
 					<th scope="row">Peticionário</th>
@@ -53,6 +45,8 @@
 					<td>
 						{% if mud.managerUserAdd != null %}
 							{{mud.managerUserAdd.departemant}}
+							{% else %}
+
 						{% endif %}
 					</td>
 					<td>
@@ -62,23 +56,23 @@
 							Projeto Nansen
 						{% endif %}
 					</td>
-					<td> 
-					{% if mud.managerUserApp != null %}
-						{% if mud.managerUserApp == 1 %}
-							Aprovado
-						{% elseif mud.managerUserApp == 2 %}
-							Rejeitado
-						{% endif %}
-					{% else %}
+					<td>
+						{% if mud.managerUserApp != null %}
+							{% if mud.managerUserApp == 1 %}
+								Aprovado
+							{% elseif mud.managerUserApp == 2 %}
+								Rejeitado
+							{% endif %}
+						{% else %}
 							Ainda não verificado
-					{% endif %}
+						{% endif %}
 					</td>
 					<td>
-					{% if mud.managerUserComment != null %}
-						{{mud.managerUserComment}}
-					{% else %}
+						{% if mud.managerUserComment != null %}
+							{{mud.managerUserComment}}
+						{% else %}
 							Ainda não comentário
-					{% endif %}
+						{% endif %}
 					</td>
 				</tr>
 				<tr>
@@ -91,20 +85,18 @@
 						<td>{{mud.areaResp.manager.name}}</td>
 					{% endif %}
 
-					{% if mud.appMan == true and mud.comMan != null %}
+					{% if mud.appMan == 1 %}
 						<td>Aprovado</td>
-					{% elseif mud.appMan == false and mud.comMan != null %}
+					{% elseif mud.appMan == 2  %}
 						<td>Rejeitado</td>
 					{% elseif  mud.appMan == null  %}
 						<td>Ainda não verificado</td>
 					{% endif %}
 
 
-					{% if mud.appMan == true and mud.comMan != null %}
+					{% if mud.comMan != null %}
 						<td>{{mud.comMan}}</td>
-					{% elseif mud.appMan == false  and mud.comMan != null %}
-						<td>{{mud.comMan}}</td>
-					{%  elseif  mud.appMan == null  %}
+					{%  else %}
 						<td>Ainda não comentário</td>
 					{% endif %}
 				</tr>
@@ -119,35 +111,41 @@
 					{% endif %}
 					{% if mud.appGest == null %}
 						<td>Ainda não verificado</td>
-					{% elseif mud.appGest == true and mud.comGest != null %}
+					{% elseif mud.appGest == 1 %}
 						<td>Aprovado</td>
-					{% elseif mud.appGest == false   and mud.comGest != null%}
+					{% elseif mud.appGest == 2 %}
 						<td>Rejeitado</td>
 					{% endif %}
+
 					{% if mud.appGest == null %}
-						<td></td>
+						<td>Ainda não comentário</td>
 					{% else %}
 						<td>{{mud.comGest}}</td>
 					{% endif %}
 				</tr>
-				
+
 				{% for key, m in data %}
 					<tr>
 						<th scope="row">Área Impactada</th>
 						<td>{{m.name}}</td>
 						<td>{{data2[key].name }}</td>
-							{% if  m.app_sector_man  == true and m.comment != null %}
-								<td>Aprovado</td>
-							{% elseif m.app_sector_man != true and m.comment != null %}
-								<td>Rejeitado</td>
-							{% elseif m.app_sector_man == null   %}
-								<td>Ainda não verificado</td>
-							{% endif %}
-						</td>
-						<td>{{m.comment}}</td>
+						{% if  m.app_sector_man  == 1  %}
+							<td>Aprovado</td>
+						{% elseif m.app_sector_man == 2 %}
+							<td>Rejeitado</td>
+						{% elseif m.app_sector_man == null   %}
+							<td>Ainda não verificado</td>
+						{% endif %}
+
+
+						{% if m.comment == null %}
+							<td>Ainda não comentário</td>
+						{% else %}
+							<td>{{m.comment}}</td>
+						{% endif %}
 					</tr>
-				{% endfor %}
+				</td>
 			</tbody>
-		</table>
-	</div>
-{% endblock %}
+		</tr>
+	{% endfor %}
+</tbody></table></div>{% endblock %}

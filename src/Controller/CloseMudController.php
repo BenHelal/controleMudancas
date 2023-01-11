@@ -100,6 +100,7 @@ class CloseMudController extends AbstractController
                 'data2' => $ln2
             ]);
         } else {
+            return $this->redirectToRoute('log_employer');
         }
     }
 }

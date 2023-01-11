@@ -112,7 +112,6 @@ class Mudancas
     
     public function __construct()
     {
-        $this->areaResp = new ArrayCollection();
         $this->areaImpact = new ArrayCollection();
     }
 
@@ -379,7 +378,7 @@ class Mudancas
         return $this->appMan;
     }
 
-    public function setAppMan(?bool $appMan): self
+    public function setAppMan(?int $appMan): self
     {
         $this->appMan = $appMan;
 
@@ -391,7 +390,7 @@ class Mudancas
         return $this->appGest;
     }
 
-    public function setAppGest(?bool $appGest): self
+    public function setAppGest(?int $appGest): self
     {
         $this->appGest = $appGest;
 

@@ -36,7 +36,6 @@
 					</a>
 				</div>
 				<div class="content">
-					<h1 class="text-center">Bom Dia</h1>
 					{% if demand == 'reject' %}
 						<p class="block">
 							Bem-vindo ao
@@ -162,19 +161,30 @@
 							foi aprovado por todo o departamento .
 						</p>
 					{% else %}
-						<p class="block">
-							Bem-vindo ao
-							<strong>Controle de Mudanças</strong>
-							{{per.name}}
-							adicione novas mudancas e você será
-														                    o gerente do seu departamento
-														                    por favor aprovado
-						</p>
-					{% endif %}
+						{% if mud.nansenName != null %}
+					<h1 class="text-center">Olá {{ mud.addBy.name }},<br></h1>	
+					Em primeiro lugar, muito obrigado por criar Mudanças número {{mud.id }} !<br>
+					suas alterações já foram verificadas porque estão relacionadas ao Projeto Nansen.<br>
+					Agora esperamos a aprovação dos Gestores do setor.<br>
+					enviaremos um e-mail com todas as atualizações.
+					Saúde,
 
 					<p class="block text-center">
-						<a href="#" class="btn">você pode verificar por favor ?</a>
+						<a href="http://localhost/controleMudancas/public/flow/{{mud.id}}" class="btn">pode consultar a situação das Mudanças aqui: </a>
 					</p>
+						{% else %}
+					<h1 class="text-center">Olá {{ mud.addBy.name }},<br></h1>	
+					Em primeiro lugar, muito obrigado por criar Mudanças número {{mud.id }} !<br>
+					Seu gerente {{ mud.areaResp.manager.name }} do setor {{ mud.areaResp.name }} verificará isso<br>
+					enviará um e-mail com todas as atualizações.
+					Saúde,
+
+					<p class="block text-center">
+						<a href="http://localhost/controleMudancas/public/flow/{{mud.id}}" class="btn">pode consultar a situação das Mudanças aqui: </a>
+					</p>
+						{% endif %}
+						
+					{% endif %}
 					<!--p class="block">
 										
 										[9/2 12:13 PM] Juliano Cassio

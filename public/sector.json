@@ -1,0 +1,171 @@
+ [
+    [
+        "001 – DIRETORIA MATRIZ  ",
+        "roberto@serdia.com.br  ",
+        "roberto@serdia.com.br  "
+    ],
+    [
+        "002 – COMERCIAL MATRIZ  ",
+        "odete.ferreira@serdia.com.br  ",
+        "odete.ferreira@serdia.com.br  "
+    ],
+    [
+        "003 – ENGº DE PRODUTO MATRIZ  ",
+        "wagner.rezende@serdia.com.br  ",
+        "rafael.tavora@serdia.com.br  "
+    ],
+    [
+        "004 – COMPRAS MATRIZ (COMPRAS/ IMPORTAÇÃO/ORÇAMENTO)  ",
+        "marcela.petruy@serdia.com.br  ",
+        "marco.rodrigues@serdia.com.br  "
+    ],
+    [
+        "005 – ENG DE PROCESSO MATRIZ (SMT)  ",
+        "aroilde.souza@serdia.com.br  ",
+        "rafael.tavora@serdia.com.br  "
+    ],
+    [
+        "006 – ENG DE PROCESSO MATRIZ (PTH)  ",
+        "aroilde.souza@serdia.com.br  ",
+        "rafael.tavora@serdia.com.br  "
+    ],
+    [
+        "007 – PCPM MATRIZ  ",
+        "alessandro.gusse@serdia.com.br  ",
+        "marco.rodrigues@serdia.com.br  "
+    ],
+    [
+        "008 – FINANCEIRO MATRIZ  ",
+        "patricia.rumor@serdia.com.br  ",
+        "patricia.rumor@serdia.com.br  "
+    ],
+    [
+        "009 – RECEBIMENTO MATRIZ  ",
+        "leandro.silva@serdia.com.br  ",
+        "marco.rodrigues@serdia.com.br  "
+    ],
+    [
+        "010 – GARANTIA DA QUALIDADE MATRIZ (INSP. RECEB. MAT.)  ",
+        "marcelo.santos@serdia.com.br  ",
+        "flavio.rocha@serdia.com.br  "
+    ],
+    [
+        "011 – ALMOXARIFADO MATRIZ  ",
+        "leandro.silva@serdia.com.br  ",
+        "marco.rodrigues@serdia.com.br  "
+    ],
+    [
+        "012 – GESTÃO DA QUALIDADE MATRIZ (SGQ)  ",
+        "julie.vieira@serdia.com.br  ",
+        "flavio.rocha@serdia.com.br  "
+    ],
+    [
+        "013 – PRODUÇÃO SMT MATRIZ  ",
+        "patricia.regazzo@serdia.com.br  ",
+        "rafael.tavora@serdia.com.br  "
+    ],
+    [
+        "014 – PRODUÇÃO THT MATRIZ  ",
+        "patricia.regazzo@serdia.com.br  ",
+        "rafael.tavora@serdia.com.br  "
+    ],
+    [
+        "015 – DEBUG MATRIZ  ",
+        "marcelo.santos@serdia.com.br  ",
+        "flavio.rocha@serdia.com.br  "
+    ],
+    [
+        "016 – GARANTIA DA QUALIDADE MATRIZ (CONTR. QUAL. DO PROD.)  ",
+        "marcelo.santos@serdia.com.br  ",
+        "flavio.rocha@serdia.com.br  "
+    ],
+    [
+        "017 – GARANTIA DA QUALIDADE MATRIZ (CALIBRAÇÃO)  ",
+        "marcelo.santos@serdia.com.br  ",
+        "flavio.rocha@serdia.com.br  "
+    ],
+    [
+        "018 – EXPEDIÇÃO MATRIZ  ",
+        "rosirene.coelho@serdia.com.br  ",
+        "marco.rodrigues@serdia.com.br  "
+    ],
+    [
+        "019 – ENGº DE PROJETOS MATRIZ  ",
+        "marcelo.santos@serdia.com.br  ",
+        "flavio.rocha@serdia.com.br  "
+    ],
+    [
+        "020 – RMA / SAC MATRIZ (ASTEC)  ",
+        "marcelo.santos@serdia.com.br  ",
+        "flavio.rocha@serdia.com.br  "
+    ],
+    [
+        "021 – TI MATRIZ (INFRAESTRUTURA E REDE)  ",
+        "luis.rocha@serdia.com.br  ",
+        "luis.rocha@serdia.com.br  "
+    ],
+    [
+        "022 – ENGº DE MANUTENÇÃO MATRIZ (INDUSTRIAL / PREDIAL / INDUSTRIAL SMT)  ",
+        "diego.janke@serdia.com.br  ",
+        "rafael.tavora@serdia.com.br  "
+    ],
+    [
+        "023 – RECURSOS HUMANOS MATRIZ MATRIZ (RH / SSMA)  ",
+        "denisia.teixeira@serdia.com.br  ",
+        "denisia.teixeira@serdia.com.br  "
+    ],
+    [
+        "024 – ENGº DE TESTES MATRIZ ( ITS / SUPORTE TÉCNICO JIGAS / TREINAMENTOS)  ",
+        "marcelo.santos@serdia.com.br  ",
+        "flavio.rocha@serdia.com.br  "
+    ],[
+        "025 – GARANTIA DA QUALIDADE FILIAL (CONTR. QUAL. DO PROD.)  ",
+        "rosana.costa@serdia.com.br  ",
+        "flavio.rocha@serdia.com.br  "
+    ],
+    [
+        "026 – RMA / SAC FILIAL (ASTEC)  ",
+        "rosana.costa@serdia.com.br  ",
+        "flavio.rocha@serdia.com.br  "
+    ],
+    [
+        "027 – PCP FILIAL  ",
+        "rosana.costa@serdia.com.br  ",
+        "marco.rodrigues@serdia.com.br  "
+    ],
+    [
+        "028 – RECEBIMENTO FILIAL (ALMOX. RECEB.)  ",
+        "rosana.costa@serdia.com.br  ",
+        "marco.rodrigues@serdia.com.br  "
+    ],
+    [
+        "029 – ENGº DE PROCESSOS FILIAL (THT)  ",
+        "rosana.costa@serdia.com.br  ",
+        "rafael.tavora@serdia.com.br  "
+    ],
+    [
+        "030 – PRODUÇÃO THT FILIAL  ",
+        "rosana.costa@serdia.com.br  ",
+        "rafael.tavora@serdia.com.br  "
+    ],
+    [
+        "031 – DEBUG FILIAL  ",
+        "rosana.costa@serdia.com.br  ",
+        "flavio.rocha@serdia.com.br  "
+    ],
+    [
+        "032 – EXPEDIÇÃO FILIAL  ",
+        "rosana.costa@serdia.com.br  ",
+        "marco.rodrigues@serdia.com.br  "
+    ],
+    [
+        "033 – ENGº DE MANUTENÇÃO FILIAL (INDUSTRIAL)  ",
+        "rosana.costa@serdia.com.br  ",
+        "rafael.tavora@serdia.com.br  "
+    ],
+    [
+        "034 – TI FILIAL (INFRAESTRUTURA E REDE)  ",
+        "rosana.costa@serdia.com.br  ",
+        "luis.rocha@serdia.com.br  "
+    ]
+]

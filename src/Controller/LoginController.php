@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Departemant;
 use App\Entity\Person;
+use App\Entity\Sector;
 use App\Form\PersonType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 use function PHPUnit\Framework\isEmpty;
@@ -25,6 +27,7 @@ class LoginController extends AbstractController
         $session = $request->getSession();
         //test if he is connected before 
         if ($session->get('token_jwt') == null) {  
+
             // update list of employer 
             $url = 'https://intranet.serdia.com.br/a/users.php?sys=1&tk=24dbdb7659f46b318b543981f2b0784226b8bd54';
             $ch = curl_init($url);
@@ -81,7 +84,28 @@ class LoginController extends AbstractController
                         $entityManager->flush();
                     }
                 }
-            }            
+            }    
+            
+            /**
+             * Check Sector
+             * 
+             */
+            $sectors = file_get_contents('sector.json');
+            $sectors = json_decode($sectors);
+            foreach ($sectors as $key => $sector) {
+                $sec = $entityManager->getRepository(Sector::class)->findOneBy(['name' => $sector[0]]);
+                if($sec == null){
+                    $sec = new Sector();
+                    $manager =  $entityManager->getRepository(Person::class)->findOneBy(['email' => $sector[1]]);
+                    $coordinator =  $entityManager->getRepository(Person::class)->findOneBy(['email' => $sector[2]]);
+                    $sec->setName($sector[0]);
+                    $sec->setManager($manager);
+                    $sec->setCoordinator($coordinator);
+                    $entityManager->persist($sec);
+                    $entityManager->flush();
+                }
+            }
+            
             $entityManager = $doctrine->getManager();
             $person =  $entityManager->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $person = new Person();
