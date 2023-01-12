@@ -271,8 +271,11 @@ class MudancasController extends AbstractController
                                     $email->setSendBy($person);
                                     $email->setTitle('reject gerente controle do mudancas');
                                     $email->setBody('reject_ger');
+
                                     $em->persist($email);
                                     $em->flush();
+                                    $this->sendEmail($doctrine, $request, $email->getSendTo()->getEmail(), $email->getSendTo()->getName(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                           
                                 } else {
                                     $email = new  Email();
                                     $email->setMudancas($mud);
@@ -282,6 +285,8 @@ class MudancasController extends AbstractController
                                     $email->setBody('approved_ger');
                                     $em->persist($email);
                                     $em->flush();
+                                    $this->sendEmail($doctrine, $request, $email->getSendTo()->getEmail(), $email->getSendTo()->getName(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                           
                                 }
                                 return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
                             }
@@ -329,13 +334,21 @@ class MudancasController extends AbstractController
                     $form->handleRequest($request);
 
                     if ($form->isSubmitted() && $form->isValid()) {
+                            $email = new  Email();
+                            $email->setMudancas($mud);
+                            $email->setSendTo($person);
+                            $email->setSendBy($person);
+                            $email->setTitle('Create new controle do mudancas');
+                            $email->setBody('create');
+                            $em->persist($email);
+                            $em->flush();
                         foreach ($mud->getAreaImpact() as $key => $value) {
                             $email = new  Email();
                             $email->setMudancas($mud);
                             $email->setSendTo($value->getManager());
                             $email->setSendBy($person);
                             $email->setTitle('Create new controle do mudancas');
-                            $email->setBody('create');
+                            $email->setBody('manager');
                             $em->persist($email);
                             $em->flush();
                         }
@@ -377,7 +390,11 @@ class MudancasController extends AbstractController
                             $email = new Email();
                             $email = $value;
                             $em->persist($email);
-                            $this->sendEmail($doctrine, $request, $value->getSendTo()->getEmail(), $value->getSendTo()->getName(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false);
+                            if($value->getSendTo() == $value->getSendBy()){
+                                $this->sendEmail($doctrine, $request, $value->getSendTo()->getEmail(), $value->getSendTo()->getName(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false);
+                            }else{
+                                $this->sendEmail($doctrine, $request, $value->getSendTo()->getEmail(), $value->getSendTo()->getName(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false);
+                            }
                         }
                         /**
                          * ------------------------------------------------------------
@@ -692,6 +709,19 @@ class MudancasController extends AbstractController
                                             }
                                         }
                                     }
+
+                                    
+                                    $email = new  Email();
+                                    $email->setMudancas($mud);
+                                    $email->setSendTo($mud->getAddBy());
+                                    $email->setSendBy($person);
+                                    $email->setTitle('approved gerente controle do mudancas');
+                                    $email->setBody('approved_ger');
+                                    $em->persist($email);
+                                    $em->flush();
+                                    $this->sendEmail($doctrine, $request, $email->getSendTo()->getEmail(), $email->getSendTo()->getName(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                           
+
                                 } elseif ($mud->getAppMan() == 2) {
                                     /**
                                      * check if rejected 
@@ -707,6 +737,18 @@ class MudancasController extends AbstractController
                                             }
                                         }
                                     }
+
+                                    $email = new  Email();
+                                    $email->setMudancas($mud);
+                                    $email->setSendTo($mud->getAddBy());
+                                    $email->setSendBy($person);
+                                    $email->setTitle('reject gerente controle do mudancas');
+                                    $email->setBody('reject_ger');
+
+                                    $em->persist($email);
+                                    $em->flush();
+                                    $this->sendEmail($doctrine, $request, $email->getSendTo()->getEmail(), $email->getSendTo()->getName(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                           
                                 }
 
 

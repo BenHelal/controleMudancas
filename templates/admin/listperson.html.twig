@@ -40,10 +40,10 @@
                                 <medium>departamento: {{m.departemant}}</medium>
                             </div>
                             <div class="d-flex w-100 justify-content-between">
-                                <medium>Função: {% if m.role == null %}
+                                <medium>Função: {% if m.function == null %}
                                                     sem Função
                                                 {% else %}
-                                                    {{m.role}}
+                                                    {{m.function.name}}
                                                 {% endif %}
                                 </medium>
                             </div>

@@ -96,8 +96,8 @@ class LoginController extends AbstractController
                 $sec = $entityManager->getRepository(Sector::class)->findOneBy(['name' => $sector[0]]);
                 if($sec == null){
                     $sec = new Sector();
-                    $manager =  $entityManager->getRepository(Person::class)->findOneBy(['email' => $sector[1]]);
-                    $coordinator =  $entityManager->getRepository(Person::class)->findOneBy(['email' => $sector[2]]);
+                    $manager =  $entityManager->getRepository(Person::class)->findOneBy(['email' => $sector[2]]);
+                    $coordinator =  $entityManager->getRepository(Person::class)->findOneBy(['email' => $sector[1]]);
                     $sec->setName($sector[0]);
                     $sec->setManager($manager);
                     $sec->setCoordinator($coordinator);
