@@ -4,6 +4,18 @@
 {% block body %}
 	<link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
+
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bitter:400,700">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous"/>
+
+
 	<div class="container" style="padding-left: 20px ;padding-right: 20px;">
 
 
@@ -94,7 +106,7 @@
 				<div class="row">
 					<div class="col-md-4 order-md-2 mb-4">
 						<h4 class="d-flex justify-content-between align-items-center mb-3">
-							<span class="text-muted">Seu notificação:
+							<span class="text-muted">Pendências	:
 							</span>
 							<span class="badge badge-secondary badge-pill"></span>
 						</h4>
@@ -107,478 +119,533 @@
 									<li class="list-group-item d-flex justify-content-between lh-condensed">
 										<a href="#">
 											<div>
+												<h5 class="mb-1">Número da mudança:
+													{{m.id}}</h5>
 												<h6 class="my-0">Nome do Mudança:
 													{{row.nomeMudanca}}
 												</h6>
-												<small class="text-muted">Descrição breve:
-													{{row.descImpacto}}
-												</small>
-											</div>
-											<span class="text-muted"></span>
-										</a>
-									</li>
+											</a>
+										</li>
+									{% endfor %}
 
-								{% endfor %}
-
-							{% endif %}
-						</ul>
-					</div>
-
-					<div class="col-md-8 order-md-1" style="padding-left: 0px;">
-			{% endif %}
-					{% for m in mud %}
-						<div id="myTable" class="list-group">
-							<a href="{{path('upm',{id: m.id})}}" class="list-group-item list-group-item-action flex-column align-items-start">
-								<div class="d-flex w-100 justify-content-between">
-									<h5 class="mb-1">Número da mudança:
-										{{m.id}}</h5>
-									<medium>Nome da mudança:
-										{{m.nomeMudanca}}</medium>
-								</div>
-								<div class="d-flex w-100 justify-content-between">
-									<p class="mb-1">Descrição da Mudança:
-										{{m.descImpacto}}</p>
-									<medium>Descrição do Impacto:
-										{{m.descImpacto}}</medium>
-								</div>
-								<div class="d-flex w-100 justify-content-between">
-									<medium>Área impactada:
-										{% for row in m.areaImpact %}
-											{{row.name}}
-											<br>
-										{% endfor %}
-									</medium>
-									<medium></medium>
-								</div>
-							</a>
+								{% endif %}
+							</ul>
 						</div>
-					{% endfor %}
-					{% if manager %}
+
+						<div class="col-md-8 order-md-1" style="padding-left: 0px;">
+						{% endif %}
+						{% for m in mud %}
+							<div id="myTable" class="list-group">
+								<a href="{{path('upm',{id: m.id})}}" class="list-group-item list-group-item-action flex-column align-items-start">
+									<div class="d-flex w-100 justify-content-between">
+										<h5 class="mb-1">Número da mudança:
+											{{m.id}}</h5>
+										<medium>Nome da mudança:
+											{{m.nomeMudanca}}</medium>
+									</div>
+								</a>
+							</div>
+						{% endfor %}
+						{% if manager %}
+
+						</div>
 
 					</div>
+				{% endif %}
 
+			{% endif %}
+		{% elseif creation == 'false' %}
+
+			{{ form_start(form, {'attr':{'class':'form-group', 'id':'test'}}) }}
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.nomeMudanca) }}
+					{{ form_widget(form.nomeMudanca,{'attr':{'class':'form-control' ,'id':'testnomeMudanca'}}) }}
 				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.descMudanca) }}
+					{{ form_widget(form.descMudanca,{'attr':{'class':'form-control', 'rows': '4','id':'testdescMudanca'}}) }}
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="" onclick="validate()" id="nansen">
+						<label class="form-check-label" for="flexCheckDefault">
+							Existe em nasen
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row" id="nanseForm">
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.nansenName) }}
+					{{ form_widget(form.nansenName,{'attr':{'class':'form-control', 'rows': '4','id':'testnansenName'}}) }}
+				</div>
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.nansenNumber) }}
+					{{ form_widget(form.nansenNumber,{'attr':{'class':'form-control', 'rows': '4' ,'id':'test'}}) }}
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.justif) }}
+					{{ form_widget(form.justif,{'attr':{'class':'form-control','rows': '4' ,'id':'test'}}) }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.descImpacto) }}
+					{{ form_widget(form.descImpacto,{'attr':{'class':'form-control', 'rows': '4','id':'test'}}) }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.descImpactoArea) }}
+					{{ form_widget(form.descImpactoArea,{'attr':{'class':'form-control', 'rows': '4','id':'test'}}) }}
+				</div>
+			</div>
+
+			<div class="row" id="selectAreaImapct">
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.areaImpact) }}
+					{{ form_widget(form.areaImpact) }}
+				</div>
+			</div>
+
+			<div class="row" id="selectAreaResp">
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.areaResp) }}
+					{{ form_widget(form.areaResp,{'attr':{'class':'form-control','id':'test'}}) }}
+				</div>
+			</div>
+			{% if gestor %}
+				<div class="row" id="gestorMudancas">
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.mangerMudancas) }}
+						{{ form_widget(form.mangerMudancas,{'attr':{'class':'form-control','id':'testman'}}) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.startMudancas) }}
+						{{ form_widget(form.startMudancas,{'attr':{'class':'form-control'}}) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.endMudancas) }}
+						{{ form_widget(form.endMudancas,{'attr':{'class':'form-control'}}) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.effictiveStartDate) }}
+						{{ form_widget(form.effictiveStartDate,{'attr':{'class':'form-control'}}) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.cost) }}
+						{{ form_widget(form.cost,{'attr':{'class':'form-control'}}) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.impDesc) }}
+						{{ form_widget(form.impDesc,{'attr':{'class':'form-control'}}) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 mb-3">
+						<img class="center card-img-top" src="{{ asset('assets/')}}{{m.id}}/{{m.photo}}" alt="" style="padding-top: 15px; width : 500px">
+					</div>
+
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.photo) }}
+						{{ form_widget(form.photo) }}
+					</div>
+					{% if m.pdf != null %}
+					<a class="btn btn-info mt-2 text-white" href ="{{path('filed',{'id':m.id} )}}">
+						⇬ Fazer download do arquivo
+					</a>
+					{% endif %}
+					
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.pdf) }}
+						{{ form_widget(form.pdf) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.appGest) }}
+						{{ form_widget(form.appGest,{'attr':{'class':'form-control'}}) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.comGest) }}
+						{{ form_widget(form.comGest,{'attr':{'class':'form-control'}}) }}
+					</div>
+				</div>
+			{% elseif gestor == false and manager %}
+				<div class="row">
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.mangerMudancas) }}
+						{{ form_widget(form.mangerMudancas,{'attr':{'class':'form-control'}}) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.appMan) }}
+						{{ form_widget(form.appMan,{'attr':{'class':'form-control'}}) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.comMan) }}
+						{{ form_widget(form.comMan,{'attr':{'class':'form-control'}}) }}
+					</div>
+				</div>
+
+
 			{% endif %}
 
-		{% endif %}
-	{% elseif creation == 'false' %}
-
-		{{ form_start(form, {'attr':{'class':'form-group', 'id':'test'}}) }}
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.nomeMudanca) }}
-				{{ form_widget(form.nomeMudanca,{'attr':{'class':'form-control' ,'id':'testnomeMudanca'}}) }}
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.descMudanca) }}
-				{{ form_widget(form.descMudanca,{'attr':{'class':'form-control', 'rows': '4','id':'testdescMudanca'}}) }}
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				<div class="form-check">
-					<input class="form-check-input" type="checkbox" value="" onclick="validate()" id="nansen">
-					<label class="form-check-label" for="flexCheckDefault">
-						Existe em nasen
-					</label>
-				</div>
-			</div>
-		</div>
-
-		<div class="row" id="nanseForm">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.nansenName) }}
-				{{ form_widget(form.nansenName,{'attr':{'class':'form-control', 'rows': '4','id':'testnansenName'}}) }}
-			</div>
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.nansenNumber) }}
-				{{ form_widget(form.nansenNumber,{'attr':{'class':'form-control', 'rows': '4' ,'id':'test'}}) }}
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.justif) }}
-				{{ form_widget(form.justif,{'attr':{'class':'form-control','rows': '4' ,'id':'test'}}) }}
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.descImpacto) }}
-				{{ form_widget(form.descImpacto,{'attr':{'class':'form-control', 'rows': '4','id':'test'}}) }}
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.descImpactoArea) }}
-				{{ form_widget(form.descImpactoArea,{'attr':{'class':'form-control', 'rows': '4','id':'test'}}) }}
-			</div>
-		</div>
-
-		<div class="row" id="selectAreaImapct">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.areaImpact) }}
-				{{ form_widget(form.areaImpact) }}
-			</div>
-		</div>
-
-		<div class="row" id="selectAreaResp">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.areaResp) }}
-				{{ form_widget(form.areaResp,{'attr':{'class':'form-control','id':'test'}}) }}
-			</div>
-		</div>
-		{% if gestor %}
-			<div class="row" id="gestorMudancas">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.mangerMudancas) }}
-					{{ form_widget(form.mangerMudancas,{'attr':{'class':'form-control','id':'testman'}}) }}
-				</div>
-			</div>
 			<div class="row">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.startMudancas) }}
-					{{ form_widget(form.startMudancas,{'attr':{'class':'form-control'}}) }}
+				<div class="col-md-1 mb-3">
+					<a class="btn btn-info mt-2 text-white" href="{{path('flow',{'id':m.id} )}}">
+						Verifique a situação em outro departamento
+					</a>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.endMudancas) }}
-					{{ form_widget(form.endMudancas,{'attr':{'class':'form-control'}}) }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.effictiveStartDate) }}
-					{{ form_widget(form.effictiveStartDate,{'attr':{'class':'form-control'}}) }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.cost) }}
-					{{ form_widget(form.cost,{'attr':{'class':'form-control'}}) }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.implemented) }}
-					{{ form_widget(form.implemented,{'attr':{'class':'form-control'}}) }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.impDesc) }}
-					{{ form_widget(form.impDesc,{'attr':{'class':'form-control'}}) }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.appGest) }}
-					{{ form_widget(form.appGest,{'attr':{'class':'form-control'}}) }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.comGest) }}
-					{{ form_widget(form.comGest,{'attr':{'class':'form-control'}}) }}
-				</div>
-			</div>
-		{% elseif gestor == false and manager %}
-			<div class="row">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.mangerMudancas) }}
-					{{ form_widget(form.mangerMudancas,{'attr':{'class':'form-control'}}) }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.appMan) }}
-					{{ form_widget(form.appMan,{'attr':{'class':'form-control'}}) }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.comMan) }}
-					{{ form_widget(form.comMan,{'attr':{'class':'form-control'}}) }}
-				</div>
-			</div>
-
-
-		{% endif %}
-
-		<div class="row">
-			<div class="col-md-1 mb-3">
-				<a class="btn btn-info mt-2 text-white" href="{{path('flow',{'id':m.id} )}}">
-					Verifique a situação em outro departamento
-				</a>
-			</div>
-		</div>
-
 
 
 			{% if person.permission == 'ler criar atualização' or person.permission =='tudo' %}
-			{{m.done }}
-				{% if m.done != 'Feito' %}
-			{% if  manager == true and gestor == false %}
-				{% if  m.mangerMudancas == null %}
+				{% if m.done == 'Feito' %}
+					<p class="btn btn-info mt-2 text-white">{{m.done }}</p>
+				{% endif %}
+				
+				{% if m.implemented == 1 and  m.done == 'Feito' %}
+					<p class="btn btn-info mt-2 text-white">Mudanças foi implementado</p>
+					<p>
+				{% elseif  m.implemented == 2 and m.done == 'Feito' %}
+					<p class="btn btn-info mt-2 text-white">Mudanças não implementado</p>
+					<p>
+				{% elseif m.implemented != 1 and  m.implemented != 2 and m.done != 'Feito' %}
+						
+				{% endif %}
+
+
+					{% if m.done != 'Feito' %}
+						{% if  manager == true and gestor == false %}
+							{% if  m.mangerMudancas == null %}
+								<div class="row">
+									<div class="col-md-6 mb-3">
+										<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+									</div>
+								</div>
+							{% elseif  m.comGest == null %}
+								<div class="row">
+									<div class="col-md-6 mb-3">
+										<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+									</div>
+								</div>
+							{% endif %}
+
+						{% elseif gestor %}
+							<div class="row">
+								<div class="col-md-6 mb-3">
+									<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+								</div>
+							</div>
+						{% endif %}
+					{% elseif m.done == 'Feito' and  m.implemented == null %}
+						{% if gestor %}
+							{% if m.implemented != 1 and m.implemented != 2 %}
+							<br>
+								<a class="btn btn-info mt-2 text-white" data-toggle="modal" data-target="#imp">Implementação</a>
+
+								<div class="modal fade" id="imp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<div class="modal-body">
+												<div class="row" style="    margin-right: 12px;
+														    margin-left: 5px;">
+													<div class="d-flex w-80 justify-content-between">
+														<h5 class="mb-1">Número da mudança:
+															{{m.id}}</h5>
+														<medium>Nome da mudança:
+															{{m.nomeMudanca}}</medium>
+													</div>
+												</div>
+
+												<div class="modal-footer">
+													<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
+													<a href="{{path('imp',{id: m.id})}}" class="btn btn-info mt-2 text-white">Sim</a>
+													<a href="{{path('impnoa',{id: m.id})}}" class="btn btn-info mt-2 text-white">Não</a>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								{% endif %}
+							{% endif %}
+						{% endif %}
+					{% endif %}
+					{{ form_end(form) }}
+
+				{% else %}
+					{{ form_start(form, {'attr':{'class':'form-group'}}) }}
 					<div class="row">
-						<div class="col-md-6 mb-3">
-							<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+						<div class="col-md-12 mb-3">
+							{{ form_label(form.nomeMudanca) }}
+							{{ form_widget(form.nomeMudanca,{'attr':{'class':'form-control'}}) }}
 						</div>
 					</div>
-				{% endif %}
-			
-					{% elseif gestor %}
+					<div class="row">
+						<div class="col-md-12 mb-3">
+							{{ form_label(form.descMudanca) }}
+							{{ form_widget(form.descMudanca,{'attr':{'class':'form-control', 'rows': '4'}}) }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 mb-3">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" onclick="validate()" id="nansen">
+								<label class="form-check-label" for="flexCheckDefault">
+									Existe em nasen
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="row" id="nanseForm">
+						<div class="col-md-12 mb-3">
+							{{ form_label(form.nansenName) }}
+							{{ form_widget(form.nansenName,{'attr':{'class':'form-control', 'rows': '4'}}) }}
+						</div>
+						<div class="col-md-12 mb-3">
+							{{ form_label(form.nansenNumber) }}
+							{{ form_widget(form.nansenNumber,{'attr':{'class':'form-control', 'rows': '4'}}) }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 mb-3">
+							{{ form_label(form.justif) }}
+							{{ form_widget(form.justif,{'attr':{'class':'form-control','rows': '4'}}) }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 mb-3">
+							{{ form_label(form.descImpacto) }}
+							{{ form_widget(form.descImpacto,{'attr':{'class':'form-control', 'rows': '4'}}) }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 mb-3">
+							{{ form_label(form.descImpactoArea) }}
+							{{ form_widget(form.descImpactoArea,{'attr':{'class':'form-control', 'rows': '4'}}) }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 mb-3">
+							{{ form_label(form.areaImpact) }}
+							{{ form_widget(form.areaImpact) }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 mb-3">
+							{{ form_label(form.areaResp) }}
+							{{ form_widget(form.areaResp,{'attr':{'class':'form-control'}}) }}
+						</div>
+					</div>
+
+
+					{% if person.permission == 'ler criar atualização' or person.permission =='ler criar' or person.permission =='tudo' %}
+
 						<div class="row">
-						<div class="col-md-6 mb-3">
-							<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+							<div class="col-md-6 mb-3">
+								<button id="btn" class="	btn btn-info mt-2 text-white" style="
+																										background-color: #0c2c01;
+																										border-color: #0c2c01;">Adicionar</button>
+							</div>
 						</div>
-					</div>
-			{% endif %}
-			
+					{% endif %}
+					{{ form_end(form) }}
 				{% endif %}
-			{% endif %}
-		{{ form_end(form) }}
+				<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+				<script>
+					{% if gestor != true and manager != true %}
+						$(document).ready(function () {
+						$('#mudancas_areaImpact').chosen({});
+						});
+						$(document).ready(function () {
+						$('#mudancas_areaResp').chosen({});
+						});
+						{% elseif gestor != true and manager == true %}
+						$(document).ready(function () {
+						$('#mudancas_manager_areaImpact').chosen({});
+						});
+						$(document).ready(function () {
+						$('#mudancas_manager_areaResp').chosen({});
+						});
+						$(document).ready(function () {
+						$('#mudancas_manager_mangerMudancas').chosen({});
+						});{% endif %}
+						{% if gestor != true and manager == true %}
+						const mudancas_manager_comMan = document.getElementById('mudancas_manager_comMan');
+						mudancas_manager_comMan.disabled = true;{% if  m.mangerMudancas != null %}
+						const mudancas_manager_mangerMudancas = document.getElementById('mudancas_manager_mangerMudancas');
+						mudancas_manager_mangerMudancas.disabled = true;
+						const mudancas_manager_appMan = document.getElementById('mudancas_manager_appMan');
+						mudancas_manager_appMan.disabled = true;
+						mudancas_manager_comMan.disabled = true;{% endif %}
 
-	{% else %}
-		{{ form_start(form, {'attr':{'class':'form-group'}}) }}
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.nomeMudanca) }}
-				{{ form_widget(form.nomeMudanca,{'attr':{'class':'form-control'}}) }}
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.descMudanca) }}
-				{{ form_widget(form.descMudanca,{'attr':{'class':'form-control', 'rows': '4'}}) }}
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				<div class="form-check">
-					<input class="form-check-input" type="checkbox" value="" onclick="validate()" id="nansen">
-					<label class="form-check-label" for="flexCheckDefault">
-						Existe em nasen
-					</label>
-				</div>
-			</div>
-		</div>
-		<div class="row" id="nanseForm">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.nansenName) }}
-				{{ form_widget(form.nansenName,{'attr':{'class':'form-control', 'rows': '4'}}) }}
-			</div>
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.nansenNumber) }}
-				{{ form_widget(form.nansenNumber,{'attr':{'class':'form-control', 'rows': '4'}}) }}
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.justif) }}
-				{{ form_widget(form.justif,{'attr':{'class':'form-control','rows': '4'}}) }}
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.descImpacto) }}
-				{{ form_widget(form.descImpacto,{'attr':{'class':'form-control', 'rows': '4'}}) }}
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.descImpactoArea) }}
-				{{ form_widget(form.descImpactoArea,{'attr':{'class':'form-control', 'rows': '4'}}) }}
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.areaImpact) }}
-				{{ form_widget(form.areaImpact) }}
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.areaResp) }}
-				{{ form_widget(form.areaResp,{'attr':{'class':'form-control'}}) }}
-			</div>
-		</div>
+						{% if  m.comGest == null %}mudancas_manager_mangerMudancas.disabled = false;
+						mudancas_manager_appMan.disabled = false;
+						mudancas_manager_comMan.disabled = false;{% endif %}
+
+						{% endif %}
+
+						{% if  creation == 'false' %}
+						{% if m.comMan == null %}
+						{% elseif m.comMan != null and m.comGest == null %}
+						var form = document.getElementById("test");
+						var elements = form.elements;
+						for (var i = 0, len = 10; i < len; ++ i) {
+						elements[i].readOnly = true;
+						}
+						{% else %}
+						var form = document.getElementById("test");
+						var elements = form.elements;
+						for (var i = 0, len = 9; i < len; ++ i) {
+						elements[i].readOnly = true;
+						}
+						{% endif %}
+						{% if gestor %}
+						var nodes = document.getElementById("selectAreaResp").getElementsByTagName('*');
+						for (var i = 0; i < nodes.length; i++) {
+						nodes[i].disabled = true;
+						}
 
 
-		{% if person.permission == 'ler criar atualização' or person.permission =='ler criar' or person.permission =='tudo' %}
+						var nodes = document.getElementById("gestorMudancas").getElementsByTagName('*');
+						for (var i = 0; i < nodes.length; i++) {
+						nodes[i].disabled = true;
+						}
+						{% endif %}
 
-					<div class="row">
-						<div class="col-md-6 mb-3">
-							<button id="btn" class="	btn btn-info mt-2 text-white" style="
-																	background-color: #0c2c01;
-																	border-color: #0c2c01;">Adicionar</button>
-						</div>
-					</div>
-		{% endif %}
-		{{ form_end(form) }}
-	{% endif %}
-	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-	<script>
-		{% if gestor != true and manager == true %}
-{% if  m.mangerMudancas != null %}
-const mudancas_manager_mangerMudancas = document.getElementById('mudancas_manager_mangerMudancas');
-mudancas_manager_mangerMudancas.disabled = true;
-const mudancas_manager_appMan = document.getElementById('mudancas_manager_appMan');
-mudancas_manager_appMan.disabled = true;
-const mudancas_manager_comMan = document.getElementById('mudancas_manager_comMan');
-mudancas_manager_comMan.disabled = true;
+						{% endif %}
 
-{% endif %}
-{% endif %}
+						{% if manager and(gestor == false) %}
+						$(document).ready(function () {
+						const box = document.getElementById('nanseForm');
+						if (document.getElementById('mudancas_manager_nansenName').value == '') {
+						document.getElementById("nansen").checked = false;
+						const box = document.getElementById('nanseForm');
+						if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+						} else {
+						box.style.display = 'none';
+						}
+						} else {
+						document.getElementById("nansen").checked = true;
+						const box = document.getElementById('nanseForm');
+						if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+						} else {
+						box.style.display = 'none';
+						}
+						}
+						});
 
-{% if  creation == 'false' %}
-{% if m.comMan == null %}
-{% elseif m.comMan != null and m.comGest == null %}
-var form = document.getElementById("test");
-var elements = form.elements;
-for (var i = 0, len = 10; i < len; ++ i) {
-elements[i].readOnly = true;
-}
-{% else %}
-var form = document.getElementById("test");
-var elements = form.elements;
-for (var i = 0, len = 9; i < len; ++ i) {
-elements[i].readOnly = true;
-}
-{% endif %}
-{% if gestor %}
-var nodes = document.getElementById("selectAreaResp").getElementsByTagName('*');
-for (var i = 0; i < nodes.length; i++) {
-nodes[i].disabled = true;
-}
+						function validate() {
+						const box = document.getElementById('nanseForm');
+						if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+						} else {
+						document.getElementById('mudancas_manager_nansenName').value = '';
+						document.getElementById('mudancas_manager_nansenNumber').value = '';
+						box.style.display = 'none';
+						}
+						}
 
+						{% elseif gestor %}
+						$(document).ready(function () {
+						const box = document.getElementById('nanseForm');
+						if (document.getElementById('mudancasgestor_nansenName').value == '') {
+						document.getElementById("nansen").checked = false;
+						const box = document.getElementById('nanseForm');
 
-var nodes = document.getElementById("gestorMudancas").getElementsByTagName('*');
-for (var i = 0; i < nodes.length; i++) {
-nodes[i].disabled = true;
-}
-{% endif %}
+						if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+						} else {
+						box.style.display = 'none';
+						}
+						} else {
+						document.getElementById("nansen").checked = true;
+						const box = document.getElementById('nanseForm');
+						if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+						} else {
+						box.style.display = 'none';
+						}
+						}
+						});
 
-{% endif %}
+						function validate() {
+						const box = document.getElementById('nanseForm');
+						if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+						} else {
+						document.getElementById('mudancasgestor_nansenName').value = '';
+						document.getElementById('mudancasgestor_nansenNumber').value = '';
+						box.style.display = 'none';
+						}
+						}
 
-{% if manager and(gestor == false) %}
-$(document).ready(function () {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('mudancas_manager_nansenName').value == '') {
-document.getElementById("nansen").checked = false;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-} else {
-document.getElementById("nansen").checked = true;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-}
-});
+						new TomSelect("#mudancasgestor_areaImpact", {maxItems: 36});
+						{% else %}
+						$(document).ready(function () {
+						const box = document.getElementById('nanseForm');
+						if (document.getElementById('mudancas_nansenName').value == '') {
+						document.getElementById("nansen").checked = false;
+						const box = document.getElementById('nanseForm');
+						if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+						} else {
+						box.style.display = 'none';
+						}
+						} else {
+						document.getElementById("nansen").checked = true;
+						const box = document.getElementById('nanseForm');
+						if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+						} else {
+						box.style.display = 'none';
+						}
+						}
+						});
 
-function validate() {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-document.getElementById('mudancas_manager_nansenName').value = '';
-document.getElementById('mudancas_manager_nansenNumber').value = '';
-box.style.display = 'none';
-}
-}
-
-new TomSelect("#mudancas_manager_areaImpact", {maxItems: 9});
-{% elseif gestor %}
-$(document).ready(function () {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('mudancasgestor_nansenName').value == '') {
-document.getElementById("nansen").checked = false;
-const box = document.getElementById('nanseForm');
-
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-} else {
-document.getElementById("nansen").checked = true;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-}
-});
-
-function validate() {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-document.getElementById('mudancasgestor_nansenName').value = '';
-document.getElementById('mudancasgestor_nansenNumber').value = '';
-box.style.display = 'none';
-}
-}
-
-new TomSelect("#mudancasgestor_areaImpact", {maxItems: 9});
-{% else %}
-$(document).ready(function () {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('mudancas_nansenName').value == '') {
-document.getElementById("nansen").checked = false;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-} else {
-document.getElementById("nansen").checked = true;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-}
-});
-
-function validate() {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-document.getElementById('mudancas_nansenName').value = '';
-document.getElementById('mudancas_nansenNumber').value = '';
-box.style.display = 'none';
-}
-}
-new TomSelect("#mudancas_areaImpact", {maxItems: 9});{% endif %}$(document).ready(function () {
-$('#product_client').chosen({});
-
-$("#myInput").on("keyup", function () {
-var value = $(this).val().toLowerCase();
-$("#myTable a").filter(function () {
-$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-});
-});
-});
-
-function emailChecker() {
-swal({title: "Tome cuidado ?", text: "Mudancas adicionado pelo Empregador não tinha Email!", icon: "warning", buttons: true});
-}
-	</script>
-{% endblock %}
+						function validate() {
+						const box = document.getElementById('nanseForm');
+						if (document.getElementById('nansen').checked) {
+						box.style.display = 'block';
+						} else {
+						document.getElementById('mudancas_nansenName').value = '';
+						document.getElementById('mudancas_nansenNumber').value = '';
+						box.style.display = 'none';
+						}
+						}
+						{% endif %}
+				</script>
+			{% endblock %}

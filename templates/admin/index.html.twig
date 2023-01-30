@@ -47,7 +47,10 @@
 
                                     <button class="btn btn-primary btn-user btn-block">Login</button>
                                     {{ form_end(form) }}
-                                    </form>
+                                    {% if wrong %}
+                                     <p class="register">Não é um membro? <br>Administrador de TI do formulário de Acesso por Demanda</p>
+                                    {% endif %}
+                                    
                                 </div>
                             </div>
                         </div>

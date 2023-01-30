@@ -27,19 +27,24 @@ class CloseMudController extends AbstractController
             $em = $doctrine->getManager();
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $mud = $em->getRepository(Mudancas::class)->find($id);
+
+            // condition on  situation of Mudanacas
+            if ($mud == null) {
+                return $this->redirectToRoute('app_mudancas');
+            }
             $conn = $doctrine->getConnection();
             $sql = 'SELECT * FROM mudancas_sector  where mudancas_id = :mudancas';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas' => $mud->getId()]);
             $dm =  $resultSet->fetchAllAssociative();
-            $depOfUserAddMudancas = $em->getRepository(Departemant::class)->findBy(['name' => $person->getDepartemant()]);    
+            $depOfUserAddMudancas = $em->getRepository(Departemant::class)->findBy(['name' => $person->getDepartemant()]);
 
             //$areaRespOfUserAddMudancas = $em->getRepository(Sector::class)->findBy(['Departemant' => $depOfUserAddMudancas]);
-            
+
             foreach ($dm as $key => $vale) {
 
-                $sql2 = 
-                '   select * 
+                $sql2 =
+                    '   select * 
                     FROM 
                         person as p,
                         mudancas as mud , 
@@ -60,8 +65,8 @@ class CloseMudController extends AbstractController
                 $ln =  $resultSet2->fetchAllAssociative();
             }
             foreach ($dm as $key => $vale) {
-                $sql2 = 
-                '   select p.name 
+                $sql2 =
+                    '   select p.name 
                     FROM 
                         person as p,
                         mudancas as mud , 

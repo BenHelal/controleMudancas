@@ -55,16 +55,17 @@ class NotifController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-
                 foreach ($sps as $key => $sp) {
                     if ($sp->getSector()->getManager() == $person) {
                         //if( $mudancas->getManager)
                         if ($oneOfSp != null) {
                             $sp->setComment($oneOfSp->getComment());
-                            $sp->setAppSectorMan($oneOfSp->isAppSectorMan());
+                            $sp->setAppSectorMan($oneOfSp->getAppSectorMan());
                         }
+
                         $em->persist($sp);
-                        $em->flush(); 
+                        $em->flush();
+                        
                         return $this->redirectToRoute('upm', ['id' => $id]);
                     }
                 }

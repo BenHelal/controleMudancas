@@ -1,0 +1,8 @@
+{
+	"folders": [
+		{
+			"name": "npi",
+			"uri": "sftp://root@10.100.1.180/var/www/html/npi"
+		}
+	]
+}

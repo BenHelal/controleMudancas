@@ -13,9 +13,11 @@ use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class MudancasgestorType extends AbstractType
 {
@@ -108,18 +110,42 @@ class MudancasgestorType extends AbstractType
                 'label' => 'Custo',
                 'required'   => false,
             ])
-            ->add('implemented', ChoiceType::class,[
-                'choices'  => [
-                    'Sim' => true,
-                    'Não' => false,
-                ],
-                'label' => 'Mudança Implementada',
-                'required'   => false,
-            ])
             ->add('impDesc',TextareaType::class, [
                 'label' => 'Evidencia de Implementação',
                 'required'   => false,
             ])
+            ->add('photo', FileType::class, array(
+                'data_class' => null,
+                'label' => 'foto (jpeg)',
+                'constraints' => [
+                    new File([
+                    'maxSize' => '100m',
+                    'mimeTypes' => [
+                        'image/jpeg',
+                    ],
+                    'mimeTypesMessage' => 'Carregue uma imagem jpeg válida',
+                    ])],
+                // make it optional so you don't have to re-upload the png file
+                // every time you edit the Product details
+                'required' => false,
+                )
+            )
+            
+            ->add('pdf', FileType::class, array(
+                'data_class' => null,
+                'label' => 'Arquivo (pdf, word, excel)',
+                'constraints' => [
+                    new File([
+                    'maxSize' => '100m',
+                    'mimeTypes' => ['application/pdf','application/msword','application/vnd.ms-excel'
+                    ],
+                    'mimeTypesMessage' => 'Carregue um arquivo pdf, word ou excel válido',
+                    ])],
+                // make it optional so you don't have to re-upload the png file
+                // every time you edit the Product details
+                'required' => false,
+                )
+            )
             ->add('appGest', ChoiceType::class, [
                 'choices'  => [
                     'Sim' => 1,

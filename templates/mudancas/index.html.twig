@@ -103,13 +103,13 @@ window.location.reload();
 				<div class="row">
 					<div class="col-md-4 order-md-2 mb-4">
 						<h4 class="d-flex justify-content-between align-items-center mb-3">
-							<span class="text-muted">Seu notificação:
+							<span class="text-muted">Pendências:
 							</span>
 							<span class="badge badge-secondary badge-pill"></span>
 						</h4>
 						<ul class="list-group mb-3 sticky-top">
 							{% if ln == null %}
-								você não tem notificação
+								você não tem Pendências
 							{% else %}
 								{% for row in ln %}
 									{% if row.done != 'Feito' %}
@@ -125,8 +125,6 @@ window.location.reload();
 														{{row.id}}
 													</small>
 												</div>
-												<span class="text-muted">Descrição breve:
-													{{row.descImpacto}}</span>
 											</a>
 										</li>
 									{% endif %}
@@ -142,13 +140,13 @@ window.location.reload();
 						<div class="row">
 							<div class="col-md-4 order-md-2 mb-4">
 								<h4 class="d-flex justify-content-between align-items-center mb-3">
-									<span class="text-muted">Seu notificação:
+									<span class="text-muted">Pendências :
 									</span>
 									<span class="badge badge-secondary badge-pill"></span>
 								</h4>
 								<ul class="list-group mb-3 sticky-top">
 									{% if ln == null %}
-										você não tem notificação
+										você não tem Pendências
 									{% else %}
 										{% for row in ln %}
 											{% if row.done != 'Feito' %}
@@ -164,8 +162,6 @@ window.location.reload();
 																{{row.id}}
 															</small>
 														</div>
-														<span class="text-muted">Descrição breve:
-															{{row.descImpacto}}</span>
 													</a>
 												</li>
 											{% endif %}
@@ -188,20 +184,31 @@ window.location.reload();
 													<medium>Nome da mudança:
 														{{m.nomeMudanca}}</medium>
 												</div>
+												
+									<div id="hidden-section" style="display: none;">
+									
+										<medium>add by :
+											{{m.addBy.name}}</medium>
+											
+										<medium>areaImpact : 
+											{% for item in m.areaImpact %}
+												
+											{{item.name}}
+											{% endfor %}</medium>
+									</div>
 												<div class="d-flex w-100 justify-content-between">
-													<p class="mb-1">Descrição da Mudança:
-														{{m.descImpacto}}</p>
-													<medium>Descrição do Impacto:
-														{{m.descImpacto}}</medium>
-												</div>
-												<div class="d-flex w-100 justify-content-between">
-													<medium>Área impactada:
-														{% for row in m.areaImpact %}
-															{{row.name}}
-															<br>
-														{% endfor %}
+													<medium>
+														{% if m.appMan == 1 %}
+															<p style ="color :#008B83">Mudança Aprovada</p>
+														{% endif %}
 													</medium>
-													<medium></medium>
+												</div>			
+												<div class="d-flex w-100 justify-content-between">
+													<medium>
+														{% if m.appGest == 1 %}
+														<p style ="color :#008B83">	Mudança Aceita</p>
+														{% endif %}
+													</medium>
 												</div>
 											</a>
 										</div>
@@ -215,20 +222,33 @@ window.location.reload();
 													<medium>Nome da mudança:
 														{{m.nomeMudanca}}</medium>
 												</div>
+												
+									<div id="hidden-section" style="display: none;">
+									
+										<medium>add by :
+											{{m.addBy.name}}</medium>
+											
+										<medium>areaImpact : 
+											{% for item in m.areaImpact %}
+												
+											{{item.name}}
+											{% endfor %}</medium>
+									</div>
 												<div class="d-flex w-100 justify-content-between">
-													<p class="mb-1">Descrição da Mudança:
-														{{m.descImpacto}}</p>
-													<medium>Descrição do Impacto:
-														{{m.descImpacto}}</medium>
-												</div>
-												<div class="d-flex w-100 justify-content-between">
-													<medium>Área impactada:
-														{% for row in m.areaImpact %}
-															{{row.name}}
-															<br>
-														{% endfor %}
+												
+													<medium>
+														{% if m.appMan == 1 %}
+															<p style ="color :#008B83">Mudança Aprovada</p>
+														{% endif %}
 													</medium>
-													<medium></medium>
+												</div>
+													
+												<div class="d-flex w-100 justify-content-between">
+													<medium>
+														{% if m.appGest == 1 %}
+														<p style ="color :#008B83">	Mudança Aceita</p>
+														{% endif %}
+													</medium>
 												</div>
 											</a>
 										</div>
@@ -245,20 +265,33 @@ window.location.reload();
 													<medium>Nome da mudança:
 														{{m.nomeMudanca}}</medium>
 												</div>
+												
+									<div id="hidden-section" style="display: none;">
+									
+										<medium>add by :
+											{{m.addBy.name}}</medium>
+											
+										<medium>areaImpact : 
+											{% for item in m.areaImpact %}
+												
+											{{item.name}}
+											{% endfor %}</medium>
+									</div>
 												<div class="d-flex w-100 justify-content-between">
-													<p class="mb-1">Descrição da Mudança:
-														{{m.descImpacto}}</p>
-													<medium>Descrição do Impacto:
-														{{m.descImpacto}}</medium>
-												</div>
-												<div class="d-flex w-100 justify-content-between">
-													<medium>Área impactada:
-														{% for row in m.areaImpact %}
-															{{row.name}}
-															<br>
-														{% endfor %}
+												
+													<medium>
+														{% if m.appMan == 1 %}
+															<p style ="color :#008B83">Mudança Aprovada</p>
+														{% endif %}
 													</medium>
-													<medium></medium>
+												</div>
+													
+												<div class="d-flex w-100 justify-content-between">
+													<medium>
+														{% if m.appGest == 1 %}
+														<p style ="color :#008B83">	Mudança Aceita</p>
+														{% endif %}
+													</medium>
 												</div>
 											</a>
 										</div>
@@ -350,7 +383,7 @@ window.location.reload();
 				}
 				}
 
-				new TomSelect("#mudancas_manager_areaImpact", {maxItems: 9});
+				new TomSelect("#mudancas_manager_areaImpact", {maxItems: 36});
 				{% elseif gestor %}
 				$(document).ready(function () {
 				const box = document.getElementById('nanseForm');

@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: MudancasRepository::class)]
 class Mudancas
 {
@@ -19,16 +21,16 @@ class Mudancas
     #[ORM\Column(length: 50)]
     private ?string $nomeMudanca = null;
     
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 1024)]
     private ?string $descMudanca = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 1024)]
     private ?string $descImpacto = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 1024)]
     private ?string $descImpactoArea = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 1024)]
     private ?string $justif = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -67,8 +69,8 @@ class Mudancas
     private ?string $cost = null;
 
     //Mudança Implementada
-    #[ORM\Column(nullable: true)]
-    private ?bool $implemented = null;
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $implemented = null;
     
     //Evidencia de Implementação
     #[ORM\Column(length: 255, nullable: true)]
@@ -110,9 +112,91 @@ class Mudancas
     #[ORM\Column(nullable: true)]
     private ?int $managerUserApp = null;
     
+    #[Assert\File(
+        maxSize: '1024k',
+        mimeTypes: ['image/jpeg'],
+        mimeTypesMessage: 'Carregue uma imagem png válida',
+    )]
+    #[ORM\Column(length: 255, nullable: true)]
+    private  $photo;
+
+    
+    /**
+     * @Assert\File(
+     *     maxSize="1024m",
+     *     mimeTypes={"application/pdf","application/msword","application/vnd.ms-excel"},
+     *     mimeTypesMessage="Please upload a valid PDF file",
+     *     maxSizeMessage="This PDF file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}."
+     * )
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    public $pdf;
+
+    
+    /**
+     * @Assert\File(
+     *     maxSize="1024k",
+     *     mimeTypes={"application/msword"},
+     *     mimeTypesMessage="Please upload a valid PDF file",
+     *     maxSizeMessage="This PDF file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}."
+     * )
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    public $word;
+
+
+    
+    /**
+     * @Assert\File(
+     *     maxSize="1024k",
+     *     mimeTypes={"application/vnd.ms-excel"},
+     *     mimeTypesMessage="Please upload a valid PDF file",
+     *     maxSizeMessage="This PDF file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}."
+     * )
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    public $excel;
+
     public function __construct()
     {
         $this->areaImpact = new ArrayCollection();
+    }
+    public function getPdf(){
+        return $this->pdf;
+    }
+
+    public function setPdf( $pdf)
+    {
+        $this->pdf = $pdf;
+        return $this;
+    }
+    public function getWord(){
+        return $this->word;
+    }
+
+    public function setWord( $word)
+    {
+        $this->word = $word;
+        return $this;
+    }
+    public function getExcel(){
+        return $this->excel;
+    }
+
+    public function setExcel( $excel)
+    {
+        $this->excel = $excel;
+        return $this;
+    }
+    
+    public function getPhoto(){
+        return $this->photo;
+    }
+
+    public function setPhoto( $photo)
+    {
+        $this->photo = $photo;
+        return $this;
     }
 
     public function getId(): ?int
@@ -310,12 +394,12 @@ class Mudancas
         return $this;
     }
 
-    public function isImplemented(): ?bool
+    public function isImplemented(): ?string
     {
         return $this->implemented;
     }
 
-    public function setImplemented(?bool $implemented): self
+    public function setImplemented(?string $implemented): self
     {
         $this->implemented = $implemented;
 
