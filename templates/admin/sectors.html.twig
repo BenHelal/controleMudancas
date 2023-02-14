@@ -62,68 +62,101 @@
 				<div class="card-header">
 					Editar Setor
 				</div>
-				<div class="card-body">
-					{{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
-					{{ form_label(form.name) }}
-					{{ form_widget(form.name, {'attr': {'class':'form-control'}}) }}
-
-					{{ form_label(form.Departemant) }}
-					{{ form_widget(form.Departemant, {'attr': {'class':'form-control'}}) }}
-
-
-					{{ form_label(form.coordinator) }}
-					{{ form_widget(form.coordinator, {'attr': {'class':'form-control'}}) }}
-
-					{{ form_label(form.manager) }}
-					{{ form_widget(form.manager, {'attr': {'class':'form-control'}}) }}
-
-					<div class="row">
-						<div class="col-md-6 mb-3">
-							<button class="btn btn-info mt-2 text-white">Enviar</button>
-						</div>
-					</div>
-
-					{{ form_end(form)}}
-				</div>
-			</div>
-		{% elseif type == "create" %}
-
-			<div class="card" style="margin: 50px">
 				<div class="card-header">
-					Adicionar Setor
-				</div>
-				<div class="card-body">
-					{{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
-					{{ form_label(form.name) }}
-					{{ form_widget(form.name, {'attr': {'class':'form-control'}}) }}
-
-					{{ form_label(form.Departemant) }}
-					{{ form_widget(form.Departemant, {'attr': {'class':'form-control'}}) }}
+					<a class="btn btn-info mt-2 text-white" data-toggle="modal" data-target="#imp">Excluir Setor</a>
 
 
-					{{ form_label(form.coordinator) }}
-					{{ form_widget(form.coordinator, {'attr': {'class':'form-control'}}) }}
+					<div class="modal fade" id="imp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h4 class="modal-title" id="exampleModalLongTitle">Contato</h4>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<div class="row" style="    margin-right: 12px;
+											    margin-left: 5px;">
+										<div class="d-flex w-80 justify-content-between">
+											<h5 class="mb-1">
+												Tem certeza que deseja excluir este setor ?
+											</h5>
+										</div>
 
-					{{ form_label(form.manager) }}
-					{{ form_widget(form.manager, {'attr': {'class':'form-control'}}) }}
+									</div>
 
-					<div class="row">
-						<div class="col-md-6 mb-3">
-							<button class="btn btn-info mt-2 text-white">Enviar</button>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
+										<a href="{{path('delete_sector',{id: s.id})}}" class="btn btn-info mt-2 text-white">Excluir</a>
+									</div>
+								</div>
+							</div>
 						</div>
+
 					</div>
+					<div class="card-body">
+						{{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
+						{{ form_label(form.name) }}
+						{{ form_widget(form.name, {'attr': {'class':'form-control'}}) }}
 
-					{{ form_end(form)}}
+						{{ form_label(form.Departemant) }}
+						{{ form_widget(form.Departemant, {'attr': {'class':'form-control'}}) }}
+
+
+						{{ form_label(form.coordinator) }}
+						{{ form_widget(form.coordinator, {'attr': {'class':'form-control'}}) }}
+
+						{{ form_label(form.manager) }}
+						{{ form_widget(form.manager, {'attr': {'class':'form-control'}}) }}
+
+						<div class="row">
+							<div class="col-md-6 mb-3">
+								<button class="btn btn-info mt-2 text-white">Enviar</button>
+							</div>
+						</div>
+
+						{{ form_end(form)}}
+					</div>
 				</div>
-			</div>
-		{% endif %}
+			{% elseif type == "create" %}
 
-	</div>
+				<div class="card" style="margin: 50px">
+					<div class="card-header">
+						Adicionar Setor
+					</div>
+					<div class="card-body">
+						{{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
+						{{ form_label(form.name) }}
+						{{ form_widget(form.name, {'attr': {'class':'form-control'}}) }}
 
-	<script>
+						{{ form_label(form.Departemant) }}
+						{{ form_widget(form.Departemant, {'attr': {'class':'form-control'}}) }}
 
 
-		$(document).ready(function () {
+						{{ form_label(form.coordinator) }}
+						{{ form_widget(form.coordinator, {'attr': {'class':'form-control'}}) }}
+
+						{{ form_label(form.manager) }}
+						{{ form_widget(form.manager, {'attr': {'class':'form-control'}}) }}
+
+						<div class="row">
+							<div class="col-md-6 mb-3">
+								<button class="btn btn-info mt-2 text-white">Enviar</button>
+							</div>
+						</div>
+
+						{{ form_end(form)}}
+					</div>
+				</div>
+			{% endif %}
+
+		</div>
+
+		<script>
+
+
+			$(document).ready(function () {
 $('#sector_Departemant').chosen({});
 });
 $(document).ready(function () {
@@ -136,5 +169,5 @@ $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 });
 });
 });
-	</script>
-{% endblock %}
+		</script>
+	{% endblock %}

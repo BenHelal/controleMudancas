@@ -17,7 +17,7 @@
 								<div class="card-body">
 									<div class="row no-gutters align-items-center">
 										<div class="col mr-2">
-											<div class="text-xs font-weight-bold text-info text-uppercase mb-1">Porcentagem de mudanças de acabamento
+											<div class="text-xs font-weight-bold text-info text-uppercase mb-1">Porcentagem de Mudanças Encerradas
 											</div>
 											<div class="row no-gutters align-items-center">
 												<div class="col-auto">
@@ -123,79 +123,207 @@
 					{% endif %}
 					{% for m in mud %}
 						{% if m.done != 'Feito' %}
-						<div id="myTable" class="list-group">
-							<a href="{{path('upm',{id: m.id})}}" class="list-group-item list-group-item-action flex-column align-items-start">
-								<div class="d-flex w-100 justify-content-between">
-									<h5 class="mb-1">Número da mudança:
-										{{m.id}}</h5>
-									<medium>Nome da mudança:
-										{{m.nomeMudanca}}</medium>
-								</div>
-								<div class="d-flex w-100 justify-content-between">
-									<p class="mb-1">Descrição da Mudança:
-										{{m.descImpacto}}</p>
-									<medium>Descrição do Impacto:
-										{{m.descImpacto}}</medium>
-								</div>
-								<div class="d-flex w-100 justify-content-between">
-									<medium>Área impactada:
-										{% for row in m.areaImpact %}
-											{{row.name}}
-											<br>
-										{% endfor %}
-									</medium>
-									<medium></medium>
-								</div>
-							</a>
-						</div>
+							<div id="myTable" class="list-group">
+								<a href="{{path('approve',{id: m.id})}}" class="list-group-item list-group-item-action flex-column align-items-start">
+									<div class="d-flex w-100 justify-content-between">
+										<h5 class="mb-1">Número da mudança :
+											{{m.id}}</h5>
+										<medium>Nome da mudança:
+											{{m.nomeMudanca}}</medium>
+									</div>
+									<div id="hidden-section" style="display: none;">
+									
+										<medium>add by :
+											{{m.addBy.name}}</medium>
+											
+										<medium>areaImpact  :
+											{% for item in m.areaImpact %}
+												
+											{{item.name}}                        {% endfor %}</medium>
+									</div>
+												{% if  m.nansenNumber != null and m.appMan == null    and m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Solicitação Aprovada</p>
+														</medium>
+													</div>
+												{% elseif m.managerUserApp == 1 and m.appMan == null    and m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Solicitação Aprovada</p>
+														</medium>
+													</div>	
+												{% elseif m.managerUserApp == 2 and m.appMan == null   and m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Solicitação Reprovada</p>
+														</medium>
+													</div>
+												{% elseif m.appMan == 1 and m.appGest == null and m.done != 'Feito' and m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Mudança Aprovada</p>
+														</medium>
+													</div>
+												{% elseif  m.appMan == 2  and m.appGest == null    and   m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Mudança Reprovada</p>
+														</medium>
+													</div>
+												{% elseif   m.appGest == 1 and m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">
+																Status: Mudança Aceita</p>
+														</medium>
+													</div>
+												{% elseif   m.appGest == 2 and m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">
+																Status: Mudança Rejeitada</p>
+														</medium>
+													</div>
+												{% elseif  m.appMan == 1 and m.appGest == 1 and  m.implemented == 1 %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Mudança implementada</p>
+														</medium>
+													</div>
+												{% elseif  m.appMan == 1 and m.appGest == 1 and  m.implemented == 2 %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status:  Mudança não implementada  implementadas e fechadas</p>
+														</medium>
+													</div>
+												{% elseif m.done == 'Feito' and  m.implemented == 2 %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status:  Mudança não implementada  implementadas e fechadas</p>
+														</medium>
+													</div>
+												{% elseif   m.implemented != 2 %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status:  Mudança Aberta</p>
+														</medium>
+													</div>
+												{% endif %}
+								</a>
+							</div>
 						{% else %}
-						<div style="    background-color: #94B0B4;" id="myTable" class="list-group">
-							<a  style="    background-color:  #94B0B4;" href="{{path('upm',{id: m.id})}}" class="list-group-item list-group-item-action flex-column align-items-start">
-								<div style="    background-color:  #94B0B4;"  class="d-flex w-100 justify-content-between">
-									<h5 class="mb-1">Número da mudança:
-										{{m.id}}</h5>
-									<medium>Nome da mudança:
-										{{m.nomeMudanca}}</medium>
-								</div>
-								<div style="    background-color: #94B0B4;"  class="d-flex w-100 justify-content-between">
-									<p class="mb-1">Descrição da Mudança:
-										{{m.descImpacto}}</p>
-									<medium>Descrição do Impacto:
-										{{m.descImpacto}}</medium>
-								</div>
-								<div style="    background-color:  #94B0B4;"  class="d-flex w-100 justify-content-between">
-									<medium>Área impactada:
-										{% for row in m.areaImpact %}
-											{{row.name}}
-											<br>
-										{% endfor %}
-									</medium>
-									<medium>{{m.done}}</medium>
-								</div>
-							</a>
-						</div>
+							<div style="    background-color: #94B0B4;" id="myTable" class="list-group">
+								<a style="    background-color:  #94B0B4;" href="{{path('approve',{id: m.id})}}" class="list-group-item list-group-item-action flex-column align-items-start">
+									<div style="    background-color:  #94B0B4;" class="d-flex w-100 justify-content-between">
+										<h5 class="mb-1">Número da mudança :
+											{{m.id}}</h5>
+										<medium>Nome da mudança:
+											{{m.nomeMudanca}}</medium>
+									</div>
+									<div id="hidden-section" style="display: none;">
+									
+										<medium>add by :
+											{{m.addBy.name}}</medium>
+											
+										<medium>areaImpact : 
+											{% for item in m.areaImpact %}
+												
+											{{item.name}}
+											{% endfor %}</medium>
+									</div>
+
+												{% if  m.nansenNumber != null and m.appMan == null    and m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Solicitação Aprovada</p>
+														</medium>
+													</div>
+												{% elseif m.managerUserApp == 1 and m.appMan == null    and m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Solicitação Aprovada</p>
+														</medium>
+													</div>	
+												{% elseif m.managerUserApp == 2 and m.appMan == null   and m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Solicitação Reprovada</p>
+														</medium>
+													</div>
+												{% elseif m.appMan == 1 and m.appGest == null and m.done != 'Feito' and m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Mudança Aprovada</p>
+														</medium>
+													</div>
+												{% elseif  m.appMan == 2  and m.appGest == null    and   m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Mudança Reprovada</p>
+														</medium>
+													</div>
+												{% elseif   m.appGest == 1 and m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">
+																Status: Mudança Aceita</p>
+														</medium>
+													</div>
+												{% elseif   m.appGest == 2 and m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">
+																Status: Mudança Rejeitada</p>
+														</medium>
+													</div>
+												{% elseif  m.appMan == 1 and m.appGest == 1 and  m.implemented == 1 %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Mudança implementada</p>
+														</medium>
+													</div>
+												{% elseif  m.appMan == 1 and m.appGest == 1 and  m.implemented == 2 %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status:  Mudança não implementada  implementadas e fechadas</p>
+														</medium>
+													</div>
+												{% elseif m.done == 'Feito' and  m.implemented == 2 %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status:  Mudança não implementada  implementadas e fechadas</p>
+														</medium>
+													</div>
+												{% elseif   m.implemented != 2 %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status:  Mudança Aberta</p>
+														</medium>
+													</div>
+												{% endif %}
+								</a>
+							</div>
 						{% endif %}
 					{% endfor %}
 					{% if manager %}
-
 					</div>
-
 				</div>
 			{% endif %}
-
 		{% endif %}
-		
+
 	{% endif %}
 	<script>
-$("#myInput").on("keyup", function () {
+		$("#myInput").on("keyup", function () {
 var value = $(this).val().toLowerCase();
 $("#myTable a").filter(function () {
 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 });
-});</script>
+});
+	</script>
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script>
-{% if  creation == 'false' %}
+		{% if  creation == 'false' %}
 {% if m.comMan == null %}
 {% elseif m.comMan != null and m.comGest == null %}
 var form = document.getElementById("test");

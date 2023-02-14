@@ -26,7 +26,7 @@
 
 			<tbody>
 				<tr>
-					<th scope="row">Peticionário</th>
+					<th scope="row">Solicitante</th>
 					<td>
 						{% if mud.addBy.name != null %}
 							{{mud.addBy.departemant}}
@@ -64,22 +64,22 @@
 								Rejeitado
 							{% endif %}
 						{% else %}
-							Ainda não verificado
+							Não verificado
 						{% endif %}
 					</td>
 					<td>
 						{% if mud.managerUserComment != null %}
 							{{mud.managerUserComment}}
 						{% else %}
-							Ainda não comentário
+							Sem comentário
 						{% endif %}
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">Gerente Aprovação</th>
 					{% if p == null %}
-						<td>Ainda não verificado</td>
-						<td>Ainda não verificado</td>
+						<td>Não verificado</td>
+						<td>Não verificado</td>
 					{% else %}
 						<td>{{mud.areaResp.name}}</td>
 						<td>{{mud.areaResp.manager.name}}</td>
@@ -90,27 +90,28 @@
 					{% elseif mud.appMan == 2  %}
 						<td>Rejeitado</td>
 					{% elseif  mud.appMan == null  %}
-						<td>Ainda não verificado</td>
+						<td>Não verificado</td>
 					{% endif %}
 
 
 					{% if mud.comMan != null %}
 						<td>{{mud.comMan}}</td>
 					{%  else %}
-						<td>Ainda não comentário</td>
+						<td>
+							Sem comentário</td>
 					{% endif %}
 				</tr>
 				<tr>
 					<th scope="row">Gestor da Mudança</th>
 					{% if mud.mangerMudancas == null %}
-						<td>Ainda não verificado</td>
-						<td>Ainda não verificado</td>
+						<td>Não verificado</td>
+						<td>Não verificado</td>
 					{% else %}
 						<td>{{mud.mangerMudancas.departemant}}</td>
 						<td>{{mud.mangerMudancas.name}}</td>
 					{% endif %}
 					{% if mud.appGest == null %}
-						<td>Ainda não verificado</td>
+						<td>Não verificado</td>
 					{% elseif mud.appGest == 1 %}
 						<td>Aprovado</td>
 					{% elseif mud.appGest == 2 %}
@@ -118,7 +119,8 @@
 					{% endif %}
 
 					{% if mud.appGest == null %}
-						<td>Ainda não comentário</td>
+						<td>
+							Sem comentário</td>
 					{% else %}
 						<td>{{mud.comGest}}</td>
 					{% endif %}
@@ -131,19 +133,45 @@
 						<td>{{data2[key].name }}</td>
 						{% if  m.app_sector_man  == 1  %}
 							<td>Aprovado</td>
-						{% elseif m.app_sector_man == 2 %}
+						{% elseif m.app_sector_man == 0 and  m.comment != null %}
 							<td>Rejeitado</td>
 						{% elseif m.app_sector_man == null   %}
-							<td>Ainda não verificado</td>
+							<td>Não verificado</td>
 						{% endif %}
 
 
 						{% if m.comment == null %}
-							<td>Ainda não comentário</td>
+							<td>
+							Sem comentário</td>
 						{% else %}
 							<td>{{m.comment}}</td>
 						{% endif %}
 					</tr>
+
+				{% if mud.implemented != null %}
+					<tr>
+						<th scope="row">Dados de implementação</th>
+						<td>{{mud.mangerMudancas.departemant}}</td>
+						<td>{{mud.mangerMudancas.name}}</td>
+						{% if  mud.implemented  == 1  %}
+							<td>Implementado</td>
+						{% elseif mud.implemented == 2 %}
+							<td>Não implementado</td>
+						{% endif %}
+
+
+						{% if mud.impDesc == null %}
+							<td>
+							Sem comentário</td>
+						{% else %}
+							<td>
+							{{mud.dateOfImp}}<br>
+							{{mud.impDesc}}</td>
+						{% endif %}
+					</tr>
+
+				{% endif %}
+				
 				</td>
 			</tbody>
 		</tr>

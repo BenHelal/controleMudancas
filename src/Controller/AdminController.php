@@ -94,6 +94,8 @@ class AdminController extends AbstractController
             } else {
                 return $this->redirectToRoute('logoutAdmin');
             }
+        }else {
+            return $this->redirectToRoute('logoutAdmin');
         }
     }
 
@@ -483,7 +485,7 @@ class AdminController extends AbstractController
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['email' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
-            
+
             $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
@@ -697,7 +699,22 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('app_mudancas');
         }
     }
-
+    #[Route('/delete/sector/{id}', name: 'delete_sector')]
+    public  function deletesectorById($id, ManagerRegistry $doctrine, Request $request)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        //$request->header_remove();
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $sector = $em->getRepository(Sector::class)->find($id);
+            $em->remove($sector);
+            $em->flush();
+            return $this->redirectToRoute('app_sectors');
+        } else {
+            return $this->redirectToRoute('app_admin');
+        }
+    }
     #[Route('/edit/sector/{id}', name: 'edit_sector')]
     public  function sectorById($id, ManagerRegistry $doctrine, Request $request)
     {
@@ -721,6 +738,7 @@ class AdminController extends AbstractController
                 'login' => 'null',
                 'type' => 'update',
                 'p' => $person,
+                's' => $sector,
                 'form' => $form->createView(),
             ]);
         } else {
@@ -730,7 +748,8 @@ class AdminController extends AbstractController
 
 
     #[Route('/email', name: 'email')]
-    public function emaill(ManagerRegistry $doctrine, Request $request){
+    public function emaill(ManagerRegistry $doctrine, Request $request)
+    {
         $session = new Session();
         $session = $request->getSession();
 
@@ -748,7 +767,7 @@ class AdminController extends AbstractController
                 $email->setPassword('9BhAsZw8a8ZrnQzX');
                 $email->setEmailSystem('noreply@serdia.com.br');
                 $email->setTitleObj('Serdia Control Mudanças');
-                $email->setSubject('Control de mudanças');
+                $email->setSubject('Controle de Mudanças *');
                 $email->setChartSet('UTF-8');
                 $em->persist($email);
                 $em->flush();

@@ -25,11 +25,11 @@ class MudancasType extends AbstractType
                 'label'=> 'Nome da mudança'
             ])
             ->add('nansenName',null,[
-                'label'=> 'Nome da mudança no nansen',
+                'label'=> 'Nome do Projeto Nansen',
                 'empty_data' => ''
             ])
             ->add('nansenNumber',null,[
-                'label'=> 'Codigo da nansen',
+                'label'=> 'Código Nansen',
                 'empty_data' => ''
             ])
             ->add('descMudanca',TextareaType::class,[
@@ -52,7 +52,6 @@ class MudancasType extends AbstractType
                 },
                 'choice_label' => 'name',
                 'label'=> 'Área impactada',
-                
                 'placeholder' => 'Área impactada',
                 'expanded'  => false,
                 'multiple' => true))
@@ -65,6 +64,7 @@ class MudancasType extends AbstractType
                         return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
                     },
                     'choice_label' => 'name',
+                    'placeholder' => 'Escolha o setor responsável...',
                     'label' => 'Área Responsável pela mudança'
                 
             ));

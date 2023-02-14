@@ -29,7 +29,7 @@ class LoginController extends AbstractController
         if ($session->get('token_jwt') == null) {  
 
             // update list of employer 
-            $url = 'https://intranet.serdia.com.br/a/users.php?sys=1&tk=24dbdb7659f46b318b543981f2b0784226b8bd54';
+            $url = 'http://10.100.1.253/a/users.php?sys=1&tk=24dbdb7659f46b318b543981f2b0784226b8bd54';
             $ch = curl_init($url);
             $data = array();
             $payload = json_encode(array("user" => $data));
@@ -116,7 +116,7 @@ class LoginController extends AbstractController
                 $username = $form["userName"]->getData();
                 $password = $form["password"]->getData();
                 $password = hash('whirlpool', $password);
-                $url = 'https://intranet.serdia.com.br/a/connection.php?sys=1&user=' . $username . '&pass=' . $password . '';
+                $url = 'http://10.100.1.253/a/connection.php?sys=1&user=' . $username . '&pass=' . $password . '';
                 // Create a new cURL resource
                 $ch = curl_init($url);
                 // Setup request to send json via POST
@@ -134,6 +134,15 @@ class LoginController extends AbstractController
                 $personJSON = $result;
                 $person = json_decode($personJSON);
                 
+                if($person->status == 'Error'){
+                    return $this->render('login/index.html.twig', [
+                        'controller_name' => 'LoginController',
+                        'login' => 'true',
+                        'form' => $form->createView(),
+                        'wrong' => true
+                    ]);
+                }
+
                 if ($person != null) {
                     // Create token header as a JSON string
                     $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
@@ -182,14 +191,16 @@ class LoginController extends AbstractController
                     return $this->render('login/index.html.twig', [
                         'controller_name' => 'LoginController',
                         'login' => 'true',
-                        'form' => $form->createView()
+                        'form' => $form->createView(),
+                        'wrong' => false
                     ]);
                 }
             }
             return $this->render('login/index.html.twig', [
                 'controller_name' => 'test ',
                 'login' => 'true',
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'wrong' => false
             ]);
         }else{
             return $this->redirectToRoute('app_mudancas');
@@ -220,7 +231,7 @@ class LoginController extends AbstractController
                 $username = $form["userName"]->getData();
                 $password = $form["password"]->getData();
                 $password = hash('whirlpool', $password);
-                $url = 'https://intranet.serdia.com.br/a/connection.php?sys=1&user=' . $username . '&pass=' . $password . '';
+                $url = 'http://10.100.1.253/a/connection.php?sys=1&user=' . $username . '&pass=' . $password . '';
                 $ch = curl_init($url);
                 $data = array();
                 $payload = json_encode(array("user" => $data));
@@ -236,6 +247,16 @@ class LoginController extends AbstractController
                 curl_close($ch);
                 $personJSON = $result;
                 $person = json_decode($personJSON);
+            
+                if($person->status == 'Error'){
+                    return $this->render('admin/index.html.twig', [
+                        'controller_name' => 'AdminController',
+                        'form' => $form->createView(),
+                        'wrong' => true
+                    ]);
+                }
+
+
                 $p = $em->getRepository(Person::class)->findOneBy(['name' => $person->name]);
                 //dd($p);
                 if ($p->getRole() == null) {
@@ -268,14 +289,16 @@ class LoginController extends AbstractController
                     } else {
                         return $this->render('admin/index.html.twig', [
                             'controller_name' => 'AdminController',
-                            'form' => $form
+                            'form' => $form->createView(),
+                            'wrong' => false 
                         ]);
                     }
                 }
             }
             return $this->render('admin/index.html.twig', [
                 'controller_name' => 'AdminController',
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'wrong' => false 
             ]);
         }
     }

@@ -1,12 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Hello NotifController!
+{% endblock %}
 
 {% block body %}
-	<link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" rel="stylesheet">
-	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
-	<div class="container" style="padding-left: 20px ;padding-right: 20px;">
-
-
 	<style>
 		.example-wrapper {
 			margin: 1em auto;
@@ -18,54 +15,148 @@
 			background: #F5F5F5;
 			padding: 2px 6px;
 		}
+
+
+		/* Create two unequal columns that floats next to each other */
+		/* Left column */
+		.leftcolumn {}
+
+		/* Right column */
+		.rightcolumn {
+			float: left;
+			width: 25%;
+			padding-left: 20px;
+		}
+
+		/* Fake image */
+		.fakeimg {
+			background-color: #aaa;
+			width: 100%;
+			padding: 20px;
+		}
+
+
+		/* Clear floats after the columns */
+		.row:after {
+			content: "";
+			display: table;
+			clear: both;
+		}
+		/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
+		@media screen and(max-width: 800px) {
+			.leftcolumn,
+			.rightcolumn {
+				width: 100%;
+				padding: 0;
+			}
+		}
 	</style>
 
-	<div class="example-wrapper">
-		<h1>Nome de mudanças :
-			{{mud.nomeMudanca}}</h1>
-		Descrição das mudanças:
-		{{mud.descMudanca}}
-		<ul>
-			<li>Descrição das mudanças na área impactada :
-				<br><code style=" color: #007a7e;">
-					{{mud.descImpactoArea}}
-				</code>
-			</li>
-			<li>
-				Area impactada :
-				<br>
+	<div class="row">
+		<div class="leftcolumn" style=" float: left; width: 75%;">
+			<div class="card" style=" background-color: white; padding: 20px; margin-top: 20px;  margin-left: 20px">
 
-				{% for item in mud.areaImpact %}
-					<code style="color: #007a7e;">
-						{{item.name}}<br>
-					</code>
-				{% endfor %}
-			</li>
-		</ul>
-	</div>
-	
-		{{ form_start(form, {'attr':{'class':'form-group'}}) }}
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.managerUserComment) }}
-				{{ form_widget(form.managerUserComment,{'attr':{'class':'form-control'}}) }}
+				{% if data.mangerMudancas != null %}
+					<h2>Gestor da mudança :
+						{{data.mangerMudancas.name}}</h2>
+				{% endif %}
+
+				<h2>Nome de mudanças:
+					{{data.nomeMudanca}}</h2>
+
+				<p>Cod:
+					{{data.id}}</p>
+				{% if data.nansenNumber != null %}
+					<p>Nome do mudanças na Nansen :<br>
+						{{data.nansenName}}</p>
+
+					<p>Codigo do mudanças na Nansen :<br>
+						{{data.nansenNumber}}</p>
+				{% endif %}
+
+				<p>Descrição da Mudança :<br>
+					{{data.descMudanca}}</p>
+
+				<p>Justificativa :<br>
+					{{data.justif}}</p>
+
+				<p>Descrição do Impacto :<br>
+					{{data.descImpacto}}</p>
+
+				<p>Descrição do Impacto na área do Solicitante :<br>
+					{{data.descImpactoArea}}</p>
+
+
+				<p>Àrea impactada :
+					{% for item in area %}
+						<code style="color: #007a7e;">
+							{{item.name}}<br>
+						</code>
+					{% endfor %}
+				</p>
+
+				
+				<p>Àrea responsável:<br>
+					{{data.areaResp.name}}</p>
+
+				{% if data.appGest != null %}
+					<p>Data estimada de Início :<br>
+						{{data.startMudancas}}</p>
+					<p>Data estimada de Termino :<br>
+						{{data.endMudancas}}</p>
+						
+					<p>Data Efetiva de Início :<br>
+						{{data.effictiveStartDate}}</p>
+						
+					<p>Custo :<br>
+						{{data.cost}}</p>
+					<p>Evidencia de Implementação:<br>
+						{{data.impDesc}}</p>
+
+				{% endif %}
+
+
+				{% if data.photo != null %}
+					<div style="width:600px;">
+						<img class="center card-img-top" src="{{ asset('assets/')}}{{data.id}}/{{data.photo}}" alt="" style="width: 100%;padding-top: 15px;">
+					</div>
+				{% endif %}
+				
+				{% if data.pdf != null %}
+					<div class="col-md-12 mb-3">
+					<a class="btn btn-info mt-2 text-white" href ="{{path('filed',{'id':data.id} )}}">
+						⇬ Fazer download do arquivo
+					</a></div>
+				{% endif %}
+
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				{{ form_label(form.managerUserApp) }}
-				{{ form_widget(form.managerUserApp,{'attr':{'class':'form-control', 'rows': '4'}}) }}
-			</div>
-		</div>
-		<div class="row">
-						<div class="col-md-6 mb-3">
-							<button id="btn" class="	btn btn-info mt-2 text-white" style="
-																	background-color: #0c2c01;
-																	border-color: #0c2c01;">Adicionar</button>
+
+		<div class="rightcolumn" style=" float: left; width: 25%; padding-left: 20px;">
+			<div class="card" style=" background-color: white; padding: 20px; margin-top: 20px; margin-right: 20px">
+				<div style="margin :10px">
+					{{ form_start(form, {'attr':{'class':'form-group'}}) }}
+					<div class="row">
+						<div class="col-md-12 mb-3">
+							{{ form_label(form.managerUserApp) }}
+							{{ form_widget(form.managerUserApp,{'attr':{'class':'form-control'}}) }}
 						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 mb-3">
+							{{ form_label(form.managerUserComment) }}
+							{{ form_widget(form.managerUserComment,{'attr':{'class':'form-control'}}) }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<button class="	btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Adicionar</button>
+						</div>
+					</div>
+					{{ form_end(form) }}
+				</div>
+			</div>
 		</div>
-		{{ form_end(form) }}
-	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-	<script>
-	</script>
+	</div>
+
 {% endblock %}

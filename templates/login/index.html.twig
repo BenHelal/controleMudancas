@@ -234,6 +234,10 @@ input[type=text]:placeholder {
         {{ form_widget(form.password) }}
         <button class="btn btn-info mt-2 text-white">Conecte-se</button>
       {{ form_end(form) }}
+
+      {% if wrong %}
+                                     <p class="register">Não é um membro? <br>Administrador de TI do formulário de Acesso por Demanda</p>
+                                    {% endif %}
   </div>
 </div>
 

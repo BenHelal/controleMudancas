@@ -23,11 +23,11 @@ class MudancasManagerType extends AbstractType
                 'label'=> 'Nome da mudança'
             ])
             ->add('nansenName',null,[
-                'label'=> 'Nome da mudança no nansen',
+                'label'=> 'Nome do Projeto Nansen',
                 'empty_data' => ''
             ])
             ->add('nansenNumber',null,[
-                'label'=> 'Codigo da nansen',
+                'label'=> 'Código Nansen',
                 'empty_data' => ''
             ])
             ->add('descMudanca',TextareaType::class,[
@@ -76,6 +76,7 @@ class MudancasManagerType extends AbstractType
                         ->orderBy('s.name','ASC');
                     },
                     'choice_label' => 'name',
+                    'placeholder' => '',
                     'label' => 'Gestor da mudança'
                 
             ))
@@ -84,11 +85,11 @@ class MudancasManagerType extends AbstractType
                     'Sim' => 1,
                     'Nao' => 2,
                 ],
-                'label'    => 'Aprovado ?',
+                'label'    => 'Deseja aprovar?',
                 'required' => true,
             ])
             ->add('comMan', null, [
-                'label'    => 'Comente :',
+                'label'    => 'Comentário :',
                 'required' => false,
             ]);
     }

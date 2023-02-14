@@ -124,7 +124,7 @@ class FunctionUsers implements FunctionStrategyInterface
     {
         try {
             $password = hash('whirlpool', $password);
-            $url = 'https://intranet.serdia.com.br/a/connection.php?sys=20&user=' . $username . '&pass=' . $password . '';
+            $url = 'http://10.100.1.253/a/connection.php?sys=20&user=' . $username . '&pass=' . $password . '';
             $user = $this->getData($url);
             $ses = new Sessions();
             if ($user != null) {
@@ -152,7 +152,7 @@ class FunctionUsers implements FunctionStrategyInterface
     {
         try {
             $password = hash('whirlpool', $password);
-            $url = 'https://intranet.serdia.com.br/a/connection.php?sys=20&user=' . $username . '&pass=' . $password . '';
+            $url = 'http://10.100.1.253/a/connection.php?sys=20&user=' . $username . '&pass=' . $password . '';
             $user = $this->getData($url);
             $ses = new Sessions();
             if ($user != null) {

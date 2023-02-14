@@ -16,7 +16,7 @@ class DepartemantProcessType extends AbstractType
         $builder
         ->add('comment', TextType::class,  array(
             'attr' => array('class' => 'fadeIn second',
-            'placeholder' => 'Comment'))) 
+            'placeholder' => 'Comentário'))) 
         ;
     }
 

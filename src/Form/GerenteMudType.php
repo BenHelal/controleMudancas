@@ -19,11 +19,11 @@ class GerenteMudType extends AbstractType
                 'Sim' => 1,
                 'Nao' => 2,
             ],
-            'label'    => 'Aprovado ?',
+            'label'    => 'Deseja aprovar?',
             'required' => false,
         ])
         ->add('managerUserComment', null, [
-            'label'    => 'Comente :',
+            'label'    => 'Comentário :',
             'required' => false,
         ])
         ;

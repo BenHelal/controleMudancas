@@ -33,6 +33,17 @@ class NotifController extends AbstractController
             $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mudancas]);
             $oneOfSp = null;
             $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+            
+            $notManager = true ;
+            foreach ($mudancas->getAreaImpact() as $key => $value) {
+                if($value->getManager() == $person){
+                    $notManager = false;
+                }
+            }
+
+            if($notManager == true){
+                return $this->redirectToRoute('upm', ['id' => $mudancas->getId()]);
+            }
             $area = [];
             foreach ($mudancas->getAreaImpact() as $key => $value) {
                 if ($value->getManager() == $person) {
@@ -55,19 +66,46 @@ class NotifController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-
                 foreach ($sps as $key => $sp) {
                     if ($sp->getSector()->getManager() == $person) {
                         //if( $mudancas->getManager)
                         if ($oneOfSp != null) {
+                            
                             $sp->setComment($oneOfSp->getComment());
-                            $sp->setAppSectorMan($oneOfSp->isAppSectorMan());
+                            $sp->setAppSectorMan($oneOfSp->getAppSectorMan());
                         }
+
                         $em->persist($sp);
-                        $em->flush(); 
-                        return $this->redirectToRoute('upm', ['id' => $id]);
+                        $em->flush();
+                        
                     }
                 }
+
+                return $this->redirectToRoute('upm', ['id' => $id]);
+               /* if(){
+                    $email = new  Email();
+                    $email->setMudancas($mud);
+                    $email->setSendTo($mud->getAddBy());
+                    $email->setSendBy($person);
+                    $email->setTitle('Aprovado pelo Gerente do solicitante');
+                    $email->setBody('gestorAppToArea');
+                    $em->persist($email);
+                    $em->flush();
+                    $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                    
+                }elseif(){
+                    $email = new  Email();
+                                            $email->setMudancas($mud);
+                                            $email->setSendTo($mud->getAddBy());
+                                            $email->setSendBy($person);
+                                            $email->setTitle('Aprovado pelo Gerente do solicitante');
+                                            $email->setBody('manager1APP');
+                                            $em->persist($email);
+                                            $em->flush();
+                                            $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                            
+                }*/
+
             }
 
 
