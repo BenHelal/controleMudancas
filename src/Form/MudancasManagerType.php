@@ -76,7 +76,7 @@ class MudancasManagerType extends AbstractType
                         ->orderBy('s.name','ASC');
                     },
                     'choice_label' => 'name',
-                    'placeholder' => '',
+                    'placeholder' => 'Selecione uma Opção',
                     'label' => 'Gestor da mudança'
                 
             ))

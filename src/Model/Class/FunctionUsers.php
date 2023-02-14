@@ -4,6 +4,7 @@ namespace App\Model\Class;
 
 use App\Entity\Departemant;
 use App\Entity\Fournisor;
+use App\Entity\Person;
 use App\Entity\Users;
 use App\Model\Class\Session as ClassSession;
 use App\Model\Interface\FunctionStrategyInterface;
@@ -31,7 +32,7 @@ class FunctionUsers implements FunctionStrategyInterface
             $user = $em->getRepository(Users::class)->findOneBy(['name' => $value->name]);
             if ($user == null) {
                 //if user not exist in database return 1
-                $users = new Users();
+                $users = new Person();
                 $this->addUsersLogin($users, $value, $em);
                 Logger::log("Add user $value->name");
             } /*else {
@@ -42,37 +43,7 @@ class FunctionUsers implements FunctionStrategyInterface
     }
 
     
-    public function checkDataFourn($data, $em)
-    {
-        foreach ($data as $key => $value) {
-            $fournisour = $em->getRepository(Fournisor::class)->findOneBy(['cliId' => $value->cliId]);
-            if ($fournisour == null) {
-                //if user not exist in database return 1
-                $fournisour = new Fournisor();
-                $fournisour->setCliId($value->cliId);
-                $fournisour->setNome($value->name);
-                $fournisour->setAdress($value->street);
-                $fournisour->setNumber($value->number);
-                $fournisour->setCity($value->city);
-                $fournisour->setState($value->state);
-                $fournisour->setDistrict($value->district);
-                $fournisour->setPhone($value->phone);
-                $fournisour->setEmail($value->email);
-                $this->addEntity($fournisour,$em);
-            }   else {/*
-                $fournisour->setCliId($value->cliId);
-                $fournisour->setNome($value->name);
-                $fournisour->setAdress($value->street);
-                $fournisour->setNumber($value->number);
-                $fournisour->setCity($value->city);
-                $fournisour->setState($value->state);
-                $fournisour->setDistrict($value->district);
-                $fournisour->setPhone($value->phone);
-                $fournisour->setEmail($value->email);*/
-            }
-        }
-    }
-
+ 
 
     public function addUsersLogin($entity, $data, $em)
     {
