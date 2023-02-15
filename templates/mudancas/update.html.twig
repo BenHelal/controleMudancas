@@ -291,14 +291,6 @@
 					<div class="col-md-12 mb-3">
 						<img class="center card-img-top" src="{{ asset('assets/')}}{{m.id}}/{{m.photo}}" alt="" style="padding-top: 15px; width : 500px">
 					</div>
-
-					<div class="col-md-12 mb-3">
-						{{ form_widget(form.photo) }}
-						<br>
-
-						{{ form_label(form.photo) }}
-
-					</div>
 					{% if m.pdf != null %}
 						<div class="col-md-12 mb-3">
 							<a class="btn btn-info mt-2 text-white" href="{{path('filed',{'id':m.id} )}}">
@@ -307,14 +299,6 @@
 							</a>
 						</div>
 					{% endif %}
-
-					<div class="col-md-12 mb-3">
-						{{ form_widget(form.pdf) }}
-						<br>
-
-						{{ form_label(form.pdf) }}
-
-					</div>
 				</div>
 
 			{% elseif gestor == false and manager %}
@@ -341,24 +325,25 @@
 			{% endif %}
 
 			{% if gestor == false and m.startMudancas != null %}
-					{% if manager == false %}
-				<div class="row">
-					
-					<div class="col-md-12 mb-3">
-						<label for="mudancas_descImpacto" class="required">Gestor da mudança</label>
-						<p class='form-control'>{{m.mangerMudancas.name}}
-						</p>
+				{% if manager == false %}
+					<div class="row">
+
+						<div class="col-md-12 mb-3">
+							<label for="mudancas_descImpacto" class="required">Gestor da mudança</label>
+							<p class='form-control'>{{m.mangerMudancas.name}}
+							</p>
+						</div>
 					</div>
-				</div>{% endif %}
-				
+				{% endif %}
+
 				<div class="row">
 					<div class="col-md-12 mb-3">
 						<label for="mudancas_descImpacto" class="required">Data estimada de Início</label>
-						<input class='form-control' value="{{m.startMudancas}}" />
-						
+						<input class='form-control' value="{{m.startMudancas}}"/>
+
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-md-12 mb-3">
 						<label for="mudancas_descImpacto" class="required">Data estimada de Termino</label>
@@ -366,8 +351,8 @@
 						</p>
 					</div>
 				</div>
-				
-				
+
+
 				<div class="row">
 					<div class="col-md-12 mb-3">
 						<label for="mudancas_descImpacto" class="required">Data estimada de Termino</label>
@@ -375,7 +360,7 @@
 						</p>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-md-12 mb-3">
 						<label for="mudancas_descImpacto" class="required">Evidencia de Implementação</label>
@@ -391,20 +376,20 @@
 						</p>
 					</div>
 				</div>
-				
 
+
+				<div class="col-md-12 mb-3">
+					<img class="center card-img-top" src="{{ asset('assets/')}}{{m.id}}/{{m.photo}}" alt="" style="padding-top: 15px; width : 500px">
+				</div>
+
+				{% if m.pdf != null %}
 					<div class="col-md-12 mb-3">
-						<img class="center card-img-top" src="{{ asset('assets/')}}{{m.id}}/{{m.photo}}" alt="" style="padding-top: 15px; width : 500px">
+						<a class="btn btn-info mt-2 text-white" href="{{path('filed',{'id':m.id} )}}">
+							⇬ Fazer download do arquivo
+							{{m.namePdf}}
+						</a>
 					</div>
-				
-					{% if m.pdf != null %}
-						<div class="col-md-12 mb-3">
-							<a class="btn btn-info mt-2 text-white" href="{{path('filed',{'id':m.id} )}}">
-								⇬ Fazer download do arquivo
-								{{m.namePdf}}
-							</a>
-						</div>
-					{% endif %}
+				{% endif %}
 			{% endif %}
 
 
@@ -422,38 +407,8 @@
 					<p class="btn btn-info mt-2 text-white">{{m.done }}</p>
 
 				{% elseif m.implemented == 1 and  m.done == 'Feito' %}
-					<p class="btn btn-info mt-2 text-white" data-toggle="modal" data-target="#imp2">Mudança Implementada</p>
+					<p class="btn btn-info mt-2 text-white">Mudança Implementada</p>
 					<p>
-						<div class="modal fade" id="imp2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-							<div class="modal-dialog" role="document">
-								<div class="modal-content">
-									<div class="modal-header">
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-											<span aria-hidden="true">&times;</span>
-										</button>
-									</div>
-									<div class="modal-body">
-										<div class="row" style="margin-right: 12px; margin-left: 5px;">
-											<div class="col-md-12 mb-3">
-												<h6 class="mb-1">Número da mudança:
-													{{m.id}}
-												</h6>
-
-											</div>
-											<div class="col-md-12 mb-3">
-												<h6 class="mb-1">Nome da mudança:
-													{{m.nomeMudanca}}</h5>
-											</div>
-
-											<div class="col-md-12 mb-3">
-												<h6 class="mb-1">Evidencia de Implementação:
-													{{m.impDesc}}</h5>
-											</div>
-										</div>
-
-									</div>
-								</div>
-							</div>
 						{% elseif  m.implemented == 2 and m.done == 'Feito' %}
 							<p class="btn btn-info mt-2 text-white" data-toggle="modal" data-target="#imp2">Mudanças não implementado</p>
 							<p>
@@ -607,196 +562,193 @@
 						<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 						<script>
 							{% if gestor %}
-							$(document).ready(function () {
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('mudancasgestor_to_app_nansenName').value == '') {
-							document.getElementById("nansen").checked = false;
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('nansen').checked) {
-							box.style.display = 'block';
-							} else {
-							box.style.display = 'none';
-							}
-							} else {
-							document.getElementById("nansen").checked = true;
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('nansen').checked) {
-							box.style.display = 'block';
-							} else {
-							box.style.display = 'none';
-							}
-							}
-							});{% endif %}{% if gestor != true and manager != true %}
-							$(document).ready(function () {
-							$('#mudancasgestor_to_app_areaImpact').chosen({});
-							});
-							$(document).ready(function () {
-							$('#mudancas_areaImpact').chosen({});
-							});
-							$(document).ready(function () {
-							$('#mudancas_areaResp').chosen({});
-							});
+$(document).ready(function () {
+const box = document.getElementById('nanseForm');
+if (document.getElementById('mudancasgestor_to_app_nansenName').value == '') {
+document.getElementById("nansen").checked = false;
+const box = document.getElementById('nanseForm');
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+box.style.display = 'none';
+}
+} else {
+document.getElementById("nansen").checked = true;
+const box = document.getElementById('nanseForm');
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+box.style.display = 'none';
+}
+}
+});{% endif %}{% if gestor != true and manager != true %}$(document).ready(function () {
+$('#mudancasgestor_to_app_areaImpact').chosen({});
+});
+$(document).ready(function () {
+$('#mudancas_areaImpact').chosen({});
+});
+$(document).ready(function () {
+$('#mudancas_areaResp').chosen({});
+});
 
-							{% elseif gestor != true and manager == true %}
-							$(document).ready(function () {
-							$('#mudancas_manager_areaImpact').chosen({});
-							});
-							$(document).ready(function () {
-							$('#mudancas_manager_areaResp').chosen({});
-							});
-							$(document).ready(function () {
-							$('#mudancas_manager_mangerMudancas').chosen({});
-							});
-							{% elseif mangerOfAreaDidntApp == true %}
-
-
-							{% else %}
-							$(document).ready(function () {
-							$('#mudancasgestor_to_app_areaImpact').chosen({});
-							});
-							$(document).ready(function () {
-							$('#mudancasgestor_to_app_areaResp').chosen({});
-							});
-							$(document).ready(function () {
-							$('#mudancasgestor_to_app_mangerMudancas').chosen({});
-							});{% endif %}{% if gestor != true and manager == true %}
-							const mudancas_manager_comMan = document.getElementById('mudancas_manager_comMan');
-							mudancas_manager_comMan.disabled = true;{% if  m.mangerMudancas != null %}const mudancas_manager_mangerMudancas = document.getElementById('mudancas_manager_mangerMudancas');
-							mudancas_manager_mangerMudancas.disabled = true;
-							const mudancas_manager_appMan = document.getElementById('mudancas_manager_appMan');
-							mudancas_manager_appMan.disabled = true;
-							mudancas_manager_comMan.disabled = true;{% endif %}{% if  m.comGest == null %}mudancas_manager_mangerMudancas.disabled = false;
-							mudancas_manager_appMan.disabled = false;
-							mudancas_manager_comMan.disabled = false;{% endif %}{% endif %}{% if  creation == 'false' %}
-							{% if m.comMan == null %}
-							{% elseif m.comMan != null and m.comGest == null %}
-							var form = document.getElementById("test");
-							var elements = form.elements;
-							for (var i = 0, len = 10; i < len; ++ i) {
-							elements[i].readOnly = true;
-							}
-							{% else %}
-							var form = document.getElementById("test");
-							var elements = form.elements;
-							for (var i = 0, len = 9; i < len; ++ i) {
-							elements[i].readOnly = true;
-							}
-							{% endif %}
-							{% if gestor %}
-							var nodes = document.getElementById("selectAreaResp").getElementsByTagName('*');
-							for (var i = 0; i < nodes.length; i++) {
-							nodes[i].disabled = true;
-							}
+{% elseif gestor != true and manager == true %}
+$(document).ready(function () {
+$('#mudancas_manager_areaImpact').chosen({});
+});
+$(document).ready(function () {
+$('#mudancas_manager_areaResp').chosen({});
+});
+$(document).ready(function () {
+$('#mudancas_manager_mangerMudancas').chosen({});
+});
+{% elseif mangerOfAreaDidntApp == true %}
 
 
-							var nodes = document.getElementById("gestorMudancas").getElementsByTagName('*');
-							for (var i = 0; i < nodes.length; i++) {
-							nodes[i].disabled = true;
-							}
-							{% endif %}
+{% else %}
+$(document).ready(function () {
+$('#mudancasgestor_to_app_areaImpact').chosen({});
+});
+$(document).ready(function () {
+$('#mudancasgestor_to_app_areaResp').chosen({});
+});
+$(document).ready(function () {
+$('#mudancasgestor_to_app_mangerMudancas').chosen({});
+});{% endif %}{% if gestor != true and manager == true %}const mudancas_manager_comMan = document.getElementById('mudancas_manager_comMan');
+mudancas_manager_comMan.disabled = true;{% if  m.mangerMudancas != null %}const mudancas_manager_mangerMudancas = document.getElementById('mudancas_manager_mangerMudancas');
+mudancas_manager_mangerMudancas.disabled = true;
+const mudancas_manager_appMan = document.getElementById('mudancas_manager_appMan');
+mudancas_manager_appMan.disabled = true;
+mudancas_manager_comMan.disabled = true;{% endif %}{% if  m.comGest == null %}mudancas_manager_mangerMudancas.disabled = false;
+mudancas_manager_appMan.disabled = false;
+mudancas_manager_comMan.disabled = false;{% endif %}{% endif %}{% if  creation == 'false' %}{% if m.comMan == null %}
+{% elseif m.comMan != null and m.comGest == null %}
+var form = document.getElementById("test");
+var elements = form.elements;
+for (var i = 0, len = 10; i < len; ++ i) {
+elements[i].readOnly = true;
+}
+{% else %}
+var form = document.getElementById("test");
+var elements = form.elements;
+for (var i = 0, len = 9; i < len; ++ i) {
+elements[i].readOnly = true;
+}
+{% endif %}
+{% if gestor %}
+var nodes = document.getElementById("selectAreaResp").getElementsByTagName('*');
+for (var i = 0; i < nodes.length; i++) {
+nodes[i].disabled = true;
+}
 
-							{% endif %}
 
-							{% if manager and(gestor == false) %}
+var nodes = document.getElementById("gestorMudancas").getElementsByTagName('*');
+for (var i = 0; i < nodes.length; i++) {
+nodes[i].disabled = true;
+}
+{% endif %}
 
-							$(document).ready(function () {
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('mudancas_manager_nansenName').value == '') {
-							document.getElementById("nansen").checked = false;
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('nansen').checked) {
-							box.style.display = 'block';
-							} else {
-							box.style.display = 'none';
-							}
-							} else {
-							document.getElementById("nansen").checked = true;
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('nansen').checked) {
-							box.style.display = 'block';
-							} else {
-							box.style.display = 'none';
-							}
-							}
-							});
+{% endif %}
 
-							function validate() {
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('nansen').checked) {
-							box.style.display = 'block';
-							} else {
-							document.getElementById('mudancas_manager_nansenName').value = '';
-							document.getElementById('mudancas_manager_nansenNumber').value = '';
-							box.style.display = 'none';
-							}
-							}
+{% if manager and(gestor == false) %}
 
-							{% elseif gestor %}
-							$(document).ready(function () {
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('mudancasgestor_nansenName').value == '') {
-							document.getElementById("nansen").checked = false;
-							const box = document.getElementById('nanseForm');
+$(document).ready(function () {
+const box = document.getElementById('nanseForm');
+if (document.getElementById('mudancas_manager_nansenName').value == '') {
+document.getElementById("nansen").checked = false;
+const box = document.getElementById('nanseForm');
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+box.style.display = 'none';
+}
+} else {
+document.getElementById("nansen").checked = true;
+const box = document.getElementById('nanseForm');
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+box.style.display = 'none';
+}
+}
+});
 
-							if (document.getElementById('nansen').checked) {
-							box.style.display = 'block';
-							} else {
-							box.style.display = 'none';
-							}
-							} else {
-							document.getElementById("nansen").checked = true;
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('nansen').checked) {
-							box.style.display = 'block';
-							} else {
-							box.style.display = 'none';
-							}
-							}
-							});
+function validate() {
+const box = document.getElementById('nanseForm');
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+document.getElementById('mudancas_manager_nansenName').value = '';
+document.getElementById('mudancas_manager_nansenNumber').value = '';
+box.style.display = 'none';
+}
+}
 
-							function validate() {
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('nansen').checked) {
-							box.style.display = 'block';
-							} else {
-							box.style.display = 'none';
-							}
-							}
+{% elseif gestor %}
+$(document).ready(function () {
+const box = document.getElementById('nanseForm');
+if (document.getElementById('mudancasgestor_nansenName').value == '') {
+document.getElementById("nansen").checked = false;
+const box = document.getElementById('nanseForm');
 
-							new TomSelect("#mudancasgestor_areaImpact", {maxItems: 36});
-							{% else %}
-							$(document).ready(function () {
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('mudancas_nansenName').value == '') {
-							document.getElementById("nansen").checked = false;
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('nansen').checked) {
-							box.style.display = 'block';
-							} else {
-							box.style.display = 'none';
-							}
-							} else {
-							document.getElementById("nansen").checked = true;
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('nansen').checked) {
-							box.style.display = 'block';
-							} else {
-							box.style.display = 'none';
-							}
-							}
-							});
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+box.style.display = 'none';
+}
+} else {
+document.getElementById("nansen").checked = true;
+const box = document.getElementById('nanseForm');
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+box.style.display = 'none';
+}
+}
+});
 
-							function validate() {
-							const box = document.getElementById('nanseForm');
-							if (document.getElementById('nansen').checked) {
-							box.style.display = 'block';
-							} else {
-							document.getElementById('mudancas_nansenName').value = '';
-							document.getElementById('mudancas_nansenNumber').value = '';
-							box.style.display = 'none';
-							}
-							}
-							{% endif %}
+function validate() {
+const box = document.getElementById('nanseForm');
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+box.style.display = 'none';
+}
+}
+
+new TomSelect("#mudancasgestor_areaImpact", {maxItems: 36});
+{% else %}
+$(document).ready(function () {
+const box = document.getElementById('nanseForm');
+if (document.getElementById('mudancas_nansenName').value == '') {
+document.getElementById("nansen").checked = false;
+const box = document.getElementById('nanseForm');
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+box.style.display = 'none';
+}
+} else {
+document.getElementById("nansen").checked = true;
+const box = document.getElementById('nanseForm');
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+box.style.display = 'none';
+}
+}
+});
+
+function validate() {
+const box = document.getElementById('nanseForm');
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+document.getElementById('mudancas_nansenName').value = '';
+document.getElementById('mudancas_nansenNumber').value = '';
+box.style.display = 'none';
+}
+}
+{% endif %}
 						</script>
 
 
@@ -806,39 +758,37 @@
 								<div class="modal-dialog" role="document">
 									<div class="modal-content">
 										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-												<span aria-hidden="true">&times;</span>
-											</button>
-										</div>
-										<div class="modal-body">
-											<div class="row" style="margin-right: 12px; margin-left: 5px;">
-												<div class="col-md-12 mb-3">
-													<h6 class="mb-1">Número da mudança:
-														{{m.id}}
-													</h6>
-												</div>
-												<div class="col-md-12 mb-3">
-													<h6 class="mb-1">Nome da mudança:
-														{{m.nomeMudanca}}</h5>
-												</div>
+											<h2>Implementação</h2<buttontype="button"class="close"data-dismiss="modal"aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
 
-												<div class="col-md-12 mb-3">
-													<label></label>
-													<label for="mudancasgestor_to_app_impDesc">Evidencia de Implementação</label>
-													<textarea id="textarea" name="mudancasgestor_to_app[impDesc]" class="form-control"></textarea>
-												</div>
+									</div>
+									<div class="modal-body">
+										{{ form_start(formImp, {'attr':{'class':'form-group'}}) }}
+										<div class="row" style="margin-right: 12px; margin-left: 5px;">
+											<div class="col-md-12 mb-3">
+												{{ form_label(formImp.implemented) }}
+												{{ form_widget(formImp.implemented,{'attr':{'class':'form-control'}}) }}</div>
+											<div class="col-md-12 mb-3">
+												{{ form_label(formImp.impDesc) }}
+												{{ form_widget(formImp.impDesc,{'attr':{'class':'form-control'}}) }}
+											</div>
+											<div class="col-md-12 mb-3">
+												{{ form_label(formImp.photo) }}
+												{{ form_widget(formImp.photo,{'attr':{'class':'', 'rows': '4'}}) }}
+											</div>
+											<div class="col-md-12 mb-3">
+												{{ form_label(formImp.pdf) }}
+												{{ form_widget(formImp.pdf,{'attr':{'class':'', 'rows': '4'}}) }}
 											</div>
 											<div class="modal-footer">
 												<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
-												<form action="{{path('imp',{id: m.id})}}" method="post">
-													<input style="display: none" id="hiddenInput" name="hiddenInput"/>
-													<input class="btn btn-info mt-2 text-white" value="Sim" type="submit"/>
-												</form>
-												<form action="{{path('impnoa',{id: m.id})}}" method="post">
-													<input style="display: none" id="hiddenInput2" name="hiddenInput2"/>
-													<input class="btn btn-info mt-2 text-white" value="Não" type="submit"/>
-												</form>
+
+												<input class="btn btn-info mt-2 text-white" value="Validar" type="submit"/>
+
+
 											</div>
+											{{ form_end(form) }}
 										</div>
 									</div>
 
