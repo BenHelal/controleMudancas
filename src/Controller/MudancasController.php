@@ -17,6 +17,7 @@ use App\Form\MudancasgestorType;
 use App\Form\MudancasManagerType;
 use App\Form\MudancasgestorToAppType;
 use App\Form\MudancasType;
+use App\Model\Class\IpAdress;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,6 +38,7 @@ class MudancasController extends AbstractController
     {
         $session = new Session();
         $session = $request->getSession();
+        $ipAdress = new IpAdress();
         if ($session->get('token_jwt') != '') {
             $em = $doctrine->getManager();
             //dd($session->get('name'));
@@ -1172,7 +1174,9 @@ class MudancasController extends AbstractController
             $mud = $em->getRepository(Mudancas::class)->find($id);
             $filePath = 'public/assets/'.$id.'/'.$mud->getPdf();
             
-            $url = 'http://10.100.1.245/controleMudancas/'.$filePath;
+            $ipAdress = new IpAdress();
+            
+            $url = 'http://'.$ipAdress->getIpAdress().'/controleMudancas/'.$filePath;
             $response = new RedirectResponse($url);
             $response->send();
         }else{
@@ -1305,6 +1309,9 @@ class MudancasController extends AbstractController
         $mail = new PHPMailer(true);
         // check the manager of the Mudancas 
         try {
+            
+            $ipAdress = new IpAdress();
+            
             //$mail->SMTPDebug = SMTP::DEBUG_SERVER;   
             $mail->IsSMTP(); // Define que a mensagem será SMTP
             $mail->Host = $config->getHost(); // Endereço do servidor SMTP
@@ -1324,6 +1331,7 @@ class MudancasController extends AbstractController
                 'mud'   =>  $mud,
                 'sendTo' => $sendTo,
                 'per'   =>  $per,
+                'ip' => $ipAdress->getIpAdress(),
                 'name'  => $sendTo->getName(),
                 'gestor' => $gestor,
                 'demand' =>  $demand
