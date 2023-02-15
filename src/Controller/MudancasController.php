@@ -1172,7 +1172,7 @@ class MudancasController extends AbstractController
             $mud = $em->getRepository(Mudancas::class)->find($id);
             $filePath = 'public/assets/'.$id.'/'.$mud->getPdf();
             
-            $url = 'http://10.100.1.180/controleMudancas/'.$filePath;
+            $url = 'http://localhost/controleMudancas/'.$filePath;
             $response = new RedirectResponse($url);
             $response->send();
         }else{
