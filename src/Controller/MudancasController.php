@@ -71,18 +71,6 @@ class MudancasController extends AbstractController
                     $sp = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
 
                     foreach ($sp as $key => $value2) {
-                        /*
-                        if ($value2->getAppSectorMan() != null && $value2->getAppSectorMan() != ) {
-                            $value->setDone(' ');
-                            $em->flush();
-                        } elseif ($value2->isAppSectorMan() != null && $value2->isAppSectorMan() == 1) {
-                            $value->setDone('Feito');
-                            $em->flush();
-                        } elseif ($value->getAppMan() == 2) {
-                            $value->setDone('Feito');
-                            $em->flush();
-                        }*/
-
                         if ($value->getAreaResp() == $person->getFunction() && $value->getDone() != 'Feito') {
                             array_push($mudancas, $value);
                         } else {
@@ -101,13 +89,6 @@ class MudancasController extends AbstractController
                     }
                 }
             } else {
-                /***
-                 * Get Mudancas with list for the user connected for main page with filter
-                 *  and put the mudanca in Mudancas[] after filter 
-                 * Filter : -   open Mudancas 
-                 *          -   mudancas with same Departemant 
-                 *          -   mudancas related with user if he is the gestor
-                 */
 
                 foreach ($mudanca as $key => $value) {
                     if ($value->getAddBy() == $person && $value->getDone() != 'Feito') {
@@ -142,68 +123,6 @@ class MudancasController extends AbstractController
                     }
                 }
             }
-
-            /*foreach ($manager as $key => $ma) {
-                foreach ($mudanca as $key => $m) {
-                    foreach ($m->getAreaImpact() as $key => $value) {
-                        //dd($array);
-                        if ($array != null) {
-                            $test = 0;
-                            for ($i = 0; $i < sizeof($array); $i++) {
-                                if ($m == $array[$i]) {
-                                    $test++;
-                                }
-                            }
-                            if ($test == 0) {
-                                array_push($array, $m);
-                            }
-                        } elseif ($array == null && $m->getDone() != 'Feito') {
-                            if ($value->getManager() == $person) {
-                                array_push($array, $m);
-                            }
-                        } elseif ($array == null && $m->getDone() == 'Feito') {
-                            if ($m->getImplemented() == null) {
-                                
-                                array_push($array, $m);
-                            }   
-                        }
-                    }
-                }
-            }*/
-
-
-
-            /*$listNotif = [];
-            $conn = $doctrine->getConnection();
-            $sql = '
-                select 
-                    pr.id as idPr,
-                    mud.id as idMud 
-                FROM 
-                    mudancas as mud, 
-                    process as pr, 
-                    sector_process as dp,
-                    sector as d,
-                    person as p,
-                    departemant as dep
-                WHERE 
-                    mud.id = pr.mudancas_id AND 
-                    mud.implemented != null AND
-                    dp.process_id = pr.id AND 
-                    dp.sector_id = d.id AND
-                    d.departemant_id = dep.id AND
-                    dep.name = p.departemant AND
-                    p.id = :person AND 
-                    pr.status = "created"';
-            $stmt = $conn->prepare($sql);
-            //dd($person);
-            $resultSet = $stmt->executeQuery(['person' => $person->getId()]);
-            $ln =  $resultSet->fetchAllAssociative();
-            foreach ($ln as $notif) {
-                $id = $notif['idMud'];
-                $mud =  $em->getRepository(Mudancas::class)->find($id);
-                array_push($listNotif, $mud);
-            }*/
 
             $val = sizeof($mudanca);
             $val2 = 0;
