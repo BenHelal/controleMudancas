@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Client;
 use App\Entity\Departemant;
 use App\Entity\Mudancas;
 use App\Entity\Person;
@@ -71,6 +72,17 @@ class MudancasgestorToAppType extends AbstractType
                     'label' => 'Área Responsável pela mudança'
                 
             ))
+            ->add('client',EntityType::class,array(
+                'class' => Client::class,
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
+                },
+                'choice_label' => 'name',
+                'label'=> 'Cliente',
+                'placeholder' => 'Cliente ...',
+                'required' => false, 
+                'expanded'  => false,
+                'multiple' => true))
             ->add(
                 'mangerMudancas',
                 EntityType::class, 

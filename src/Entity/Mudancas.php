@@ -153,9 +153,13 @@ class Mudancas
     #[ORM\Column(length: 255, nullable: true)]
     public $excel;
 
+    #[ORM\ManyToMany(targetEntity: Client::class)]
+    private Collection $client;
+
     public function __construct()
     {
         $this->areaImpact = new ArrayCollection();
+        $this->client = new ArrayCollection();
     }
     public function getPdf(){
         return $this->pdf;
@@ -569,6 +573,30 @@ class Mudancas
     public function setManagerUserApp(?int $managerUserApp): self
     {
         $this->managerUserApp = $managerUserApp;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Client>
+     */
+    public function getClient(): Collection
+    {
+        return $this->client;
+    }
+
+    public function addClient(Client $client): self
+    {
+        if (!$this->client->contains($client)) {
+            $this->client->add($client);
+        }
+
+        return $this;
+    }
+
+    public function removeClient(Client $client): self
+    {
+        $this->client->removeElement($client);
 
         return $this;
     }

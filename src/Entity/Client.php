@@ -1,0 +1,186 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\ClientRepository;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: ClientRepository::class)]
+class Client
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private $id;
+    
+    #[ORM\Column(length: 255 , nullable: true)]
+    private  $cliId;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $street;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $number;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $city;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string  $state;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private  ?string $district;
+
+    #[ORM\Column(type: 'string',length: 255, nullable: true)]
+    private  $email;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $name;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $cnpj;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $adress;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $phone;
+
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCnpj(): ?string
+    {
+        return $this->cnpj;
+    }
+
+    public function setCnpj(string $cnpj): self
+    {
+        $this->cnpj = $cnpj;
+
+        return $this;
+    }
+
+    public function getAdress(): ?string
+    {
+        return $this->adress;
+    }
+
+    public function setAdress(?string $adress): self
+    {
+        $this->adress = $adress;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getCliId(): ?string
+    {
+        return $this->cliId;
+    }
+
+    public function setCliId(string $cliId): self
+    {
+        $this->cliId = $cliId;
+
+        return $this;
+    }
+
+    public function getStreet(): ?string
+    {
+        return $this->street;
+    }
+
+    public function setStreet( $street): self
+    {
+        $this->street = $street;
+
+        return $this;
+    }
+
+    public function getNumber(): ?string
+    {
+        return $this->number;
+    }
+
+    public function setNumber(string $number): self
+    {
+        $this->number = $number;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    public function setState($state)
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    public function getDistrict(): ?string
+    {
+        return $this->district;
+    }
+
+    public function setDistrict(string $district): self
+    {
+        $this->district = $district;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+}

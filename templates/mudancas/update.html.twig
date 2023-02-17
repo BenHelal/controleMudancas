@@ -225,6 +225,14 @@
 					{{ form_widget(form.areaResp,{'attr':{'class':'form-control','id':'test' ,'rows': '12'}}) }}
 				</div>
 			</div>
+
+			
+							<div class="row">
+								<div class="col-md-12 mb-3">
+									{{ form_label(form.client) }}
+									{{ form_widget(form.client,{'attr':{'class':'form-control','data-placeholder':'Escolha o cliente.....', 'rows': '12'}}) }}
+								</div>
+							</div>
 			{% if gestor %}
 				<div class="row" id="gestorMudancas">
 					<div class="col-md-12 mb-3">
@@ -548,6 +556,12 @@
 									{{ form_widget(form.areaResp,{'attr':{'class':'form-control', 'rows': '12'}}) }}
 								</div>
 							</div>
+							<div class="row">
+								<div class="col-md-12 mb-3">
+									{{ form_label(form.client) }}
+									{{ form_widget(form.client,{'attr':{'class':'form-control','data-placeholder':'Escolha o cliente.....', 'rows': '12'}}) }}
+								</div>
+							</div>
 							{% if person.permission == 'ler criar atualização' or person.permission =='ler criar' or person.permission =='tudo' %}
 								<div class="row">
 									<div class="col-md-6 mb-3">
@@ -561,194 +575,218 @@
 
 						<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 						<script>
+						
+							$(document).ready(function () {
+							$('#mudancas_client').chosen({});
+							});
 							{% if gestor %}
-$(document).ready(function () {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('mudancasgestor_to_app_nansenName').value == '') {
-document.getElementById("nansen").checked = false;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-} else {
-document.getElementById("nansen").checked = true;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-}
-});{% endif %}{% if gestor != true and manager != true %}$(document).ready(function () {
-$('#mudancasgestor_to_app_areaImpact').chosen({});
-});
-$(document).ready(function () {
-$('#mudancas_areaImpact').chosen({});
-});
-$(document).ready(function () {
-$('#mudancas_areaResp').chosen({});
-});
+							$(document).ready(function () {
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('mudancasgestor_to_app_nansenName').value == '') {
+							document.getElementById("nansen").checked = false;
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('nansen').checked) {
+							box.style.display = 'block';
+							} else {
+							box.style.display = 'none';
+							}
+							} else {
+							document.getElementById("nansen").checked = true;
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('nansen').checked) {
+							box.style.display = 'block';
+							} else {
+							box.style.display = 'none';
+							}
+							}
+							});{% endif %}{% if gestor != true and manager != true %}$(document).ready(function () {
+							$('#mudancasgestor_to_app_areaImpact').chosen({});
+							});
+							$(document).ready(function () {
+							$('#mudancas_areaImpact').chosen({});
+							});
+							$(document).ready(function () {
+							$('#mudancas_areaResp').chosen({});
+							});
 
-{% elseif gestor != true and manager == true %}
-$(document).ready(function () {
-$('#mudancas_manager_areaImpact').chosen({});
-});
-$(document).ready(function () {
-$('#mudancas_manager_areaResp').chosen({});
-});
-$(document).ready(function () {
-$('#mudancas_manager_mangerMudancas').chosen({});
-});
-{% elseif mangerOfAreaDidntApp == true %}
-
-
-{% else %}
-$(document).ready(function () {
-$('#mudancasgestor_to_app_areaImpact').chosen({});
-});
-$(document).ready(function () {
-$('#mudancasgestor_to_app_areaResp').chosen({});
-});
-$(document).ready(function () {
-$('#mudancasgestor_to_app_mangerMudancas').chosen({});
-});{% endif %}{% if gestor != true and manager == true %}const mudancas_manager_comMan = document.getElementById('mudancas_manager_comMan');
-mudancas_manager_comMan.disabled = true;{% if  m.mangerMudancas != null %}const mudancas_manager_mangerMudancas = document.getElementById('mudancas_manager_mangerMudancas');
-mudancas_manager_mangerMudancas.disabled = true;
-const mudancas_manager_appMan = document.getElementById('mudancas_manager_appMan');
-mudancas_manager_appMan.disabled = true;
-mudancas_manager_comMan.disabled = true;{% endif %}{% if  m.comGest == null %}mudancas_manager_mangerMudancas.disabled = false;
-mudancas_manager_appMan.disabled = false;
-mudancas_manager_comMan.disabled = false;{% endif %}{% endif %}{% if  creation == 'false' %}{% if m.comMan == null %}
-{% elseif m.comMan != null and m.comGest == null %}
-var form = document.getElementById("test");
-var elements = form.elements;
-for (var i = 0, len = 10; i < len; ++ i) {
-elements[i].readOnly = true;
-}
-{% else %}
-var form = document.getElementById("test");
-var elements = form.elements;
-for (var i = 0, len = 9; i < len; ++ i) {
-elements[i].readOnly = true;
-}
-{% endif %}
-{% if gestor %}
-var nodes = document.getElementById("selectAreaResp").getElementsByTagName('*');
-for (var i = 0; i < nodes.length; i++) {
-nodes[i].disabled = true;
-}
+							{% elseif gestor != true and manager == true %}
+							$(document).ready(function () {
+							$('#mudancas_manager_areaImpact').chosen({});
+							});
+							$(document).ready(function () {
+							$('#mudancas_manager_areaResp').chosen({});
+							});
+							$(document).ready(function () {
+							$('#mudancas_manager_mangerMudancas').chosen({});
+							});
 
 
-var nodes = document.getElementById("gestorMudancas").getElementsByTagName('*');
-for (var i = 0; i < nodes.length; i++) {
-nodes[i].disabled = true;
-}
-{% endif %}
+							$(document).ready(function () {
+							$('#mudancas_manager_client').chosen({});
+							});
+							
+							{% elseif mangerOfAreaDidntApp == true %}
 
-{% endif %}
 
-{% if manager and(gestor == false) %}
+							{% else %}
+							$(document).ready(function () {
+							$('#mudancasgestor_to_app_areaImpact').chosen({});
+							});
+							$(document).ready(function () {
+							$('#mudancasgestor_to_app_areaResp').chosen({});
+							});
 
-$(document).ready(function () {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('mudancas_manager_nansenName').value == '') {
-document.getElementById("nansen").checked = false;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-} else {
-document.getElementById("nansen").checked = true;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-}
-});
 
-function validate() {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-document.getElementById('mudancas_manager_nansenName').value = '';
-document.getElementById('mudancas_manager_nansenNumber').value = '';
-box.style.display = 'none';
-}
-}
+							$(document).ready(function () {
+							$('#mudancasgestor_to_app_client').chosen({});
+							});
+							
+							$(document).ready(function () {
+							$('#mudancasgestor_to_app_mangerMudancas').chosen({});
+							});
+							
+							{% endif %}
+							
+							
+							{% if gestor != true and manager == true %}
+							
+							/*mudancas_manager_client*/
+							const mudancas_manager_comMan = document.getElementById('mudancas_manager_comMan');
+							mudancas_manager_comMan.disabled = true;{% if  m.mangerMudancas != null %}const mudancas_manager_mangerMudancas = document.getElementById('mudancas_manager_mangerMudancas');
+							mudancas_manager_mangerMudancas.disabled = true;
+							const mudancas_manager_appMan = document.getElementById('mudancas_manager_appMan');
+							mudancas_manager_appMan.disabled = true;
+							mudancas_manager_comMan.disabled = true;{% endif %}{% if  m.comGest == null %}mudancas_manager_mangerMudancas.disabled = false;
+							mudancas_manager_appMan.disabled = false;
+							mudancas_manager_comMan.disabled = false;{% endif %}{% endif %}{% if  creation == 'false' %}{% if m.comMan == null %}
+							{% elseif m.comMan != null and m.comGest == null %}
+							var form = document.getElementById("test");
+							var elements = form.elements;
+							for (var i = 0, len = 10; i < len; ++ i) {
+							elements[i].readOnly = true;
+							}
+							{% else %}
+							var form = document.getElementById("test");
+							var elements = form.elements;
+							for (var i = 0, len = 9; i < len; ++ i) {
+							elements[i].readOnly = true;
+							}
+							{% endif %}
+							{% if gestor %}
+							var nodes = document.getElementById("selectAreaResp").getElementsByTagName('*');
+							for (var i = 0; i < nodes.length; i++) {
+							nodes[i].disabled = true;
+							}
 
-{% elseif gestor %}
-$(document).ready(function () {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('mudancasgestor_nansenName').value == '') {
-document.getElementById("nansen").checked = false;
-const box = document.getElementById('nanseForm');
 
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-} else {
-document.getElementById("nansen").checked = true;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-}
-});
+							var nodes = document.getElementById("gestorMudancas").getElementsByTagName('*');
+							for (var i = 0; i < nodes.length; i++) {
+							nodes[i].disabled = true;
+							}
+							{% endif %}
 
-function validate() {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-}
+							{% endif %}
 
-new TomSelect("#mudancasgestor_areaImpact", {maxItems: 36});
-{% else %}
-$(document).ready(function () {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('mudancas_nansenName').value == '') {
-document.getElementById("nansen").checked = false;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-} else {
-document.getElementById("nansen").checked = true;
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
-}
-});
+							{% if manager and(gestor == false) %}
 
-function validate() {
-const box = document.getElementById('nanseForm');
-if (document.getElementById('nansen').checked) {
-box.style.display = 'block';
-} else {
-document.getElementById('mudancas_nansenName').value = '';
-document.getElementById('mudancas_nansenNumber').value = '';
-box.style.display = 'none';
-}
-}
-{% endif %}
+							$(document).ready(function () {
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('mudancas_manager_nansenName').value == '') {
+							document.getElementById("nansen").checked = false;
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('nansen').checked) {
+							box.style.display = 'block';
+							} else {
+							box.style.display = 'none';
+							}
+							} else {
+							document.getElementById("nansen").checked = true;
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('nansen').checked) {
+							box.style.display = 'block';
+							} else {
+							box.style.display = 'none';
+							}
+							}
+							});
+
+							function validate() {
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('nansen').checked) {
+							box.style.display = 'block';
+							} else {
+							document.getElementById('mudancas_manager_nansenName').value = '';
+							document.getElementById('mudancas_manager_nansenNumber').value = '';
+							box.style.display = 'none';
+							}
+							}
+
+							{% elseif gestor %}
+							$(document).ready(function () {
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('mudancasgestor_nansenName').value == '') {
+							document.getElementById("nansen").checked = false;
+							const box = document.getElementById('nanseForm');
+
+							if (document.getElementById('nansen').checked) {
+							box.style.display = 'block';
+							} else {
+							box.style.display = 'none';
+							}
+							} else {
+							document.getElementById("nansen").checked = true;
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('nansen').checked) {
+							box.style.display = 'block';
+							} else {
+							box.style.display = 'none';
+							}
+							}
+							});
+
+							function validate() {
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('nansen').checked) {
+							box.style.display = 'block';
+							} else {
+							box.style.display = 'none';
+							}
+							}
+
+							new TomSelect("#mudancasgestor_areaImpact", {maxItems: 36});
+							{% else %}
+							$(document).ready(function () {
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('mudancas_nansenName').value == '') {
+							document.getElementById("nansen").checked = false;
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('nansen').checked) {
+							box.style.display = 'block';
+							} else {
+							box.style.display = 'none';
+							}
+							} else {
+							document.getElementById("nansen").checked = true;
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('nansen').checked) {
+							box.style.display = 'block';
+							} else {
+							box.style.display = 'none';
+							}
+							}
+							});
+
+							function validate() {
+							const box = document.getElementById('nanseForm');
+							if (document.getElementById('nansen').checked) {
+							box.style.display = 'block';
+							} else {
+							document.getElementById('mudancas_nansenName').value = '';
+							document.getElementById('mudancas_nansenNumber').value = '';
+							box.style.display = 'none';
+							}
+							}
+							{% endif %}
 						</script>
 
 
