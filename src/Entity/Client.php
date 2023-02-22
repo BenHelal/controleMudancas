@@ -46,6 +46,12 @@ class Client
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $phone;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resp = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resp_email = null;
+
 
     public function getId(): ?int
     {
@@ -180,6 +186,30 @@ class Client
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getResp(): ?string
+    {
+        return $this->resp;
+    }
+
+    public function setResp(?string $resp): self
+    {
+        $this->resp = $resp;
+
+        return $this;
+    }
+
+    public function getRespEmail(): ?string
+    {
+        return $this->resp_email;
+    }
+
+    public function setRespEmail(string $resp_email): self
+    {
+        $this->resp_email = $resp_email;
 
         return $this;
     }
