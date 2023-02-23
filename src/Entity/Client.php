@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ClientRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
@@ -51,6 +53,14 @@ class Client
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $resp_email = null;
+
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: ApiToken::class)]
+    private Collection $apiTokens;
+
+    public function __construct()
+    {
+        $this->apiTokens = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -210,6 +220,36 @@ class Client
     public function setRespEmail(string $resp_email): self
     {
         $this->resp_email = $resp_email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ApiToken>
+     */
+    public function getApiTokens(): Collection
+    {
+        return $this->apiTokens;
+    }
+
+    public function addApiToken(ApiToken $apiToken): self
+    {
+        if (!$this->apiTokens->contains($apiToken)) {
+            $this->apiTokens->add($apiToken);
+            $apiToken->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApiToken(ApiToken $apiToken): self
+    {
+        if ($this->apiTokens->removeElement($apiToken)) {
+            // set the owning side to null (unless already changed)
+            if ($apiToken->getClient() === $this) {
+                $apiToken->setClient(null);
+            }
+        }
 
         return $this;
     }

@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\ApiToken;
+use App\Entity\Client;
 use App\Entity\ConfigEmail;
 use App\Entity\Departemant;
 use App\Entity\Email;
@@ -12,6 +14,7 @@ use App\Entity\Process;
 use App\Entity\Requestper;
 use App\Entity\Sector;
 use App\Entity\SectorProcess;
+use App\EntityExt\TokenData;
 use App\Form\GerenteMudType;
 use App\Form\MudancasgestorImpType;
 use App\Form\MudancasgestorType;
@@ -430,6 +433,28 @@ class MudancasController extends AbstractController
                         $em->persist($email);
                         $em->flush();
 
+                        
+                        if($mud->getClient() != null){
+                            foreach ($mud->getClient() as $key => $value) {
+                                # code...
+                                $token = new ApiToken($value, $mud);
+                                $em->persist($token);
+
+                                $anotherEm = $doctrine->getManager('database2');
+                                $tok = new TokenData();
+                                $anotherEm->persist($tok);
+                                //$customers = $anotherEm->getRepository(TokenData::class, 'database2')->findAll();
+                                
+                                $email = new  Email();
+                                $email->setMudancas($mud);
+                                $email->setClient($value);
+                                $email->setSendBy($person);
+                                $email->setTitle('Aprovação Client');
+                                $email->setBody('client');
+                                $em->persist($email);
+                                $em->flush();
+                            }
+                        }
                         if ($mud->getNansenNumber() == null) {
 
                             $email = new  Email();
@@ -526,6 +551,7 @@ class MudancasController extends AbstractController
                         $em->persist($mud);
                         $em->flush();
 
+                        $anotherEm->flush();
 
                         /**
                          * Send Email
@@ -534,7 +560,12 @@ class MudancasController extends AbstractController
                         $emails = $em->getRepository(Email::class)->findBy(['mudancas' => $mud]);
                         $ems = [];
                         foreach ($emails as $key => $value) {
-                            $this->sendEmail($doctrine, $request, $value->getSendTo(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false);
+                            if($value->getClient() == null){
+                                $this->sendEmail($doctrine, $request, $value->getSendTo(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false);
+                            }else{
+                                $this->sendEmail($doctrine, $request, $value->getClient(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false, $value->getClient());
+                                
+                            }
                         }
                         /**
                          * ------------------------------------------------------------
@@ -640,7 +671,6 @@ class MudancasController extends AbstractController
                                 return $this->redirectToRoute('approve', ['id' => $mud->getId()]);
                             }
                         }
-
                         return $this->redirectToRoute('app_mudancas');
                     }
                     return $this->render('mudancas/update.html.twig', [
@@ -1230,7 +1260,7 @@ class MudancasController extends AbstractController
         }
     }
 
-    public function sendEmail(ManagerRegistry $doctrine, Request $request, $sendTo, $mud, $per, $demand,  $gestor)
+    public function sendEmail(ManagerRegistry $doctrine, Request $request, $sendTo, $mud, $per, $demand,  $gestor, $client = null)
     {
 
         $em = $doctrine->getManager();
@@ -1266,20 +1296,40 @@ class MudancasController extends AbstractController
             //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
             //Recipients
             $mail->setFrom($config->getEmailSystem(), $config->getTitleObj());
-            $mail->AddAddress($sendTo->getEmail(), $sendTo->getName());
-            $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
+            if($client != null){
+                $mail->AddAddress($client->getRespEmail(), $client->getResp());
+                $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
             $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
             $mail->Subject  = $config->getSubject();
             $mail->msgHTML($this->renderView('emails/myemail.html.twig', [
-                'name'  =>  'Controle de Mudanças',
-                'mud'   =>  $mud,
-                'sendTo' => $sendTo,
-                'per'   =>  $per,
-                'ip' => $ipAdress->getIpAdress(),
-                'name'  => $sendTo->getName(),
-                'gestor' => $gestor,
-                'demand' =>  $demand
+                'name'      =>  'Controle de Mudanças',
+                'mud'       =>  $mud,
+                'sendTo'    => $sendTo,
+                'per'       =>  $per,
+                'c' => $client,
+                'ip'        => $ipAdress->getIpAdress(),
+                'name'      => $sendTo->getName(),
+                'gestor'    => $gestor,
+                'demand'    =>  $demand
             ]));
+            }
+            else{
+                $mail->AddAddress($sendTo->getEmail(), $sendTo->getName());
+                $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
+            $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
+            $mail->Subject  = $config->getSubject();
+            $mail->msgHTML($this->renderView('emails/myemail.html.twig', [
+                'name'      =>  'Controle de Mudanças',
+                'mud'       =>  $mud,
+                'sendTo'    => $sendTo,
+                'per'       =>  $per,
+                'ip'        => $ipAdress->getIpAdress(),
+                'name'      => $sendTo->getName(),
+                'gestor'    => $gestor,
+                'demand'    =>  $demand
+            ]));
+            }
+            
 
             //$mail->Subject  = "ASSUNTO"; // Assunto da mensagem
             //$mail->Body = "HTML FORMAT";

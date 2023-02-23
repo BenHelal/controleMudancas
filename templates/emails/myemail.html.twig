@@ -82,6 +82,10 @@
 							</a>
 						</p>
 					
+					{% elseif demand =='client' %}
+						{% for item in c.apiTokens %}
+							{{item.token}}
+						{% endfor %}
 					{% elseif demand == 'manager1' %}
 						<h1 class="text-center">Olá
 							{{ mud.addBy.function.manager.name }},<br></h1>

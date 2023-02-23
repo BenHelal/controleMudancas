@@ -30,7 +30,9 @@ class Email
     #[ORM\ManyToOne(cascade: ['persist'])]
     private ?Mudancas $mudancas = null;
 
-
+    
+    #[ORM\ManyToOne(cascade: ['persist'])]
+    private ?Client $client = null;
 
     public function getId(): ?int
     {
@@ -90,6 +92,18 @@ class Email
     public function setMudancas(?mudancas $mudancas): self
     {
         $this->mudancas = $mudancas;
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): self
+    {
+        $this->client = $client;
 
         return $this;
     }
