@@ -433,28 +433,6 @@ class MudancasController extends AbstractController
                         $em->persist($email);
                         $em->flush();
 
-                        
-                        if($mud->getClient() != null){
-                            foreach ($mud->getClient() as $key => $value) {
-                                # code...
-                                $token = new ApiToken($value, $mud);
-                                $em->persist($token);
-
-                                $anotherEm = $doctrine->getManager('database2');
-                                $tok = new TokenData();
-                                $anotherEm->persist($tok);
-                                //$customers = $anotherEm->getRepository(TokenData::class, 'database2')->findAll();
-                                
-                                $email = new  Email();
-                                $email->setMudancas($mud);
-                                $email->setClient($value);
-                                $email->setSendBy($person);
-                                $email->setTitle('Aprovação Client');
-                                $email->setBody('client');
-                                $em->persist($email);
-                                $em->flush();
-                            }
-                        }
                         if ($mud->getNansenNumber() == null) {
 
                             $email = new  Email();
@@ -551,7 +529,6 @@ class MudancasController extends AbstractController
                         $em->persist($mud);
                         $em->flush();
 
-                        $anotherEm->flush();
 
                         /**
                          * Send Email
@@ -1067,7 +1044,6 @@ class MudancasController extends AbstractController
                                     $email->setBody('approved_ger');
                                     $em->persist($email);
                                     $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-
                                     $email = new  Email();
                                     $email->setMudancas($mud);
                                     $email->setSendTo($mud->getAddBy());
