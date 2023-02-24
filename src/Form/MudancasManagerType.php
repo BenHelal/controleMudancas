@@ -43,7 +43,7 @@ class MudancasManagerType extends AbstractType
             ])
             ->add('justif',TextareaType::class, [
                 'label' => 'Justificativa'
-            ])
+            ]) 
             ->add('areaImpact',EntityType::class,array(
                 'class' => Sector::class,
                 'query_builder' => function(EntityRepository $er){
@@ -55,7 +55,12 @@ class MudancasManagerType extends AbstractType
                 'placeholder' => 'Área impactada',
                 'expanded'  => false,
                 'multiple' => true))
-                ->add('client',EntityType::class,array(
+            
+            ->add('descClient',TextareaType::class, [
+                    'label' => 'Descrição do Impacto para o cliente',
+                    'required' => false, 
+                ])    
+            ->add('client',EntityType::class,array(
                     'class' => Client::class,
                     'query_builder' => function(EntityRepository $er){
                         return $er->createQueryBuilder('s')->orderBy('s.id','DESC');

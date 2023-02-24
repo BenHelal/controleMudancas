@@ -108,7 +108,8 @@ class Mudancas
 
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $managerUserComment = null;
-
+    #[ORM\Column(length: 1024, nullable: true)]
+    private ?string $descClient = null;
     #[ORM\Column(nullable: true)]
     private ?int $managerUserApp = null;
    
@@ -154,7 +155,19 @@ class Mudancas
     public $excel;
 
     #[ORM\ManyToMany(targetEntity: Client::class)]
+    #[ORM\JoinColumn(nullable: true)]
     private Collection $client;
+    public function getDescClient(): ?string
+    {
+        return $this->descClient;
+    }
+
+    public function setDescClient(string $descClient): self
+    {
+        $this->descClient = $descClient;
+
+        return $this;
+    }
 
     public function __construct()
     {

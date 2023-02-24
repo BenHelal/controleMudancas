@@ -75,11 +75,17 @@ class MudancasType extends AbstractType
                     return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
                 },
                 'choice_label' => 'name',
-                'label'=> 'Cliente',
-                'placeholder' => 'Cliente ...',
+                'label'=> 'Escolha o Cliente',
+                'placeholder' => 'Escolha o Cliente',
                 'required' => false, 
                 'expanded'  => false,
-                'multiple' => true));
+                'multiple' => true))
+                
+            ->add('descClient',TextareaType::class, [
+                'label' => 'Descrição do Impacto para o cliente',
+                'required' => false, 
+            ])
+                ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

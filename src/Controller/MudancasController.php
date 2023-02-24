@@ -537,11 +537,10 @@ class MudancasController extends AbstractController
                         $emails = $em->getRepository(Email::class)->findBy(['mudancas' => $mud]);
                         $ems = [];
                         foreach ($emails as $key => $value) {
-                            if($value->getClient() == null){
+                            if ($value->getClient() == null) {
                                 $this->sendEmail($doctrine, $request, $value->getSendTo(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false);
-                            }else{
+                            } else {
                                 $this->sendEmail($doctrine, $request, $value->getClient(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false, $value->getClient());
-                                
                             }
                         }
                         /**
@@ -813,15 +812,17 @@ class MudancasController extends AbstractController
 
                         // check which Form need 
                         $form = null;
-                        if ($manager == true && $gestor == true && $mangerOfAreaDidntApp == true) {
-                            $form = $this->createForm(MudancasgestorType::class, $mud);
-                        } elseif ($gestor == true && $mangerOfAreaDidntApp == false) {
+
+
+                        if ($manager == true && $gestor == false && $mangerOfAreaDidntApp == false) {
+                            $form = $this->createForm(MudancasManagerType::class, $mud);
+                        } elseif ($gestor == true && $mangerOfAreaDidntApp == false ) {
                             $form = $this->createForm(MudancasgestorToAppType::class, $mud);
                             $formImp = $this->createForm(MudancasgestorImpType::class, $mud);
                         } elseif ($manager == true && $gestor != true) {
                             $form = $this->createForm(MudancasManagerType::class, $mud);
-                        } elseif ($manager != true && $gestor == true) {
-                            $form = $this->createForm(MudancasgestorType::class, $mud);
+                        } elseif ( $gestor == true && $mangerOfAreaDidntApp == true) {
+                            $form = $this->createForm(MudancasgestorToAppType::class, $mud);
                         } else {
                             $form = $this->createForm(MudancasType::class, $mud);
                         }
@@ -840,6 +841,7 @@ class MudancasController extends AbstractController
                         }
 
                         if ($gestor == true && $mangerOfAreaDidntApp == false) {
+                            //dd('etst');
                             $formImp->handleRequest($request);
                             if ($formImp->isSubmitted()) {
                                 $desImp = $mud->getImpDesc();
@@ -858,7 +860,6 @@ class MudancasController extends AbstractController
                                     $excelFilepath2 =  $publicDirectory . '/public/assets/' . $mud->getId();
                                     $file2->move($excelFilepath2, $fileName2);
                                     $mud->setPdf($fileName2);
-
                                 }
                                 $file = $mud->getPhoto();
                                 if ($file != null) {
@@ -869,7 +870,6 @@ class MudancasController extends AbstractController
                                     $excelFilepath =  $publicDirectory . '/public/assets/' . $mud->getId();
                                     $file->move($excelFilepath, $fileName);
                                     $mud->setPhoto($fileName);
-
                                 }
 
                                 $em->flush();
@@ -888,6 +888,7 @@ class MudancasController extends AbstractController
                              * or gestor 
                              * or normal user
                              */
+                            $anotherEm = $doctrine->getManager('database2');
                             if ($manager && $gestor == false) {
                                 /**
                                  * check manager approve 
@@ -902,6 +903,28 @@ class MudancasController extends AbstractController
                                  * Send Email
                                  * -------------------------------------------------------
                                  **/
+                                if($mud->getClient() != null){
+                                    foreach ($mud->getClient() as $key => $value) {
+                                        # code...
+                                        $token = new ApiToken($value, $mud);
+                                        $em->persist($token);
+        
+                                        $tok = new TokenData();
+                                        $anotherEm->persist($tok);
+                                        //$customers = $anotherEm->getRepository(TokenData::class, 'database2')->findAll();
+                                        
+                                        $email = new  Email();
+                                        $email->setMudancas($mud);
+                                        $email->setClient($value);
+                                        $email->setSendBy($person);
+                                        $email->setTitle('Aprovação Client');
+                                        $email->setBody('client');
+                                        $em->persist($email);
+                                        $em->flush();
+                                        $this->sendEmail($doctrine, $request, $value, $mud, $person, 'client', false, $value);
+                                    }
+                                }
+                                 
                                 $emails = $em->getRepository(Email::class)->findBy(['mudancas' => $mud]);
                                 $ems = [];
                                 foreach ($emails as $key => $value) {
@@ -922,7 +945,7 @@ class MudancasController extends AbstractController
                                     $em->flush();
                                 }
                                 foreach ($ems as $key => $value) {
-                                    $email = new Email();
+                                    //$email = new Email();
                                     $email = $value;
                                     $em->persist($email);
                                     if ($value->getSendTo() != $value->getSendBy()) {
@@ -1031,10 +1054,36 @@ class MudancasController extends AbstractController
                                 }
                                 $em->persist($mud);
                                 $em->flush();
+                                $anotherEm->flush();
                                 return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
                             } elseif ($gestor) {
+                                
+                                /**
+                                * get the Process with mudancas 
+                                * to can get The Sector 
+                                * and check the situation of the mudancas  
+                                */
+                                $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
 
+                                /**
+                                * get the List of SectorProcess 
+                                * to can access to the sector 
+                                */
+                                $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+                                $number_sector_app = 0;
+                                
+                                //dd($sps);
+                                foreach ($sps as $key => $value) {
+                                    if($value->getAppSectorMan() != null){
+                                        $number_sector_app++;
+                                    };
+                                }
+                                
+                                if(sizeof($sps) == $number_sector_app){
+                                    $mud->setDone('Feito');
+                                }
 
+                                //dd($mud->getDone());
                                 if ($mud->getAppGest() == 1) {
                                     $email = new  Email();
                                     $email->setMudancas($mud);
@@ -1066,11 +1115,26 @@ class MudancasController extends AbstractController
                                 //$mud->setPdf($filePDF);
                                 $mud->setMangerMudancas($gestMudancas);
                                 $em->flush();
+
+                                $mangerOfAreaDidntApp = false;
+                                //fetch the sectorPress 
+                                foreach ($sps as $key => $sp) {
+                                    /**
+                                     *  Check if there is one of the manager reject the mudancas
+                                     *  then close the Mudancas
+                                     */
+                                    if ($sp->getAppSectorMan() == 2 && $sp->getAppSectorMan() != null) {
+                                        $mud->setImplemented(2);
+                                        $mud->setDone('Feito');
+                                        $em->flush();
+                                    } elseif ($sp->getAppSectorMan() == null) {
+                                    }
+                                }
+
                                 return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
                             } else {
                             }
                         }
-
                         if ($gestor == true && $mangerOfAreaDidntApp == false) {
                             return $this->render('mudancas/update.html.twig', [
                                 'controller_name' => 'Atualizar Mudancas',
@@ -1272,40 +1336,39 @@ class MudancasController extends AbstractController
             //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
             //Recipients
             $mail->setFrom($config->getEmailSystem(), $config->getTitleObj());
-            if($client != null){
+            if ($client != null) {
                 $mail->AddAddress($client->getRespEmail(), $client->getResp());
                 $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
-            $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
-            $mail->Subject  = $config->getSubject();
-            $mail->msgHTML($this->renderView('emails/myemail.html.twig', [
-                'name'      =>  'Controle de Mudanças',
-                'mud'       =>  $mud,
-                'sendTo'    => $sendTo,
-                'per'       =>  $per,
-                'c' => $client,
-                'ip'        => $ipAdress->getIpAdress(),
-                'name'      => $sendTo->getName(),
-                'gestor'    => $gestor,
-                'demand'    =>  $demand
-            ]));
-            }
-            else{
+                $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
+                $mail->Subject  = $config->getSubject();
+                $mail->msgHTML($this->renderView('emails/myemail.html.twig', [
+                    'name'      =>  'Controle de Mudanças',
+                    'mud'       =>  $mud,
+                    'sendTo'    => $config->getEmailSystem(),
+                    'per'       =>  $per,
+                    'c' => $client,
+                    'ip'        => $ipAdress->getIpAdress(),
+                    'name'      =>$client->getResp(),
+                    'gestor'    => $gestor,
+                    'demand'    =>  $demand
+                ]));
+            } else {
                 $mail->AddAddress($sendTo->getEmail(), $sendTo->getName());
                 $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
-            $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
-            $mail->Subject  = $config->getSubject();
-            $mail->msgHTML($this->renderView('emails/myemail.html.twig', [
-                'name'      =>  'Controle de Mudanças',
-                'mud'       =>  $mud,
-                'sendTo'    => $sendTo,
-                'per'       =>  $per,
-                'ip'        => $ipAdress->getIpAdress(),
-                'name'      => $sendTo->getName(),
-                'gestor'    => $gestor,
-                'demand'    =>  $demand
-            ]));
+                $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
+                $mail->Subject  = $config->getSubject();
+                $mail->msgHTML($this->renderView('emails/myemail.html.twig', [
+                    'name'      =>  'Controle de Mudanças',
+                    'mud'       =>  $mud,
+                    'sendTo'    => $sendTo,
+                    'per'       =>  $per,
+                    'ip'        => $ipAdress->getIpAdress(),
+                    'name'      => $sendTo->getName(),
+                    'gestor'    => $gestor,
+                    'demand'    =>  $demand
+                ]));
             }
-            
+
 
             //$mail->Subject  = "ASSUNTO"; // Assunto da mensagem
             //$mail->Body = "HTML FORMAT";

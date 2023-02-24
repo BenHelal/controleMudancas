@@ -83,8 +83,18 @@
 						</p>
 					
 					{% elseif demand =='client' %}
+						Nome da mudança: 
+						Número da mudança: 
+						Nome do Cliente: 
+						Descrição do Impacto para o Cliente: 
+						Justificativa: 
+						Descrição do impacto: 
+						Descrição do impacto na área do solicitante: 
+						Área impactada: 
+						Área responsável pela mudança:
+
 						{% for item in c.apiTokens %}
-							{{item.token}}
+							<a href='{{item.token}}' >Link</a>
 						{% endfor %}
 					{% elseif demand == 'manager1' %}
 						<h1 class="text-center">Olá
