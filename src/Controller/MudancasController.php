@@ -898,7 +898,29 @@ class MudancasController extends AbstractController
                                 $em->persist($mud);
                                 $em->flush();
 
+                                /**
+                                * get the Process with mudancas 
+                                * to can get The Sector 
+                                * and check the situation of the mudancas  
+                                */
+                                $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
 
+                                /**
+                                * get the List of SectorProcess 
+                                * to can access to the sector 
+                                */
+                                $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+                                $number_sector_app = 0;
+                                
+                                //dd($sps);
+                                foreach ($sps as $key => $value) {
+                                    if($value->getPerson() == $person){
+                                        $value->setAppSectorMan($form["appMan"]->getData());
+                                        $value->setComment($form["comMan"]->getData());
+                                        $em->persist($value);
+                                        $em->flush();
+                                    };
+                                }
                                 /**
                                  * Send Email
                                  * -------------------------------------------------------
@@ -927,7 +949,7 @@ class MudancasController extends AbstractController
                                  
                                 $emails = $em->getRepository(Email::class)->findBy(['mudancas' => $mud]);
                                 $ems = [];
-                                foreach ($emails as $key => $value) {
+                                /*foreach ($emails as $key => $value) {
                                     if ($ems == null) {
                                         array_push($ems, $value);
                                     } else {
@@ -943,7 +965,7 @@ class MudancasController extends AbstractController
                                     }
                                     $em->remove($value);
                                     $em->flush();
-                                }
+                                }*/
                                 foreach ($ems as $key => $value) {
                                     //$email = new Email();
                                     $email = $value;
