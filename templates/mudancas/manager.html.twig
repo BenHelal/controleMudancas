@@ -56,14 +56,14 @@
 		<div class="leftcolumn" style=" float: left; width: 75%;">
 			<div class="card" style=" background-color: white; padding: 20px; margin-top: 20px;  margin-left: 20px">
 
-				{% if data.mangerMudancas != null %}
-					<h2>Gestor da mudança :
-						{{data.mangerMudancas.name}}</h2>
-				{% endif %}
+				
 
 				<h2>Nome de mudanças:
 					{{data.nomeMudanca}}</h2>
-
+{% if data.mangerMudancas != null %}
+					<p>Gestor da mudança :
+						{{data.mangerMudancas.name}}</p>
+				{% endif %}
 				<p>Número da mudança:
 					{{data.id}}</p>
 				{% if data.nansenNumber != null %}
