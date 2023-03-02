@@ -154,9 +154,12 @@ class Mudancas
     #[ORM\Column(length: 255, nullable: true)]
     public $excel;
 
-    #[ORM\ManyToMany(targetEntity: Client::class)]
+
+
+    #[ORM\ManyToOne(targetEntity: Client::class)]
     #[ORM\JoinColumn(nullable: true)]
-    private Collection $client;
+    private ?Client $client;
+
     public function getDescClient(): ?string
     {
         return $this->descClient;
@@ -172,7 +175,6 @@ class Mudancas
     public function __construct()
     {
         $this->areaImpact = new ArrayCollection();
-        $this->client = new ArrayCollection();
     }
     public function getPdf(){
         return $this->pdf;
@@ -590,27 +592,17 @@ class Mudancas
         return $this;
     }
 
-    /**
-     * @return Collection<int, Client>
-     */
-    public function getClient(): Collection
+
+
+    public function getClient(): ?Client
     {
         return $this->client;
     }
 
-    public function addClient(Client $client): self
+    public function setClient(?Client $client): self
     {
-        if (!$this->client->contains($client)) {
-            $this->client->add($client);
-        }
-
+        $this->client = $client;
         return $this;
     }
 
-    public function removeClient(Client $client): self
-    {
-        $this->client->removeElement($client);
-
-        return $this;
-    }
 }

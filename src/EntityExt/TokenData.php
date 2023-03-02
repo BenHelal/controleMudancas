@@ -44,15 +44,15 @@ class TokenData
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $nansenNumber = null;
 
-    #[ORM\Column(type:'date', nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private  $startMudancas = null;
 
     //Data estimada de Termino
-    #[ORM\Column(type:'date', nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private $endMudancas = null;
 
     //Data Efetiva de Início
-    #[ORM\Column(type:'date', nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private $effictiveStartDate = null;
 
     //Custo
@@ -68,11 +68,45 @@ class TokenData
     private ?string $impDesc = null;
 
     //Data de conclusão da mudança
-    #[ORM\Column(type:'date',nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE,nullable: true)]
     private $dateOfImp = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $comMan = null;
+
+    
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $comClt = null;
+
+
+    #[ORM\Column(nullable: true)]
+    private ?int $appClt = null;
+
+    public function getAppClt(): ?int
+    {
+        return $this->appClt;
+    }
+
+    public function setAppClt(?int $appClt): self
+    {
+        $this->appClt = $appClt;
+
+        return $this;
+    }
+
+    public function getComClt(): ?string
+    {
+        return $this->comClt;
+    }
+
+    public function setComClt(?string $comClt): self
+    {
+        $this->comClt = $comClt;
+
+        return $this;
+    }
+
+
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $comGest = null;
@@ -83,7 +117,7 @@ class TokenData
     #[ORM\Column(nullable: true)]
     private ?int $appGest = null;
 
-    #[ORM\Column(type:'datetime', nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private $dataCreation;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -92,7 +126,69 @@ class TokenData
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $expiresAt = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $codeVerif = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private $codeExp;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resp = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resp_email = null;
+    
+    public function getCodeVerif(): ?string
+    {
+        return $this->codeVerif;
+    }
+    
+    public function setCodeVerif(?string $codeVerif): self
+    {
+        $this->codeVerif = $codeVerif;
+
+        return $this;
+    }
+
+    public function getCodeExp()
+    {
+        if($this->codeExp != null){
+            return $this->codeExp->format('Y-m-d H:i:s');
+        }else{
+            return $this->codeExp;
+        }
+    }
+
+    public function setCodeExp(): self
+    { 
+        date_default_timezone_set("America/Sao_Paulo");
+        $this->codeExp = new \DateTime('+30 minutes');
+        return $this;
+    }
+
+    public function getResp(): ?string
+    {
+        return $this->resp;
+    }
+
+    public function setResp(?string $resp): self
+    {
+        $this->resp = $resp;
+
+        return $this;
+    }
+
+    public function getRespEmail(): ?string
+    {
+        return $this->resp_email;
+    }
+
+    public function setRespEmail(string $resp_email): self
+    {
+        $this->resp_email = $resp_email;
+
+        return $this;
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -375,6 +471,8 @@ class TokenData
 
         return $this;
     }
+
+
 
     public function getAppGest()
     {

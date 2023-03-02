@@ -16,7 +16,7 @@
 			<thead>
 				<tr>
 					<th scope="col">Tipo de Aprovação</th>
-					<th scope="col">Área</th>
+					<th scope="col">Área/Cliente</th>
 					<th scope="col">Nome do Aprovador</th>
 					<th scope="col">Status Aprovação</th>
 					<th scope="col">Comentário</th>
@@ -77,7 +77,7 @@
 				</tr>
 				<tr>
 					<th scope="row">Gerente Aprovação</th>
-					{% if mud.areaResp.name == null %}
+					{% if p == null %}
 						<td>Não verificado</td>
 						<td>Não verificado</td>
 					{% else %}
@@ -131,11 +131,11 @@
 						<th scope="row">Área Impactada</th>
 						<td>{{m.name}}</td>
 						<td>{{data2[key].name }}</td>
-						{% if  m.app_sector_man  == 1  %}
+						{% if  m.appSectorMan  == 1  %}
 							<td>Aprovado</td>
-						{% elseif m.app_sector_man == 0 and  m.comment != null %}
+						{% elseif m.appSectorMan == 0 and  m.comment != null %}
 							<td>Rejeitado</td>
-						{% elseif m.app_sector_man == null   %}
+						{% elseif m.appSectorMan == null   %}
 							<td>Não verificado</td>
 						{% endif %}
 
@@ -148,6 +148,33 @@
 						{% endif %}
 					</tr>
 
+				{% endfor %}
+
+
+				{% if client != null and mud.client != null  %}
+					<tr>
+						<th scope="row">Cliente Aprova</th>
+						
+						<td>{{mud.client.name}}</td>
+						<td>{{mud.client.Resp}}</td>
+						{% if  client.mud.TokenData.appClt  == 1  %}
+							<td>Aprovado</td>
+						{% elseif client.mud.TokenData.appClt == 2 %}
+							<td>Rejeitado</td>
+						{% elseif client.mud.TokenData.appClt == null   %}
+							<td>Não verificado</td>
+						{% endif %}
+
+						{% if client.mud.TokenData.comClt == null %}
+							<td>
+							Sem comentário</td>
+						{% else %}
+							<td>
+							{{client.mud.TokenData.codeExp.date}}<br>
+							{{client.mud.TokenData.comClt}}</td>
+						{% endif %}
+					</tr>
+				{% endif %}
 				{% if mud.implemented != null %}
 					<tr>
 						<th scope="row">Dados de implementação</th>
@@ -158,7 +185,6 @@
 						{% elseif mud.implemented == 2 %}
 							<td>Não implementado</td>
 						{% endif %}
-
 
 						{% if mud.impDesc == null %}
 							<td>
@@ -171,9 +197,7 @@
 					</tr>
 
 				{% endif %}
-				
 				</td>
 			</tbody>
 		</tr>
-	{% endfor %}
 </tbody></table></div>{% endblock %}

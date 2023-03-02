@@ -229,7 +229,7 @@
 			<div class="row">
 				<div class="col-md-12 mb-3">
 					<div class="form-check">
-									<input class="form-check-input" type="checkbox" value="" onclick="vc()" id="vci">
+						<input class="form-check-input" type="checkbox" value="" onclick="vc()" id="vci">
 						<label class="form-check-label" for="flexCheckDefault">
 							Cliente será Impactado?
 						</label>
@@ -237,16 +237,31 @@
 				</div>
 			</div>
 
-			<div class="row"  id="vcg">
+			<div class="row" id="vcg">
 				<div class="col-md-12 mb-3">
 					{{ form_label(form.client) }}
 					{{ form_widget(form.client,{'attr':{'class':'form-control','data-placeholder':'Escolha o cliente.....','style':'width: 100%;', 'rows': '12'}}) }}
 				</div>
+
+
+				{% if creation == "false"  %}
+					{% for item in m.client %}
+						{% if item.respEmail == null %}
+
+							<div class="col-md-12 mb-3">{{item.name}}
+								: este cliente não tinha e-mail no banco de dados</div>
+						{% endif %}
+					{% endfor %}
+				{% endif %}
+
 				<div class="col-md-12 mb-3">
 					{{ form_label(form.descClient) }}
 					{{ form_widget(form.descClient,{'attr':{'class':'form-control', 'rows': '4'}}) }}
 				</div>
+
 			</div>
+
+
 			{% if gestor %}
 				<div class="row" id="gestorMudancas">
 					<div class="col-md-12 mb-3">
@@ -431,7 +446,7 @@
 					<p class="btn btn-info mt-2 text-white">Mudança Implementada</p>
 					<p>
 					{% elseif  m.implemented == 2 and m.done == 'Feito' %}
-						<p class="btn btn-info mt-2 text-white" data-toggle="modal" data-target="#imp2">Mudanças não implementado</p>
+						<p class="btn btn-info mt-2 text-white" data-toggle="modal" data-target="#imp2">Mudança não implementada</p>
 						<p>
 							<div class="modal fade" id="imp2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
 								<div class="modal-dialog" role="document">
@@ -588,6 +603,15 @@
 								{{ form_label(form.descClient) }}
 								{{ form_widget(form.descClient,{'attr':{'class':'form-control', 'rows': '4'}}) }}
 							</div>
+							{% if creation == "false"  %}
+								{% for item in mud.client %}
+									{% if item.respEmail == null %}
+										este cliente não tinha e-mail no banco de dados
+									{% endif %}
+								{% endfor %}
+
+							{% endif %}
+
 						</div>
 
 						{% if person.permission == 'ler criar atualização' or person.permission =='ler criar' or person.permission =='tudo' %}
@@ -603,8 +627,8 @@
 
 				<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 				<script>
-				
-const box = document.getElementById('vcg');
+
+					const box = document.getElementById('vcg');
 function vc() {
 if (document.getElementById('vci').checked) {
 box.style.display = 'block';
@@ -612,40 +636,29 @@ box.style.display = 'block';
 box.style.display = 'none';
 }
 }
-					$(document).ready(function () {
-
-
+$(document).ready(function () {
 
 
 $('#mudancas_client').chosen({});
 $('#mudancasgestor_client').chosen({});
 $('#mudancasgestor_to_app_client').chosen({});
-$('#mudancasgestor_to_app_areaImpact').chosen({});
-
-
-
-{% if creation != 'true' %}
+$('#mudancasgestor_to_app_areaImpact').chosen({});{% if creation != 'true' %}
 {% if m.descClient == null %}
 document.getElementById("vci").checked = false;
 {% else %}
 
-document.getElementById("vci").checked = true;
-{% endif %}
+document.getElementById("vci").checked = true;{% endif %}
 {% endif %}
 if (document.getElementById('vci').checked) {
-	console.log('tes');
+console.log('tes');
 box.style.display = 'block';
 } else {
 
-	console.log('tes2');
+console.log('tes2');
 box.style.display = 'none';
 }
 
-});
-
-
-
-{% if gestor %}
+});{% if gestor %}
 $(document).ready(function () {
 const box = document.getElementById('nanseForm');
 if (document.getElementById('mudancasgestor_to_app_nansenName').value == '') {
@@ -656,7 +669,6 @@ box.style.display = 'block';
 } else {
 box.style.display = 'none';
 }
-
 
 
 } else {
@@ -712,10 +724,7 @@ $('#mudancasgestor_to_app_client').chosen({});
 
 $(document).ready(function () {
 $('#mudancasgestor_to_app_mangerMudancas').chosen({});
-});{% endif %}
-
-
-{% if gestor != true and manager == true %}
+});{% endif %}{% if gestor != true and manager == true %}
 
 /*mudancas_manager_client*/
 const mudancas_manager_comMan = document.getElementById('mudancas_manager_comMan');

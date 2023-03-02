@@ -31,7 +31,7 @@ class Email
     private ?Mudancas $mudancas = null;
 
     
-    #[ORM\ManyToOne(cascade: ['persist'])]
+    #[ORM\ManyToOne]
     private ?Client $client = null;
 
     public function getId(): ?int

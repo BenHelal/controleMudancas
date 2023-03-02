@@ -477,7 +477,7 @@ class AdminController extends AbstractController
                 $ln2 =  $resultSet->fetchAllAssociative();
             }
 
-            $sql = 'Delete FROM mudancas_client WHERE mudancas_id = :mudancas_id ;';
+            $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();

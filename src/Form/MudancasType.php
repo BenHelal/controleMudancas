@@ -79,7 +79,7 @@ class MudancasType extends AbstractType
                 'placeholder' => 'Escolha o Cliente',
                 'required' => false, 
                 'expanded'  => false,
-                'multiple' => true))
+                'multiple' => false))
                 
             ->add('descClient',TextareaType::class, [
                 'label' => 'Descrição do Impacto para o cliente',

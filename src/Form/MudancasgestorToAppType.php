@@ -85,7 +85,7 @@ class MudancasgestorToAppType extends AbstractType
                     'placeholder' => 'Cliente ...',
                     'required' => false, 
                     'expanded'  => false,
-                    'multiple' => true))
+                    'multiple' => false))
             ->add(
                 'mangerMudancas',
                 EntityType::class, 

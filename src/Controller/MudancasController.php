@@ -713,7 +713,7 @@ class MudancasController extends AbstractController
 
                         $conn = $doctrine->getConnection();
                         $sql = 'SELECT sp.id FROM 
-                                sector_process as sp,
+                                sectorprocess as sp,
                                 mudancas as mud,
                                 process as p
                                 where 
@@ -816,12 +816,12 @@ class MudancasController extends AbstractController
 
                         if ($manager == true && $gestor == false && $mangerOfAreaDidntApp == false) {
                             $form = $this->createForm(MudancasManagerType::class, $mud);
-                        } elseif ($gestor == true && $mangerOfAreaDidntApp == false ) {
+                        } elseif ($gestor == true && $mangerOfAreaDidntApp == false) {
                             $form = $this->createForm(MudancasgestorToAppType::class, $mud);
                             $formImp = $this->createForm(MudancasgestorImpType::class, $mud);
                         } elseif ($manager == true && $gestor != true) {
                             $form = $this->createForm(MudancasManagerType::class, $mud);
-                        } elseif ( $gestor == true && $mangerOfAreaDidntApp == true) {
+                        } elseif ($gestor == true && $mangerOfAreaDidntApp == true) {
                             $form = $this->createForm(MudancasgestorToAppType::class, $mud);
                         } else {
                             $form = $this->createForm(MudancasType::class, $mud);
@@ -899,22 +899,22 @@ class MudancasController extends AbstractController
                                 $em->flush();
 
                                 /**
-                                * get the Process with mudancas 
-                                * to can get The Sector 
-                                * and check the situation of the mudancas  
-                                */
+                                 * get the Process with mudancas 
+                                 * to can get The Sector 
+                                 * and check the situation of the mudancas  
+                                 */
                                 $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
 
                                 /**
-                                * get the List of SectorProcess 
-                                * to can access to the sector 
-                                */
+                                 * get the List of SectorProcess 
+                                 * to can access to the sector 
+                                 */
                                 $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
                                 $number_sector_app = 0;
-                                
+
                                 //dd($sps);
                                 foreach ($sps as $key => $value) {
-                                    if($value->getPerson() == $person){
+                                    if ($value->getPerson() == $person) {
                                         $value->setAppSectorMan($form["appMan"]->getData());
                                         $value->setComment($form["comMan"]->getData());
                                         $em->persist($value);
@@ -925,28 +925,61 @@ class MudancasController extends AbstractController
                                  * Send Email
                                  * -------------------------------------------------------
                                  **/
-                                if($mud->getClient() != null){
-                                    foreach ($mud->getClient() as $key => $value) {
-                                        # code...
-                                        $token = new ApiToken($value, $mud);
-                                        $em->persist($token);
-        
-                                        $tok = new TokenData();
-                                        $anotherEm->persist($tok);
-                                        //$customers = $anotherEm->getRepository(TokenData::class, 'database2')->findAll();
-                                        
-                                        $email = new  Email();
-                                        $email->setMudancas($mud);
-                                        $email->setClient($value);
-                                        $email->setSendBy($person);
-                                        $email->setTitle('Aprovação Client');
-                                        $email->setBody('client');
-                                        $em->persist($email);
-                                        $em->flush();
-                                        $this->sendEmail($doctrine, $request, $value, $mud, $person, 'client', false, $value);
-                                    }
+                                if ($mud->getClient() != null) {
+
+                                        if ($mud->getClient()->getRespEmail() != null) {
+
+                                           # code...
+                                            $token = new ApiToken($mud->getClient(), $mud);
+                                            $em->persist($token);
+
+                                            $tok = new TokenData();
+                                            $tok->setMudancas($mud->getId());
+                                            $tok->setNomeMudanca($mud->getNomeMudanca());
+                                            $tok->setDescMudanca($mud->getDescMudanca());
+                                            $tok->setDescImpacto($mud->getDescImpacto());
+                                            $tok->setDescImpactoArea($mud->getDescImpactoArea());
+                                            $tok->setJustif($mud->getJustif());
+                                            //$tok->setApproved($mud->getApproved());
+                                            //$tok->setDone($mud->getDone());
+                                            //$tok->setNansenNumber($mud->getNansenNumber());
+                                            /*$tok->setStartMudancas($mud->getStartMudancas());
+                                            $tok->setEndMudancas($mud->getEndMudancas());
+                                            $tok->setEffictiveStartDate($mud->getEffictiveStartDate());
+                                            $tok->setCost($mud->getCost());
+                                            $tok->setImplemented($mud->getImplemented());
+                                            $tok->setImpDesc($mud->getImpDesc());
+                                            $tok->setDateOfImp($mud->g());
+                                            */
+                                            $tok->setComMan($mud->getDateOfImp());
+                                            //$tok->setComGest($mud->getComGest());
+                                            $tok->setAppMan($mud->getAppMan());
+                                            //$tok->setAppGest($mud->getAppGest());
+                                            //$tok->setDataCreation($mud->getDataCreation());
+                                            $tok->setToken($token->getToken());
+                                            $tok->setExpiresAt($token->getExpiresAt());
+                                            $tok->setResp($mud->getClient()->getResp());
+                                            $tok->setRespEmail($mud->getClient()->getRespEmail());
+                                            
+
+                                            $email = new  Email();
+                                            $email->setMudancas($mud);
+                                            $email->setClient($mud->getClient());
+                                            $email->setSendBy($person);
+                                            $email->setTitle('Aprovação Client');
+                                            $email->setBody('client');
+                                            //dd($email);
+                                            
+                                            $em->persist($email);
+
+                                            $anotherEm->persist($tok);
+                                            $em->flush();
+                                            $anotherEm->flush();
+                                            $this->sendEmail($doctrine, $request, $mud->getClient(), $mud, $person, 'client', false, $mud->getClient());
+                                        }
+                                    
                                 }
-                                 
+
                                 $emails = $em->getRepository(Email::class)->findBy(['mudancas' => $mud]);
                                 $ems = [];
                                 /*foreach ($emails as $key => $value) {
@@ -1079,29 +1112,29 @@ class MudancasController extends AbstractController
                                 $anotherEm->flush();
                                 return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
                             } elseif ($gestor) {
-                                
+
                                 /**
-                                * get the Process with mudancas 
-                                * to can get The Sector 
-                                * and check the situation of the mudancas  
-                                */
+                                 * get the Process with mudancas 
+                                 * to can get The Sector 
+                                 * and check the situation of the mudancas  
+                                 */
                                 $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
 
                                 /**
-                                * get the List of SectorProcess 
-                                * to can access to the sector 
-                                */
+                                 * get the List of SectorProcess 
+                                 * to can access to the sector 
+                                 */
                                 $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
                                 $number_sector_app = 0;
-                                
+
                                 //dd($sps);
                                 foreach ($sps as $key => $value) {
-                                    if($value->getAppSectorMan() != null){
+                                    if ($value->getAppSectorMan() != null) {
                                         $number_sector_app++;
                                     };
                                 }
-                                
-                                if(sizeof($sps) == $number_sector_app){
+
+                                if (sizeof($sps) == $number_sector_app) {
                                     $mud->setDone('Feito');
                                 }
 
@@ -1245,7 +1278,7 @@ class MudancasController extends AbstractController
                 FROM 
                     mudancas as mud, 
                     process as pr, 
-                    sector_process as dp,
+                    sectorprocess as dp,
                     sector as d,
                     person as p,
                     departemant as dep
@@ -1359,6 +1392,9 @@ class MudancasController extends AbstractController
             //Recipients
             $mail->setFrom($config->getEmailSystem(), $config->getTitleObj());
             if ($client != null) {
+                
+                $ApiToken = $em->getRepository(ApiToken::class)->findOneBy(['mud' =>$mud->getId()]);
+                //dd($ApiToken);
                 $mail->AddAddress($client->getRespEmail(), $client->getResp());
                 $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
                 $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
@@ -1368,9 +1404,10 @@ class MudancasController extends AbstractController
                     'mud'       =>  $mud,
                     'sendTo'    => $config->getEmailSystem(),
                     'per'       =>  $per,
-                    'c' => $client,
+                    'c'         => $client,
+                    'token' => $ApiToken,
                     'ip'        => $ipAdress->getIpAdress(),
-                    'name'      =>$client->getResp(),
+                    'name'      => $client->getResp(),
                     'gestor'    => $gestor,
                     'demand'    =>  $demand
                 ]));

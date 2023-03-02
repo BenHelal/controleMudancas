@@ -64,7 +64,7 @@ class MudancasgestorType extends AbstractType
                 'placeholder' => 'Cliente ...',
                 'required' => false, 
                 'expanded'  => false,
-                'multiple' => true))
+                'multiple' => false))
             ->add('areaImpact',EntityType::class,array(
                 'class' => Sector::class,
                 'query_builder' => function(EntityRepository $er){
@@ -98,7 +98,7 @@ class MudancasgestorType extends AbstractType
                 'placeholder' => 'Cliente ...',
                 'required' => false, 
                 'expanded'  => false,
-                'multiple' => true))
+                'multiple' => false))
             ->add(
                 'mangerMudancas',
                 EntityType::class, 
