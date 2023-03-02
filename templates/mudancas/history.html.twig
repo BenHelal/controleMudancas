@@ -251,6 +251,12 @@
 															<p style="color :#008B83">Status: Solicitação Reprovada</p>
 														</medium>
 													</div>
+												{% elseif m.managerUserApp == 2 and m.appMan == null   and m.implemented == 2 %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Solicitação Reprovada</p>
+														</medium>
+													</div>	
 												{% elseif m.appMan == 1 and m.appGest == null and m.done != 'Feito' and m.implemented == null %}
 													<div class="d-flex w-100 justify-content-between">
 														<medium>
@@ -258,6 +264,12 @@
 														</medium>
 													</div>
 												{% elseif  m.appMan == 2  and m.appGest == null    and   m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">Status: Mudança Reprovada</p>
+														</medium>
+													</div>
+												{% elseif  m.appMan == 2  and m.appGest == null    and   m.implemented == 2 %}
 													<div class="d-flex w-100 justify-content-between">
 														<medium>
 															<p style="color :#008B83">Status: Mudança Reprovada</p>
@@ -271,6 +283,13 @@
 														</medium>
 													</div>
 												{% elseif   m.appGest == 2 and m.implemented == null %}
+													<div class="d-flex w-100 justify-content-between">
+														<medium>
+															<p style="color :#008B83">
+																Status: Mudança Rejeitada</p>
+														</medium>
+													</div>
+													{% elseif   m.appGest == 2 and m.implemented == 2 %}
 													<div class="d-flex w-100 justify-content-between">
 														<medium>
 															<p style="color :#008B83">
