@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Client;
 use App\Entity\Departemant;
 use App\Entity\Mudancas;
 use App\Entity\Sector;
@@ -67,7 +68,24 @@ class MudancasType extends AbstractType
                     'placeholder' => 'Escolha o setor responsável...',
                     'label' => 'Área Responsável pela mudança'
                 
-            ));
+            ))
+            ->add('client',EntityType::class,array(
+                'class' => Client::class,
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
+                },
+                'choice_label' => 'name',
+                'label'=> 'Escolha o Cliente',
+                'placeholder' => 'Escolha o Cliente',
+                'required' => false, 
+                'expanded'  => false,
+                'multiple' => false))
+                
+            ->add('descClient',TextareaType::class, [
+                'label' => 'Descrição do Impacto para o cliente',
+                'required' => false, 
+            ])
+                ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

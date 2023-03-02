@@ -6,6 +6,7 @@ use App\Entity\Departemant;
 use App\Entity\Person;
 use App\Entity\Sector;
 use App\Form\PersonType;
+use App\Model\Class\FunctionUsers;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +29,10 @@ class LoginController extends AbstractController
         //test if he is connected before 
         if ($session->get('token_jwt') == null) {  
 
+            $em = $doctrine->getManager();
+            $fu = new FunctionUsers();
+            $url = 'http://10.100.1.253/a/customers.php?tk=24dbdb7659f46b318b543981f2b0784226b8bd54';
+            $fu->checkDataClient($fu->getData($url), $em);
             // update list of employer 
             $url = 'http://10.100.1.253/a/users.php?sys=1&tk=24dbdb7659f46b318b543981f2b0784226b8bd54';
             $ch = curl_init($url);

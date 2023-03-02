@@ -82,6 +82,36 @@
 							</a>
 						</p>
 					
+					{% elseif demand =='client' %}
+					<h1 class="text-center">Olá {{ c.resp }}</h1>
+						Há uma nova notificação para você
+						<br>
+						Nome da mudança: {{mud.nomeMudanca}}
+						<br>
+						Número da mudança: {{mud.id }}
+						<br>
+						Nome do Cliente: {{ c.resp }}
+						<br>
+						Descrição do Impacto para o Cliente:{{mud.descClient}}
+						<br>
+						Justificativa: {{mud.justif}}
+						<br>
+						Descrição do impacto: {{mud.descImpacto}}
+						<br>
+						Descrição do impacto na área do solicitante: {{mud.descImpactoArea}}
+						<br>
+						Área impactada: 
+						{% for item in mud.areaImpact %}
+							{{item.name}} <br>	
+						{% endfor %}
+						<br>
+						Área responsável pela mudança: {{mud.areaResp.name}}
+						<br>
+						
+						<p class="block text-center">
+							<a href="http://{{ip}}/ClientExteranlAcces/public/{{token.token}}" class="btn">Para acessar a Mudança clique aqui!
+							</a>
+						</p>
 					{% elseif demand == 'manager1' %}
 						<h1 class="text-center">Olá
 							{{ mud.addBy.function.manager.name }},<br></h1>

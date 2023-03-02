@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Client;
 use App\Entity\Mudancas;
 use App\Entity\Person;
 use App\Entity\Sector;
@@ -42,7 +43,7 @@ class MudancasManagerType extends AbstractType
             ])
             ->add('justif',TextareaType::class, [
                 'label' => 'Justificativa'
-            ])
+            ]) 
             ->add('areaImpact',EntityType::class,array(
                 'class' => Sector::class,
                 'query_builder' => function(EntityRepository $er){
@@ -54,6 +55,22 @@ class MudancasManagerType extends AbstractType
                 'placeholder' => 'Área impactada',
                 'expanded'  => false,
                 'multiple' => true))
+            
+            ->add('descClient',TextareaType::class, [
+                    'label' => 'Descrição do Impacto para o cliente',
+                    'required' => false, 
+                ])    
+            ->add('client',EntityType::class,array(
+                    'class' => Client::class,
+                    'query_builder' => function(EntityRepository $er){
+                        return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
+                    },
+                    'choice_label' => 'name',
+                    'label'=> 'Cliente',
+                    'placeholder' => 'Cliente ...',
+                    'required' => false, 
+                    'expanded'  => false,
+                    'multiple' => false))
             ->add(
                 'areaResp',
                 EntityType::class, 

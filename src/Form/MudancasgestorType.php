@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Client;
 use App\Entity\Departemant;
 use App\Entity\Mudancas;
 use App\Entity\Person;
@@ -48,6 +49,22 @@ class MudancasgestorType extends AbstractType
             ->add('justif',TextareaType::class, [
                 'label' => 'Justificativa'
             ])
+            
+            ->add('descClient',TextareaType::class, [
+                'label' => 'Descrição do Impacto para o cliente',
+                'required' => false, 
+            ])    
+            ->add('client',EntityType::class,array(
+                'class' => Client::class,
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
+                },
+                'choice_label' => 'name',
+                'label'=> 'Cliente',
+                'placeholder' => 'Cliente ...',
+                'required' => false, 
+                'expanded'  => false,
+                'multiple' => false))
             ->add('areaImpact',EntityType::class,array(
                 'class' => Sector::class,
                 'query_builder' => function(EntityRepository $er){
@@ -71,6 +88,17 @@ class MudancasgestorType extends AbstractType
                     'label' => 'Área Responsável pela mudança'
                 
             ))
+            ->add('client',EntityType::class,array(
+                'class' => Client::class,
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
+                },
+                'choice_label' => 'name',
+                'label'=> 'Cliente',
+                'placeholder' => 'Cliente ...',
+                'required' => false, 
+                'expanded'  => false,
+                'multiple' => false))
             ->add(
                 'mangerMudancas',
                 EntityType::class, 
