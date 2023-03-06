@@ -1190,6 +1190,12 @@ class MudancasController extends AbstractController
                             } else {
                             }
                         }
+                        $email = false;
+                        if($mud->getClient() != null){
+                            if($mud->getClient()->getRespEmail() != null){
+                                $email = true;
+                            }
+                        }
                         if ($gestor == true && $mangerOfAreaDidntApp == false) {
                             return $this->render('mudancas/update.html.twig', [
                                 'controller_name' => 'Atualizar Mudancas',
@@ -1197,6 +1203,7 @@ class MudancasController extends AbstractController
                                 'creation' => 'false',
                                 'person' => $person,
                                 'm' => $mud,
+                                'email' => $email,
                                 'mangerOfAreaDidntApp' => $mangerOfAreaDidntApp,
                                 'manager' => $manager,
                                 'gestor' => $gestor,
@@ -1210,6 +1217,7 @@ class MudancasController extends AbstractController
                                 'creation' => 'false',
                                 'person' => $person,
                                 'm' => $mud,
+                                'email' => $email,
                                 'mangerOfAreaDidntApp' => $mangerOfAreaDidntApp,
                                 'manager' => $manager,
                                 'gestor' => $gestor,

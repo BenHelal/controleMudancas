@@ -245,14 +245,12 @@
 
 
 				{% if creation == "false"  %}
-					{% for item in m.client %}
-						{% if item.respEmail == null %}
-
-							<div class="col-md-12 mb-3">{{item.name}}
-								: este cliente não tinha e-mail no banco de dados</div>
-						{% endif %}
-					{% endfor %}
-				{% endif %}
+								{% if  m.client %}
+									{% if m.client.respEmail == null %}
+										este cliente não tinha e-mail no banco de dados
+									{% endif %}
+								{% endif %}
+							{% endif %}
 
 				<div class="col-md-12 mb-3">
 					{{ form_label(form.descClient) }}
@@ -604,12 +602,11 @@
 								{{ form_widget(form.descClient,{'attr':{'class':'form-control', 'rows': '4'}}) }}
 							</div>
 							{% if creation == "false"  %}
-								{% for item in mud.client %}
-									{% if item.respEmail == null %}
+								{% if  m.client %}
+									{% if m.client.respEmail == null %}
 										este cliente não tinha e-mail no banco de dados
 									{% endif %}
-								{% endfor %}
-
+								{% endif %}
 							{% endif %}
 
 						</div>
