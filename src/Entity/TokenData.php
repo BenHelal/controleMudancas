@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EntityExt;
+namespace App\Entity;
 
 use App\Repository\TokenDataRepository;
 use Doctrine\DBAL\Types\Types;

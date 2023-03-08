@@ -56,10 +56,10 @@ class MudancasManagerType extends AbstractType
                 'expanded'  => false,
                 'multiple' => true))
             
-            ->add('descClient',TextareaType::class, [
+            /*->add('descClient',TextareaType::class, [
                     'label' => 'Descrição do Impacto para o cliente',
                     'required' => false, 
-                ])    
+                ])  */  
             ->add('client',EntityType::class,array(
                     'class' => Client::class,
                     'query_builder' => function(EntityRepository $er){
