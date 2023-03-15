@@ -53,7 +53,7 @@ class Mudancas
     private ?Person $mangerMudancas = null;
 
     //Data estimada de Início
-    #[ORM\Column(type:'date', nullable: true)]
+    #[ORM\Column(type:'datetime', nullable: true)]
     private  $startMudancas = null;
 
     //Data estimada de Termino
@@ -111,7 +111,6 @@ class Mudancas
     
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $descClient = null;
-    
     #[ORM\Column(nullable: true)]
     private ?int $managerUserApp = null;
    
@@ -177,7 +176,8 @@ class Mudancas
     public function __construct()
     {
         $this->areaImpact = new ArrayCollection();
-    }
+        $this->setStartMudancas(new \DateTime());
+}
     public function getPdf(){
         return $this->pdf;
     }
@@ -351,15 +351,27 @@ class Mudancas
         return $this;
     }
 
+    /**
+     * Get date
+     *
+     * @return \Datetime 
+     */
     public function getStartMudancas()
     {
         if($this->startMudancas != null){
-            return $this->startMudancas->format('Y-m-d');
+            
+            return $this->startMudancas->format('d-m-Y');
         }else{
             return $this->startMudancas;
         }
     }
 
+    /**
+     * Set date
+     *
+     * @param \Datetime $date
+     * @return Mudancas
+     */
     public function setStartMudancas(\DateTimeInterface $startMudancas): self
     {
         $this->startMudancas = $startMudancas;
@@ -370,7 +382,7 @@ class Mudancas
     public function getEndMudancas()
     {
         if($this->endMudancas != null){
-            return $this->endMudancas->format('Y-m-d');
+            return $this->endMudancas->format('d-m-Y');
         }else{
             return $this->endMudancas;
         }
@@ -386,7 +398,7 @@ class Mudancas
     public function getEffictiveStartDate()
     {
         if($this->effictiveStartDate != null){
-            return $this->effictiveStartDate->format('Y-m-d');
+            return $this->effictiveStartDate->format('d-m-Y');
         }else{
             return $this->effictiveStartDate;
         }
@@ -438,7 +450,7 @@ class Mudancas
     public function getDateOfImp()
     {
         if($this->dateOfImp != null){
-            return $this->dateOfImp->format('Y-m-d');
+            return $this->dateOfImp->format('d-m-Y');
         }else{
             return $this->dateOfImp;
         }
@@ -501,7 +513,7 @@ class Mudancas
     public function getDataCreation()
     {
         if($this->dataCreation != null){
-            return $this->dataCreation->format('Y-m-d H:i:s');
+            return $this->dataCreation->format('d-m-Y');
         }else{
             return $this->dataCreation;
         }
