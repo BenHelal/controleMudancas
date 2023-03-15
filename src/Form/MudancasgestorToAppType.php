@@ -71,21 +71,7 @@ class MudancasgestorToAppType extends AbstractType
                     'choice_label' => 'name',
                     'label' => 'Área Responsável pela mudança'
                 
-            ))->add('descClient',TextareaType::class, [
-                    'label' => 'Descrição do Impacto para o cliente',
-                    'required' => false, 
-                ])    
-            ->add('client',EntityType::class,array(
-                    'class' => Client::class,
-                    'query_builder' => function(EntityRepository $er){
-                        return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
-                    },
-                    'choice_label' => 'name',
-                    'label'=> 'Cliente',
-                    'placeholder' => 'Cliente ...',
-                    'required' => false, 
-                    'expanded'  => false,
-                    'multiple' => false))
+            )) 
             ->add(
                 'mangerMudancas',
                 EntityType::class, 
