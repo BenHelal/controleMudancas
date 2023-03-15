@@ -52,7 +52,7 @@ class MudancasController extends AbstractController
                 return $this->redirectToRoute('app_request');
             }
             $dep = $em->getRepository(Departemant::class)->findOneBy(['name' => $person->getDepartemant()]);
-            $manager = $em->getRepository(Sector::class)->findBy(['manager' => $person]);
+            $manager = $em->getRepository(Sector::class)->findBy(['coordinator' => $person]);
             $mudanca = $em->getRepository(Mudancas::class)->findAll();
             $mudancas = [];
             $gestorArray = $em->getRepository(Mudancas::class)->findBy(['mangerMudancas' => $person]);
@@ -118,7 +118,7 @@ class MudancasController extends AbstractController
                     $areaImpact =  $muda->getAreaImpact();
                     $mangerArea = false;
                     foreach ($areaImpact as $key => $value) {
-                        if ($value->getManager() == $person) {
+                        if ($value->getCoordinator() == $person) {
                             $mangerArea = true;
                         }
                     }
@@ -223,7 +223,7 @@ class MudancasController extends AbstractController
             foreach ($mud->getAreaImpact() as $key => $value) {
                 $email = new  Email();
                 $email->setMudancas($mud);
-                $email->setSendTo($value->getManager());
+                $email->setSendTo($value->getCoordinator());
                 $email->setSendBy($person);
                 $email->setTitle('Mudança implementada');
                 $email->setBody('gestorAppToArea');
@@ -321,7 +321,7 @@ class MudancasController extends AbstractController
                         } else {*/
                         $area = [];
                         foreach ($mud->getAreaImpact() as $key => $value) {
-                            if ($value->getManager() == $person) {
+                            if ($value->getCoordinator() == $person) {
                                 array_push($area, $value);
                             }
                         }
@@ -366,7 +366,7 @@ class MudancasController extends AbstractController
                                 foreach ($mud->getAreaImpact() as $key => $value) {
                                     $email = new  Email();
                                     $email->setMudancas($mud);
-                                    $email->setSendTo($value->getManager());
+                                    $email->setSendTo($value->getCoordinator());
                                     $email->setSendBy($person);
                                     $email->setTitle('ÁREA IMPACTADA');
                                     $email->setBody('managerArea');
@@ -468,7 +468,7 @@ class MudancasController extends AbstractController
                                 foreach ($mud->getAreaImpact() as $key => $value) {
                                     $email = new  Email();
                                     $email->setMudancas($mud);
-                                    $email->setSendTo($value->getManager());
+                                    $email->setSendTo($value->getCoordinator());
                                     $email->setSendBy($person);
                                     $email->setTitle('ÁREA IMPACTADA');
                                     $email->setBody('managerArea');
@@ -510,7 +510,7 @@ class MudancasController extends AbstractController
                             foreach ($mud->getAreaImpact() as $key => $value) {
                                 $email = new  Email();
                                 $email->setMudancas($mud);
-                                $email->setSendTo($value->getManager());
+                                $email->setSendTo($value->getCoordinator());
                                 $email->setSendBy($person);
                                 $email->setTitle('ÁREA IMPACTADA');
                                 $email->setBody('managerArea');
@@ -568,7 +568,7 @@ class MudancasController extends AbstractController
                                 $SectorProcess = new SectorProcess();
                                 $SectorProcess->setProcess($process);
                                 $SectorProcess->setSector($value);
-                                $SectorProcess->setPerson($value->getManager());
+                                $SectorProcess->setPerson($value->getCoordinator());
                                 $em->persist($SectorProcess);
                                 $em->flush();
                             }
@@ -598,7 +598,7 @@ class MudancasController extends AbstractController
                                 $SectorProcess = new SectorProcess();
                                 $SectorProcess->setProcess($process);
                                 $SectorProcess->setSector($value);
-                                $SectorProcess->setPerson($value->getManager());
+                                $SectorProcess->setPerson($value->getCoordinator());
                                 $em->persist($SectorProcess);
                                 $em->flush();
                             }
@@ -626,7 +626,7 @@ class MudancasController extends AbstractController
                                 $SectorProcess = new SectorProcess();
                                 $SectorProcess->setProcess($process);
                                 $SectorProcess->setSector($value);
-                                $SectorProcess->setPerson($value->getManager());
+                                $SectorProcess->setPerson($value->getCoordinator());
                                 $em->persist($SectorProcess);
                                 $em->flush();
                             }
@@ -1102,7 +1102,7 @@ class MudancasController extends AbstractController
                                     foreach ($mud->getAreaImpact() as $key => $value) {
                                         $email = new  Email();
                                         $email->setMudancas($mud);
-                                        $email->setSendTo($value->getManager());
+                                        $email->setSendTo($value->getCoordinator());
                                         $email->setSendBy($person);
                                         $email->setTitle('ÁREA IMPACTADA');
                                         $email->setBody('managerArea');

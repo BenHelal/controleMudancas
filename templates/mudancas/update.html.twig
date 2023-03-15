@@ -513,7 +513,7 @@
 								{% endif %}
 							{% elseif m.done == 'Feito' and  m.implemented == null %}
 								{% if gestor %}
-									{% if m.implemented != 1 and m.implemented != 2 %}
+									{% if m.implemented != 1 and m.implemented != 2 and cl.mud.TokenData.appClt != null %}
 										<br>
 										<a class="btn btn-info mt-2 text-white" data-toggle="modal" data-target="#imp">Implementação</a>
 									{% endif %}
@@ -646,7 +646,7 @@ $(document).ready(function () {
 $('#mudancas_client').chosen({});
 $('#mudancasgestor_client').chosen({});
 $('#mudancasgestor_to_app_client').chosen({});
-$('#mudancasgestor_to_app_areaImpact').chosen({});{% if creation != 'true' %}{% if m.client.id == null %}
+$('#mudancasgestor_to_app_areaImpact').chosen({});{% if creation != 'true' %}{% if m.client == null %}
 document.getElementById("vci").checked = false;
 {% else %}
 
