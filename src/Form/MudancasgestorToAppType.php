@@ -74,6 +74,7 @@ class MudancasgestorToAppType extends AbstractType
             ))->add('descClient',TextareaType::class, [
                     'label' => 'Descrição do Impacto para o cliente',
                     'required' => false, 
+                    'empty_data' => ''
                 ])    
             ->add('client',EntityType::class,array(
                     'class' => Client::class,

@@ -108,8 +108,10 @@ class Mudancas
 
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $managerUserComment = null;
+    
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $descClient = null;
+    
     #[ORM\Column(nullable: true)]
     private ?int $managerUserApp = null;
    
