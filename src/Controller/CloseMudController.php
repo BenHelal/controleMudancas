@@ -18,7 +18,6 @@ class CloseMudController extends AbstractController
     #[Route('/flow/{id}', name: 'flow')]
     public function index(ManagerRegistry $doctrine, Request $request, $id): Response
     {
-
         $session = new Session();
         $session = $request->getSession();
 
@@ -91,9 +90,6 @@ class CloseMudController extends AbstractController
             } else {
                 $pe = $em->getRepository(Person::class)->find($ln[0]['person_id']);
             }
-
-            //dd($ln);
-
 
             return $this->render('close_mud/index.html.twig', [
                 'controller_name' => 'CloseMudController',
