@@ -16,6 +16,7 @@ use App\Entity\Sector;
 use App\Entity\SectorProcess;
 use App\Entity\TokenData;
 use App\Form\GerenteMudType;
+use App\Form\Mudancasgestor2Type;
 use App\Form\MudancasgestorImpType;
 use App\Form\MudancasgestorType;
 use App\Form\MudancasManagerType;
@@ -664,7 +665,7 @@ class MudancasController extends AbstractController
             $req =  $em->getRepository(Requestper::class)->findOneBy(['person' => $person]);
             // get Mudancas with ID
             $mud = $em->getRepository(Mudancas::class)->find($id);
-
+            $date1 = $mud->getStartMudancas();
             $token = $em->getRepository(ApiToken::class)->findOneBy(['mud' => $mud]);
             if ($token != null) {
                 //143.255.163.142
@@ -829,7 +830,7 @@ class MudancasController extends AbstractController
 
                         // check which Form need 
                         $form = null;
-
+                        
                         if ($manager == true && $gestor == false && $mangerOfAreaDidntApp == false) {
                             $form = $this->createForm(MudancasManagerType::class, $mud);
                         } elseif ($gestor == true && $mangerOfAreaDidntApp == false) {
@@ -837,9 +838,11 @@ class MudancasController extends AbstractController
                             $formImp = $this->createForm(MudancasgestorImpType::class, $mud);
                         } elseif ($manager == true && $gestor != true) {
                             $form = $this->createForm(MudancasManagerType::class, $mud);
-                        } elseif ($gestor == true && $mangerOfAreaDidntApp == true) {
+                        } elseif ($gestor == true && $mangerOfAreaDidntApp == true && $date1 != null) {
+                            $form = $this->createForm(Mudancasgestor2Type::class, $mud);
+                        } elseif ($gestor == true && $mangerOfAreaDidntApp == true && $date1 == null) {
                             $form = $this->createForm(MudancasgestorType::class, $mud);
-                        } else {
+                        }else{
                             $form = $this->createForm(MudancasType::class, $mud);
                         }
                         // event listner 
@@ -1245,6 +1248,7 @@ class MudancasController extends AbstractController
                                 'manager' => $manager,
                                 'gestor' => $gestor,
                                 'cl' => $cl,
+                                'date1' => $date1,
                                 'formImp' => $formImp->createView(),
                                 'form' => $form->createView(),
                             ]);
@@ -1256,6 +1260,7 @@ class MudancasController extends AbstractController
                                 'person' => $person,
                                 'm' => $mud,
                                 'email' => $email,
+                                'date1' => $date1,
                                 'mangerOfAreaDidntApp' => $mangerOfAreaDidntApp,
                                 'manager' => $manager,
                                 'gestor' => $gestor,
