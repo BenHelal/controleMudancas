@@ -36,7 +36,7 @@ class NotifController extends AbstractController
             
             $notManager = true ;
             foreach ($mudancas->getAreaImpact() as $key => $value) {
-                if($value->getManager() == $person){
+                if($value->getCoordinator() == $person){
                     $notManager = false;
                 }
             }
@@ -46,7 +46,7 @@ class NotifController extends AbstractController
             }
             $area = [];
             foreach ($mudancas->getAreaImpact() as $key => $value) {
-                if ($value->getManager() == $person) {
+                if ($value->getCoordinator() == $person) {
                     array_push($area, $value);
                 }
             }

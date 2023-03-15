@@ -3,18 +3,24 @@
 namespace App\Form;
 
 use App\Entity\Client;
+use App\Entity\Departemant;
 use App\Entity\Mudancas;
 use App\Entity\Person;
 use App\Entity\Sector;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\ChoiceList;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
-class MudancasManagerType extends AbstractType
+class Mudancasgestor2Type extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -34,7 +40,6 @@ class MudancasManagerType extends AbstractType
             ->add('descMudanca',TextareaType::class,[
                 'label' => 'Descrição da Mudança'
             ])
-
             ->add('descImpacto',TextareaType::class, [
                 'label' => 'Descrição do Impacto'
             ])
@@ -43,7 +48,23 @@ class MudancasManagerType extends AbstractType
             ])
             ->add('justif',TextareaType::class, [
                 'label' => 'Justificativa'
-            ]) 
+            ])
+            
+            ->add('descClient',TextareaType::class, [
+                'label' => 'Descrição do Impacto para o cliente',
+                'required' => false, 
+            ])    
+            ->add('client',EntityType::class,array(
+                'class' => Client::class,
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
+                },
+                'choice_label' => 'name',
+                'label'=> 'Cliente',
+                'placeholder' => 'Cliente ...',
+                'required' => false, 
+                'expanded'  => false,
+                'multiple' => false))
             ->add('areaImpact',EntityType::class,array(
                 'class' => Sector::class,
                 'query_builder' => function(EntityRepository $er){
@@ -55,22 +76,6 @@ class MudancasManagerType extends AbstractType
                 'placeholder' => 'Área impactada',
                 'expanded'  => false,
                 'multiple' => true))
-            
-            /*->add('descClient',TextareaType::class, [
-                    'label' => 'Descrição do Impacto para o cliente',
-                    'required' => false, 
-                ])  */  
-            ->add('client',EntityType::class,array(
-                    'class' => Client::class,
-                    'query_builder' => function(EntityRepository $er){
-                        return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
-                    },
-                    'choice_label' => 'name',
-                    'label'=> 'Cliente',
-                    'placeholder' => 'Cliente ...',
-                    'required' => false, 
-                    'expanded'  => false,
-                    'multiple' => false))
             ->add(
                 'areaResp',
                 EntityType::class, 
@@ -83,6 +88,17 @@ class MudancasManagerType extends AbstractType
                     'label' => 'Área Responsável pela mudança'
                 
             ))
+            ->add('client',EntityType::class,array(
+                'class' => Client::class,
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
+                },
+                'choice_label' => 'name',
+                'label'=> 'Cliente',
+                'placeholder' => 'Cliente ...',
+                'required' => false, 
+                'expanded'  => false,
+                'multiple' => false))
             ->add(
                 'mangerMudancas',
                 EntityType::class, 
@@ -93,27 +109,43 @@ class MudancasManagerType extends AbstractType
                         ->orderBy('s.name','ASC');
                     },
                     'choice_label' => 'name',
-                    'placeholder' => 'Selecione uma Opção',
-                    'label' => 'Gestor da mudança'
+                    'label' => 'Gestor da mudança',
+                    'required'   => false,
                 
             ))
-            ->add('appMan', ChoiceType::class, [
-                'choices'  => [
-                    'Sim' => 1,
-                    'Nao' => 2,
-                ],
-                'label'    => 'Deseja aprovar?',
-                'required' => true,
-            ])
-            ->add('comMan', null, [
-                'label'    => 'Comentário :',
-                'required' => false,
+            ->add('startMudancas', DateType::class, array(
+                'widget' => 'single_text',
+                'html5' => false,
+                'format' => 'dd-MM-yyyy',
+                'data' => new \DateTime(),
+                'label' => 'Data estimada de Início',
+                'required'   => false,
+            ))
+            ->add('endMudancas', DateType::class, array(
+                'widget' => 'single_text',
+                'html5' => false,
+                'format' => 'dd-MM-yyyy',
+                'data' => new \DateTime(),
+                'label' => 'Data estimada de Termino',
+                'required'   => false,
+            ))
+            ->add('effictiveStartDate', DateType::class, array(
+                'widget' => 'single_text',
+                'html5' => false,
+                'format' => 'dd-MM-yyyy',
+                'data' => new \DateTime(),
+                'label' => 'Data Efetiva de Início',
+                'required'   => false,
+            ))
+            ->add('cost',TextareaType::class, [
+                'label' => 'Custo',
+                'required'   => false,
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([    
+        $resolver->setDefaults([
             'data_class' => Mudancas::class,
         ]);
     }
