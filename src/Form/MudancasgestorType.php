@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Client;
 use App\Entity\Departemant;
 use App\Entity\Mudancas;
 use App\Entity\Person;
@@ -48,6 +49,7 @@ class MudancasgestorType extends AbstractType
             ->add('justif',TextareaType::class, [
                 'label' => 'Justificativa'
             ])
+            
             ->add('areaImpact',EntityType::class,array(
                 'class' => Sector::class,
                 'query_builder' => function(EntityRepository $er){

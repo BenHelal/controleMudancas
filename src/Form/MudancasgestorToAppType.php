@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Client;
 use App\Entity\Departemant;
 use App\Entity\Mudancas;
 use App\Entity\Person;
@@ -70,7 +71,7 @@ class MudancasgestorToAppType extends AbstractType
                     'choice_label' => 'name',
                     'label' => 'Área Responsável pela mudança'
                 
-            ))
+            )) 
             ->add(
                 'mangerMudancas',
                 EntityType::class, 
@@ -87,21 +88,24 @@ class MudancasgestorToAppType extends AbstractType
             ))
             ->add('startMudancas', DateType::class, array(
                 'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
+                'html5' => false,
+                'format' => 'dd-MM-yyyy',
                 'data' => new \DateTime(),
                 'label' => 'Data estimada de Início',
                 'required'   => false,
             ))
             ->add('endMudancas', DateType::class, array(
                 'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
+                'html5' => false,
+                'format' => 'dd-MM-yyyy',
                 'data' => new \DateTime(),
                 'label' => 'Data estimada de Termino',
                 'required'   => false,
             ))
             ->add('effictiveStartDate', DateType::class, array(
                 'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
+                'html5' => false,
+                'format' => 'dd-MM-yyyy',
                 'data' => new \DateTime(),
                 'label' => 'Data Efetiva de Início',
                 'required'   => false,

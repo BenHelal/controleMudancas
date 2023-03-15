@@ -2,6 +2,7 @@
 
 namespace App\Model\Class;
 
+use App\Entity\Client;
 use App\Entity\Departemant;
 use App\Entity\Fournisor;
 use App\Entity\Person;
@@ -24,6 +25,28 @@ class FunctionUsers implements FunctionStrategyInterface
         $result = curl_exec($ch);
         curl_close($ch);
         return json_decode($result);
+    }
+
+    public function checkDataClient($data, $em)
+    {
+        foreach ($data as $key => $value) {
+            $fournisour = $em->getRepository(Client::class)->findOneBy(['cliId' => $value->cliId]);
+            if ($fournisour == null) {
+                //if user not exist in database return 1
+                $fournisour = new Client();
+                $fournisour->setCliId($value->cliId);
+                $fournisour->setName($value->name);
+                $fournisour->setStreet($value->street);
+                $fournisour->setNumber($value->number);
+                $fournisour->setCity($value->city);
+                $fournisour->setState($value->state);
+                $fournisour->setDistrict($value->district);
+                $fournisour->setPhone($value->phone);
+                $fournisour->setEmail($value->email);
+                $fournisour->setCnpj($value->cnpj);
+                $this->addEntity($fournisour,$em);
+            }
+        }
     }
 
     public function checkData($data, $em)

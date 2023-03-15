@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\ApiToken;
+use App\Entity\Client;
 use App\Entity\ConfigEmail;
 use App\Entity\Departemant;
 use App\Entity\DepartemantMudancass;
@@ -11,7 +13,9 @@ use App\Entity\Mudancas;
 use App\Entity\Person;
 use App\Entity\Requestper;
 use App\Entity\Sector;
+use App\Form\AddClientType;
 use App\Form\AddPersonType;
+use App\Form\ClientType;
 use App\Form\ConfigemailType;
 use App\Form\EditPersonType;
 use App\Form\EmailType;
@@ -467,16 +471,24 @@ class AdminController extends AbstractController
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
             foreach ($ln as $key => $value) {
-                $sql = 'Delete FROM sector_process WHERE process_id = :mudancas_id ;';
+                $sql = 'Delete FROM sectorprocess WHERE process_id = :mudancas_id ;';
                 $stmt = $conn->prepare($sql);
                 $resultSet = $stmt->executeQuery(['mudancas_id' => $value['id']]);
                 $ln2 =  $resultSet->fetchAllAssociative();
             }
+
+            $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
+            $stmt = $conn->prepare($sql);
+            $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+            $ln =  $resultSet->fetchAllAssociative();
+
+
             $sql = 'Delete FROM process WHERE mudancas_id = :mudancas_id ;';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
 
+            
 
 
             $sql = 'DELETE em
@@ -487,6 +499,12 @@ class AdminController extends AbstractController
             $ln =  $resultSet->fetchAllAssociative();
 
             $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
+            $stmt = $conn->prepare($sql);
+            $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+            $ln =  $resultSet->fetchAllAssociative();
+
+            
+            $sql = 'Delete FROM apitoken WHERE mud_id = :mudancas_id ;';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
@@ -644,6 +662,91 @@ class AdminController extends AbstractController
             ]);
         } else {
             return $this->redirectToRoute('app_administartor');
+        }
+    }
+
+    #[Route('/cliente', name: 'app_cliente')]
+    public function cliente(ManagerRegistry $doctrine, Request $request): Response
+    {
+        $session = new Session();
+        $session = $request->getSession();
+
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $list = $em->getRepository(Client::class)->findAll();
+            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            return $this->render('admin/client.html.twig', [
+                'controller_name' => 'Atualizar Mudancas',
+                'login' => 'null',
+                'type' => 'list',
+                'p' => $person,
+                'list' => $list
+            ]);
+        } else {
+            return $this->redirectToRoute('app_mudancas');
+        }
+    }
+
+    #[Route('/add/cliente/', name: 'add_client')]
+    public  function clientAdd(ManagerRegistry $doctrine, Request $request)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $sector = new Client();
+            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+
+            $form = $this->createForm(AddClientType::class, $sector);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $em->persist($sector);
+                $em->flush();
+                return $this->redirectToRoute('app_cliente');
+            }
+            return $this->render('admin/client.html.twig', [
+                'controller_name' => 'Atualizar Mudancas',
+                'login' => 'null',
+                'type' => 'create',
+                'p' => $person,
+                'form'  => $form->createView(),
+            ]);
+        } else {
+            return $this->redirectToRoute('app_mudancas');
+        }
+    }
+
+    
+    #[Route('/edit/cliente/{id}', name: 'edit_client')]
+    public  function ClientById($id, ManagerRegistry $doctrine, Request $request)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $sector = $em->getRepository(Client::class)->find($id);
+            
+            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            $form = $this->createForm(ClientType::class, $sector);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em->persist($sector);
+                $em->flush();
+                return $this->redirectToRoute('app_cliente');
+            }
+            return $this->render('admin/client.html.twig', [
+                'controller_name' => 'Atualizar Mudancas',
+                'login' => 'null',
+                'type' => 'update',
+                'p' => $person,
+                's' => $sector,
+                'form' => $form->createView(),
+            ]);
+        } else {
+            return $this->redirectToRoute('app_mudancas');
         }
     }
 

@@ -131,16 +131,7 @@
 										<medium>Nome da mudança:
 											{{m.nomeMudanca}}</medium>
 									</div>
-									<div id="hidden-section" style="display: none;">
 									
-										<medium>add by :
-											{{m.addBy.name}}</medium>
-											
-										<medium>areaImpact  :
-											{% for item in m.areaImpact %}
-												
-											{{item.name}}                        {% endfor %}</medium>
-									</div>
 												{% if  m.nansenNumber != null and m.appMan == null    and m.implemented == null %}
 													<div class="d-flex w-100 justify-content-between">
 														<medium>
@@ -221,17 +212,7 @@
 										<medium>Nome da mudança:
 											{{m.nomeMudanca}}</medium>
 									</div>
-									<div id="hidden-section" style="display: none;">
 									
-										<medium>add by :
-											{{m.addBy.name}}</medium>
-											
-										<medium>areaImpact : 
-											{% for item in m.areaImpact %}
-												
-											{{item.name}}
-											{% endfor %}</medium>
-									</div>
 
 												{% if  m.nansenNumber != null and m.appMan == null    and m.implemented == null %}
 													<div class="d-flex w-100 justify-content-between">
