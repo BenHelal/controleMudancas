@@ -115,7 +115,6 @@ window.location.reload();
 								{% for row in ln %}
 									{% if row.done != 'Feito'%}
 										{% set foo = false %}
-										
 											{% for item in row.areaImpact %}
 												{% if item.manager == person %}
 													{% set foo = true %}
@@ -169,11 +168,12 @@ window.location.reload();
 											{% set foo = false %}
 										
 											{% for item in row.areaImpact %}
-												{% if item.manager == person %}
+												{% if item.coordinator == person %}
 													{% set foo = true %}
 												{% endif %}
 											{% endfor %}
 										
+								
 											{% if foo == true %}
 											
 											<li class="list-group-item d-flex justify-content-between lh-condensed">

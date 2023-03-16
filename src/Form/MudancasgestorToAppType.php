@@ -71,10 +71,13 @@ class MudancasgestorToAppType extends AbstractType
                     'choice_label' => 'name',
                     'label' => 'Área Responsável pela mudança'
                 
-            ))->add('descClient',TextareaType::class, [
+            ))
+            
+            /*->add('descClient',TextareaType::class, [
                     'label' => 'Descrição do Impacto para o cliente',
                     'required' => false, 
                 ])    
+            */
             ->add('client',EntityType::class,array(
                     'class' => Client::class,
                     'query_builder' => function(EntityRepository $er){

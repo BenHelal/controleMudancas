@@ -53,7 +53,7 @@ class Mudancas
     private ?Person $mangerMudancas = null;
 
     //Data estimada de Início
-    #[ORM\Column(type:'datetime', nullable: true)]
+    #[ORM\Column(type:'date', nullable: true)]
     private  $startMudancas = null;
 
     //Data estimada de Termino
@@ -176,7 +176,6 @@ class Mudancas
     public function __construct()
     {
         $this->areaImpact = new ArrayCollection();
-        $this->setStartMudancas(new \DateTime());
 }
     public function getPdf(){
         return $this->pdf;
@@ -351,11 +350,6 @@ class Mudancas
         return $this;
     }
 
-    /**
-     * Get date
-     *
-     * @return \Datetime 
-     */
     public function getStartMudancas()
     {
         if($this->startMudancas != null){
@@ -366,12 +360,6 @@ class Mudancas
         }
     }
 
-    /**
-     * Set date
-     *
-     * @param \Datetime $date
-     * @return Mudancas
-     */
     public function setStartMudancas(\DateTimeInterface $startMudancas): self
     {
         $this->startMudancas = $startMudancas;

@@ -67,7 +67,7 @@ class NotifController extends AbstractController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 foreach ($sps as $key => $sp) {
-                    if ($sp->getSector()->getManager() == $person) {
+                    if ($sp->getSector()->getCoordinator() == $person) {
                         //if( $mudancas->getManager)
                         if ($oneOfSp != null) {
                             
