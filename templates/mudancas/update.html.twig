@@ -253,15 +253,7 @@
 				{% endif %}
 				{% if gestor and cl != null and cl.mud.status %}
 					{% if cl.mud.TokenData.comClt == null %}
-						<div class="col-md-12 mb-3" style="display: none;">
-							{{ form_label(form.descClient) }}
-							{{ form_widget(form.descClient,{'attr':{'class':'form-control','rows': '4'}}) }}
-						</div>
 					{% else %}
-						<div class="col-md-12 mb-3">
-							{{ form_label(form.descClient) }}
-							{{ form_widget(form.descClient,{'attr':{'class':'form-control', 'rows': '4'}}) }}
-						</div>
 					{% endif %}
 				{% endif %}
 			</div>
@@ -366,7 +358,7 @@
 
 			{% endif %}
 
-			{% if gestor == false and m.startMudancas != true %}
+			{% if gestor == false and m.startMudancas != null %}
 				{% if manager == false %}
 					<div class="row">
 
@@ -491,6 +483,11 @@
 							{% if m.done != 'Feito' %}
 								{% if  manager == true and gestor == false %}
 									{% if  m.mangerMudancas == null %}
+										<div class="row">
+											<div class="col-md-6 mb-3">
+												<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+											</div>
+										</div>
 									{% elseif  m.comGest == null %}
 										<div class="row">
 											<div class="col-md-6 mb-3">
