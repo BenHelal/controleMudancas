@@ -34,7 +34,6 @@ class MudancasManagerType extends AbstractType
             ->add('descMudanca',TextareaType::class,[
                 'label' => 'Descrição da Mudança'
             ])
-
             ->add('descImpacto',TextareaType::class, [
                 'label' => 'Descrição do Impacto'
             ])
