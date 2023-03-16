@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\EntityExt\TokenData;
+use App\Entity\TokenData;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

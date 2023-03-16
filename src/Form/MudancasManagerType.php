@@ -34,7 +34,6 @@ class MudancasManagerType extends AbstractType
             ->add('descMudanca',TextareaType::class,[
                 'label' => 'Descrição da Mudança'
             ])
-
             ->add('descImpacto',TextareaType::class, [
                 'label' => 'Descrição do Impacto'
             ])
@@ -56,10 +55,10 @@ class MudancasManagerType extends AbstractType
                 'expanded'  => false,
                 'multiple' => true))
             
-            ->add('descClient',TextareaType::class, [
+            /*->add('descClient',TextareaType::class, [
                     'label' => 'Descrição do Impacto para o cliente',
                     'required' => false, 
-                ])    
+                ])  */  
             ->add('client',EntityType::class,array(
                     'class' => Client::class,
                     'query_builder' => function(EntityRepository $er){

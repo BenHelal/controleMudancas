@@ -108,6 +108,7 @@ class Mudancas
 
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $managerUserComment = null;
+    
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $descClient = null;
     #[ORM\Column(nullable: true)]
@@ -175,7 +176,7 @@ class Mudancas
     public function __construct()
     {
         $this->areaImpact = new ArrayCollection();
-    }
+}
     public function getPdf(){
         return $this->pdf;
     }
@@ -352,7 +353,8 @@ class Mudancas
     public function getStartMudancas()
     {
         if($this->startMudancas != null){
-            return $this->startMudancas->format('Y-m-d');
+            
+            return $this->startMudancas->format('d-m-Y');
         }else{
             return $this->startMudancas;
         }
@@ -368,7 +370,7 @@ class Mudancas
     public function getEndMudancas()
     {
         if($this->endMudancas != null){
-            return $this->endMudancas->format('Y-m-d');
+            return $this->endMudancas->format('d-m-Y');
         }else{
             return $this->endMudancas;
         }
@@ -384,7 +386,7 @@ class Mudancas
     public function getEffictiveStartDate()
     {
         if($this->effictiveStartDate != null){
-            return $this->effictiveStartDate->format('Y-m-d');
+            return $this->effictiveStartDate->format('d-m-Y');
         }else{
             return $this->effictiveStartDate;
         }
@@ -436,7 +438,7 @@ class Mudancas
     public function getDateOfImp()
     {
         if($this->dateOfImp != null){
-            return $this->dateOfImp->format('Y-m-d');
+            return $this->dateOfImp->format('d-m-Y');
         }else{
             return $this->dateOfImp;
         }
@@ -499,7 +501,7 @@ class Mudancas
     public function getDataCreation()
     {
         if($this->dataCreation != null){
-            return $this->dataCreation->format('Y-m-d H:i:s');
+            return $this->dataCreation->format('d-m-Y');
         }else{
             return $this->dataCreation;
         }

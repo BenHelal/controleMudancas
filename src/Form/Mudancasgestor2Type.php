@@ -20,7 +20,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
-class MudancasgestorToAppType extends AbstractType
+class Mudancasgestor2Type extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -49,6 +49,22 @@ class MudancasgestorToAppType extends AbstractType
             ->add('justif',TextareaType::class, [
                 'label' => 'Justificativa'
             ])
+            /*
+            ->add('descClient',TextareaType::class, [
+                'label' => 'Descrição do Impacto para o cliente',
+                'required' => false, 
+            ])   */ 
+            ->add('client',EntityType::class,array(
+                'class' => Client::class,
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
+                },
+                'choice_label' => 'name',
+                'label'=> 'Cliente',
+                'placeholder' => 'Cliente ...',
+                'required' => false, 
+                'expanded'  => false,
+                'multiple' => false))
             ->add('areaImpact',EntityType::class,array(
                 'class' => Sector::class,
                 'query_builder' => function(EntityRepository $er){
@@ -72,23 +88,17 @@ class MudancasgestorToAppType extends AbstractType
                     'label' => 'Área Responsável pela mudança'
                 
             ))
-            
-            /*->add('descClient',TextareaType::class, [
-                    'label' => 'Descrição do Impacto para o cliente',
-                    'required' => false, 
-                ])    
-            */
             ->add('client',EntityType::class,array(
-                    'class' => Client::class,
-                    'query_builder' => function(EntityRepository $er){
-                        return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
-                    },
-                    'choice_label' => 'name',
-                    'label'=> 'Cliente',
-                    'placeholder' => 'Cliente ...',
-                    'required' => false, 
-                    'expanded'  => false,
-                    'multiple' => false))
+                'class' => Client::class,
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
+                },
+                'choice_label' => 'name',
+                'label'=> 'Cliente',
+                'placeholder' => 'Cliente ...',
+                'required' => false, 
+                'expanded'  => false,
+                'multiple' => false))
             ->add(
                 'mangerMudancas',
                 EntityType::class, 
@@ -105,43 +115,25 @@ class MudancasgestorToAppType extends AbstractType
             ))
             ->add('startMudancas', DateType::class, array(
                 'widget' => 'single_text',
-                'html5' => false,
-                'format' => 'dd-MM-yyyy',
-                'data' => new \DateTime(),
+                'format' => 'yyyy-MM-dd',
                 'label' => 'Data estimada de Início',
                 'required'   => false,
             ))
             ->add('endMudancas', DateType::class, array(
                 'widget' => 'single_text',
-                'html5' => false,
-                'format' => 'dd-MM-yyyy',
-                'data' => new \DateTime(),
+                'format' => 'yyyy-MM-dd',
                 'label' => 'Data estimada de Termino',
                 'required'   => false,
             ))
             ->add('effictiveStartDate', DateType::class, array(
                 'widget' => 'single_text',
-                'html5' => false,
-                'format' => 'dd-MM-yyyy',
-                'data' => new \DateTime(),
+                'format' => 'yyyy-MM-dd',
                 'label' => 'Data Efetiva de Início',
                 'required'   => false,
             ))
             ->add('cost',TextareaType::class, [
                 'label' => 'Custo',
                 'required'   => false,
-            ])
-            ->add('appGest', ChoiceType::class, [
-                'choices'  => [
-                    'Sim' => 1,
-                    'Nao' => 2,
-                ],
-                'label'    => 'Deseja aprovar?',
-                'required' => true,
-            ])
-            ->add('comGest', null, [
-                'label'    => 'Comentário :',
-                'required' => true,
             ]);
     }
 

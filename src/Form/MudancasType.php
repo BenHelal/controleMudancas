@@ -81,10 +81,10 @@ class MudancasType extends AbstractType
                 'expanded'  => false,
                 'multiple' => false))
                 
-            ->add('descClient',TextareaType::class, [
+            /*->add('descClient',TextareaType::class, [
                 'label' => 'Descrição do Impacto para o cliente',
                 'required' => false, 
-            ])
+            ])*/
                 ;
     }
 
