@@ -14,6 +14,8 @@ class IpAdress
             return "sistemas.serdia.com.br";
         }elseif($branch == 'test'){
             return "10.100.1.180";
+        }else{
+            return "10.100.1.245";
         }
     }
 }

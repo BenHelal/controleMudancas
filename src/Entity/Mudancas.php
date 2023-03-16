@@ -92,7 +92,7 @@ class Mudancas
     #[ORM\Column(nullable: true)]
     private ?int $appGest = null;
 
-    #[ORM\Column(type:'datetime')]
+    #[ORM\Column(type:'date')]
     private $dataCreation;
 
     #[ORM\ManyToMany(targetEntity: Sector::class)]
