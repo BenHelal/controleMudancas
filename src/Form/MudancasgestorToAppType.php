@@ -71,6 +71,7 @@ class MudancasgestorToAppType extends AbstractType
                     'choice_label' => 'name',
                     'label' => 'Área Responsável pela mudança'
                 
+
             ))
             
             /*->add('descClient',TextareaType::class, [
@@ -89,6 +90,7 @@ class MudancasgestorToAppType extends AbstractType
                     'required' => false, 
                     'expanded'  => false,
                     'multiple' => false))
+
             ->add(
                 'mangerMudancas',
                 EntityType::class, 

@@ -49,6 +49,7 @@ class MudancasgestorType extends AbstractType
             ->add('justif',TextareaType::class, [
                 'label' => 'Justificativa'
             ])
+
             /*
             ->add('descClient',TextareaType::class, [
                 'label' => 'Descrição do Impacto para o cliente',
@@ -65,6 +66,7 @@ class MudancasgestorType extends AbstractType
                 'required' => false, 
                 'expanded'  => false,
                 'multiple' => false))
+
             ->add('areaImpact',EntityType::class,array(
                 'class' => Sector::class,
                 'query_builder' => function(EntityRepository $er){
