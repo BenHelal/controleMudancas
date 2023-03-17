@@ -12,7 +12,7 @@ class IpAdress
             return "10.100.1.245";
         }elseif($branch == 'prod'){
             return "sistemas.serdia.com.br";
-        }elseif($branch == 'test'){
+        }elseif($branch == 'test' | $branch == 'test2'){
             return "10.100.1.180";
         }else{
             return "10.100.1.245";

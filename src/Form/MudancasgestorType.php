@@ -102,21 +102,15 @@ class MudancasgestorType extends AbstractType
                     'required'   => false,
                 
             ))
-            ->add('startMudancas', DateType::class, array(
-                'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
+            ->add('startMudancas', null, array(
                 'label' => 'Data estimada de Início',
                 'required'   => false,
             ))
-            ->add('endMudancas', DateType::class, array(
-                'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
+            ->add('endMudancas', null, array(
                 'label' => 'Data estimada de Termino',
                 'required'   => false,
             ))
-            ->add('effictiveStartDate', DateType::class, array(
-                'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
+            ->add('effictiveStartDate',null, array(
                 'label' => 'Data Efetiva de Início',
                 'required'   => false,
             ))

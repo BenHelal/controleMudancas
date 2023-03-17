@@ -286,19 +286,19 @@
 				<div class="row">
 					<div class="col-md-12 mb-3">
 						{{ form_label(form.startMudancas) }}
-						{{ form_widget(form.startMudancas,{'attr':{'class':'date form-control','value': date1}}) }}  
+						{{ form_widget(form.startMudancas,{'attr':{'class':'date form-control'}}) }}  
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12 mb-3">
 						{{ form_label(form.endMudancas) }}
-						{{ form_widget(form.endMudancas,{'attr':{'class':'date form-control','value': date2}}) }}
+						{{ form_widget(form.endMudancas,{'attr':{'class':'date form-control',}}) }}
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12 mb-3">
 						{{ form_label(form.effictiveStartDate) }}
-						{{ form_widget(form.effictiveStartDate,{'attr':{'class':'date form-control','value': date3}}) }}
+						{{ form_widget(form.effictiveStartDate,{'attr':{'class':'date form-control',}}) }}
 					</div>
 				</div>
 				{% if m.implemented == 1 or m.implemented == 2 %}
