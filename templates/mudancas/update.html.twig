@@ -574,25 +574,16 @@ box.style.display = 'none';
 }
 $(document).ready(function () {
 
-					const box = document.getElementById('vcg');
 
-$('#mudancas_client').chosen({});
-$('#mudancasgestor_client').chosen({});
 $('#mudancasgestor2_areaImpact').chosen({});
 $('#mudancasgestor_to_app_client').chosen({});
-$('#mudancasgestor_to_app_areaImpact').chosen({});{% if creation != 'true' %}{% if m.client == null %}document.getElementById("vci").checked = false;
-{% else %}
+$('#mudancasgestor_to_app_areaImpact').chosen({});
 
-document.getElementById("vci").checked = true;{% endif %}{% endif %}if (document.getElementById('vci').checked) {
-console.log('tes');
-box.style.display = 'block';
-} else {
 
-console.log('tes2');
-box.style.display = 'none';
-}
 
-});{% if gestor %}$(document).ready(function () {
+
+
+{% if gestor %}$(document).ready(function () {
 const box = document.getElementById('nanseForm');
 if (document.getElementById('mudancasgestor_to_app_nansenName').value == '') {
 document.getElementById("nansen").checked = false;

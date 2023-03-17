@@ -20,16 +20,13 @@ class ApiToken
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $expiresAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'apiTokens')]
-    private ?Client $client = null;
 
     #[ORM\ManyToOne]
     private ?Mudancas $mud = null;
 
-    public function __construct(Client $client,Mudancas $mud)
+    public function __construct(Mudancas $mud)
     {
         $this->token = bin2hex(random_bytes(60));
-        $this->client = $client;
         $this->mud = $mud;
         $this->expiresAt = new \DateTime('+1 week');
     }
@@ -64,18 +61,6 @@ class ApiToken
     public function setExpiresAt(?\DateTimeInterface $expiresAt): self
     {
         $this->expiresAt = $expiresAt;
-
-        return $this;
-    }
-
-    public function getClient(): ?Client
-    {
-        return $this->client;
-    }
-
-    public function setClient(?Client $client): self
-    {
-        $this->client = $client;
 
         return $this;
     }

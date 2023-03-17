@@ -86,7 +86,7 @@ class CloseMudController extends AbstractController
                         person as p,
                         mudancas as mud , 
                         process as pr , 
-                        sectorprocess as dp , 
+                        sector_process as dp , 
                         sector as d  
                     WHERE 
                         mud.id = pr.mudancas_id and 
@@ -108,7 +108,7 @@ class CloseMudController extends AbstractController
                         person as p,
                         mudancas as mud , 
                         process as pr , 
-                        sectorprocess as dp , 
+                        sector_process as dp , 
                         sector as d  
                     WHERE 
                         mud.id = pr.mudancas_id and 
@@ -128,10 +128,9 @@ class CloseMudController extends AbstractController
             } else {
                 $pe = $em->getRepository(Person::class)->find($ln[0]['person_id']);
             }
-<<<<<<< HEAD
-=======
+
            // dd($cl['mud']['id']);
->>>>>>> bdd26ec70c5447fcdd21ddf811ada6648ac3bc15
+
 
             return $this->render('close_mud/index.html.twig', [
                 'controller_name' => 'CloseMudController',

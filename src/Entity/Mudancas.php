@@ -108,9 +108,7 @@ class Mudancas
 
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $managerUserComment = null;
-    
-    #[ORM\Column(length: 1024, nullable: true)]
-    private ?string $descClient = null;
+
     #[ORM\Column(nullable: true)]
     private ?int $managerUserApp = null;
    
@@ -157,21 +155,6 @@ class Mudancas
 
 
 
-    #[ORM\ManyToOne(targetEntity: Client::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Client $client;
-
-    public function getDescClient(): ?string
-    {
-        return $this->descClient;
-    }
-
-    public function setDescClient(string $descClient): self
-    {
-        $this->descClient = $descClient;
-
-        return $this;
-    }
 
     public function __construct()
     {
@@ -607,16 +590,5 @@ class Mudancas
     }
 
 
-
-    public function getClient(): ?Client
-    {
-        return $this->client;
-    }
-
-    public function setClient(?Client $client): self
-    {
-        $this->client = $client;
-        return $this;
-    }
 
 }
