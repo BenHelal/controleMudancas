@@ -131,11 +131,11 @@
 						<th scope="row">Área Impactada</th>
 						<td>{{m.name}}</td>
 						<td>{{data2[key].name }}</td>
-						{% if  m.appSectorMan  == 1  %}
+						{% if  m.app_sector_man  == 1  %}
 							<td>Aprovado</td>
-						{% elseif m.appSectorMan == 0 and  m.comment != null %}
+						{% elseif m.app_sector_man == 0 and  m.comment != null %}
 							<td>Rejeitado</td>
-						{% elseif m.appSectorMan == null   %}
+						{% elseif m.app_sector_man == null   %}
 							<td>Não verificado</td>
 						{% endif %}
 

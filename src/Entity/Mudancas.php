@@ -53,17 +53,16 @@ class Mudancas
     private ?Person $mangerMudancas = null;
 
     //Data estimada de Início
-    #[ORM\Column(type:'date', nullable: true)]
-    private  $startMudancas = null;
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $startMudancas = null;
 
     //Data estimada de Termino
-    #[ORM\Column(type:'date', nullable: true)]
-    private $endMudancas = null;
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $endMudancas = null;
 
     //Data Efetiva de Início
-    #[ORM\Column(type:'date', nullable: true)]
-    private $effictiveStartDate = null;
-
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $effictiveStartDate = null;
     //Custo
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $cost = null;
@@ -352,31 +351,22 @@ class Mudancas
 
     public function getStartMudancas()
     {
-        if($this->startMudancas != null){
-            
-            return $this->startMudancas->format('d-m-Y');
-        }else{
-            return $this->startMudancas;
-        }
+        return $this->startMudancas;
     }
 
-    public function setStartMudancas(\DateTimeInterface $startMudancas): self
+    public function setStartMudancas( $startMudancas)
     {
         $this->startMudancas = $startMudancas;
 
         return $this;
     }
 
-    public function getEndMudancas()
-    {
-        if($this->endMudancas != null){
-            return $this->endMudancas->format('d-m-Y');
-        }else{
-            return $this->endMudancas;
-        }
+    public function getEndMudancas(){
+        return $this->endMudancas;
+       
     }
 
-    public function setEndMudancas(\DateTimeInterface $endMudancas): self
+    public function setEndMudancas( $endMudancas)
     {
         $this->endMudancas = $endMudancas;
 
@@ -385,19 +375,17 @@ class Mudancas
 
     public function getEffictiveStartDate()
     {
-        if($this->effictiveStartDate != null){
-            return $this->effictiveStartDate->format('d-m-Y');
-        }else{
-            return $this->effictiveStartDate;
-        }
+        return $this->effictiveStartDate;
+        
     }
 
-    public function setEffictiveStartDate(\DateTimeInterface $effictiveStartDate): self
+    public function setEffictiveStartDate( $effictiveStartDate)
     {
         $this->effictiveStartDate = $effictiveStartDate;
 
         return $this;
     }
+
 
     public function getCost(): ?string
     {

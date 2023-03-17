@@ -672,7 +672,7 @@ class MudancasController extends AbstractController
             if ($token != null) {
                 //143.255.163.142
                 //10.100.2.61
-                $url = "http://localhost/ClientExteranlAcces/public/get/data";
+                $url = "https://cm.serdia.com.br/ClientExteranlAcces/public/get/data";
                 //The data you want to send via POST
                 $fields = [
                     'token' => $token->getToken(),
@@ -802,31 +802,7 @@ class MudancasController extends AbstractController
                             $manager = false;
                         }
 
-                        // check the manager of the Mudancas 
-                        if ($mud->getMangerMudancas() != null) {
-                            if ($mud->getMangerMudancas()->getId() == $person->getId()) {
-                                $gestor = true;
-
-                                if($mud->getStartMudancas() != null ){
-                                    $date1 = $mud->getStartMudancas();
-                               }else{
-                                   $mud->setStartMudancas(new \DateTime());
-                                   $date1 = $mud->getStartMudancas() ;
-                               }
-                               if($mud->getEndMudancas() != null ){
-                                    $date2 = $mud->getEndMudancas();
-                               }else{    
-                                   $mud->setEndMudancas(new \DateTime());
-                                   $date2 = $mud->getEndMudancas();
-                               }
-                               if($mud->getEffictiveStartDate() != null){
-                                   $date3 = $mud->getEffictiveStartDate();}
-                               else{
-                                   $mud->setEffictiveStartDate( new \DateTime());
-                                   $date3 = $mud->getEffictiveStartDate();
-                                }
-                            }
-                        }
+                        
                         $itNull = true;
                         $numberOfArea = 0;
                         $mangerOfAreaDidntApp = false;
@@ -849,18 +825,46 @@ class MudancasController extends AbstractController
                         $gestMudancas = $mud->getMangerMudancas();
 
 
+
+                        // check the manager of the Mudancas 
+                        if ($mud->getMangerMudancas() != null) {
+                            if ($mud->getMangerMudancas()->getId() == $person->getId()) {
+                                $gestor = true;
+
+                                if($mud->getStartMudancas() != null ){
+                                    $date1 = $mud->getStartMudancas();
+                               }else{
+                                   $mud->setStartMudancas((new \DateTime())->format('d-m-Y'));
+                                   $date1 = $mud->getStartMudancas() ;
+                               }
+                               if($mud->getEndMudancas() != null ){
+                                    $date2 = $mud->getEndMudancas();
+                               }else{    
+                                   $mud->setEndMudancas((new \DateTime())->format('d-m-Y'));
+                                   $date2 = $mud->getEndMudancas();
+                               }
+                               if($mud->getEffictiveStartDate() != null){
+                                   $date3 = $mud->getEffictiveStartDate();}
+                               else{
+                                   $mud->setEffictiveStartDate( (new \DateTime())->format('d-m-Y'));
+                                   $date3 = $mud->getEffictiveStartDate();
+                                }
+                            }
+                        }
+
                         // check which Form need 
                         $form = null;
                         
                         if ($manager == true && $gestor == false && $mangerOfAreaDidntApp == false) {
-                            $form = $this->createForm(MudancasManagerType::class, $mud);
+                           $form = $this->createForm(MudancasManagerType::class, $mud);
                         } elseif ($gestor == true && $mangerOfAreaDidntApp == false) {
                             $form = $this->createForm(MudancasgestorToAppType::class, $mud);
                             $formImp = $this->createForm(MudancasgestorImpType::class, $mud);
                         } elseif ($manager == true && $gestor != true) {
                             $form = $this->createForm(MudancasManagerType::class, $mud);
                         } elseif ($gestor == true && $mangerOfAreaDidntApp == true && $date1 != null) {
-                            $form = $this->createForm(Mudancasgestor2Type::class, $mud);
+                           
+                            $form = $this->createForm(MudancasgestorType::class, $mud);
                         } elseif ($gestor == true && $mangerOfAreaDidntApp == true && $date1 == null) {
                             $form = $this->createForm(MudancasgestorType::class, $mud);
                         }else{
@@ -1001,7 +1005,7 @@ class MudancasController extends AbstractController
                                         if ($token != null) {
                                             //143.255.163.142
                                             //10.100.2.61:25020
-                                            $url = "http://localhost/ClientExteranlAcces/public/add/data/token";
+                                            $url = "https://cm.serdia.com.br/ClientExteranlAcces/public/add/data/token";
                                             //The data you want to send via POST
                                             $fields = [
                                                 'token' =>         $token->getToken(),

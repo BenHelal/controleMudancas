@@ -34,7 +34,7 @@ class CloseMudController extends AbstractController
             $token = $em->getRepository(ApiToken::class)->findOneBy(['mud' => $mud]);
 
             if($token != null){
-            $url = "http://10.100.1.245/ClientExteranlAcces/public/get/data";
+            $url = "https://cm.serdia.com.br/ClientExteranlAcces/public/get/data";
             //The data you want to send via POST
             $fields = [
                 'token'=> $token->getToken(),
@@ -87,7 +87,7 @@ class CloseMudController extends AbstractController
                         person as p,
                         mudancas as mud , 
                         process as pr , 
-                        sectorprocess as dp , 
+                        sector_process as dp , 
                         sector as d  
                     WHERE 
                         mud.id = pr.mudancas_id and 
@@ -109,7 +109,7 @@ class CloseMudController extends AbstractController
                         person as p,
                         mudancas as mud , 
                         process as pr , 
-                        sectorprocess as dp , 
+                        sector_process as dp , 
                         sector as d  
                     WHERE 
                         mud.id = pr.mudancas_id and 
@@ -123,8 +123,7 @@ class CloseMudController extends AbstractController
                 $resultSet2 = $stmt2->executeQuery();
                 $ln2 =  $resultSet2->fetchAllAssociative();
             }
-
-            if ($ln == null) {
+             if ($ln == null) {
                 $pe = null;
             } else {
                 $pe = $em->getRepository(Person::class)->find($ln[0]['person_id']);
