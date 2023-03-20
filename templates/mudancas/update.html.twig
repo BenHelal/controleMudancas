@@ -226,38 +226,6 @@
 				</div>
 			</div>
 
-			<div class="row">
-				<div class="col-md-12 mb-3">
-					<div class="form-check">
-						<input class="form-check-input" type="checkbox" value="" onclick="vc()" id="vci">
-						<label class="form-check-label" for="flexCheckDefault">
-							Cliente será Impactado?
-						</label>
-					</div>
-				</div>
-			</div>
-
-			<div class="row" id="vcg">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.client) }}
-					{{ form_widget(form.client,{'attr':{'class':'form-control','data-placeholder':'Escolha o cliente.....','style':'width: 100%;', 'rows': '12'}}) }}
-				</div>
-
-
-				{% if creation == "false"  %}
-					{% if  m.client %}
-						{% if m.client.respEmail == null %}
-							este cliente não tinha e-mail no banco de dados
-						{% endif %}
-					{% endif %}
-				{% endif %}
-				{% if gestor and cl != null and cl.mud.status %}
-					{% if cl.mud.TokenData.comClt == null %}
-						
-					{% else %}
-					{% endif %}
-				{% endif %}
-			</div>
 
 
 			{% if gestor %}
@@ -305,7 +273,7 @@
 					<div class="row">
 						<div class="col-md-12 mb-3">
 							<label for="mudancasgestor_to_app_effictiveStartDate">Data implementada</label>
-							<input type="date" class="form-control" value="{{m.dateOfImp}}">
+							<input type="text" class="form-control" value="{{m.dateOfImp}}">
 						</div>
 					</div>
 
@@ -390,12 +358,13 @@
 
 				<div class="row">
 					<div class="col-md-12 mb-3">
-						<label for="mudancas_descImpacto" class="required">Data estimada de Termino</label>
+						<label for="mudancas_descImpacto" class="required">Data Efetiva de Início</label>
 						<p class='form-control'>{{m.effictiveStartDate}}
 						</p>
 					</div>
 				</div>
-
+				{% if m.impDesc != null %}
+				
 				<div class="row">
 					<div class="col-md-12 mb-3">
 						<label for="mudancas_descImpacto" class="required">Evidencia de Implementação</label>
@@ -403,7 +372,11 @@
 						</textarea>
 					</div>
 				</div>
+				{% endif %}
 
+
+				{% if m.dateOfImp != null  %}
+					
 				<div class="row">
 					<div class="col-md-12 mb-3">
 						<label for="mudancas_descImpacto" class="required">Data de conclusão da mudança</label>
@@ -411,6 +384,8 @@
 						</p>
 					</div>
 				</div>
+				{% endif %}
+
 
 
 				<div class="col-md-12 mb-3">
@@ -580,34 +555,7 @@
 								{{ form_widget(form.areaResp,{'attr':{'class':'form-control', 'rows': '12'}}) }}
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-md-12 mb-3">
-								<div class="form-check">
-									<input class="form-check-input" type="checkbox" value="" onclick="vc()" id="vci">
-									<label class="form-check-label" for="flexCheckDefault">
-										Cliente será Impactado?
-									</label>
-								</div>
-							</div>
-						</div>
-						<div class="row" id="vcg">
-							<div class="col-md-12 mb-3">
-								{{ form_label(form.client) }}
-								{{ form_widget(form.client,{'attr':{'class':'form-control','data-placeholder':'Escolha o cliente.....','style':'width: 100%;', 'rows': '12'}}) }}
-							</div>
-							{% if creation == "false"  %}
-								<div class="col-md-12 mb-3">
-									{{ form_label(form.descClient) }}
-									{{ form_widget(form.descClient,{'attr':{'class':'form-control', 'rows': '4'}}) }}
-								</div>
-								{% if  m.client %}
-									{% if m.client.respEmail == null %}
-										este cliente não tinha e-mail no banco de dados
-									{% endif %}
-								{% endif %}
-							{% endif %}
-
-						</div>
+						
 
 						{% if person.permission == 'ler criar atualização' or person.permission =='ler criar' or person.permission =='tudo' %}
 							<div class="row">
@@ -908,7 +856,6 @@ box.style.display = 'none';
 								const textarea = document.getElementById("textarea");
 const hiddenInput = document.getElementById("hiddenInput");
 const hiddenInput2 = document.getElementById("hiddenInput2");
-
 textarea.addEventListener("input", function () {
 hiddenInput.value = textarea.value;
 hiddenInput2.value = textarea.value;
