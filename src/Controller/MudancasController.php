@@ -733,7 +733,7 @@ class MudancasController extends AbstractController
                         # code...
                         $conn = $doctrine->getConnection();
                         $sql = 'SELECT sp.id FROM 
-                                sectorprocess as sp,
+                                sector_process as sp,
                                 mudancas as mud,
                                 process as p
                                 where 
@@ -1363,7 +1363,7 @@ class MudancasController extends AbstractController
                 FROM 
                     mudancas as mud, 
                     process as pr, 
-                    sectorprocess as dp,
+                    sector_process as dp,
                     sector as d,
                     person as p,
                     departemant as dep

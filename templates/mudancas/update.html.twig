@@ -273,7 +273,7 @@
 					<div class="row">
 						<div class="col-md-12 mb-3">
 							<label for="mudancasgestor_to_app_effictiveStartDate">Data implementada</label>
-							<input type="date" class="form-control" value="{{m.dateOfImp}}">
+							<input type="text" class="form-control" value="{{m.dateOfImp}}">
 						</div>
 					</div>
 
@@ -358,12 +358,13 @@
 
 				<div class="row">
 					<div class="col-md-12 mb-3">
-						<label for="mudancas_descImpacto" class="required">Data estimada de Termino</label>
+						<label for="mudancas_descImpacto" class="required">Data Efetiva de Início</label>
 						<p class='form-control'>{{m.effictiveStartDate}}
 						</p>
 					</div>
 				</div>
-
+				{% if m.impDesc != null %}
+				
 				<div class="row">
 					<div class="col-md-12 mb-3">
 						<label for="mudancas_descImpacto" class="required">Evidencia de Implementação</label>
@@ -371,7 +372,11 @@
 						</textarea>
 					</div>
 				</div>
+				{% endif %}
 
+
+				{% if m.dateOfImp != null  %}
+					
 				<div class="row">
 					<div class="col-md-12 mb-3">
 						<label for="mudancas_descImpacto" class="required">Data de conclusão da mudança</label>
@@ -379,6 +384,8 @@
 						</p>
 					</div>
 				</div>
+				{% endif %}
+
 
 
 				<div class="col-md-12 mb-3">
