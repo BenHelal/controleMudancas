@@ -1290,7 +1290,7 @@ class MudancasController extends AbstractController
                                 'formImp' => $formImp->createView(),
                                 'form' => $form->createView(),
                             ]);
-                        } else {
+                        } elseif ($gestor == true && $mangerOfAreaDidntApp == true) {
                             return $this->render('mudancas/update.html.twig', [
                                 'controller_name' => 'Atualizar Mudancas',
                                 'login' => 'null',
@@ -1301,6 +1301,26 @@ class MudancasController extends AbstractController
                                 'mangerOfAreaDidntApp' => $mangerOfAreaDidntApp,
                                 'manager' => $manager,
                                 'gestor' => $gestor,
+                                'cl' => $cl,
+                                'date1' => $date1,
+                                'date2' => $date2,
+                                'date3' => $date3,
+                                'form' => $form->createView(),
+                            ]);
+                        }else{
+                            return $this->render('mudancas/update.html.twig', [
+                                'controller_name' => 'Atualizar Mudancas',
+                                'login' => 'null',
+                                'creation' => 'false',
+                                'person' => $person,
+                                'm' => $mud,
+                                'email' => $email,
+                                'mangerOfAreaDidntApp' => $mangerOfAreaDidntApp,
+                                'manager' => $manager,
+                                'gestor' => $gestor,
+                                'date1' => '',
+                                'date2' => '',
+                                'date3' => '',
                                 'cl' => $cl,
                                 'form' => $form->createView(),
                             ]);
