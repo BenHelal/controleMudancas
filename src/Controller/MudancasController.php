@@ -669,10 +669,11 @@ class MudancasController extends AbstractController
 
 
             $token = $em->getRepository(ApiToken::class)->findOneBy(['mud' => $mud]);
+            
             if ($token != null) {
                 //143.255.163.142
                 //10.100.2.61
-                $url = "http://localhost/ClientExteranlAcces/public/get/data";
+                $url = "https://cm.serdia.com.br/ClientExteranlAcces/public/get/data";
                 //The data you want to send via POST
                 $fields = [
                     'token' => $token->getToken(),
@@ -696,12 +697,16 @@ class MudancasController extends AbstractController
                 //execute post
                 $client = curl_exec($ch);
                 $cl = json_decode($client, true);
+
+               
+
                 if ($cl["mud"]["TokenData"]["comClt"] != null) {
                     $mud->setdescClient($cl["mud"]["TokenData"]["comClt"]);
                 }
             } else {
                 $cl = null;
             }
+
 
             // condition on  situation of Mudanacas
             if ($mud == null) {
@@ -1004,7 +1009,7 @@ class MudancasController extends AbstractController
                                         if ($token != null) {
                                             //143.255.163.142
                                             //10.100.2.61:25020
-                                            $url = "http://localhost/ClientExteranlAcces/public/add/data/token";
+                                            $url = "https://cm.serdia.com.br/ClientExteranlAcces/public/add/data/token";
                                             //The data you want to send via POST
                                             $fields = [
                                                 'token' =>         $token->getToken(),
@@ -1039,7 +1044,7 @@ class MudancasController extends AbstractController
                                             $client = curl_exec($ch);
                                             $cl = json_decode($client, true);
                                             
-
+                                            
                                         } else {
                                             $cl = null;
                                         }
