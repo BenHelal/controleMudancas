@@ -30,7 +30,7 @@ class LogClientController extends AbstractController
                 if ($api != null) {
                     $token = $api->getToken();         
                     if ($token != null) {
-                        $url = "http://10.100.1.245/ClientExteranlAcces/public/get/data/log";
+                        $url = "https://cm.serdia.com.br/ClientExteranlAcces/public/get/data/log";
                         //The data you want to send via POST
                         $fields = [
                             'token' => $token,

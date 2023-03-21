@@ -99,7 +99,8 @@ class Mudancasgestor2Type extends AbstractType
                     'required'   => false,
                 
             ))
-            ->add('startMudancas', null, array(
+
+            ->add('startMudancas',null, array(
                 'label' => 'Data estimada de Início',
                 'required'   => false,
             ))
@@ -107,7 +108,8 @@ class Mudancasgestor2Type extends AbstractType
                 'label' => 'Data estimada de Termino',
                 'required'   => false,
             ))
-            ->add('effictiveStartDate',null, array(
+
+            ->add('effictiveStartDate', null, array(
                 'label' => 'Data Efetiva de Início',
                 'required'   => false,
             ))

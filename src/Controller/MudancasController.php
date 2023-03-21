@@ -100,6 +100,8 @@ class MudancasController extends AbstractController
                         array_push($mudancas, $value);
                     } elseif ($value->getMangerMudancas() == $person && $value->getDone() != 'Feito') {
                         array_push($mudancas, $value);
+                    }elseif($value->getManagerUserAdd() == $person && $value->getDone() != 'Feito'){
+                        array_push($mudancas, $value);
                     }
                 }
                 //dd($mudancas);
@@ -145,7 +147,7 @@ class MudancasController extends AbstractController
 
             if ($req->getApproves() == 'yes') {
                 if ($manager == null && $gestor == false) {
-                    return $this->render('mudancas/index.html.twig', [
+                   return $this->render('mudancas/index.html.twig', [
                         'controller_name' => 'Mudancas',
                         'login' => 'null',
                         'creation' => 'null',
@@ -669,6 +671,7 @@ class MudancasController extends AbstractController
 
 
             $token = $em->getRepository(ApiToken::class)->findOneBy(['mud' => $mud]);
+            
             if ($token != null) {
                 //143.255.163.142
                 //10.100.2.61
@@ -696,12 +699,16 @@ class MudancasController extends AbstractController
                 //execute post
                 $client = curl_exec($ch);
                 $cl = json_decode($client, true);
+
+               
+
                 if ($cl["mud"]["TokenData"]["comClt"] != null) {
                     $mud->setdescClient($cl["mud"]["TokenData"]["comClt"]);
                 }
             } else {
                 $cl = null;
             }
+
 
             // condition on  situation of Mudanacas
             if ($mud == null) {
@@ -863,7 +870,6 @@ class MudancasController extends AbstractController
                         } elseif ($manager == true && $gestor != true) {
                             $form = $this->createForm(MudancasManagerType::class, $mud);
                         } elseif ($gestor == true && $mangerOfAreaDidntApp == true && $date1 != null) {
-                           
                             $form = $this->createForm(MudancasgestorType::class, $mud);
                         } elseif ($gestor == true && $mangerOfAreaDidntApp == true && $date1 == null) {
                             $form = $this->createForm(MudancasgestorType::class, $mud);
@@ -1040,7 +1046,7 @@ class MudancasController extends AbstractController
                                             $client = curl_exec($ch);
                                             $cl = json_decode($client, true);
                                             
-
+                                            
                                         } else {
                                             $cl = null;
                                         }
@@ -1286,7 +1292,7 @@ class MudancasController extends AbstractController
                                 'formImp' => $formImp->createView(),
                                 'form' => $form->createView(),
                             ]);
-                        } else {
+                        } elseif ($gestor == true && $mangerOfAreaDidntApp == true) {
                             return $this->render('mudancas/update.html.twig', [
                                 'controller_name' => 'Atualizar Mudancas',
                                 'login' => 'null',
@@ -1297,6 +1303,26 @@ class MudancasController extends AbstractController
                                 'mangerOfAreaDidntApp' => $mangerOfAreaDidntApp,
                                 'manager' => $manager,
                                 'gestor' => $gestor,
+                                'cl' => $cl,
+                                'date1' => $date1,
+                                'date2' => $date2,
+                                'date3' => $date3,
+                                'form' => $form->createView(),
+                            ]);
+                        }else{
+                            return $this->render('mudancas/update.html.twig', [
+                                'controller_name' => 'Atualizar Mudancas',
+                                'login' => 'null',
+                                'creation' => 'false',
+                                'person' => $person,
+                                'm' => $mud,
+                                'email' => $email,
+                                'mangerOfAreaDidntApp' => $mangerOfAreaDidntApp,
+                                'manager' => $manager,
+                                'gestor' => $gestor,
+                                'date1' => '',
+                                'date2' => '',
+                                'date3' => '',
                                 'cl' => $cl,
                                 'form' => $form->createView(),
                             ]);

@@ -305,7 +305,7 @@
 					<div class="row">
 						<div class="col-md-12 mb-3">
 							<label for="mudancasgestor_to_app_effictiveStartDate">Data implementada</label>
-							<input type="date" class="form-control" value="{{m.dateOfImp}}">
+							<input type="text" class="form-control" value="{{m.dateOfImp}}">
 						</div>
 					</div>
 
@@ -405,19 +405,16 @@
 					</div>
 				</div>
 				{% endif %}
-
-
 				{% if m.dateOfImp != null  %}
 					
 				<div class="row">
 					<div class="col-md-12 mb-3">
-						<label for="mudancas_descImpacto" class="required">Data de conclusão da mudança</label>
+						<label for="mudancas_descImpacto" class="required">Data Implementada</label>
 						<p class='form-control'>{{m.dateOfImp}}
 						</p>
 					</div>
 				</div>
 				{% endif %}
-
 
 				<div class="col-md-12 mb-3">
 					<img class="center card-img-top" src="{{ asset('assets/')}}{{m.id}}/{{m.photo}}" alt="" style="padding-top: 15px; width : 500px">
