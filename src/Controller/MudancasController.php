@@ -100,6 +100,8 @@ class MudancasController extends AbstractController
                         array_push($mudancas, $value);
                     } elseif ($value->getMangerMudancas() == $person && $value->getDone() != 'Feito') {
                         array_push($mudancas, $value);
+                    }elseif($value->getManagerUserAdd() == $person && $value->getDone() != 'Feito'){
+                        array_push($mudancas, $value);
                     }
                 }
                 //dd($mudancas);
@@ -145,7 +147,7 @@ class MudancasController extends AbstractController
 
             if ($req->getApproves() == 'yes') {
                 if ($manager == null && $gestor == false) {
-                    return $this->render('mudancas/index.html.twig', [
+                   return $this->render('mudancas/index.html.twig', [
                         'controller_name' => 'Mudancas',
                         'login' => 'null',
                         'creation' => 'null',
