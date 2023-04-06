@@ -34,7 +34,7 @@ class CloseMudController extends AbstractController
             $token = $em->getRepository(ApiToken::class)->findOneBy(['mud' => $mud]);
 
             if($token != null){
-            $url = "https://cm.serdia.com.br/ClientExteranlAcces/public/get/data";
+            $url = "10.100.2.61/ClientExteranlAcces/public/get/data";
             //The data you want to send via POST
             $fields = [
                 'token'=> $token->getToken(),

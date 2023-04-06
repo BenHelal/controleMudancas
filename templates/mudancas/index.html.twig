@@ -120,8 +120,7 @@ window.location.reload();
 													{% set foo = true %}
 												{% endif %}
 											{% endfor %}
-
-
+											
 										{% if row.managerUserApp == null and row.addBy.function.manager == person and foo == false %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('approve',{id: row.id})}}">
@@ -136,7 +135,35 @@ window.location.reload();
 													</div>
 												</a>
 											</li>
+										{% elseif row.managerUserApp == null and row.addBy.function.manager == person  %}
+											<li class="list-group-item d-flex justify-content-between lh-condensed">
+												<a href="{{path('approve',{id: row.id})}}">
+													<div>
+														<h6 class="my-0">Nome do Mudança:
+															{{row.nomeMudanca}}
+														</h6>
+
+														<small class="text-muted">Número da mudança :
+															{{row.id}}
+														</small>
+													</div>
+												</a>
+											</li>
 										{% elseif row.appMan == null and row.areaResp.manager == person and foo == false %}
+											<li class="list-group-item d-flex justify-content-between lh-condensed">
+												<a href="{{path('upm',{id: row.id})}}">
+													<div>
+														<h6 class="my-0">Nome do Mudança:
+															{{row.nomeMudanca}}
+														</h6>
+
+														<small class="text-muted">Número da mudança :
+															{{row.id}}
+														</small>
+													</div>
+												</a>
+											</li>
+											{% elseif row.appMan == null and row.areaResp.manager == person %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('upm',{id: row.id})}}">
 													<div>

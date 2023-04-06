@@ -39,7 +39,9 @@
 					{% if demand == 'create' %}
 						{% if mud.nansenName != null %}
 							<h1 class="text-center">Olá
-								{{ mud.addBy.name }},<br></h1>
+								{{ mud.addBy.name }},
+							</h1>
+							<br>
 							Sua mudança foi registrada
 							<br>
 							Mudança:
@@ -52,11 +54,14 @@
 								</a>
 							</p>
 						{% else %}
-							<h1 class="text-center">Olá
-								{{ mud.addBy.name }},<br></h1>
-							Sua mudança foi registrada Mudança:
+							<h1 class="text-center">Olá {{ mud.addBy.name }},</h1>
+							<br>
+							Sua mudança foi registrada 
+							<br>
+							Mudança:
 							{{mud.id }}
-							{{mud.nomeMudanca}}<br>
+							{{mud.nomeMudanca}}
+							<br>
 							Por gentileza acompanhe as próximas etapas desta mudança.
 
 							<p class="block text-center">
@@ -72,13 +77,30 @@
 						Mudança:
 						{{mud.id }}
 						{{mud.nomeMudanca}}<br>
-						Mudanças relacionadas com o projeto Nansen : {{mud.nansenName}} {{mud.nansenNumber}}
+						Mudanças relacionadas com o projeto Nansen : {{mud.nansenName}} {{mud.nansenNumber}}<br>
 
-						Fase: Aprovação da mudança
+						Fase: Aprovação automática da solicitação
 						<br>
-						Por gentileza acessar e verificar está mudança.
+						Está solicitação foi aprovada automaticamente.
 						<p class="block text-center">
-							<a href="http://{{ip}}/controleMudancas/public/approve/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							<a href="http://{{ip}}/controleMudancas/public/approve/{{mud.id}}" class="btn">Para acompanhar as próximas etapas clique aqui!
+							</a>
+						</p>
+					{% elseif demand =='nansenAddBy' %}
+					<h1 class="text-center">Olá
+							{{ mud.addBy.name }},<br></h1>
+						Há uma nova notificação para você
+						<br>
+						Mudança:
+						{{mud.id }}
+						{{mud.nomeMudanca}}<br>
+						Mudanças relacionadas com o projeto Nansen : {{mud.nansenName}} {{mud.nansenNumber}}<br>
+
+						Fase: Aprovação automática da solicitação
+						<br>
+						Está solicitação foi aprovada automaticamente.
+						<p class="block text-center">
+							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acompanhar as próximas etapas clique aqui!
 							</a>
 						</p>
 					
@@ -120,7 +142,7 @@
 						Mudança:
 						{{mud.id }}
 						{{mud.nomeMudanca}}<br>
-						Fase: Aprovação da mudança
+						Fase: Aprovação da solicitação da mudança
 						<br>
 						Por gentileza acessar e verificar está mudança.
 						<p class="block text-center">
@@ -137,10 +159,8 @@
 						{{mud.nomeMudanca}}<br>
 						Fase: Aprovação gerente do solicitante
 						<br>
-						{% if  mud.nansenName != null %}
-						O gerente
-						{{mud.addBy.function.manager.name}}
-						{% endif %}
+							O(a) gerente
+								{{ per.name }}
 						aprovou está mudança.<br>
 						Por gentileza acessar e verificar a análise realizada pelo gerente.
 						<p class="block text-center">
@@ -150,7 +170,7 @@
 
 					{% elseif demand == 'manager1Rej' %}
 						<h1 class="text-center">Olá
-							{{ mud.addBy.name }},<br></h1>
+							{{ sendTo.name }},<br></h1>
 						Há uma nova notificação para você
 						<br>
 						Mudança:
@@ -158,14 +178,14 @@
 						{{mud.nomeMudanca}}<br>
 						Fase:Aprovação gerente do solicitante
 						<br>
-						{% if  mud.nansenName != null %}
-							O gerente
-						{{mud.addBy.function.manager.name}}
+						{% if  mud.addBy.function.manager != null %}
+							O(a) gerente
+							{{mud.addBy.function.manager.name}}
 						{% endif %}
 						reprovou está mudança.<br>
-						Por gentileza acompanhar as próximas etapas.
+						Por gentileza acessar e verificar analise realizada pelo gerente.
 						<p class="block text-center">
-							<a href="http://{{ip}}/controleMudancas/public/updateMudancas/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
 							</a>
 						</p>
 					{% elseif demand == 'managerArea' %}
@@ -193,11 +213,34 @@
 						{{mud.nomeMudanca}}<br>
 						Fase: Aprovação gestor da mudança
 						<br>
-						Esta mudança foi aprovada pelo gestor da mudança, por gentileza acompanhe as próximas etapas desta mudança.
+						por gentileza acompanhe as próximas etapas desta mudança.
 
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/updateMudancas/{{mud.id}}" class="btn">Para acompanhar as próximas etapas clique aqui !
 							</a>
+						</p>
+
+					{% elseif demand == 'reject_areaImp' %}
+						<p class="block">
+							<h1 class="text-center">Olá
+								{{ mud.addBy.name }},<br></h1>
+							Há uma nova notificação para você:
+							<br>
+							Mudança:
+							{{mud.id }}
+							{{mud.nomeMudanca}}<br>
+							Fase: Aprovação área impactada<br>
+
+								O(a) gerente
+								{{ per.name }}
+							reprovou como área impactada da mudança.
+							<br>
+							Por gentileza acessar e verificar a análise realizada pelo gestor da mudança.<br>
+						</p>
+						<p class="block text-center">
+							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acompanhar as próximas etapas clique aqui!
+							</a>
+
 						</p>
 
 					{% elseif demand == 'reject_ger' %}
@@ -211,11 +254,11 @@
 							{{mud.nomeMudanca}}<br>
 							Fase: Aprovação gestor da área que realizará a mudança<br>
 
-							O gerente
-							{{ mud.addBy.function.manager.name }}
+								O(a) gerente
+								{{ per.name }}
 							reprovou está mudança.
 							<br>
-							Por gentileza acessar e verificar a análise realizada pelo gestor.<br>
+							Por gentileza acessar e verificar a análise realizada pelo gerente.<br>
 						</p>
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acompanhar as próximas etapas clique aqui!
@@ -233,13 +276,12 @@
 							{{mud.nomeMudanca}}<br>
 							Fase: Aprovação gestor da área que realizará a mudança<br>
 
-							{% if mud.mangerMudancas != null  %}
-							O gerente
-							{{ mud.mangerMudancas.name }}{% endif %}
+								O(a) gerente
+								{{ per.name }}
 							
 							aprovou está mudança.
 							<br>
-							Por gentileza acessar e verificar a análise realizada pelo gestor.<br>
+							Por gentileza acessar e verificar a análise realizada pelo gerente.<br>
 						</p>
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acompanhar as próximas etapas clique aqui!
@@ -268,7 +310,8 @@
 						{{mud.id }}
 						{{mud.nomeMudanca}}<br>
 						Fase: Aprovação gestor da mudança
-												Esta mudança foi aprovada pelo gestor da mudança, por gentileza acompanhe as próximas etapas desta mudança.
+						<br>
+						por gentileza acompanhe as próximas etapas desta mudança.
 
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
@@ -311,9 +354,9 @@
 						Mudança:
 						{{mud.id }}
 						{{mud.nomeMudanca}}<br>
-						Fase: Não implementada
+						Fase: Aprovação gestor da área que realizará a mudança
 						<br>
-						Por gentileza acessar e verificar mudança implementada.
+						O(a) gestor {{ per.name }} reprovou está mudança.<br>  Por gentileza acessar e verificar a analisá realizada pelo gestor.
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/approveImp/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
 							</a>
@@ -347,7 +390,7 @@
 						Fase: Aprovação do gerente responsável pela mudança 
 						<br>
 						
-						Por gentileza acessar e verificar mudança implementada.
+						Por gentileza acessar, verificar e definir o gestor/responsável por esta mudança.
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/approve/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
 							</a>

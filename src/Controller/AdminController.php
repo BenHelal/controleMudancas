@@ -471,7 +471,7 @@ class AdminController extends AbstractController
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
             foreach ($ln as $key => $value) {
-                $sql = 'Delete FROM sectorprocess WHERE process_id = :mudancas_id ;';
+                $sql = 'Delete FROM sector_process WHERE process_id = :mudancas_id ;';
                 $stmt = $conn->prepare($sql);
                 $resultSet = $stmt->executeQuery(['mudancas_id' => $value['id']]);
                 $ln2 =  $resultSet->fetchAllAssociative();
@@ -504,7 +504,7 @@ class AdminController extends AbstractController
             $ln =  $resultSet->fetchAllAssociative();
 
             
-            $sql = 'Delete FROM apitoken WHERE mud_id = :mudancas_id ;';
+            $sql = 'Delete FROM api_token WHERE mud_id = :mudancas_id ;';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
