@@ -840,7 +840,8 @@ class MudancasController extends AbstractController
                             }
                         }
                         if ($NumberApproved == sizeof($mud->getAreaImpact())) {
-                            //dd('test');
+                            $done = true;
+                            dd('test');
                             $mud->setDone('Feito');
                             date_default_timezone_set("America/Sao_Paulo");
                             $time = new \DateTime();
@@ -852,6 +853,47 @@ class MudancasController extends AbstractController
                     }
                 } else {
                     if ($mud->getAppMan() == null || $mud->getAppGest() == null) {
+
+                        foreach ($mud->getAreaImpact() as $key => $value) {
+                        # code...
+                        $conn = $doctrine->getConnection();
+                        $sql = 'SELECT sp.id FROM 
+                                sector_process as sp,
+                                mudancas as mud,
+                                process as p
+                                where 
+                                    sp.sector_id = ? and
+                                    p.id = ? and
+                                    p.mudancas_id =  mud.id and 
+                                    sp.process_id = p.id
+                                            ';
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bindValue(1, $value->getId());
+                        $stmt->bindValue(2, $process->getId());
+                        $resultSet = $stmt->executeQuery();
+                        // get the id of the Porcess
+                        // dd($process->getId());
+
+                        $dm =  $resultSet->fetchAllAssociative();
+                        if (isset($dm[0]) && ($dm !== null)) {
+                            $SectorProcess = $em->getRepository(SectorProcess::class)->find($dm[0]["id"]);
+                            if ($SectorProcess->getAppSectorMan() == 1) {
+                                $NumberApproved = $NumberApproved + 1;
+                            }
+                        }
+                        if ($NumberApproved == sizeof($mud->getAreaImpact())) {
+                            $done = true;
+                            dd('test');
+                            $mud->setDone('Feito');
+                            date_default_timezone_set("America/Sao_Paulo");
+                            $time = new \DateTime();
+                            $time->format('Y-m-d H:i:s');
+                            $mud->setDateOfImp($time);
+                        }
+                        $em->persist($mud);
+                        $em->flush();
+                    }
+
                     } elseif ($mud->getAppMan() == 2 || $mud->getAppGest() == 2) {
                         $mud->setImplemented(2);
                         $mud->setDone('Feito');
