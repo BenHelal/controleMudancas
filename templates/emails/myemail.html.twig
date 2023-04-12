@@ -185,6 +185,7 @@
 							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
 							</a>
 						</p>
+						
 					{% elseif demand == 'managerArea' %}
 						<h1 class="text-center">Olá
 							{{ sendTo.name }},<br></h1>
@@ -232,7 +233,7 @@
 						<br> Por gentileza acessar e analisar e verificar analise
 						realizada pelo gestor.
 						<p class="block text-center">
-							<a href="http://{{ip}}/controleMudancas/public/notif/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							<a href="http://{{ip}}/controleMudancas/public/updateMudancas/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
 							</a>
 						</p>
 
@@ -332,8 +333,7 @@
 
 								O(a) gerente
 								{{ per.name }}
-							aprovou
-							como área impactada da mudança.<br>
+							aprovou como área impactada da mudança.<br>
 							Por gentileza acessar e verificar a análise realizada pelo gestor da mudança.<br>
 						
 							</p>
@@ -361,7 +361,7 @@
 
 					{% elseif demand == 'approved_gestor' %}
 						<h1 class="text-center">Olá
-							{{ name }},<br></h1>
+							{{ mud.addBy.name }},<br></h1>
 						Há uma nova notificação para você:<br>
 						Mudança:
 						{{mud.id }}
@@ -377,7 +377,7 @@ próximas etapas desta mudança.
 						</p>
 					{% elseif demand == 'reject_gestor' %}
 						<h1 class="text-center">Olá
-							{{ name }},<br></h1>
+							{{ mud.addBy.name }},<br></h1>
 						Há uma nova notificação para você:<br>
 						Mudança:
 						{{mud.id }}

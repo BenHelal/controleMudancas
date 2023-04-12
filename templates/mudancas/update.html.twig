@@ -13,7 +13,7 @@
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
- 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
 
 	<div class="container" style="padding-left: 20px ;padding-right: 20px;">
@@ -253,8 +253,8 @@
 				{% endif %}
 				{% if gestor and cl != null and cl.mud.status %}
 					{% if cl.mud.TokenData.comClt == null %}
-						
-					{% else %}
+
+						{% else %}
 					{% endif %}
 				{% endif %}
 			</div>
@@ -282,11 +282,11 @@
 						</div>
 					</div>
 				{% endif %}
-				
+
 				<div class="row">
 					<div class="col-md-12 mb-3">
 						{{ form_label(form.startMudancas) }}
-						{{ form_widget(form.startMudancas,{'attr':{'class':'date form-control'}}) }}  
+						{{ form_widget(form.startMudancas,{'attr':{'class':'date form-control'}}) }}
 					</div>
 				</div>
 				<div class="row">
@@ -396,24 +396,24 @@
 					</div>
 				</div>
 				{% if m.impDesc != null %}
-				
-				<div class="row">
-					<div class="col-md-12 mb-3">
-						<label for="mudancas_descImpacto" class="required">Evidencia de Implementação</label>
-						<textarea class='form-control'>{{m.impDesc}}
-						</textarea>
+
+					<div class="row">
+						<div class="col-md-12 mb-3">
+							<label for="mudancas_descImpacto" class="required">Evidencia de Implementação</label>
+							<textarea class='form-control'>{{m.impDesc}}
+							</textarea>
+						</div>
 					</div>
-				</div>
 				{% endif %}
 				{% if m.dateOfImp != null  %}
-					
-				<div class="row">
-					<div class="col-md-12 mb-3">
-						<label for="mudancas_descImpacto" class="required">Data Implementada</label>
-						<p class='form-control'>{{m.dateOfImp}}
-						</p>
+
+					<div class="row">
+						<div class="col-md-12 mb-3">
+							<label for="mudancas_descImpacto" class="required">Data Implementada</label>
+							<p class='form-control'>{{m.dateOfImp}}
+							</p>
+						</div>
 					</div>
-				</div>
 				{% endif %}
 
 				<div class="col-md-12 mb-3">
@@ -624,15 +624,13 @@
 
 
 				<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+				<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
 
-<script>
- $(".date").datepicker({
-        format: "dd-mm-yyyy",language: "pt-BR",
-});
-					const box = document.getElementById('vcg');
+				<script>
+					$(".date").datepicker({format: "dd-mm-yyyy", language: "pt-BR"});
+const box = document.getElementById('vcg');
 function vc() {
 if (document.getElementById('vci').checked) {
 box.style.display = 'block';
@@ -642,7 +640,7 @@ box.style.display = 'none';
 }
 $(document).ready(function () {
 
-					const box = document.getElementById('vcg');
+const box = document.getElementById('vcg');
 
 $('#mudancas_client').chosen({});
 $('#mudancasgestor_client').chosen({});
@@ -916,7 +914,6 @@ textarea.addEventListener("input", function () {
 hiddenInput.value = textarea.value;
 hiddenInput2.value = textarea.value;
 });
-
 							</script>
 
 						</div>
