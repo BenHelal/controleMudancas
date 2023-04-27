@@ -93,9 +93,10 @@ window.location.reload();
 			{% else %}
 				<ul class="list-group">
 					<li class="list-group-item d-flex justify-content-between align-items-right">
-						<a href="{{path('cm')}}">Adicionar novo Mudança</a>
+						<a href="{{path('cm')}}">Adicionar nova Mudança</a>
 					</li>
 				</ul>
+				<br>
 				<span>Não há dados relacionados com o seu setor ou não há mudancas abertas</span>
 			{% endif %}
 		{% else %}
@@ -116,7 +117,7 @@ window.location.reload();
 									{% if row.done != 'Feito'%}
 										{% set foo = false %}
 											{% for item in row.areaImpact %}
-												{% if item.manager == person %}
+												{% if item.coordinator == person %}
 													{% set foo = true %}
 												{% endif %}
 											{% endfor %}
@@ -135,7 +136,7 @@ window.location.reload();
 													</div>
 												</a>
 											</li>
-										{% elseif row.managerUserApp == null and row.addBy.function.manager == person  %}
+										{% elseif row.managerUserApp == null and row.addBy.function.manager == person  and foo == false  %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('approve',{id: row.id})}}">
 													<div>
@@ -163,7 +164,7 @@ window.location.reload();
 													</div>
 												</a>
 											</li>
-											{% elseif row.appMan == null and row.areaResp.manager == person %}
+											{% elseif row.appMan == null and row.areaResp.manager == person  and foo == false %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('upm',{id: row.id})}}">
 													<div>
@@ -178,6 +179,20 @@ window.location.reload();
 												</a>
 											</li>
 										{% elseif row.mangerMudancas == person and foo == false  %}
+											<li class="list-group-item d-flex justify-content-between lh-condensed">
+												<a href="{{path('upm',{id: row.id})}}">
+													<div>
+														<h6 class="my-0">Nome do Mudança:
+															{{row.nomeMudanca}}
+														</h6>
+
+														<small class="text-muted">Número da mudança :
+															{{row.id}}
+														</small>
+													</div>
+												</a>
+											</li>
+										{% elseif row.addBy == person and foo == false  %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('upm',{id: row.id})}}">
 													<div>
@@ -243,7 +258,7 @@ window.location.reload();
 										{% set foo = false %}
 										
 											{% for item in row.areaImpact %}
-												{% if item.manager == person %}
+												{% if item.coordinator == person %}
 													{% set foo = true %}
 												{% endif %}
 											{% endfor %}

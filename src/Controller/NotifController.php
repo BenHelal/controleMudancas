@@ -57,12 +57,15 @@ class NotifController extends AbstractController
             }
 
 
-            foreach ($sps as $key => $value) {
-                if ($value->getComment() == null) {
-                    $oneOfSp = $value;
+            foreach ($sps as $key => $sp) {
+                if ($sp->getSector()->getCoordinator() == $person ) {
+                    $oneOfSp = $sp;
+                    
                 }
-            }
+            
+        }
 
+            
             if ($oneOfSp  != null) {
                 $form = $this->createForm(SectorProcessType::class, $oneOfSp);
             } else {
@@ -71,22 +74,24 @@ class NotifController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
+                $d = $request->get('sector_process');
+                
                 foreach ($sps as $key => $sp) {
-                    if ($sp->getSector()->getCoordinator() == $person) {
+                    if ($sp->getSector()->getCoordinator() == $person ) {
                         //if( $mudancas->getManager)
                         if ($oneOfSp != null) {
-                            
-                            $sp->setComment($oneOfSp->getComment());
-                            $sp->setAppSectorMan($oneOfSp->getAppSectorMan());
+                            $sp->setComment($d['comment']);
+                            $sp->setAppSectorMan($d['appSectorMan']);
                         }
 
                         $em->persist($sp);
                         $em->flush();
                         
                     }
-                }
+                
+            }
 
-                if($sps[0]->getAppSectorMan() == 1){
+                if($oneOfSp->getAppSectorMan() == 1){
                     $email = new  Email();
                     $email->setMudancas($mudancas);
                     $email->setSendTo($mudancas->getAddBy());
@@ -98,6 +103,13 @@ class NotifController extends AbstractController
                     $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                     
                 }else{
+                    
+                    $mudancas->setImplemented(2);
+                    if($mudancas->getNansenNumber() != null){
+                        
+                    $mudancas->setManagerUserAdd($person);
+                    
+                         }$mudancas->setDone('Feito');
                     $email = new  Email();
                     $email->setMudancas($mudancas);
                     $email->setSendTo($mudancas->getAddBy());

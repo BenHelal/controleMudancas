@@ -301,14 +301,15 @@
 						{{ form_widget(form.effictiveStartDate,{'attr':{'class':'date form-control',}}) }}
 					</div>
 				</div>
-				{% if m.implemented == 1 or m.implemented == 2 %}
+				{% if m.implemented == 1 or m.implemented == 2 and m.dateOfImp != null %}
 					<div class="row">
 						<div class="col-md-12 mb-3">
 							<label for="mudancasgestor_to_app_effictiveStartDate">Data implementada</label>
 							<input type="text" class="form-control" value="{{m.dateOfImp}}">
 						</div>
 					</div>
-
+				{% endif %}
+				{% if m.implemented == 1 or m.implemented == 2  and m.impDesc != null %}
 					<div class="row">
 						<div class="col-md-12 mb-3">
 							<label for="mudancasgestor_to_app_effictiveStartDate">Evidencia da implementação</label>
@@ -316,12 +317,31 @@
 						</div>
 					</div>
 				{% endif %}
-				<div class="row">
+
+
+				{% if m.implemented == 1 or m.implemented == 2  and m.cost != null %}
+					
+				<div class="row" id="cost" >
 					<div class="col-md-12 mb-3">
 						{{ form_label(form.cost) }}
 						{{ form_widget(form.cost,{'attr':{'class':'form-control'}}) }}
 					</div>
 				</div>
+				{% elseif m.implemented == null  and m.cost == null %}
+				<div class="row" id="cost" >
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.cost) }}
+						{{ form_widget(form.cost,{'attr':{'class':'form-control'}}) }}
+					</div>
+				</div>
+				{% else %}
+				<div class="row" id="cost2" >
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.cost) }}
+						{{ form_widget(form.cost,{'attr':{'class':'form-control'}}) }}
+					</div>
+				</div>
+				{% endif %}
 				<div class="row">
 					<div class="col-md-12 mb-3">
 						<img class="center card-img-top" src="{{ asset('assets/')}}{{m.id}}/{{m.photo}}" alt="" style="padding-top: 15px; width : 500px">
@@ -470,10 +490,6 @@
 														{{m.nomeMudanca}}</h5>
 												</div>
 
-												<div class="col-md-12 mb-3">
-													<h6 class="mb-1">Evidencia de Implementação:
-														{{m.impDesc}}</h5>
-												</div>
 											</div>
 
 										</div>
@@ -627,7 +643,10 @@
 				<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
-
+	<script>
+$(document).ready(function () {
+const cost = document.getElementById('cost2');
+cost.style.display = 'none';});</script>
 				<script>
 					$(".date").datepicker({format: "dd-mm-yyyy", language: "pt-BR"});
 const box = document.getElementById('vcg');
@@ -640,13 +659,17 @@ box.style.display = 'none';
 }
 $(document).ready(function () {
 
+
 const box = document.getElementById('vcg');
 
 $('#mudancas_client').chosen({});
 $('#mudancasgestor_client').chosen({});
 $('#mudancasgestor2_areaImpact').chosen({});
 $('#mudancasgestor_to_app_client').chosen({});
-$('#mudancasgestor_to_app_areaImpact').chosen({});{% if creation != 'true' %}{% if m.client == null %}document.getElementById("vci").checked = false;
+$('#mudancasgestor_to_app_areaImpact').chosen({});
+
+
+{% if creation != 'true' %}{% if m.client == null %}document.getElementById("vci").checked = false;
 {% else %}
 
 document.getElementById("vci").checked = true;{% endif %}{% endif %}if (document.getElementById('vci').checked) {
@@ -862,6 +885,8 @@ box.style.display = 'none';
 }
 }
 {% endif %}
+
+
 				</script>
 
 
