@@ -123,8 +123,10 @@ class MudancasController extends AbstractController
                     }elseif($value->getManagerUserAdd() == $person && $value->getDone() != 'Feito'){
                         $manager = true;
                         array_push($mudancas, $value);
-                    }elseif ($value->getAddBy()->getFunction()->getManager() == $person && $value->getImplemented() == null) {
-                        array_push($mudancas, $value);
+                    }elseif ($value->getAddBy()->getFunction() != null) {
+                        if ($value->getAddBy()->getFunction()->getManager() == $person && $value->getImplemented() == null) {
+                            array_push($mudancas, $value);
+                        } 
                     } 
                 }
             }
@@ -143,8 +145,10 @@ class MudancasController extends AbstractController
                     array_push($array, $muda);
                 } elseif ($muda->getAddBy() != $person && $muda->getMangerMudancas() != $person && $muda->getManagerUserAdd() == $person  && $muda->getImplemented() == null) {
                     array_push($array, $muda);
-                }  elseif ($muda->getAddBy()->getFunction()->getManager() == $person && $muda->getImplemented() == null) {
-                    array_push($array, $muda);
+                }  elseif ($muda->getAddBy()->getFunction()!= null) {
+                      if ($muda->getAddBy()->getFunction()->getManager() == $person && $muda->getImplemented() == null) {
+                            array_push($array, $muda);
+                        }
                 } else {
                     $areaImpact =  $muda->getAreaImpact();
                     $mangerArea = false;
