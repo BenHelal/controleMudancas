@@ -18,6 +18,20 @@
 
 	<div class="container" style="padding-left: 20px ;padding-right: 20px;">
 
+		{% if person.function == null %}
+			<p style="
+				padding: 8px;
+				margin: 25px;
+				/* other styling */
+				background-color:#FF9671;
+				border-radius: 10px;
+				color: white;
+				font-family: Arial;
+				text-align: center;
+				">Você não foi adicionado a nenhum setor.<br> por favor,
+				entre em contato com o "Sistema de Gestão da Qualidade (SGQ)"<br>
+				você não pode abrir ou gerenciar nenhuma alteração por enquanto.</p>
+		{% endif %}
 
 		{% if creation == 'null' %}
 			{% if manager %}
@@ -459,6 +473,7 @@
 				</div>
 			</div>
 
+		{% if person.function != null %}
 
 			{% if person.permission == 'ler criar atualização' or person.permission =='tudo' %}
 				{% if m.implemented == null and m.done == 'Feito' %}
@@ -530,6 +545,7 @@
 									{% endif %}
 								{% endif %}
 							{% endif %}
+						{% endif %}
 						{% endif %}
 						{{ form_end(form) }}
 
@@ -628,6 +644,7 @@
 
 						</div>
 
+		{% if person.function != null %}
 						{% if person.permission == 'ler criar atualização' or person.permission =='ler criar' or person.permission =='tudo' %}
 							<div class="row">
 								<div class="col-md-6 mb-3">
@@ -637,6 +654,7 @@
 						{% endif %}
 						{{ form_end(form) }}
 				{% endif %}
+			{% endif %}
 
 
 				<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>

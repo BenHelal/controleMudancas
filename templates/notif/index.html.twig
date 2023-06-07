@@ -51,7 +51,20 @@
 			}
 		}
 	</style>
-
+		{% if person.function == null %}
+			<p style="
+				padding: 8px;
+				margin: 25px;
+				/* other styling */
+				background-color:#FF9671;
+				border-radius: 10px;
+				color: white;
+				font-family: Arial;
+				text-align: center;
+				">Você não foi adicionado a nenhum setor.<br> por favor,
+				entre em contato com o "Sistema de Gestão da Qualidade (SGQ)"<br>
+				você não pode abrir ou gerenciar nenhuma alteração por enquanto.</p>
+		{% endif %}
 	<div class="row">
 		<div class="leftcolumn" style=" float: left; width: 75%;">
 			<div class="card" style=" background-color: white; padding: 20px; margin-top: 20px;  margin-left: 20px">
@@ -149,11 +162,13 @@
 							{{ form_widget(form.comment,{'attr':{'class':'form-control'}}) }}
 						</div>
 					</div>
+					{% if person.function != null %}
 					<div class="row">
 						<div class="col-md-6 mb-3">
 							<button class="	btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Adicionar</button>
 						</div>
 					</div>
+					{% endif %}
 					{{ form_end(form) }}
 				</div>
 			</div>
