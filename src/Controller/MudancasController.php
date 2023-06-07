@@ -810,13 +810,13 @@ class MudancasController extends AbstractController
                 //execute post
                 $client = curl_exec($ch);
                 $cl = json_decode($client, true);
-
                 
-                if ($cl["mud"]["TokenData"]["comClt"] != null) {
+                
+            if ($cl["mud"]["TokenData"]["comClt"] != null) {
                if($cl["mud"]["TokenData"]["appClt"] == 2){
                 $mud->setImplemented(2);
                 if($mud->getNansenNumber() != null){
-                    
+        
                 $mud->setManagerUserAdd($person);
                 
             }
