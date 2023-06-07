@@ -883,7 +883,6 @@ class MudancasController extends AbstractController
                         }
                         if ($NumberApproved == sizeof($mud->getAreaImpact())) {
                             $done = true;
-                            dd('test');
                             $mud->setDone('Feito');
                             date_default_timezone_set("America/Sao_Paulo");
                             $time = new \DateTime();
