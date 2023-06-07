@@ -53,14 +53,32 @@ class MudancasController extends AbstractController
                 return $this->redirectToRoute('app_request');
             }
             $dep = $em->getRepository(Departemant::class)->findOneBy(['name' => $person->getDepartemant()]);
-            $manager = $em->getRepository(Sector::class)->findBy(['coordinator' => $person]);
+            $coordinatorArray = $em->getRepository(Sector::class)->findBy(['coordinator' => $person]);
+            $managerArray = $em->getRepository(Sector::class)->findBy(['manager' => $person]);
             $mudanca = $em->getRepository(Mudancas::class)->findAll();
             $mudancas = [];
             $gestorArray = $em->getRepository(Mudancas::class)->findBy(['mangerMudancas' => $person]);
-            $gestor = false;
             $notifGestor = [];
+            
+            $managerCorr = false;
+            $corr = false;
+            $manager = false ;
+            $gestor = false ;
+
+            if($managerArray != null & $coordinatorArray != null){
+                //dd('i m manager and coor');
+                $manager = true;
+            }elseif($managerArray != null & $coordinatorArray == null){
+                //dd('i m manager');
+                $manager = true;
+            }elseif($managerArray == null & $coordinatorArray != null){
+                //dd('i m coor');
+                $corr = true;
+            }
 
             
+
+
             foreach ($gestorArray as $key => $value) {
                 if ($value->getDone() != 'Feito') {
                     array_push($notifGestor, $value);
@@ -72,7 +90,7 @@ class MudancasController extends AbstractController
             }
 
             //get the mudancas with the same Sector 
-            if ($manager != null) {
+            if ($managerArray != null) {
                 foreach ($mudanca as $key => $value) {
                     $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
                     $sp = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
@@ -87,7 +105,7 @@ class MudancasController extends AbstractController
                                         array_push($mudancas, $value);
                                     }
                                 } elseif ($val != $value->getAreaResp()) {
-                                    /* if ($val == $person->getFunction() && $value->getDone() != 'Feito' && $mudancas[sizeof($mudancas) - 1] != $value) {
+                                    /*if ($val == $person->getFunction() && $value->getDone() != 'Feito' && $mudancas[sizeof($mudancas) - 1] != $value) {
                                         array_push($mudancas, $value);
                                     }*/
                                 }
@@ -105,9 +123,10 @@ class MudancasController extends AbstractController
                     }elseif($value->getManagerUserAdd() == $person && $value->getDone() != 'Feito'){
                         $manager = true;
                         array_push($mudancas, $value);
-                    }
+                    }elseif ($value->getAddBy()->getFunction()->getManager() == $person && $value->getImplemented() == null) {
+                        array_push($mudancas, $value);
+                    } 
                 }
-                //dd($mudancas);
             }
 
 
@@ -117,26 +136,29 @@ class MudancasController extends AbstractController
                 if ($muda->getAddBy() == $person && $muda->getImplemented() == null) {
                     array_push($array, $muda);
                 } 
-                elseif ($muda->getNansenNumber() != null && $muda->getAreaResp()->getManager() == $person  && $muda->getImplemented() == null) {
+                elseif ($muda->getAreaResp()->getManager() == $person  && $muda->getImplemented() == null) {
                     array_push($array, $muda);
                 }
-                
                 elseif ($muda->getAddBy() != $person && $muda->getMangerMudancas() == $person  && $muda->getImplemented() == null) {
                     array_push($array, $muda);
                 } elseif ($muda->getAddBy() != $person && $muda->getMangerMudancas() != $person && $muda->getManagerUserAdd() == $person  && $muda->getImplemented() == null) {
+                    array_push($array, $muda);
+                }  elseif ($muda->getAddBy()->getFunction()->getManager() == $person && $muda->getImplemented() == null) {
                     array_push($array, $muda);
                 } else {
                     $areaImpact =  $muda->getAreaImpact();
                     $mangerArea = false;
                     foreach ($areaImpact as $key => $value) {
-                        if ($value->getCoordinator() == $person ) {
+                        if ($value->getCoordinator() == $person ||  $value->getManager() == $person ) {
                             $mangerArea = true;
+                            $manager = true;
                         }
                     }
                     if ($mangerArea  && $muda->getImplemented() == null) {
                         array_push($array, $muda);
                     }
                 }
+
             }
 
             $val = sizeof($mudanca);
@@ -152,10 +174,17 @@ class MudancasController extends AbstractController
             // dd($val2);
             $val = intval($this->presentNotDone($val, $val2));
             $size = sizeof($mudanca);
-
-
+            foreach ($mudanca as $key => $muda) {
+                foreach ($muda->getAreaImpact() as $key => $value) {
+                    if ($value->getCoordinator() == $person ||  $value->getManager() == $person ) {
+                    $mangerArea = true;
+                    $manager = true;
+                    }
+                }
+            }
+            
             if ($req->getApproves() == 'yes') {
-                if ($manager == null && $gestor == false) {
+                if ($manager != true && $gestor == false) {
                    return $this->render('mudancas/index.html.twig', [
                         'controller_name' => 'Mudancas',
                         'login' => 'null',
@@ -354,7 +383,7 @@ class MudancasController extends AbstractController
                                 $email->setSendTo($mud->getAddBy());
                                 $email->setSendBy($person);
                                 $email->setTitle('reject gerente controle do mudancas');
-                                $email->setBody('reject_areaImp');
+                                $email->setBody('manager1Rej');
                                 $em->persist($email);
                                 $em->flush();
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
@@ -364,11 +393,13 @@ class MudancasController extends AbstractController
                                 $email->setSendTo($mud->getAddBy());
                                 $email->setSendBy($person);
                                 $email->setTitle('approved gerente controle do mudancas');
-                                $email->setBody('app_areaImp');
+                                $email->setBody('manager1APP');
                                 $em->persist($email);
                                 $em->flush();
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-
+                                
+                                
+                                
                                 $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($mud->getAreaResp()->getManager());
@@ -378,7 +409,7 @@ class MudancasController extends AbstractController
                                 $em->persist($email);
                                 $em->flush();
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-
+                                
                                 foreach ($mud->getAreaImpact() as $key => $value) {
                                     $email = new  Email();
                                     $email->setMudancas($mud);
@@ -455,7 +486,7 @@ class MudancasController extends AbstractController
                                 //nansen
                                 $email = new  Email();
                                 $email->setMudancas($mud);
-                                $email->setSendTo($person->getFunction()->getManager());
+                                $email->setSendTo($person);
                                 $email->setSendBy($person);
                                 $email->setTitle('Aprovação automática da solicitação');
                                 $email->setBody('nansenAddBy');
@@ -508,7 +539,7 @@ class MudancasController extends AbstractController
                                 //nansen
                                 $email = new  Email();
                                 $email->setMudancas($mud);
-                                $email->setSendTo($person->getFunction()->getManager());
+                                $email->setSendTo($person);
                                 $email->setSendBy($person);
                                 $email->setTitle('Aprovação automática da solicitação');
                                 $email->setBody('nansenAddBy');
@@ -544,7 +575,7 @@ class MudancasController extends AbstractController
                                     $email->setBody('managerArea');
                                     $em->persist($email);
                                     $em->flush();
-                                    //    $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                    //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                                 }
                             }else{
                                 //nansen
@@ -560,7 +591,7 @@ class MudancasController extends AbstractController
                                 //nansen
                                 $email = new  Email();
                                 $email->setMudancas($mud);
-                                $email->setSendTo($person->getFunction()->getManager());
+                                $email->setSendTo($person);
                                 $email->setSendBy($person);
                                 $email->setTitle('Aprovação automática da solicitação');
                                 $email->setBody('nansenAddBy');
@@ -587,7 +618,7 @@ class MudancasController extends AbstractController
                                     $email->setBody('managerArea');
                                     $em->persist($email);
                                     $em->flush();
-                                    $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                    //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                                 }
                             }
                         }
@@ -776,9 +807,22 @@ class MudancasController extends AbstractController
                 $client = curl_exec($ch);
                 $cl = json_decode($client, true);
 
-               
-
+                
                 if ($cl["mud"]["TokenData"]["comClt"] != null) {
+               if($cl["mud"]["TokenData"]["appClt"] == 2){
+                $mud->setImplemented(2);
+                if($mud->getNansenNumber() != null){
+                    
+                $mud->setManagerUserAdd($person);
+                
+            }
+               }
+                /* $mudancas->setImplemented(2);
+                if($mudancas->getNansenNumber() != null){
+                    
+                $mudancas->setManagerUserAdd($person);
+                
+            }*/
                     $mud->setdescClient($cl["mud"]["TokenData"]["comClt"]);
                 }
             } else {
@@ -841,7 +885,6 @@ class MudancasController extends AbstractController
                         }
                         if ($NumberApproved == sizeof($mud->getAreaImpact())) {
                             $done = true;
-                            dd('test');
                             $mud->setDone('Feito');
                             date_default_timezone_set("America/Sao_Paulo");
                             $time = new \DateTime();
@@ -899,7 +942,6 @@ class MudancasController extends AbstractController
                         $em->flush();
                     }
                 }
-
                 /**
                  * If the Mudancas is not null so :
                  * will cheack if the user is manager 
@@ -936,11 +978,7 @@ class MudancasController extends AbstractController
                              *  Check if there is one of the manager reject the mudancas
                              *  then close the Mudancas
                              */
-                            if ($sp->getAppSectorMan() == 2 && $sp->getAppSectorMan() != null) {
-                                $mud->setImplemented(2);
-                                $mud->setDone('Feito');
-                                $em->flush();
-                            } elseif ($sp->getAppSectorMan() == null) {
+                            if ($sp->getComment() == null) {
                                 $mangerOfAreaDidntApp = true;
                             }
                         }
@@ -975,12 +1013,14 @@ class MudancasController extends AbstractController
                                 }
                             }
                         }
-
                         // check which Form need 
                         $form = null;
-                        
+                        //dd($gestor);
                         if ($manager == true && $gestor == false && $mangerOfAreaDidntApp == false) {
                            $form = $this->createForm(MudancasManagerType::class, $mud);
+                        } elseif ($gestor == true && $mangerOfAreaDidntApp == false) {
+                            $form = $this->createForm(MudancasgestorToAppType::class, $mud);
+                            $formImp = $this->createForm(MudancasgestorImpType::class, $mud);
                         } elseif ($gestor == true && $mangerOfAreaDidntApp == false) {
                             $form = $this->createForm(MudancasgestorToAppType::class, $mud);
                             $formImp = $this->createForm(MudancasgestorImpType::class, $mud);
@@ -1092,7 +1132,36 @@ class MudancasController extends AbstractController
                                         $em->flush();
                                     };
                                 }
+                               
+
+                                
                                 /**
+                                 * ------------------------------------------------------------
+                                 **/
+
+
+                                /**
+                                 * check if the manager is manager of other departemant 
+                                 */
+                                $manager_dep = [];
+                                /**
+                                 *this table to fetch the data from SectorProcess and put the item  
+                                 */
+                                $areaImpact =  $mud->getAreaImpact();
+
+                                /**
+                                 * check if the manager is the manager of the mudanacas
+                                 * or manager of one of the Area Impact 
+                                 * or manager of person add the mudancas 
+                                 */
+                                foreach ($areaImpact as $key => $ai) {
+                                    if ($ai->getManager() == $person) {
+                                        array_push($manager_dep, $ai);
+                                    }
+                                }
+
+                                if ($mud->getAppMan() == 1) {
+ /**
                                  * Send Email
                                  * -------------------------------------------------------
                                  **/
@@ -1171,35 +1240,6 @@ class MudancasController extends AbstractController
                                         $this->sendEmail($doctrine, $request, $mud->getClient(), $mud, $person, 'client', false, $mud->getClient());
                                     }
                                 }
-
-                                
-                                /**
-                                 * ------------------------------------------------------------
-                                 **/
-
-
-                                /**
-                                 * check if the manager is manager of other departemant 
-                                 */
-                                $manager_dep = [];
-                                /**
-                                 *this table to fetch the data from SectorProcess and put the item  
-                                 */
-                                $areaImpact =  $mud->getAreaImpact();
-
-                                /**
-                                 * check if the manager is the manager of the mudanacas
-                                 * or manager of one of the Area Impact 
-                                 * or manager of person add the mudancas 
-                                 */
-                                foreach ($areaImpact as $key => $ai) {
-                                    if ($ai->getManager() == $person) {
-                                        array_push($manager_dep, $ai);
-                                    }
-                                }
-
-                                if ($mud->getAppMan() == 1) {
-
                                     $emails = $em->getRepository(Email::class)->findBy(['mudancas' => $mud]);
                                 $ems = [];
                                 /*foreach ($emails as $key => $value) {
@@ -1228,17 +1268,29 @@ class MudancasController extends AbstractController
                                     }
                                 }
 
+                                    if($mud->getNansenNumber() == null){
                                     $email = new  Email();
                                     $email->setMudancas($mud);
                                     $email->setSendTo($mud->getAddBy());
                                     $email->setSendBy($person);
                                     $email->setTitle('Aprovado pelo Gerente do solicitante');
-                                    $email->setBody('manager1APP');
+                                    $email->setBody('gerenteAPP');
                                     $em->persist($email);
                                     $em->flush();
                                     $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-
-                                    foreach ($mud->getAreaImpact() as $key => $value) {
+                                    }else{
+                                        $email = new  Email();
+                                        $email->setMudancas($mud);
+                                        $email->setSendTo($mud->getAddBy());
+                                        $email->setSendBy($person);
+                                        $email->setTitle('Aprovado pelo Gerente do solicitante');
+                                        $email->setBody('gerenteAPP');
+                                        $em->persist($email);
+                                        $em->flush();
+                                        $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                         
+                                    }
+                                    /*foreach ($mud->getAreaImpact() as $key => $value) {
                                         $email = new  Email();
                                         $email->setMudancas($mud);
                                         $email->setSendTo($value->getCoordinator());
@@ -1248,7 +1300,7 @@ class MudancasController extends AbstractController
                                         $em->persist($email);
                                         $em->flush();
                                         $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                    }
+                                    }*/
 
                                     /**
                                      * fetech the sector process
@@ -1269,24 +1321,36 @@ class MudancasController extends AbstractController
                                         $email->setMudancas($mud);
                                         $email->setSendTo($mud->getMangerMudancas());
                                         $email->setSendBy($person);
-                                        $email->setTitle('Notificação para o gerente da mudança');
-                                        $email->setBody('gerente');
+                                        $email->setTitle('Notificação para o gestor da mudança');
+                                        $email->setBody('gestor');
                                         $em->persist($email);
                                         $em->flush();
                                         $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                                     }
                                 } elseif ($mud->getAppMan() == 2) {
                                     $mud->setImplemented(2);
-                                    $email = new  Email();
-                                    $email->setMudancas($mud);
-                                    $email->setSendTo($mud->getMangerMudancas());
-                                    $email->setSendBy($person);
-                                    $email->setTitle('Reprovado pelo Gerente do solicitante');
-                                    $email->setBody('manager1Rej');
-                                    $em->persist($email);
-                                    $em->flush();
-                                    $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                    
+                                     if($mud->getNansenNumber() == null  ){
+                                        $email = new  Email();
+                                        $email->setMudancas($mud);
+                                        $email->setSendTo($mud->getMangerMudancas());
+                                        $email->setSendBy($person);
+                                        $email->setTitle('Reprovado pelo Gerente do solicitante');
+                                        $email->setBody('gerenteREP');
+                                        $em->persist($email);
+                                        $em->flush();
+                                        $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                        }else{
+                                            $email = new  Email();
+                                            $email->setMudancas($mud);
+                                            $email->setSendTo($mud->getAddBy());
+                                            $email->setSendBy($person);
+                                            $email->setTitle('Aprovado pelo Gerente do solicitante');
+                                            $email->setBody('gerenteREP');
+                                            $em->persist($email);
+                                            $em->flush();
+                                            $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                             
+                                        }
                                     if($mud->getMangerMudancas() != $mud->getAddBy() ){
                                         
                                     $email = new  Email();
@@ -1294,7 +1358,7 @@ class MudancasController extends AbstractController
                                     $email->setSendTo($mud->getAddBy());
                                     $email->setSendBy($person);
                                     $email->setTitle('Reprovado pelo Gerente do solicitante');
-                                    $email->setBody('manager1Rej');
+                                    $email->setBody('gerenteREP');
                                     $em->persist($email);
                                     $em->flush();
                                     $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
@@ -1342,10 +1406,10 @@ class MudancasController extends AbstractController
                                         $number_sector_app++;
                                     };
                                 }
-
+                                /*
                                 if (sizeof($sps) == $number_sector_app) {
                                     $mud->setDone('Feito');
-                                }
+                                }*/
 
                                 //dd($mud->getDone());
                                 if ($mud->getAppGest() == 1) {
@@ -1375,6 +1439,13 @@ class MudancasController extends AbstractController
                                     $email->setBody('gestorRejToUser');
                                     $em->persist($email);
                                     $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+
+                                    $mud->setImplemented(2);
+                                    $mud->setDone('Feito');
+                                    
+                                    $mud->setAreaResp($areaResp);
+                                    $em->persist($mud);
+                                    $em->flush();
                                 }
                                 $mud->setAreaResp($areaResp);
                                 //$mud->setPdf($filePDF);

@@ -77,8 +77,8 @@
 						{{mud.id }}
 						{{mud.nomeMudanca}}<br>
 						
-						Fase: Aprovação automática da solicitação 
-						Está solicitação foi aprovada automaticamente.
+						Fase: Aprovação automática da solicitação <br>
+						Esta solicitação foi aprovada automaticamente.
 						<br>
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/approve/{{mud.id}}" class="btn">Para acompanhar as próximas etapas clique aqui!
@@ -87,45 +87,33 @@
 					{% elseif demand =='nansenAddBy' %}
 					<h1 class="text-center">Olá
 							{{ mud.addBy.name }},<br></h1>
-						Há uma nova notificação para você
+						Há uma nova notificação para você:
 						<br>
 						Mudança:
 						{{mud.id }}
 						{{mud.nomeMudanca}}<br>
-						Mudanças relacionadas com o projeto Nansen : {{mud.nansenName}} {{mud.nansenNumber}}<br>
-
 						Fase: Aprovação automática da solicitação
-						<br>
-						Está solicitação foi aprovada automaticamente.
+						<br>Esta solicitação foi aprovada
+							automaticamente.
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acompanhar as próximas etapas clique aqui!
 							</a>
 						</p>
-					
 					{% elseif demand =='client' %}
 					<h1 class="text-center">Olá {{ c.name }}</h1>
 						Há uma nova notificação para você
 						<br>
-						Nome da mudança: {{mud.nomeMudanca}}
+						Controle de Mudanças : {{mud.nomeMudanca}}
 						<br>
-						Número da mudança: {{mud.id }}
+						Código da mudança: {{mud.id }}
 						<br>
-						Nome do Cliente: {{ c.resp }}
-						<br>
-						Descrição do Impacto para o Cliente:{{mud.descClient}}
+						Descrição:{{mud.descClient}}
 						<br>
 						Justificativa: {{mud.justif}}
 						<br>
 						Descrição do impacto: {{mud.descImpacto}}
 						<br>
 						Descrição do impacto na área do solicitante: {{mud.descImpactoArea}}
-						<br>
-						Área impactada: 
-						{% for item in mud.areaImpact %}
-							{{item.name}} <br>	
-						{% endfor %}
-						<br>
-						Área responsável pela mudança: {{mud.areaResp.name}}
 						<br>
 						
 						<p class="block text-center">
@@ -185,6 +173,7 @@
 							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
 							</a>
 						</p>
+						
 					{% elseif demand == 'managerArea' %}
 						<h1 class="text-center">Olá
 							{{ sendTo.name }},<br></h1>
@@ -232,7 +221,7 @@
 						<br> Por gentileza acessar e analisar e verificar analise
 						realizada pelo gestor.
 						<p class="block text-center">
-							<a href="http://{{ip}}/controleMudancas/public/notif/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							<a href="http://{{ip}}/controleMudancas/public/updateMudancas/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
 							</a>
 						</p>
 
@@ -251,6 +240,43 @@
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/approve/{{mud.id}}" class="btn">Para acompanhar as próximas etapas clique aqui !
 							</a>
+						</p>
+						{% elseif demand == 'gerenteAPP' %}
+						<h1 class="text-center">Olá
+							{{ sendTo.name }},<br></h1>
+						Há uma nova notificação para você:<br>
+						Mudança:
+						{{mud.id }}
+						{{mud.nomeMudanca}}<br>
+						Fase: Aprovação do gerente responsável pela mudança
+						<br>O(a) gerente
+								{{ per.name }}	aprovou está mudança.
+							<br>
+							Por gentileza acessar e verificar a análise realizada pelo gerente.<br>
+						
+						<p class="block text-center">
+							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acessar a mudança clique aqui!
+							</a>
+						</p>
+						{% elseif demand == 'gerenteREP' %}
+						<h1 class="text-center">Olá
+							{{ sendTo.name }},<br></h1>
+						Há uma nova notificação para você:<br>
+						Mudança:
+						{{mud.id }}
+						{{mud.nomeMudanca}}<br>
+						Fase: Aprovação do gerente responsável pela mudança
+						<br>
+								O(a) gerente
+								{{ per.name }}
+							reprovou está mudança.
+							<br>
+							Por gentileza acessar e verificar a análise realizada pelo gerente.<br>
+						</p>
+						<p class="block text-center">
+							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acessar a mudança clique aqui!
+							</a>
+
 						</p>
 					{% elseif demand == 'reject_ger' %}
 						<p class="block">
@@ -283,14 +309,13 @@
 							Mudança:
 							{{mud.id }}
 							{{mud.nomeMudanca}}<br>
-							Fase: Aprovação gestor da área que realizará a mudança<br>
+							Fase: Aprovação gestor da mudança<br>
+Esta mudança foi aprovada pelo gestor da
+mudança,
 
-								O(a) gerente
-								{{ per.name }}
-							
-							aprovou está mudança.
 							<br>
-							Por gentileza acessar e verificar a análise realizada pelo gerente.<br>
+							 por gentileza acompanhe as
+próximas etapas desta mudança.<br>
 						</p>
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acompanhar as próximas etapas clique aqui!
@@ -308,11 +333,10 @@
 							{{mud.nomeMudanca}}<br>
 							Fase: Aprovação área impactada<br>
 
-								O(a) gerente
+								O(a)
 								{{ per.name }}
 							reprovou como área impactada da mudança.
 							<br>
-							Por gentileza acessar e verificar a análise realizada pelo gestor da mudança.<br>
 						</p>
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acompanhar as próximas etapas clique aqui!
@@ -330,12 +354,10 @@
 							{{mud.nomeMudanca}}<br>
 							Fase: Aprovação área impactada<br>
 
-								O(a) gerente
+								O(a)
 								{{ per.name }}
-							aprovou
-							como área impactada da mudança.<br>
-							Por gentileza acessar e verificar a análise realizada pelo gestor da mudança.<br>
-						
+							aprovou como área impactada da mudança.<br>
+							
 							</p>
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acompanhar as próximas etapas clique aqui!
@@ -354,14 +376,14 @@
 						Fase: Aprovação gestor da mudança<br>
 						Por gentileza acessar e executar o processo desta mudança.
 						<p class="block text-center">
-							<a href="http://{{ip}}/controleMudancas/public/updateMudancas/{{mud.id}}" class="btn">pode consultar a situação das Mudanças aqui.
+							<a href="http://{{ip}}/controleMudancas/public/updateMudancas/{{mud.id}}" class="btn">Para acessar a mudança clique aqui!
 							</a>
 						</p>
 
 
 					{% elseif demand == 'approved_gestor' %}
 						<h1 class="text-center">Olá
-							{{ name }},<br></h1>
+							{{ mud.addBy.name }},<br></h1>
 						Há uma nova notificação para você:<br>
 						Mudança:
 						{{mud.id }}
@@ -369,15 +391,15 @@
 						Fase: Aprovação gestor da mudança
 						<br>
 						Esta mudança foi aprovada pelo gestor da
-mudança, por gentileza acompanhe as
-próximas etapas desta mudança.
+						mudança, por gentileza acompanhe as
+						próximas etapas desta mudança.
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/flow/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
 							</a>
 						</p>
 					{% elseif demand == 'reject_gestor' %}
 						<h1 class="text-center">Olá
-							{{ name }},<br></h1>
+							{{ mud.addBy.name }},<br></h1>
 						Há uma nova notificação para você:<br>
 						Mudança:
 						{{mud.id }}

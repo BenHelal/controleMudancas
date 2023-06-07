@@ -131,76 +131,85 @@
 										<medium>Nome da mudança:
 											{{m.nomeMudanca}}</medium>
 									</div>
-									
-												{% if  m.nansenNumber != null and m.appMan == null    and m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Solicitação Aprovada</p>
-														</medium>
-													</div>
-												{% elseif m.managerUserApp == 1 and m.appMan == null    and m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Solicitação Aprovada</p>
-														</medium>
-													</div>	
-												{% elseif m.managerUserApp == 2 and m.appMan == null   and m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Solicitação Reprovada</p>
-														</medium>
-													</div>
-												{% elseif m.appMan == 1 and m.appGest == null and m.done != 'Feito' and m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Mudança Aprovada</p>
-														</medium>
-													</div>
-												{% elseif  m.appMan == 2  and m.appGest == null    and   m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Mudança Reprovada</p>
-														</medium>
-													</div>
-												{% elseif   m.appGest == 1 and m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">
-																Status: Mudança Aceita</p>
-														</medium>
-													</div>
-												{% elseif   m.appGest == 2 and m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">
-																Status: Mudança Rejeitada</p>
-														</medium>
-													</div>
-												{% elseif  m.appMan == 1 and m.appGest == 1 and  m.implemented == 1 %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Mudança implementada</p>
-														</medium>
-													</div>
-												{% elseif  m.appMan == 1 and m.appGest == 1 and  m.implemented == 2 %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status:  Mudança não implementada  implementadas e fechadas</p>
-														</medium>
-													</div>
-												{% elseif m.done == 'Feito' and  m.implemented == 2 %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status:  Mudança não implementada  implementadas e fechadas</p>
-														</medium>
-													</div>
-												{% elseif   m.implemented != 2 %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status:  Mudança Aberta</p>
-														</medium>
-													</div>
-												{% endif %}
+
+									{% if  m.nansenNumber != null and m.appMan == null    and m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Solicitação Aprovada</p>
+											</medium>
+										</div>
+									{% elseif m.managerUserApp == 1 and m.appMan == null    and m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Solicitação Aprovada</p>
+											</medium>
+										</div>
+									{% elseif m.managerUserApp == 2 and m.appMan == null   and m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Solicitação Reprovada</p>
+											</medium>
+										</div>
+									{% elseif m.appMan == 1 and m.appGest == null and m.done != 'Feito' and m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Mudança Aprovada</p>
+											</medium>
+										</div>
+									{% elseif  m.appMan == 2  and m.appGest == null    and   m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Mudança Reprovada</p>
+											</medium>
+										</div>
+									{% elseif   m.appGest == 1 and m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">
+													Status: Mudança Aceita</p>
+											</medium>
+										</div>
+									{% elseif   m.appGest == 2 and m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">
+													Status: Mudança Rejeitada</p>
+											</medium>
+										</div>
+									{% elseif  m.appMan == 1 and m.appGest == 1 and  m.implemented == 1 %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Mudança implementada</p>
+											</medium>
+										</div>
+									{% elseif  m.appMan == 1 and m.appGest == 1 and  m.implemented == 2 %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status:  Mudança não implementada</p>
+											</medium>
+										</div>
+									{% elseif m.done == 'Feito' and m.appMan != null and m.appGest != null and m.implemented == 2 %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status:  Mudança não implementada</p>
+											</medium>
+										</div>
+									{% elseif   m.implemented != 2 %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status:  Mudança Aberta</p>
+											</medium>
+										</div>
+
+									{% else %}
+
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status:  Mudança Aberta</p>
+											</medium>
+										</div>
+
+									{% endif %}
 								</a>
 							</div>
 						{% else %}
@@ -212,96 +221,102 @@
 										<medium>Nome da mudança:
 											{{m.nomeMudanca}}</medium>
 									</div>
-									
 
-												{% if  m.nansenNumber != null and m.appMan == null    and m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Solicitação Aprovada</p>
-														</medium>
-													</div>
-												{% elseif m.managerUserApp == 1 and m.appMan == null    and m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Solicitação Aprovada</p>
-														</medium>
-													</div>	
-												{% elseif m.managerUserApp == 2 and m.appMan == null   and m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Solicitação Reprovada</p>
-														</medium>
-													</div>
-												{% elseif m.managerUserApp == 2 and m.appMan == null   and m.implemented == 2 %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Solicitação Reprovada</p>
-														</medium>
-													</div>	
-												{% elseif m.appMan == 1 and m.appGest == null and m.done != 'Feito' and m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Mudança Aprovada</p>
-														</medium>
-													</div>
-												{% elseif  m.appMan == 2  and m.appGest == null    and   m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Mudança Reprovada</p>
-														</medium>
-													</div>
-												{% elseif  m.appMan == 2  and m.appGest == null    and   m.implemented == 2 %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Mudança Reprovada</p>
-														</medium>
-													</div>
-												{% elseif   m.appGest == 1 and m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">
-																Status: Mudança Aceita</p>
-														</medium>
-													</div>
-												{% elseif   m.appGest == 2 and m.implemented == null %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">
-																Status: Mudança Rejeitada</p>
-														</medium>
-													</div>
-													{% elseif   m.appGest == 2 and m.implemented == 2 %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">
-																Status: Mudança Rejeitada</p>
-														</medium>
-													</div>
-												{% elseif  m.appMan == 1 and m.appGest == 1 and  m.implemented == 1 %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status: Mudança implementada</p>
-														</medium>
-													</div>
-												{% elseif  m.appMan == 1 and m.appGest == 1 and  m.implemented == 2 %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status:  Mudança não implementada  implementadas e fechadas</p>
-														</medium>
-													</div>
-												{% elseif m.done == 'Feito' and  m.implemented == 2 %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status:  Mudança não implementada  implementadas e fechadas</p>
-														</medium>
-													</div>
-												{% elseif   m.implemented != 2 %}
-													<div class="d-flex w-100 justify-content-between">
-														<medium>
-															<p style="color :#008B83">Status:  Mudança Aberta</p>
-														</medium>
-													</div>
-												{% endif %}
+
+									{% if  m.nansenNumber != null and m.appMan == null    and m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Solicitação Aprovada</p>
+											</medium>
+										</div>
+									{% elseif m.managerUserApp == 1 and m.appMan == null    and m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Solicitação Aprovada</p>
+											</medium>
+										</div>
+									{% elseif m.managerUserApp == 2 and m.appMan == null   and m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Solicitação Reprovada</p>
+											</medium>
+										</div>
+									{% elseif m.managerUserApp == 2 and m.appMan == null   and m.implemented == 2 %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Solicitação Reprovada</p>
+											</medium>
+										</div>
+									{% elseif m.appMan == 1 and m.appGest == null and m.done != 'Feito' and m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Mudança Aprovada</p>
+											</medium>
+										</div>
+									{% elseif  m.appMan == 2  and m.appGest == null    and   m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Mudança Reprovada</p>
+											</medium>
+										</div>
+									{% elseif  m.appMan == 2  and m.appGest == null    and   m.implemented == 2 %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Mudança Reprovada</p>
+											</medium>
+										</div>
+									{% elseif   m.appGest == 1 and m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">
+													Status: Mudança Aceita</p>
+											</medium>
+										</div>
+									{% elseif   m.appGest == 2 and m.implemented == null %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">
+													Status: Mudança Rejeitada</p>
+											</medium>
+										</div>
+									{% elseif   m.appGest == 2 and m.implemented == 2 %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">
+													Status: Mudança Rejeitada</p>
+											</medium>
+										</div>
+									{% elseif  m.appMan == 1 and m.appGest == 1 and  m.implemented == 1 %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status: Mudança implementada</p>
+											</medium>
+										</div>
+									{% elseif  m.appMan == 1 and m.appGest == 1 and  m.implemented == 2 %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status:  Mudança não implementada</p>
+											</medium>
+										</div>
+									{% elseif m.done == 'Feito' and m.appMan != null and m.appGest != null and m.implemented == 2 %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status:  Mudança não implementada</p>
+											</medium>
+										</div>
+									{% elseif   m.implemented != 2 %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status:  Mudança Aberta</p>
+											</medium>
+										</div>
+									{% else %}
+										<div class="d-flex w-100 justify-content-between">
+											<medium>
+												<p style="color :#008B83">Status:  Mudança Rejeitada</p>
+											</medium>
+										</div>
+									{% endif %}
 								</a>
 							</div>
 						{% endif %}
