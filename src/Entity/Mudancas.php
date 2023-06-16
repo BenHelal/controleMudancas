@@ -21,16 +21,16 @@ class Mudancas
     #[ORM\Column(length: 50)]
     private ?string $nomeMudanca = null;
     
-    #[ORM\Column(length: 1024)]
+    #[ORM\Column(length: 4294967295 )]
     private ?string $descMudanca = null;
 
-    #[ORM\Column(length: 1024)]
+    #[ORM\Column(length: 4294967295)]
     private ?string $descImpacto = null;
 
-    #[ORM\Column(length: 1024)]
+    #[ORM\Column(length: 4294967295)]
     private ?string $descImpactoArea = null;
 
-    #[ORM\Column(length: 1024)]
+    #[ORM\Column(length: 4294967295)]
     private ?string $justif = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -79,10 +79,10 @@ class Mudancas
     #[ORM\Column(type:'date',nullable: true)]
     private $dateOfImp = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 4294967295, nullable: true)]
     private ?string $comMan = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 4294967295, nullable: true)]
     private ?string $comGest = null;
 
     #[ORM\Column(nullable: true)]
@@ -105,10 +105,10 @@ class Mudancas
     #[ORM\JoinColumn(nullable: true)]
     private ?Person $managerUserAdd = null;
 
-    #[ORM\Column(length: 1024, nullable: true)]
+    #[ORM\Column(length: 4294967295, nullable: true)]
     private ?string $managerUserComment = null;
     
-    #[ORM\Column(length: 1024, nullable: true)]
+    #[ORM\Column(length: 4294967295, nullable: true)]
     private ?string $descClient = null;
     #[ORM\Column(nullable: true)]
     private ?int $managerUserApp = null;
