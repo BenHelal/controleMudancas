@@ -20,16 +20,16 @@ class TokenData
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $nomeMudanca = null;
     
-    #[ORM\Column(length: 1024, nullable: true)]
+    #[ORM\Column(length: 4294967295, nullable: true)]
     private ?string $descMudanca = null;
 
-    #[ORM\Column(length: 1024, nullable: true)]
+    #[ORM\Column(length: 4294967295, nullable: true)]
     private ?string $descImpacto = null;
 
-    #[ORM\Column(length: 1024, nullable: true)]
+    #[ORM\Column(length: 4294967295, nullable: true)]
     private ?string $descImpactoArea = null;
 
-    #[ORM\Column(length: 1024, nullable: true)]
+    #[ORM\Column(length: 4294967295, nullable: true)]
     private ?string $justif = null;
 
     #[ORM\Column(length: 255, nullable: true)]

@@ -21,7 +21,7 @@ class SectorProcess
     #[ORM\JoinColumn(nullable: true)]
     private ?Sector $Sector = null;
 
-    #[ORM\Column(length: 3000 , nullable: true)]
+    #[ORM\Column(length: 4294967295 , nullable: true)]
     private ?string $comment = null;
 
     #[ORM\ManyToOne]

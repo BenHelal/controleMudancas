@@ -20,7 +20,7 @@ class Requestper
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 4294967295)]
     private ?string $justification = null;
 
     #[ORM\Column(length: 255, nullable:true)]
