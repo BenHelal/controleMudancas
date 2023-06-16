@@ -18,7 +18,7 @@ class Mudancas
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 4294967295)]
     private ?string $nomeMudanca = null;
     
     #[ORM\Column(length: 4294967295)]

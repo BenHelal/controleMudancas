@@ -20,7 +20,7 @@ class MudancasManagerType extends AbstractType
     {
     
         $builder
-            ->add('nomeMudanca',null,[
+            ->add('nomeMudanca',TextareaType::class,[
                 'label'=> 'Nome da mudança'
             ])
             ->add('nansenName',null,[

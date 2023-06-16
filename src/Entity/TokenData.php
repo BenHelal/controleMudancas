@@ -17,7 +17,7 @@ class TokenData
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $mudancas = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(length: 4294967295, nullable: true)]
     private ?string $nomeMudanca = null;
     
     #[ORM\Column(length: 4294967295, nullable: true)]
