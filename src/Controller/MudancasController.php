@@ -402,8 +402,6 @@ class MudancasController extends AbstractController
                                 $em->flush();
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                                 
-                                
-                                
                                 $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($mud->getAreaResp()->getManager());
@@ -1083,6 +1081,10 @@ class MudancasController extends AbstractController
                                 
                                 foreach ($sps as $key => $value) {
                                     if ($value->getPerson() == $person) {
+                                        date_default_timezone_set("America/Sao_Paulo");
+                                        $time = new \DateTime();
+
+                                        $value->setDataCreation($time);
                                         $value->setAppSectorMan($form["appMan"]->getData());
                                         $value->setComment($form["comMan"]->getData());
                                         $em->persist($value);
@@ -1265,8 +1267,15 @@ class MudancasController extends AbstractController
                                     foreach ($sps as $key => $sp) {
                                         foreach ($manager_dep as $key => $md) {
                                             if ($sp->getSector() == $md & $sp->getPerson() == $person) {
+                                                
+                                                date_default_timezone_set("America/Sao_Paulo");
+                                                $time = new \DateTime();
+
+                                                $sp->setDataCreation($time);
                                                 $sp->setComment('Aprovado sem ressalva');
                                                 $sp->setAppSectorMan($mud->getAppMan());
+                                                
+                                                
                                                 $em->persist($sp);
                                                 $em->flush();
                                             }
@@ -1329,6 +1338,11 @@ class MudancasController extends AbstractController
                                     foreach ($sps as $key => $sp) {
                                         foreach ($manager_dep as $key => $md) {
                                             if ($sp->getSector() == $md & $sp->getPerson() == $person) {
+                                                
+                                                date_default_timezone_set("America/Sao_Paulo");
+                                                $time = new \DateTime();
+
+                                                $sp->setDataCreation($time);
                                                 $sp->setComment('Reprovado sem ressalva');
                                                 $sp->setAppSectorMan($mud->getAppMan());
                                                 $em->persist($sp);

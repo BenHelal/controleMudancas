@@ -32,6 +32,25 @@ class SectorProcess
     #[ORM\Column(nullable: true)]
     private ?int $appSectorMan = null;
 
+    #[ORM\Column(type:'date',nullable: true)]
+    private $dataCreation;
+
+    public function getDataCreation()
+    {
+        if($this->dataCreation != null){
+            return $this->dataCreation->format('d-M-Y');
+        }else{
+            return $this->dataCreation;
+        }
+    }
+
+    public function setDataCreation(\DateTimeInterface $dataCreation): self
+    {
+        $this->dataCreation = $dataCreation;
+
+        return $this;
+    }
+
     public function getAppSectorMan(): ?int
     {
         return $this->appSectorMan;

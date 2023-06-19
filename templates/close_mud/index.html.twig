@@ -18,6 +18,7 @@
 					<th scope="col">Tipo de Aprovação</th>
 					<th scope="col">Área/Cliente</th>
 					<th scope="col">Nome do Aprovador</th>
+					<th scope="col">Data Aprovação</th>
 					<th scope="col">Status Aprovação</th>
 					<th scope="col">Comentário</th>
 				</tr>
@@ -35,6 +36,11 @@
 					<td>
 						{% if mud.addBy != null %}
 							{{mud.addBy.name}}
+						{% endif %}
+					</td>
+					<td>
+						{% if mud.dataCreation != null %}
+							{{mud.dataCreation}}
 						{% endif %}
 					</td>
 					<td></td>
@@ -56,6 +62,8 @@
 							Projeto Nansen
 						{% endif %}
 					</td>
+							<td>
+							</td>
 					<td>
 						{% if mud.managerUserApp != null  %}
 							{% if mud.managerUserApp == 1 and  mud.managerUserAdd != mud.addBy and  mud.managerUserAdd != null %}
@@ -87,6 +95,8 @@
 						<td>{{mud.areaResp.manager.name}}</td>
 					{% endif %}
 
+							<td>
+							</td>
 					{% if mud.appMan == 1 %}
 						<td>Aprovado</td>
 					{% elseif mud.appMan == 2  %}
@@ -112,6 +122,8 @@
 						<td>{{mud.mangerMudancas.departemant}}</td>
 						<td>{{mud.mangerMudancas.name}}</td>
 					{% endif %}
+							<td>
+							</td>
 					{% if mud.appGest == null %}
 						<td>Não verificado</td>
 					{% elseif mud.appGest == 1 %}
@@ -133,6 +145,8 @@
 						<th scope="row">Área Impactada</th>
 						<td>{{m.name}}</td>
 						<td>{{data2[key].name }}</td>
+							<td>
+							</td>
 						{% if  m.app_sector_man  == 1  %}
 							<td>Aprovado</td>
 						{% elseif m.app_sector_man == 2 and  m.comment != null %}
@@ -159,6 +173,9 @@
 
 						<td>{{mud.client.name}}</td>
 						<td>{{mud.client.Resp}}</td>
+						
+							<td>
+							</td>
 						{% if  client.mud.TokenData.appClt  == 1  %}
 							<td>Aprovado</td>
 						{% elseif client.mud.TokenData.appClt == 2 %}
@@ -184,6 +201,12 @@
 						<th scope="row">Dados de implementação</th>
 						<td>{{mud.mangerMudancas.departemant}}</td>
 						<td>{{mud.mangerMudancas.name}}</td>
+							<td>
+							
+						{% if mud.dateOfImp != null %}
+							{{mud.dateOfImp}}
+						{% endif %}
+							</td>
 						{% if  mud.implemented  == 1  %}
 							<td>Implementado</td>
 						{% elseif mud.implemented == 2 %}
@@ -198,7 +221,6 @@
 								Sem comentário</td>
 						{% else %}
 							<td>
-								{{mud.dateOfImp}}<br>
 								{{mud.impDesc}}</td>
 						{% endif %}
 					</tr>
