@@ -310,6 +310,10 @@ class MudancasController extends AbstractController
             }
             $data = $request->request->get('hiddenInput2');
 
+            date_default_timezone_set("America/Sao_Paulo");
+            $time = new \DateTime();
+       
+            $mud->setDateMUA($time);
             $mud->setImplemented(2);
             $em->flush();
             $email = new  Email();
@@ -378,8 +382,14 @@ class MudancasController extends AbstractController
                         $form->handleRequest($request);
 
                         if ($form->isSubmitted()) {
-
-                            if ($mud->getManagerUserApp() == 2) {
+                            
+                            if ($mud->getManagerUserApp() == 2) { 
+                                
+                                date_default_timezone_set("America/Sao_Paulo");
+                                $time = new \DateTime();
+                           
+                                $mud->setDateMUA($time);
+                                
                                 $mud->setImplemented(2);
                                 $mud->setDone('Feito');
                                 $email = new  Email();
@@ -392,6 +402,10 @@ class MudancasController extends AbstractController
                                 $em->flush();
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                             } else {
+                                date_default_timezone_set("America/Sao_Paulo");
+                                $time = new \DateTime();
+                           
+                                $mud->setDateMUA($time);
                                 $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($mud->getAddBy());
@@ -1058,6 +1072,11 @@ class MudancasController extends AbstractController
                                 /**
                                  * check manager approve 
                                  */
+                                
+                                date_default_timezone_set("America/Sao_Paulo");
+                                $time = new \DateTime();
+                            
+                                $mud->setDateAM($time);
                                 $mud->setAppMan($form["appMan"]->getData());
                                 $mud->setComMan($form["comMan"]->getData());
                                 $em->persist($mud);
@@ -1120,7 +1139,7 @@ class MudancasController extends AbstractController
                                 }
 
                                 if ($mud->getAppMan() == 1) {
- /**
+                                    /**
                                  * Send Email
                                  * -------------------------------------------------------
                                  **/
@@ -1357,6 +1376,9 @@ class MudancasController extends AbstractController
                                 return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
                             } elseif ($gestor) {
 
+                                date_default_timezone_set("America/Sao_Paulo");
+                                $time = new \DateTime();
+                                $mud->setDateAG($time);
                                 /**
                                  * get the Process with mudancas 
                                  * to can get The Sector 

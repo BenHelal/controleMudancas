@@ -6,8 +6,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
 	<div class="container" style="padding-left: 20px ;padding-right: 20px;">
 		<div class="py-5 text-center">
-			<img class="d-block mx-auto mb-4" src="{{ asset('assets/logo.png')}}" alt="" width="72" height="72"/>
-			<h2>Controle de Mudança</h2>
+			<img class="d-block mx-auto mb-4" src="{{ asset('serdia_logo.png')}}" alt="" width="300" height="72"/>
 			<br>
 		</div>
 	</div>
@@ -62,8 +61,17 @@
 							Projeto Nansen
 						{% endif %}
 					</td>
-							<td>
-							</td>
+					<td>
+						{% if mud.managerUserAdd != null and mud.nansenNumber == null %} 
+							{% if mud.dateMUA != null  %}	
+								{{ mud.dateMUA|date('d-m-Y') }}
+							{% else %}
+
+							{% endif %}
+						{% else %}
+							{{mud.dataCreation}}
+						{% endif %}
+					</td>
 					<td>
 						{% if mud.managerUserApp != null  %}
 							{% if mud.managerUserApp == 1 and  mud.managerUserAdd != mud.addBy and  mud.managerUserAdd != null %}
@@ -95,7 +103,10 @@
 						<td>{{mud.areaResp.manager.name}}</td>
 					{% endif %}
 
-							<td>
+							<td>{% if mud.dateAM != null  %}	
+								{{ mud.dateAM|date('d-m-Y') }}
+							{% else %}
+							{% endif %}
 							</td>
 					{% if mud.appMan == 1 %}
 						<td>Aprovado</td>
@@ -122,7 +133,10 @@
 						<td>{{mud.mangerMudancas.departemant}}</td>
 						<td>{{mud.mangerMudancas.name}}</td>
 					{% endif %}
-							<td>
+							<td>{% if mud.dateAG != null  %}	
+								{{ mud.dateAG|date('d-m-Y') }}
+							{% else %}
+							{% endif %}
 							</td>
 					{% if mud.appGest == null %}
 						<td>Não verificado</td>
@@ -145,8 +159,13 @@
 						<th scope="row">Área Impactada</th>
 						<td>{{m.name}}</td>
 						<td>{{data2[key].name }}</td>
-							<td>
-							</td>
+						<td>
+						{% if m.data_creation!= null  %}
+							{{ m.data_creation|date('d-m-Y') }}
+							{% else %}
+
+							{% endif %}
+						</td>
 						{% if  m.app_sector_man  == 1  %}
 							<td>Aprovado</td>
 						{% elseif m.app_sector_man == 2 and  m.comment != null %}

@@ -79,6 +79,12 @@ class Mudancas
     #[ORM\Column(type:'date',nullable: true)]
     private $dateOfImp = null;
 
+    
+    //Data de conclusão da mudança
+    #[ORM\Column(type:'date',nullable: true)]
+    private $dateMUA = null;
+
+    
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $comMan = null;
 
@@ -88,8 +94,16 @@ class Mudancas
     #[ORM\Column(nullable: true)]
     private ?int $appMan = null;
 
+    //Data de conclusão da mudança
+    #[ORM\Column(type:'date',nullable: true)]
+    private $dateAM = null;
+
     #[ORM\Column(nullable: true)]
     private ?int $appGest = null;
+
+    //Data de conclusão da mudança
+    #[ORM\Column(type:'date',nullable: true)]
+    private $dateAG = null;
 
     #[ORM\Column(type:'date')]
     private $dataCreation;
@@ -420,6 +434,51 @@ class Mudancas
     {
         $this->impDesc = $impDesc;
 
+        return $this;
+    }
+
+    public function getDateMUA()
+    {
+        if($this->dateMUA != null){
+            return $this->dateMUA->format('d-m-Y');
+        }else{
+            return $this->dateMUA;
+        }
+    }
+
+    public function setDateMUA(\DateTimeInterface $dateMUA): self
+    {
+        $this->dateMUA = $dateMUA;
+        return $this;
+    }
+
+    public function getDateAG()
+    {
+        if($this->dateAG != null){
+            return $this->dateAG->format('d-m-Y');
+        }else{
+            return $this->dateAG;
+        }
+    }
+
+    public function setDateAG(\DateTimeInterface $dateAG): self
+    {
+        $this->dateAG = $dateAG;
+        return $this;
+    }
+
+    public function getDateAM()
+    {
+        if($this->dateAM != null){
+            return $this->dateAM->format('d-m-Y');
+        }else{
+            return $this->dateAM;
+        }
+    }
+
+    public function setDateAM(\DateTimeInterface $dateAM): self
+    {
+        $this->dateAM = $dateAM;
         return $this;
     }
 

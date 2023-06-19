@@ -79,7 +79,11 @@ class NotifController extends AbstractController
                 foreach ($sps as $key => $sp) {
                     if ($sp->getSector()->getCoordinator() == $person ) {
                         //if( $mudancas->getManager)
-                        if ($oneOfSp != null) {
+                        if ($oneOfSp != null) { 
+                            
+                            date_default_timezone_set("America/Sao_Paulo");
+                            $time = new \DateTime();
+                            $sp->setDataCreation($time);
                             $sp->setComment($d['comment']);
                             $sp->setAppSectorMan($d['appSectorMan']);
                         }
@@ -89,7 +93,7 @@ class NotifController extends AbstractController
                         
                     }
                 
-            }
+                }
 
                 if($oneOfSp->getAppSectorMan() == 1){
                     $email = new  Email();
@@ -103,13 +107,11 @@ class NotifController extends AbstractController
                     $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                     
                 }else{
-                    
                     $mudancas->setImplemented(2);
                     if($mudancas->getNansenNumber() != null){
-                        
-                    $mudancas->setManagerUserAdd($person);
-                    
-                         }$mudancas->setDone('Feito');
+                        $mudancas->setManagerUserAdd($person);
+                    }
+                    $mudancas->setDone('Feito');
                     $email = new  Email();
                     $email->setMudancas($mudancas);
                     $email->setSendTo($mudancas->getAddBy());
