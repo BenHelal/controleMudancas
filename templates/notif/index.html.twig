@@ -161,11 +161,19 @@
 						</div>
 					</div>
 					{% if person.function != null %}
-					<div class="row">
-						<div class="col-md-6 mb-3">
-							<button class="	btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Adicionar</button>
+					{% if data.managerUserApp == 1 and  data.managerUserAdd != data.addBy and  data.managerUserAdd != null %}
+						<div class="row">
+							<div class="col-md-6 mb-3">
+								<button class="	btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Adicionar</button>
+							</div>
 						</div>
-					</div>
+					{% elseif data.managerUserApp == 1  %}
+						<div class="row">
+							<div class="col-md-6 mb-3">
+								<button class="	btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Adicionar</button>
+							</div>
+						</div>
+					{% endif %}
 					{% endif %}
 					{{ form_end(form) }}
 				</div>
