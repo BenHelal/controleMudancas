@@ -11,8 +11,10 @@ use App\Entity\Email;
 use App\Entity\Manager;
 use App\Entity\Mudancas;
 use App\Entity\Person;
+use App\Entity\Process;
 use App\Entity\Requestper;
 use App\Entity\Sector;
+use App\Entity\SectorProcess;
 use App\Form\AddClientType;
 use App\Form\AddPersonType;
 use App\Form\ClientType;
@@ -828,10 +830,32 @@ class AdminController extends AbstractController
             $em = $doctrine->getManager();
             $sector = $em->getRepository(Sector::class)->find($id);
             $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            
+            $oldCorrdinator = $sector->getCoordinator();
+            $oldManager = $sector->getManager();
+
+            
             $form = $this->createForm(SectorType::class, $sector);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-
+                if($sector->getCoordinator() != $oldCorrdinator){
+                    $mudancas = $em->getRepository(Mudancas::class)->findAll();
+                    foreach ($mudancas as $key => $mud) {
+                        if($mud->getDone() == null){
+                            $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
+                            $sectorProcess = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+                            //if()
+                            foreach ($sectorProcess as $key => $sp) {
+                                if($sp->getSector() == $sector){
+                                    if($sp->getComment() == null & $sp->getAppSectorMan() == null){
+                                        $sp->setPerson($sector->getCoordinator());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                }
                 $em->persist($sector);
                 $em->flush();
                 return $this->redirectToRoute('app_sectors');
