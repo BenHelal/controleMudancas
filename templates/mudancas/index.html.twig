@@ -8,10 +8,13 @@
 
 
 		<script>
-
 			setTimeout(function () {
-window.location.reload();
-}, 5000);
+				
+				var myInput =   document.getElementById("myInput");
+				if (myInput.value == "") {
+					window.location.reload();
+  				}
+			}, 5000);
 		</script>
 		{% if creation == 'null' %}
 			{% if manager  %}
