@@ -844,7 +844,7 @@ class AdminController extends AbstractController
                         if($mud->getDone() == null){
                             $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
                             $sectorProcess = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
-                            //if()
+
                             foreach ($sectorProcess as $key => $sp) {
                                 if($sp->getSector() == $sector){
                                     if($sp->getComment() == null & $sp->getAppSectorMan() == null){
@@ -853,9 +853,20 @@ class AdminController extends AbstractController
                                 }
                             }
                         }
-                    }
-                    
+                    }   
                 }
+
+                if ($sector->getManager() != $oldManager) {
+                    $mudancas = $em->getRepository(Mudancas::class)->findAll();
+                    foreach ($mudancas as $key => $mud) {
+                        if($mud->getDone() == null){
+                           if($mud->getManagerUserApp() == null ){
+                                $mud->setManagerUserAdd($sector->getManager());
+                           } 
+                        }
+                    }
+                }
+
                 $em->persist($sector);
                 $em->flush();
                 return $this->redirectToRoute('app_sectors');
