@@ -35,6 +35,18 @@ class NotifController extends AbstractController
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $req =  $em->getRepository(Requestper::class)->findOneBy(['person' => $person]);
             $mudancas = $em->getRepository(Mudancas::class)->find($id);
+
+            
+            if($mudancas->getMangerMudancas() == null){
+                return $this->redirectToRoute('upm', ['id' => $mudancas->getId()]);
+           
+            }else{
+            
+                if ($mudancas->getAppMan() == null ) {
+                    return $this->redirectToRoute('upm', ['id' => $mudancas->getId()]);
+                }
+            }
+
             $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mudancas]);
             $oneOfSp = null;
             $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);

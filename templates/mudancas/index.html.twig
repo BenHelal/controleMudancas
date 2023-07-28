@@ -150,7 +150,7 @@
 													</div>
 												</a>
 											</li>
-										{% elseif row.managerUserApp == null and row.addBy.function.manager == person  and foo == false  %}
+										{% elseif  row.managerUserApp == null and row.addBy.function.manager == person  and foo == false  %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('approve',{id: row.id})}}">
 													<div>
