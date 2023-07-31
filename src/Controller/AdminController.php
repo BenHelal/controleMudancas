@@ -818,7 +818,69 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('app_admin');
         }
     }
-    #[Route('/edit/sector/{id}', name: 'edit_sector')]
+
+    public  function sectorById($id, ManagerRegistry $doctrine, Request $request)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $sector = $em->getRepository(Sector::class)->find($id);
+            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            
+            $oldCorrdinator = $sector->getCoordinator();
+            $oldManager = $sector->getManager();
+            
+            $form = $this->createForm(SectorType::class, $sector);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                if($sector->getCoordinator() != $oldCorrdinator){
+                    $mudancas = $em->getRepository(Mudancas::class)->findAll();
+                    foreach ($mudancas as $key => $mud) {
+                        if($mud->getDone() == null){
+                            $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
+                            $sectorProcess = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+
+                            foreach ($sectorProcess as $key => $sp) {
+                                if($sp->getSector() == $sector){
+                                    if($sp->getComment() == null & $sp->getAppSectorMan() == null){
+                                        $sp->setPerson($sector->getCoordinator());
+                                    }
+                                }
+                            }
+                        }
+                    }   
+                }
+
+                if ($sector->getManager() != $oldManager) {
+                    $mudancas = $em->getRepository(Mudancas::class)->findAll();
+                    foreach ($mudancas as $key => $mud) {
+                        if($mud->getDone() == null){
+                           if($mud->getManagerUserApp() == null ){
+                                $mud->setManagerUserAdd($sector->getManager());
+                           } 
+                        }
+                    }
+                }
+
+                $em->persist($sector);
+                $em->flush();
+                return $this->redirectToRoute('app_sectors');
+            }
+            return $this->render('admin/sectors.html.twig', [
+                'controller_name' => 'Atualizar Mudancas',
+                'login' => 'null',
+                'type' => 'update',
+                'p' => $person,
+                's' => $sector,
+                'form' => $form->createView(),
+            ]);
+        } else {
+            return $this->redirectToRoute('app_mudancas');
+        }
+    }
+
+    /*#[Route('/edit/sector/{id}', name: 'edit_sector')]
     public  function sectorById($id, ManagerRegistry $doctrine, Request $request)
     {
         $session = new Session();
@@ -847,7 +909,7 @@ class AdminController extends AbstractController
         } else {
             return $this->redirectToRoute('app_mudancas');
         }
-    }
+    }*/
 
 
     #[Route('/email', name: 'email')]

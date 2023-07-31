@@ -8,6 +8,19 @@
 		<div class="py-5 text-center">
 			<img class="d-block mx-auto mb-4" src="{{ asset('serdia_logo.png')}}" alt="" width="300" height="72"/>
 			<br>
+			<p>Nome de mudanças:
+					{{mud.nomeMudanca}}</p>
+				<p>Número de mudanças:
+					{{mud.id}}</p>
+				{% if mud.nansenNumber != null %}
+					<p>Nome do mudanças na Nansen :<br>
+						{{mud.nansenName}}</p>
+					<p>Codigo do mudanças na Nansen :<br>
+						{{mud.nansenNumber}}</p>
+				{% endif %}
+
+				<p>Descrição da Mudança :<br>
+					{{mud.descMudanca}}</p>
 		</div>
 	</div>
 	<div class="row">
@@ -40,6 +53,8 @@
 					<td>
 						{% if mud.dataCreation != null %}
 							{{mud.dataCreation}}
+							{% else %}
+							Nenhuma data disponível
 						{% endif %}
 					</td>
 					<td></td>
@@ -66,7 +81,7 @@
 							{% if mud.dateMUA != null  %}	
 								{{ mud.dateMUA|date('d-m-Y') }}
 							{% else %}
-
+								Nenhuma data disponível
 							{% endif %}
 						{% else %}
 							{{mud.dataCreation}}
@@ -106,6 +121,7 @@
 							<td>{% if mud.dateAM != null  %}	
 								{{ mud.dateAM|date('d-m-Y') }}
 							{% else %}
+							Nenhuma data disponível
 							{% endif %}
 							</td>
 					{% if mud.appMan == 1 %}
@@ -136,6 +152,7 @@
 							<td>{% if mud.dateAG != null  %}	
 								{{ mud.dateAG|date('d-m-Y') }}
 							{% else %}
+							Nenhuma data disponível
 							{% endif %}
 							</td>
 					{% if mud.appGest == null %}
@@ -164,6 +181,7 @@
 							{{ m.data_creation|date('d-m-Y') }}
 							{% else %}
 
+							Nenhuma data disponível
 							{% endif %}
 						</td>
 						{% if  m.app_sector_man  == 1  %}

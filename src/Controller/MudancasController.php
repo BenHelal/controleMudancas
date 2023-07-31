@@ -947,7 +947,7 @@ class MudancasController extends AbstractController
                              *  Check if there is one of the manager reject the mudancas
                              *  then close the Mudancas
                              */
-                            if ($sp->getComment() == null) {
+                            if ($sp->getAppSectorMan() == null) {
                                 $mangerOfAreaDidntApp = true;
                             }
                         }

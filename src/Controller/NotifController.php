@@ -26,7 +26,6 @@ class NotifController extends AbstractController
     #[Route('/notif/{id}', name: 'app_notif')]
     public function index($id, ManagerRegistry $doctrine, Request $request): Response
     {
-
         $session = new Session();
         $session = $request->getSession();
         //$request->header_remove();
@@ -35,6 +34,16 @@ class NotifController extends AbstractController
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $req =  $em->getRepository(Requestper::class)->findOneBy(['person' => $person]);
             $mudancas = $em->getRepository(Mudancas::class)->find($id);
+
+
+            if($mudancas->getMangerMudancas() == null){
+                return $this->redirectToRoute('upm', ['id' => $mudancas->getId()]);
+            }else{
+                if ($mudancas->getAppMan() == null ) {
+                    return $this->redirectToRoute('upm', ['id' => $mudancas->getId()]);
+                }
+            }
+
             $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mudancas]);
             $oneOfSp = null;
             $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
@@ -45,7 +54,6 @@ class NotifController extends AbstractController
                     $notManager = false;
                 }
             }
-
             if($notManager == true){
                 return $this->redirectToRoute('upm', ['id' => $mudancas->getId()]);
             }
@@ -55,8 +63,6 @@ class NotifController extends AbstractController
                     array_push($area, $value);
                 }
             }
-
-
             foreach ($sps as $key => $sp) {
                 if ($sp->getSector()->getCoordinator() == $person ) {
                     $oneOfSp = $sp;
@@ -64,7 +70,6 @@ class NotifController extends AbstractController
                 }
             
         }
-
             
             if ($oneOfSp  != null) {
                 $form = $this->createForm(SectorProcessType::class, $oneOfSp);
@@ -72,29 +77,22 @@ class NotifController extends AbstractController
                 $form = $this->createForm(SectorProcessType::class, $sps[0]);
             }
             $form->handleRequest($request);
-
             if ($form->isSubmitted() && $form->isValid()) {
                 $d = $request->get('sector_process');
                 
                 foreach ($sps as $key => $sp) {
                     if ($sp->getSector()->getCoordinator() == $person ) {
                         //if( $mudancas->getManager)
-                        if ($oneOfSp != null) { 
-                            
-                            date_default_timezone_set("America/Sao_Paulo");
-                            $time = new \DateTime();
-                            $sp->setDataCreation($time);
+                        if ($oneOfSp != null) {
                             $sp->setComment($d['comment']);
                             $sp->setAppSectorMan($d['appSectorMan']);
                         }
-
                         $em->persist($sp);
                         $em->flush();
                         
                     }
                 
-                }
-
+            }
                 if($oneOfSp->getAppSectorMan() == 1){
                     $email = new  Email();
                     $email->setMudancas($mudancas);
@@ -107,11 +105,13 @@ class NotifController extends AbstractController
                     $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                     
                 }else{
+                    
                     $mudancas->setImplemented(2);
                     if($mudancas->getNansenNumber() != null){
-                        $mudancas->setManagerUserAdd($person);
-                    }
-                    $mudancas->setDone('Feito');
+                        
+                    $mudancas->setManagerUserAdd($person);
+                    
+                         }$mudancas->setDone('Feito');
                     $email = new  Email();
                     $email->setMudancas($mudancas);
                     $email->setSendTo($mudancas->getAddBy());
@@ -122,13 +122,9 @@ class NotifController extends AbstractController
                     $em->flush();
                     $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);           
                 }
-
                 return $this->redirectToRoute('upm', ['id' => $id]);
                 
-
             }
-
-
             if ($req->getApproves() == 'yes') {
                 if ($person->getPermission() != 'ler') {
                     return $this->render('notif/index.html.twig', [
