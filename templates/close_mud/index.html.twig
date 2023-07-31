@@ -30,7 +30,7 @@
 					<th scope="col">Tipo de Aprovação</th>
 					<th scope="col">Área/Cliente</th>
 					<th scope="col">Nome do Aprovador</th>
-					<th scope="col">Data Aprovação</th>
+					<th scope="col">Data da Aprovação</th>
 					<th scope="col">Status Aprovação</th>
 					<th scope="col">Comentário</th>
 				</tr>
@@ -120,6 +120,8 @@
 
 							<td>{% if mud.dateAM != null  %}	
 								{{ mud.dateAM|date('d-m-Y') }}
+								{% elseif mud.dataAm == null and mud.appMan != null %}
+								Nenhuma data Informada
 							{% else %}
 							Nenhuma data disponível
 							{% endif %}
