@@ -168,6 +168,17 @@
 			{% endif %}
 		{% elseif creation == 'false' %}
 
+	<div class="container" style="padding-left: 20px ;padding-right: 20px;">
+		<div class="py-5 text-center">
+			<p>Nome de mudanças:
+					{{m.nomeMudanca}}</p>
+				<p>Número de mudanças:
+					{{m.id}}</p>
+		</div>
+	</div>
+
+
+
 			{{ form_start(form, {'attr':{'class':'form-group', 'id':'test'}}) }}
 			<div class="row">
 				<div class="col-md-12 mb-3">

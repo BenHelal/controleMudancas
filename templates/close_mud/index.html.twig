@@ -6,21 +6,10 @@
 	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
 	<div class="container" style="padding-left: 20px ;padding-right: 20px;">
 		<div class="py-5 text-center">
-			<img class="d-block mx-auto mb-4" src="{{ asset('serdia_logo.png')}}" alt="" width="300" height="72"/>
-			<br>
 			<p>Nome de mudanças:
 					{{mud.nomeMudanca}}</p>
 				<p>Número de mudanças:
 					{{mud.id}}</p>
-				{% if mud.nansenNumber != null %}
-					<p>Nome do mudanças na Nansen :<br>
-						{{mud.nansenName}}</p>
-					<p>Codigo do mudanças na Nansen :<br>
-						{{mud.nansenNumber}}</p>
-				{% endif %}
-
-				<p>Descrição da Mudança :<br>
-					{{mud.descMudanca}}</p>
 		</div>
 	</div>
 	<div class="row">
