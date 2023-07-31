@@ -786,8 +786,6 @@ class MudancasController extends AbstractController
             // get Mudancas with ID
             $mud = $em->getRepository(Mudancas::class)->find($id);
 
-
-
             $token = $em->getRepository(ApiToken::class)->findOneBy(['mud' => $mud]);
             
             if ($token != null) {
@@ -942,7 +940,7 @@ class MudancasController extends AbstractController
                              *  Check if there is one of the manager reject the mudancas
                              *  then close the Mudancas
                              */
-                            if ($sp->getComment() == null) {
+                            if ($sp->getAppSectorMan() == null) {
                                 $mangerOfAreaDidntApp = true;
                             }
                         }
@@ -979,7 +977,8 @@ class MudancasController extends AbstractController
                         }
                         // check which Form need 
                         $form = null;
-                        //dd($gestor);
+                        
+                        //
                         if ($manager == true && $gestor == false && $mangerOfAreaDidntApp == false) {
                            $form = $this->createForm(MudancasManagerType::class, $mud);
                         } elseif ($gestor == true && $mangerOfAreaDidntApp == false) {
