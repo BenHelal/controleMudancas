@@ -498,7 +498,10 @@ class MudancasController extends AbstractController
 
                         if ($mud->getNansenNumber() == null) {
                             if ($mud->getAddBy() == $person && $mud->getAddBy()->getFunction()->getManager() == $person) {
-                               
+                                date_default_timezone_set("America/Sao_Paulo");
+                                $time = new \DateTime();
+                                $time->format('Y-m-d H:i:s');
+                                $mud->setDateMUA($time);
                                 //nansen
                                 $email = new  Email();
                                 $email->setMudancas($mud);
@@ -552,6 +555,10 @@ class MudancasController extends AbstractController
                             }
                         } else {
                             if ($mud->getAddBy() == $person && $mud->getAddBy()->getFunction()->getManager() == $person) {
+                                date_default_timezone_set("America/Sao_Paulo");
+                                $time = new \DateTime();
+                                $time->format('Y-m-d H:i:s');
+                                $mud->setDateMUA($time);
                                 //nansen
                                 $email = new  Email();
                                 $email->setMudancas($mud);
@@ -594,6 +601,10 @@ class MudancasController extends AbstractController
                                     //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                                 }
                             }else{
+                                date_default_timezone_set("America/Sao_Paulo");
+                                $time = new \DateTime();
+                                $time->format('Y-m-d H:i:s');
+                                $mud->setDateMUA($time);
                                 //nansen
                                 $email = new  Email();
                                 $email->setMudancas($mud);

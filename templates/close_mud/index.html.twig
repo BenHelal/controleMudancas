@@ -81,7 +81,11 @@
 							{% if mud.dateMUA != null  %}	
 								{{ mud.dateMUA|date('d-m-Y') }}
 							{% else %}
+								{% if mud.managerUserApp != null %}
 								Nenhuma data disponível
+								{% else %}						
+								Nenhuma data Informada
+							{% endif %}
 							{% endif %}
 						{% else %}
 							{{mud.dataCreation}}
@@ -121,9 +125,9 @@
 							<td>{% if mud.dateAM != null  %}	
 								{{ mud.dateAM|date('d-m-Y') }}
 								{% elseif mud.dateAM == null and mud.appMan != null %}
+								Nenhuma data disponível
+								{% else %}						
 								Nenhuma data Informada
-							{% else %}
-							Nenhuma data disponível
 							{% endif %}
 							</td>
 					{% if mud.appMan == 1 %}
@@ -154,9 +158,9 @@
 							<td>{% if mud.dateAG != null  %}	
 								{{ mud.dateAG|date('d-m-Y') }}
 								{% elseif mud.dateAG == null and mud.appGest != null %}
+								Nenhuma data disponível
+								{% else %}						
 								Nenhuma data Informada
-							{% else %}
-							Nenhuma data disponível
 							{% endif %}
 							</td>
 					{% if mud.appGest == null %}
@@ -181,15 +185,17 @@
 						<td>{{m.name}}</td>
 						<td>{{data2[key].name }}</td>
 						<td>
-						{% if m.data_creation!= null  %}
+						{% if m.data_creation != null  %}
 							{{ m.data_creation|date('d-m-Y') }}
 
 							
-								{% elseif mud.data_creation == null and mud.app_sector_man != null %}
-								Nenhuma data Informada
 							{% else %}
-
-							Nenhuma data disponível
+								{% if m.app_sector_man != null %}
+								Nenhuma data disponível
+								{% else %}						
+								Nenhuma data Informada
+			
+							{% endif %}
 							{% endif %}
 						</td>
 						{% if  m.app_sector_man  == 1  %}
@@ -220,6 +226,13 @@
 						<td>{{mud.client.Resp}}</td>
 						
 							<td>
+							{% if client.mud.TokenData.codeExp.date != null and client.mud.TokenData.appClt != null %}	
+								{{ client.mud.TokenData.codeExp.date|date('d-m-Y') }}
+								{% elseif client.mud.TokenData.codeExp.date == null and client.mud.TokenData.appClt != null %}
+								Nenhuma data disponível
+								{% else %}						
+								Nenhuma data Informada
+							{% endif %}
 							</td>
 						{% if  client.mud.TokenData.appClt  == 1  %}
 							<td>Aprovado</td>
@@ -229,12 +242,14 @@
 							<td>Não verificado</td>
 						{% endif %}
 
+
+
+
 						{% if client.mud.TokenData.comClt == null %}
 							<td>
 								Sem comentário</td>
 						{% else %}
 							<td>
-								{{client.mud.TokenData.codeExp.date|date('d-m-Y') }}<br>
 								{{client.mud.TokenData.comClt}}</td>
 						{% endif %}
 					</tr>
