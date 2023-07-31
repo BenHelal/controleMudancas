@@ -153,7 +153,7 @@
 					{% endif %}
 							<td>{% if mud.dateAG != null  %}	
 								{{ mud.dateAG|date('d-m-Y') }}
-								{% elseif mud.dateAM == null and mud.appGest != null %}
+								{% elseif mud.dateAG == null and mud.appGest != null %}
 								Nenhuma data Informada
 							{% else %}
 							Nenhuma data disponível
@@ -185,7 +185,7 @@
 							{{ m.data_creation|date('d-m-Y') }}
 
 							
-								{% elseif mud.dateAM == null and mud.app_sector_man != null %}
+								{% elseif mud.data_creation == null and mud.app_sector_man != null %}
 								Nenhuma data Informada
 							{% else %}
 
