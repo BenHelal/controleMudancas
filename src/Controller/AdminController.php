@@ -880,8 +880,8 @@ class AdminController extends AbstractController
         }
     }
 
-    /*#[Route('/edit/sector/{id}', name: 'edit_sector')]
-    public  function sectorById($id, ManagerRegistry $doctrine, Request $request)
+    #[Route('/edit/sector/{id}', name: 'edit_sector')]
+    public  function edit_sector($id, ManagerRegistry $doctrine, Request $request)
     {
         $session = new Session();
         $session = $request->getSession();
@@ -909,7 +909,7 @@ class AdminController extends AbstractController
         } else {
             return $this->redirectToRoute('app_mudancas');
         }
-    }*/
+    }
 
 
     #[Route('/email', name: 'email')]
