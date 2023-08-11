@@ -898,7 +898,7 @@ class MudancasController extends AbstractController
                             date_default_timezone_set("America/Sao_Paulo");
                             $time = new \DateTime();
                             $time->format('Y-m-d H:i:s');
-                            $mud->setDateOfImp($time);
+                            //$mud->setDateOfImp($time);
                         }
                         $em->persist($mud);
                         $em->flush();
@@ -1043,7 +1043,11 @@ class MudancasController extends AbstractController
                                     $file->move($excelFilepath, $fileName);
                                     $mud->setPhoto($fileName);
                                 }
-
+                                date_default_timezone_set("America/Sao_Paulo");
+                                $time = new \DateTime();
+                                $time->format('Y-m-d H:i:s');
+                                $mud->setDateOfImp($time);
+                                
                                 $em->flush();
                                 if ($mud->getImplemented() == 1) {
                                     return $this->redirectToRoute('imp', ['id' => $mud->getId()]);
