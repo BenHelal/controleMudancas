@@ -41,14 +41,19 @@
                 <br>
 
                 {% if m.done == 'Feito' %}
-                <a class="nav-link collapsed" data-toggle="modal" data-target="#abrirModal">
-                    <span>Abrir Mudanças</span>
-                </a>
+                    <a class="nav-link collapsed" data-toggle="modal" data-target="#abrirModal">
+                        <span>Abrir Mudanças</span>
+                    </a>
                 {% else %}
-                <a class="nav-link collapsed" data-toggle="modal" data-target="#FecharModal">
-                    <span>Fechar Mudanças</span>
-                </a>{% endif %}
-                
+                    <a class="nav-link collapsed" data-toggle="modal" data-target="#FecharModal">
+                        <span>Fechar Mudanças</span>
+                    </a>
+                {% endif %}
+                {% if m.client != null %}
+                    <a class="nav-link collapsed" href="{{path('emailAdmin',{'id':m.id} )}}">
+                        <span>Enviar Email</span>
+                    </a>
+                {% endif %}
                 <a class="nav-link collapsed" data-toggle="modal" data-target="#excluirModal">
                     <span>Excluir Mudanças</span>
                 </a>

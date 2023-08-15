@@ -215,9 +215,9 @@
 						<td>{{mud.client.Resp}}</td>
 						
 							<td>
-							{% if client.mud.TokenData.codeExp.date != null and client.mud.TokenData.appClt != null %}	
+							{% if client.mud.TokenData.codeExp != null and client.mud.TokenData.appClt != null %}	
 								{{ client.mud.TokenData.codeExp.date|date('d-m-Y') }}
-								{% elseif client.mud.TokenData.codeExp.date == null and client.mud.TokenData.appClt != null %}
+								{% elseif client.mud.TokenData.codeExp == null and client.mud.TokenData.appClt != null %}
 								Nenhuma data disponível
 								{% else %}						
 								Nenhuma data Informada

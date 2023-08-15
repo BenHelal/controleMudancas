@@ -525,60 +525,26 @@
 
 							{% if m.done != 'Feito' %}
 								{% if  manager == true and gestor == false %}
-									{% if   m.nansenNumber != null  %}
-											{% if  m.mangerMudancas == null %}
-												<div class="row">
-													<div class="col-md-6 mb-3">
-														<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
-													</div>
-												</div>
-											{% elseif  m.comGest == null %}
-												<div class="row">
-													<div class="col-md-6 mb-3">
-														<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
-													</div>
-												</div>
-											{% endif %}
-										
-
-									{% else %}
-										
-										{% if m.managerUserApp == 1 and  m.managerUserAdd != m.addBy and  m.managerUserAdd != null %}
-											{% if  m.mangerMudancas == null %}
-												<div class="row">
-													<div class="col-md-6 mb-3">
-														<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
-													</div>
-												</div>
-											{% elseif  m.comGest == null %}
-												<div class="row">
-													<div class="col-md-6 mb-3">
-														<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
-													</div>
-												</div>
-											{% endif %}
-										{% endif %}
+									{% if  m.mangerMudancas == null %}
+										<div class="row">
+											<div class="col-md-6 mb-3">
+												<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+											</div>
+										</div>
+									{% elseif  m.comGest == null %}
+										<div class="row">
+											<div class="col-md-6 mb-3">
+												<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+											</div>
+										</div>
 									{% endif %}
-									
 								{% elseif gestor %}
-									{% if   m.nansenNumber != null  %}
-										<div class="row">
-											<div class="col-md-6 mb-3">
-												<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
-												{{m.done }}
-											</div>
+									<div class="row">
+										<div class="col-md-6 mb-3">
+											<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+											{{m.done }}
 										</div>
-									{% else %}
-										{% if m.managerUserApp == 1 and  m.managerUserAdd != m.addBy and  m.managerUserAdd != null %}
-										<div class="row">
-											<div class="col-md-6 mb-3">
-												<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
-												{{m.done }}
-											</div>
-										</div>
-										{% endif %}
-
-									{% endif %}
+									</div>
 								{% endif %}
 							{% elseif m.done == 'Feito' and  m.implemented == null %}
 								{% if gestor %}
