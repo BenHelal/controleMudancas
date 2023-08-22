@@ -944,7 +944,6 @@ class MudancasController extends AbstractController
                                 $mangerOfAreaDidntApp = true;
                             }
                         }
-
                         $areaResp =  $mud->getAreaResp();
                         $gestMudancas = $mud->getMangerMudancas();
 
