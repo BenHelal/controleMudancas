@@ -954,7 +954,7 @@ class MudancasController extends AbstractController
                              *  Check if there is one of the manager reject the mudancas
                              *  then close the Mudancas
                              */
-                            if ($sp->getAppSectorMan() == null) {
+                            if ($sp->getAppSectorMan() == null & $sp->getComment() != 'validar pelo Código Nansen') {
                                 $mangerOfAreaDidntApp = true;
                             }
                         }
