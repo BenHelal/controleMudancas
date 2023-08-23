@@ -6,6 +6,9 @@ use App\Entity\ApiToken;
 use App\Entity\Departemant;
 use App\Entity\Mudancas;
 use App\Entity\Person;
+use App\Entity\Process;
+use App\Entity\SectorProcess;
+
 use App\Entity\Sector;
 use App\EntityExt\TokenData;
 use Doctrine\Persistence\ManagerRegistry;
@@ -31,6 +34,41 @@ class CloseMudController extends AbstractController
 
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $mud = $em->getRepository(Mudancas::class)->find($id);
+
+            $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
+            if($process != null){
+                $areaImpact = $mud->getAreaImpact();
+                $areaResp = $mud->getAreaResp();
+                $sp = $em->getRepository(SectorProcess::class)->findOneBy(['process' => $process]);
+                if($sp == null){  
+                    foreach ($areaImpact as $key => $value) {
+                        $SectorProcess = new SectorProcess();
+                        $SectorProcess->setProcess($process);
+                        $SectorProcess->setSector($value);
+                        $SectorProcess->setPerson($value->getCoordinator());
+                        $em->persist($SectorProcess);
+                        $em->flush();
+                    }
+                }
+            }else{
+                $process = new Process();
+                $process->setMudancas($mud);
+                $process->setStatus('created');
+                $areaImpact = $mud->getAreaImpact();
+                $areaResp = $mud->getAreaResp();
+                $sp = $em->getRepository(SectorProcess::class)->findOneBy(['process' => $process]);
+                if($sp == null){  
+                    foreach ($areaImpact as $key => $value) {
+                        $SectorProcess = new SectorProcess();
+                        $SectorProcess->setProcess($process);
+                        $SectorProcess->setSector($value);
+                        $SectorProcess->setPerson($value->getCoordinator());
+                        $em->persist($SectorProcess);
+                        $em->flush();
+                    }
+                }
+            }
+
             $token = $em->getRepository(ApiToken::class)->findOneBy(['mud' => $mud]);
 
             if($token != null){
