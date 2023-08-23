@@ -9,6 +9,7 @@ use App\Entity\Departemant;
 use App\Entity\Email;
 use App\Entity\Manager;
 use App\Entity\Mudancas;
+use App\Entity\MudancasSoftware;
 use App\Entity\Person;
 use App\Entity\Process;
 use App\Entity\Requestper;
@@ -656,6 +657,18 @@ class MudancasController extends AbstractController
                                 $manager = true;
                             }
                         }
+
+                        /** Check If Mudancas is software or not **/
+                        if($mud->getTypeMud() == "1"){
+                            //create new Mudancas software 
+                            $ms = new MudancasSoftware();
+                            $em->persist($ms);
+                            $areaResp = $em->getRepository(Sector::class)->findOneBy(['name'=> '021 – TI MATRIZ (INFRAESTRUTURA E REDE)']);
+                            $mud->setAreaResp($areaResp);
+                            $mud->setMudS($ms);
+                        }
+                        /************************SOFTWARE******************************************* */
+
                         $em->persist($mud);
                         $em->flush();
                         /**
@@ -954,7 +967,7 @@ class MudancasController extends AbstractController
                              *  Check if there is one of the manager reject the mudancas
                              *  then close the Mudancas
                              */
-                            if ($sp->getAppSectorMan() == null) {
+                            if ($sp->getAppSectorMan() == null & $sp->getComment() != 'validar pelo Código Nansen') {
                                 $mangerOfAreaDidntApp = true;
                             }
                         }

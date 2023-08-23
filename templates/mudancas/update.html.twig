@@ -186,6 +186,14 @@
 					{{ form_widget(form.nomeMudanca,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
 				</div>
 			</div>
+			
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.typeMud) }}
+					{{ form_widget(form.typeMud,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
+				</div>
+			</div>
+			
 			<div class="row">
 				<div class="col-md-12 mb-3">
 					{{ form_label(form.descMudanca) }}
@@ -531,7 +539,7 @@
 												<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
 											</div>
 										</div>
-									{% elseif  m.comGest == null %}
+									{% elseif  m.appGest == null %}
 										<div class="row">
 											<div class="col-md-6 mb-3">
 												<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
@@ -564,6 +572,12 @@
 							<div class="col-md-12 mb-3">
 								{{ form_label(form.nomeMudanca) }}
 								{{ form_widget(form.nomeMudanca,{'attr':{'class':'form-control'}}) }}
+							</div>
+						</div>			
+						<div class="row">
+							<div class="col-md-12 mb-3">
+								{{ form_label(form.typeMud) }}
+								{{ form_widget(form.typeMud,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
 							</div>
 						</div>
 						<div class="row">
@@ -781,10 +795,10 @@ mudancas_manager_comMan.disabled = true;{% if  m.mangerMudancas != null %}const 
 mudancas_manager_mangerMudancas.disabled = true;
 const mudancas_manager_appMan = document.getElementById('mudancas_manager_appMan');
 mudancas_manager_appMan.disabled = true;
-mudancas_manager_comMan.disabled = true;{% endif %}{% if  m.comGest == null %}mudancas_manager_mangerMudancas.disabled = false;
+mudancas_manager_comMan.disabled = true;{% endif %}{% if  m.appGest == null %}mudancas_manager_mangerMudancas.disabled = false;
 mudancas_manager_appMan.disabled = false;
 mudancas_manager_comMan.disabled = false;{% endif %}{% endif %}{% if  creation == 'false' %}{% if m.comMan == null %}
-{% elseif m.comMan != null and m.comGest == null %}
+{% elseif m.appMan != null and m.appGest == null %}
 var form = document.getElementById("test");
 var elements = form.elements;
 for (var i = 0, len = 10; i < len; ++ i) {

@@ -124,9 +124,40 @@ class Mudancas
     
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $descClient = null;
+
     #[ORM\Column(nullable: true)]
     private ?int $managerUserApp = null;
    
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $typeMud = null;
+
+    public function getTypeMud(): ?string
+    {
+        return $this->typeMud;
+    }
+
+    public function setTypeMud(string $typeMud): self
+    {
+        $this->typeMud = $typeMud;
+        return $this;
+    }
+
+
+    #[ORM\OneToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?MudancasSoftware $mudS = null;
+
+    public function getMudS(): ?MudancasSoftware
+    {
+        return $this->mudS;
+    }
+
+    public function setMudS(MudancasSoftware $mudS): self
+    {
+        $this->mudS = $mudS;
+        return $this;
+    }
+
     /**
     * @Assert\File(
     *     maxSize="1024k",

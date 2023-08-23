@@ -25,6 +25,13 @@ class MudancasType extends AbstractType
             ->add('nomeMudanca',TextareaType::class,[
                 'label'=> 'Nome da mudança'
             ])
+            ->add('typeMud', ChoiceType::class, [
+                'label'=> 'Tipo de Mudança',
+                'choices'  => [
+                    'Não é Software' => '2',
+                    'Software' => '1',
+                ],
+            ])
             ->add('nansenName',null,[
                 'label'=> 'Nome do Projeto Nansen',
                 'empty_data' => ''
