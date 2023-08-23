@@ -61,7 +61,7 @@
 					<td>
 						{% if mud.managerUserAdd != null and mud.nansenNumber == null %}
 							{{mud.managerUserAdd.name}}
-						{% else %}
+						{% elseif mud.nansenNumber != null %}
 							Projeto Nansen
 						{% endif %}
 					</td>
