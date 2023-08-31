@@ -133,7 +133,6 @@ class MudancasController extends AbstractController
 
 
             $array = [];
-
             foreach ($mudanca as $key => $muda) {
                 if ($muda->getAddBy() == $person && $muda->getImplemented() == null) {
                     array_push($array, $muda);
@@ -146,9 +145,22 @@ class MudancasController extends AbstractController
                 } elseif ($muda->getAddBy() != $person && $muda->getMangerMudancas() != $person && $muda->getManagerUserAdd() == $person  && $muda->getImplemented() == null) {
                     array_push($array, $muda);
                 }  elseif ($muda->getAddBy()->getFunction()!= null) {
-                      if ($muda->getAddBy()->getFunction()->getManager() == $person && $muda->getImplemented() == null) {
+                      
+                    if ($muda->getAddBy()->getFunction()->getManager() == $person && $muda->getImplemented() == null) {
+                            array_push($array, $muda);
+                    }else{
+                        $areaImpact =  $muda->getAreaImpact();
+                        $mangerArea = false;
+                        foreach ($areaImpact as $key => $value) {
+                            if ($value->getCoordinator() == $person ||  $value->getManager() == $person ) {
+                                $mangerArea = true;
+                                $manager = true;
+                            }
+                        }
+                        if ($mangerArea  && $muda->getImplemented() == null) {
                             array_push($array, $muda);
                         }
+                    }
                 } else {
                     $areaImpact =  $muda->getAreaImpact();
                     $mangerArea = false;
@@ -966,9 +978,8 @@ class MudancasController extends AbstractController
 
                         // check the manager of the Mudancas 
                         if ($mud->getMangerMudancas() != null) {
-                            if ($mud->getMangerMudancas()->getId() == $person->getId()) {
+                            if ($mud->getMangerMudancas() == $person) {
                                 $gestor = true;
-
                                 if($mud->getStartMudancas() != null ){
                                     $date1 = $mud->getStartMudancas();
                                }else{
@@ -989,9 +1000,9 @@ class MudancasController extends AbstractController
                                 }
                             }
                         }
+
                         // check which Form need 
                         $form = null;
-                        //dd($gestor);
                         if ($manager == true && $gestor == false && $mangerOfAreaDidntApp == false) {
                            $form = $this->createForm(MudancasManagerType::class, $mud);
                         } elseif ($gestor == true && $mangerOfAreaDidntApp == false) {
@@ -1009,6 +1020,8 @@ class MudancasController extends AbstractController
                         }else{
                             $form = $this->createForm(MudancasType::class, $mud);
                         }
+
+                        
 
                         // event listner 
                         $form->handleRequest($request);
@@ -1084,7 +1097,6 @@ class MudancasController extends AbstractController
                                 /**
                                  * check manager approve 
                                  */
-                                
                                 date_default_timezone_set("America/Sao_Paulo");
                                 $time = new \DateTime();
                             

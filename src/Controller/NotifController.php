@@ -84,6 +84,10 @@ class NotifController extends AbstractController
                     if ($sp->getSector()->getCoordinator() == $person ) {
                         //if( $mudancas->getManager)
                         if ($oneOfSp != null) {
+                            
+                            date_default_timezone_set("America/Sao_Paulo");
+                            $time = new \DateTime();
+                            $sp->setDataCreation($time);
                             $sp->setComment($d['comment']);
                             $sp->setAppSectorMan($d['appSectorMan']);
                         }
