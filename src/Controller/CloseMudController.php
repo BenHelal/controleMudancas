@@ -54,6 +54,9 @@ class CloseMudController extends AbstractController
                 $process = new Process();
                 $process->setMudancas($mud);
                 $process->setStatus('created');
+                
+                $em->persist($process);
+                $em->flush();
                 $areaImpact = $mud->getAreaImpact();
                 $areaResp = $mud->getAreaResp();
                 $sp = $em->getRepository(SectorProcess::class)->findOneBy(['process' => $process]);

@@ -504,16 +504,6 @@ class MudancasController extends AbstractController
                                 $em->persist($email);
                                 $em->flush();
                                 
-                                /*
-                                $email = new  Email();
-                                $email->setMudancas($mud);
-                                $email->setSendTo($mud->getAddBy());
-                                $email->setSendBy($person);
-                                $email->setTitle('Aprovação gerente do solicitante');
-                                $email->setBody('manager1APP');
-                                $em->persist($email);
-                                $em->flush();*/
-                                //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                                 $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($mud->getAreaResp()->getManager());
@@ -750,6 +740,8 @@ class MudancasController extends AbstractController
                                 return $this->redirectToRoute('approve', ['id' => $mud->getId()]);
                             }
                         }
+                        
+                        $em->flush();
                         return $this->redirectToRoute('app_mudancas');
                     }
                     return $this->render('mudancas/update.html.twig', [
