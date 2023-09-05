@@ -2,63 +2,24 @@
 
 namespace App\Form;
 
-use App\Entity\Departemant;
-use App\Entity\Mudancas;
-use App\Entity\Person;
-use App\Entity\Sector;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\MudancasSoftware;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\ChoiceList\ChoiceList;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
 
-class MudancasgestorImpType extends AbstractType
+class MudancasSoftwareTestesSolType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-    
         $builder
-        
-        ->add('implemented', ChoiceType::class, [
-            'choices'  => [
-                'Sim' => 1,
-                'Nao' => 2,
-            ],
-            'label'    => 'Deseja aprovar?',
-            'required' => true,
-        ])
-            ->add('impDesc',TextareaType::class,[
-                'label'=> 'Evidencia de Implementação'
-            ])
-            ->add('photo', FileType::class, array(
+            ->add('docTestSol', FileType::class,[
                 'data_class' => null,
-                'label' => 'foto (jpeg, png)',
+                'multiple' => true,
                 'constraints' => [
                     new File([
                     'maxSize' => '100m',
-                    'mimeTypes' => [
-                        'image/jpeg',
-                        'image/png',
-                    ],
-                    'mimeTypesMessage' => 'Carregue uma imagem jpeg válida',
-                    ])],
-                'required' => false,
-                )
-            )
-            
-            ->add('pdf', FileType::class, array(
-                'data_class' => null,
-                'label' => 'Arquivo (pdf, word, excel)',
-                'constraints' => [
-                    new File([
-                    'maxSize' => '1024k',
                     'mimeTypes' => ['application/pdf','application/msword','application/vnd.ms-excel',
                                     'application/vnd.oasis.opendocument.text'
                                     ,'application/vnd.oasis.opendocument.text-flat-xml'
@@ -111,15 +72,13 @@ class MudancasgestorImpType extends AbstractType
                     ],
                     'mimeTypesMessage' => 'Carregue um arquivo pdf, word ou excel válido',
                     ])],
-                'required' => false,
-                )
-            );
+                'required' => false,]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Mudancas::class,
+            'data_class' => MudancasSoftware::class,
         ]);
     }
 }

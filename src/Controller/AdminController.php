@@ -10,6 +10,7 @@ use App\Entity\DepartemantMudancass;
 use App\Entity\Email;
 use App\Entity\Manager;
 use App\Entity\Mudancas;
+use App\Entity\MudancasSoftware;
 use App\Entity\Person;
 use App\Entity\Requestper;
 use App\Entity\Sector;
@@ -152,7 +153,6 @@ class AdminController extends AbstractController
                         $req->setDate($time);
                         $em->persist($req);
                         $em->flush();
-
                         return $this->redirectToRoute('app_request');
                     }
                     return $this->render('admin/request.html.twig', [
@@ -246,7 +246,6 @@ class AdminController extends AbstractController
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
             $p = $em->getRepository(Person::class)->findAll();
-
             $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
             return $this->render('admin/listperson.html.twig', [
                 'controller_name' => 'Atualizar Mudancas',
@@ -270,11 +269,9 @@ class AdminController extends AbstractController
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
             $p = $em->getRepository(Person::class)->find($id);
-
             $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
             $form = $this->createForm(PermissionType::class, $p);
             $form->handleRequest($request);
-
             if ($form->isSubmitted() && $form->isValid()) {
                 $em->persist($p);
                 $em->flush();
@@ -301,9 +298,7 @@ class AdminController extends AbstractController
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
             $m = $em->getRepository(Mudancas::class)->findAll();
-
             $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
-
             return $this->render('admin/listMudancas.html.twig', [
                 'controller_name' => 'Atualizar Mudancas',
                 'login' => 'null',
@@ -322,13 +317,10 @@ class AdminController extends AbstractController
     {
         $session = new Session();
         $session = $request->getSession();
-
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
             $m = $em->getRepository(Mudancas::class)->find($id);
             $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
-
-            //dd($m);
             return $this->render('admin/displayMudancas.html.twig', [
                 'controller_name' => 'Atualizar Mudancas',
                 'login' => 'null',
@@ -349,7 +341,6 @@ class AdminController extends AbstractController
 
         $session = new Session();
         $session = $request->getSession();
-
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
             $listrequest = $em->getRepository(Requestper::class)->findAll();
@@ -379,9 +370,7 @@ class AdminController extends AbstractController
             $person = $p->getPerson();
             $form = $this->createForm(RequestadminType::class, $p);
             $form->handleRequest($request);
-
             $pers = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
-
             if ($form->isSubmitted() && $form->isValid()) {
                 if ($p->getApproves() == 'yes') {
                     $person->setPermission('ler criar atualização');
@@ -417,8 +406,6 @@ class AdminController extends AbstractController
 
         $session = new Session();
         $session = $request->getSession();
-
-        //$request->header_remove();
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
             $mudancas = $em->getRepository(Mudancas::class)->find($id);
@@ -437,8 +424,6 @@ class AdminController extends AbstractController
 
         $session = new Session();
         $session = $request->getSession();
-
-        //$request->header_remove();
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
             $mudancas = $em->getRepository(Mudancas::class)->find($id);
@@ -447,7 +432,6 @@ class AdminController extends AbstractController
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
-
             $mudancas->setDone('');
             $em->persist($mudancas);
             $em->flush();
@@ -462,8 +446,6 @@ class AdminController extends AbstractController
     {
         $session = new Session();
         $session = $request->getSession();
-
-        //$request->header_remove();
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
             $mudancas = $em->getRepository(Mudancas::class)->find($id);
@@ -472,26 +454,98 @@ class AdminController extends AbstractController
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
+            /*if($mudancas->getTypeMud() == '1'){
+                
+                $muds = $em->getRepository(MudancasSoftware::class)->find($mudancas->getMudS()->getId());
+                
+                //Delete all Test Solicitation steps
+                foreach ($muds->getStepsTestSol() as $key => $value) {
+                    $publicDirectory = $this->getParameter('kernel.project_dir');
+                    $excelFilepath =  $publicDirectory . '/public/assets/' . $mudancas->getId().'/test/sol';
+                    if ( $value->getDoc() != null) {
+                        $delete  = unlink($excelFilepath.'/'. $value->getDoc());
+                        if($delete){
+                            echo "delete success";
+                        }else{
+                            echo "delete not success";
+                        }
+                    }
+                    $muds->removeStepsTestSol($value);
+                    $em->remove($value);
+                }
+                $em->remove($muds->getStepsTestSol());
+                
+                //Delete all Test IT steps
+                foreach ($muds->getStepsTest() as $key => $value) {
+                    $publicDirectory = $this->getParameter('kernel.project_dir');
+                    $excelFilepath =  $publicDirectory . '/public/assets/' . $mudancas->getId().'/test/ti';
+                    if ($value->getDoc() != null) {
+                        $delete  = unlink($excelFilepath.'/'. $value->getDoc());
+                        if($delete){
+	                        echo "delete success";
+                        }else{
+	                        echo "delete not success";
+                        }
+                    }
+                    
+                    $muds->removeStepsTest($value);
+                    $em->remove($value);
+                }
+                $em->remove($muds->getStepsTest());
+                
+                $em->remove($muds->getStepsTest());
+                //Delete all Dev steps
+                foreach ($muds->getStepDev() as $key => $value) {
+                    $publicDirectory = $this->getParameter('kernel.project_dir');
+                    $excelFilepath =  $publicDirectory . '/public/assets/' . $mudancas->getId().'/dev';
+                    if ($value->getDoc() != null) {
+                        $delete  = unlink($excelFilepath.'/'. $value->getDoc());
+                        if($delete){
+	                        echo "delete success";
+                        }else{
+	                        echo "delete not success";
+                        }
+                    }
+                    $muds->removeStepDev($value);
+                    $em->remove($value);
+                }
+                $em->remove($muds->getStepDev());
+                                
+                
+                //Delete all gestor steps
+                foreach ($muds->getStepsGestor() as $key => $value) {
+                    $publicDirectory = $this->getParameter('kernel.project_dir');
+                    $excelFilepath =  $publicDirectory . '/public/assets/' . $mudancas->getId();
+                    if ($value->getDoc() != null) {
+                        $delete  = unlink($excelFilepath.'/'. $value->getDoc());
+                        if($delete){
+	                        echo "delete success";
+                        }else{
+	                        echo "delete not success";
+                        }
+                    }
+                    $muds->removeStepsGestor($value);
+                    $em->remove($value);
+                }
+
+                $em->remove($muds);
+            }*/
+
+
             foreach ($ln as $key => $value) {
                 $sql = 'Delete FROM sector_process WHERE process_id = :mudancas_id ;';
                 $stmt = $conn->prepare($sql);
                 $resultSet = $stmt->executeQuery(['mudancas_id' => $value['id']]);
                 $ln2 =  $resultSet->fetchAllAssociative();
             }
-
             $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
-
-
             $sql = 'Delete FROM process WHERE mudancas_id = :mudancas_id ;';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
-
-            
-
 
             $sql = 'DELETE em
             FROM email em

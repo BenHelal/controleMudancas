@@ -18,6 +18,8 @@
 
 	<div class="container" style="padding-left: 20px ;padding-right: 20px;">
 
+
+
 		{% if person.function == null %}
 			<p style="
 				padding: 8px;
@@ -167,17 +169,6 @@
 
 			{% endif %}
 		{% elseif creation == 'false' %}
-
-	<div class="container" style="padding-left: 20px ;padding-right: 20px;">
-		<div class="py-5 text-center">
-			<p>Nome de mudanças:
-					{{m.nomeMudanca}}</p>
-				<p>Número de mudanças:
-					{{m.id}}</p>
-		</div>
-	</div>
-
-
 
 			{{ form_start(form, {'attr':{'class':'form-group', 'id':'test'}}) }}
 			<div class="row">
@@ -710,10 +701,14 @@ $('#mudancasgestor_to_app_client').chosen({});
 $('#mudancasgestor_to_app_areaImpact').chosen({});
 
 
-{% if creation != 'true' %}{% if m.client == null %}document.getElementById("vci").checked = false;
-{% else %}
-
-document.getElementById("vci").checked = true;{% endif %}{% endif %}if (document.getElementById('vci').checked) {
+{% if creation != 'true' %}
+	{% if m.client == null %}
+		document.getElementById("vci").checked = false;
+	{% else %}
+		document.getElementById("vci").checked = true;
+	{% endif %}
+{% endif %}
+if (document.getElementById('vci').checked) {
 console.log('tes');
 box.style.display = 'block';
 } else {
@@ -722,7 +717,11 @@ console.log('tes2');
 box.style.display = 'none';
 }
 
-});{% if gestor %}$(document).ready(function () {
+});
+
+{% if gestor %}
+
+$(document).ready(function () {
 const box = document.getElementById('nanseForm');
 if (document.getElementById('mudancasgestor_to_app_nansenName').value == '') {
 document.getElementById("nansen").checked = false;

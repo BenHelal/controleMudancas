@@ -1,0 +1,472 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Hello MudancasSoftwareController!
+{% endblock %}
+
+{% block body %}
+	<style>
+		.card {
+			z-index: 0;
+			background-color: #ECEFF1;
+			padding-bottom: 20px;
+			margin-top: 0;
+			margin-bottom: 10px;
+			border-radius: 10px;
+		}
+
+		.top {
+			padding-top: 10px;
+			padding-left: 13% !important;
+			padding-right: 13% !important;
+		}
+
+		/*Icon progressbar*/
+		#progressbar {
+			margin-bottom: 30px;
+			overflow: hidden;
+			color: #455A64;
+			padding-left: 0;
+			margin-top: 30px;
+		}
+
+		#progressbar li {
+			list-style-type: none;
+			font-size: 13px;
+			width: 20%;
+			float: left;
+			position: relative;
+			font-weight: 400;
+		}
+
+		#progressbar .step0:before {
+			font-family: FontAwesome;
+			content: "\f10c";
+			color: #fff;
+		}
+
+		#progressbar li:before {
+			width: 40px;
+			height: 40px;
+			line-height: 45px;
+			display: block;
+			font-size: 20px;
+			background: #C5CAE9;
+			border-radius: 50%;
+			margin: auto;
+			padding: 0;
+		}
+
+		/*ProgressBar connectors*/
+		#progressbar li:after {
+			content: '';
+			width: 100%;
+			height: 12px;
+			background: #C5CAE9;
+			position: absolute;
+			left: 0;
+			top: 16px;
+			z-index: -1;
+		}
+
+		#progressbar li:last-child:after {
+			border-top-right-radius: 10px;
+			border-bottom-right-radius: 10px;
+			position: absolute;
+			left: -50%;
+		}
+
+		#progressbar li: nth-child(2): after,
+		#progressbar li: nth-child(3): after, {
+			left: 0;
+		}
+
+		#progressbar li:first-child:after {
+			border-top-left-radius: 10px;
+			border-bottom-left-radius: 10px;
+			position: absolute;
+			left: 50%;
+		}
+
+		#progressbar li:last-child:after {
+			border-top-right-radius: 50px;
+			border-bottom-right-radius: 50px;
+		}
+
+		#progressbar li:first-child:after {
+			border-top-left-radius: 10px;
+			border-bottom-left-radius: 10px;
+		}
+
+		/*Color number of the step and the connector before it*/
+		#progressbar li.active:before,
+		#progressbar li.active:after {
+			background: #f99d1b;
+		}
+
+		#progressbar li.active:before {
+			font-family: FontAwesome;
+			content: "\f00c";
+		}
+
+		.icon {
+			width: 60px;
+			height: 60px;
+			margin-right: 10px;
+		}
+
+		.icon-content {
+			padding-bottom: 20px;
+		}
+
+		@media screen and(max-width: 992px) {
+			.icon-content {
+				width: 50%;
+			}
+		}
+	</style>
+	<div class="card">
+		<div class="row d-flex justify-content-between px-3 top">
+			<div class="d-flex">
+			    <a style="color: black;text-decoration: none;" 
+					href="{{path('Softindex',{'id':m.id} )}}">
+					<h5>
+						Mudanças: 
+						<span class="text-primary font-weight-bold">#{{m.id}}</span>
+					</h5>
+				</a>
+			</div>
+
+			<div class="d-flex flex-column text-sm-right">
+				<a style="color: black;text-decoration: none;" 
+					href="{{path('flow',{'id':m.id} )}}">
+					<p class="mb-0">Mudanças criadas: <span>{{m.datacreation}}</span></p>
+					<p>Fluxos de processo</p>
+				</a>
+			</div>
+		</div>
+		<!-- Add class 'active' to progress -->
+		<div class="row d-flex justify-content-center">
+			<div class="col-12">
+				<ul id="progressbar" class="text-center">
+				
+					{% if m.mudS.ref == null %}
+						<li class="step0"></li>
+						<li class="step0"></li>
+						<li class="step0"></li>
+						<li class="step0"></li>
+						<li class="step0"></li>
+					{% else %}
+						{% if m.mudS.gestor == null %}
+							<li class="active step0"></li>
+							<li class="step0"></li>
+							<li class="step0"></li>
+							<li class="step0"></li>
+							<li class="step0"></li>
+						{% else %}
+							<li class="active step0"></li>
+							<li class="active step0"></li>
+							{% if m.mudS.stepDev|length == 0 or  m.mudS.stepDev == null %}
+								<li class="step0"></li>
+								<li class="step0"></li>
+								<li class="step0"></li>
+							{% else %}
+								<li class="active step0"></li>
+								{% if m.mudS.stepsTest|length == 0 or m.mudS.stepsTest == null %}
+									<li class="step0"></li>
+									<li class="step0"></li>
+								{% else %}
+									<li class="active step0"></li>
+									{% if m.mudS.stepsTestSol|length == 0 or m.mudS.stepsTestSol  == null %}
+										<li class="step0"></li>
+									{% else %}
+										<li class="active step0"></li>
+									{% endif %}
+								{% endif %}
+							{% endif %}
+						{% endif %}
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+		<div class="row justify-content-between top">
+		
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('gerente_software',{'id':m.id} )}}">
+					<img class="icon" src="{{ asset('analysing.png') }}"/>
+				</a>
+				<div class="d-flex flex-column">
+					<a style="color: black;text-decoration: none;" href="{{path('gerente_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Demanda<br/>e<br/>verificação
+						</p>
+					</a>
+				</div>
+			</div>
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('Solicitante_software',{'id':m.id} )}}">
+					<img class="icon" src="https://i.imgur.com/9nnc9Et.png"/>
+				</a>
+				<div class="d-flex flex-column">
+
+					<a style="color: black;text-decoration: none;" href="{{path('Solicitante_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Documentação<br/>e<br/>análise
+						</p>
+					</a>
+				</div>
+			</div>
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('dev_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('software-development.png') }}"/>
+
+				</a>
+				<div class="d-flex flex-column">
+
+					<a style="color: black;text-decoration: none;" href="{{path('dev_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Desenvolvimento<br/>e<br/>concepção
+						</p>
+					</a>
+				</div>
+			</div>
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('test_ti_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('testing.png') }}"/>
+
+				</a>
+				<div class="d-flex flex-column">
+
+					<a style="color: black;text-decoration: none;" href="{{path('test_ti_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Verificação<br/>e<br/>teste de TI
+						</p>
+					</a>
+				</div>
+			</div>
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('test_solicitante_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('approve.png') }}"/>
+
+				</a>
+				<div class="d-flex flex-column">
+
+					<a style="color: black;text-decoration: none;" href="{{path('test_solicitante_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Verificação<br/>e<br/>teste do solicitante
+						</p>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	{{ form_start(form, {'attr':{'class':'form-group', 'id':'test'}}) }}
+	{% if m.mudS.numberRef != null %}
+		<div class="row">
+			<div class="col-md-12 mb-3">
+				<label for="mudancas_typeMud" class="required">Mudança referenciada</label>
+				<select id="mudancas_typeMud" name="mudancas[typeMud]" class="form-control" rows="4">
+					<option value="2">Não</option>
+					<option value="1" selected="selected">Sim</option></select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 mb-3">
+				<label for="mudancas_numberRef" class="required">Nº Mudança anterior</label>
+				<textarea id="mudancas_numberRef" name="mudancas[numberRef]" required="required" class="form-control" rows="4">{{ m.mudS.numberRef }}</textarea>
+			</div>
+		</div>
+		{% else %}
+		
+		<div class="row">
+			<div class="col-md-12 mb-3">
+				<label for="mudancas_typeMud" class="required">Mudança referenciada</label>
+				<select id="mudancas_typeMud" name="mudancas[typeMud]" class="form-control" rows="4">
+					<option value="2" selected="selected">Não</option>
+					<option value="1" >Sim</option></select>
+			</div>
+		</div>
+	{% endif %}
+	<div class="row">
+		<div class="col-md-12 mb-3">
+			{{ form_label(form.nomeMudanca) }}
+			{{ form_widget(form.nomeMudanca,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 mb-3">
+			{{ form_label(form.typeMud) }}
+			{{ form_widget(form.typeMud,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 mb-3">
+			{{ form_label(form.descMudanca) }}
+			{{ form_widget(form.descMudanca,{'attr':{'class':'form-control', 'rows': '4','id':'testdescMudanca'}}) }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 mb-3">
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" value="" onclick="validate()" id="nansen">
+				<label class="form-check-label" for="flexCheckDefault">
+					Existe Projeto Nansen
+				</label>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" id="nanseForm">
+		<div class="col-md-12 mb-3">
+			{{ form_label(form.nansenName) }}
+			{{ form_widget(form.nansenName,{'attr':{'class':'form-control', 'rows': '4','id':'testnansenName'}}) }}
+		</div>
+		<div class="col-md-12 mb-3">
+			{{ form_label(form.nansenNumber) }}
+			{{ form_widget(form.nansenNumber,{'attr':{'class':'form-control', 'rows': '4' ,'id':'test'}}) }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 mb-3">
+			{{ form_label(form.justif) }}
+			{{ form_widget(form.justif,{'attr':{'class':'form-control','rows': '4' ,'id':'test'}}) }}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 mb-3">
+			{{ form_label(form.descImpacto) }}
+			{{ form_widget(form.descImpacto,{'attr':{'class':'form-control', 'rows': '4','id':'test'}}) }}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 mb-3">
+			{{ form_label(form.descImpactoArea) }}
+			{{ form_widget(form.descImpactoArea,{'attr':{'class':'form-control', 'rows': '4','id':'test'}}) }}
+		</div>
+	</div>
+
+	<div class="row" id="selectAreaImapct">
+		<div class="col-md-12 mb-3">
+			{{ form_label(form.areaImpact) }}
+			{{ form_widget(form.areaImpact,{'attr':{
+                'data-placeholder':'Escolha o setor.....', 'rows': '12'}}) }}
+		</div>
+	</div>
+
+	<div class="row" id="selectAreaResp">
+		<div class="col-md-12 mb-3">
+			{{ form_label(form.areaResp) }}
+			{{ form_widget(form.areaResp,{'attr':{'class':'form-control','id':'test' ,'rows': '12'}}) }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 mb-3">
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" value="" onclick="vc()" id="vci">
+				<label class="form-check-label" for="flexCheckDefault">
+					Cliente será Impactado?
+				</label>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" id="vcg">
+		<div class="col-md-12 mb-3">
+			{{ form_label(form.client) }}
+			{{ form_widget(form.client,{'attr':{'class':'form-control','data-placeholder':'Escolha o cliente.....','style':'width: 100%;', 'rows': '12'}}) }}
+		</div>
+
+
+		{% if creation == "false"  %}
+			{% if  m.client %}
+				{% if m.client.respEmail == null %}
+					este cliente não tinha e-mail no banco de dados
+				{% endif %}
+			{% endif %}
+		{% endif %}
+
+	</div>
+
+	{{ form_end(form) }}
+<script>
+
+$(document).ready(function () {
+
+const box = document.getElementById('nanseForm');
+if (document.getElementById('mudancas_nansenName').value == '') {
+document.getElementById("nansen").checked = false;
+const box = document.getElementById('nanseForm');
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+box.style.display = 'none';
+}
+} else {
+document.getElementById("nansen").checked = true;
+const box = document.getElementById('nanseForm');
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+box.style.display = 'none';
+}
+}
+});
+function validate() {
+const box = document.getElementById('nanseForm');
+if (document.getElementById('nansen').checked) {
+box.style.display = 'block';
+} else {
+document.getElementById('mudancas_nansenName').value = '';
+document.getElementById('mudancas_nansenNumber').value = '';
+box.style.display = 'none';
+}
+}
+</script>
+
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+	<script>
+		const box = document.getElementById('vcg');
+function vc() {
+if (document.getElementById('vci').checked) {
+box.style.display = 'block';
+} else {
+box.style.display = 'none';
+}
+}
+$(document).ready(function () {
+
+
+const box = document.getElementById('vcg');
+$('#mudancas_areaImpact').chosen({});
+$('#mudancas_areaResp').chosen({});
+$('#mudancas_client').chosen({});{% if m.client == null %}
+document.getElementById("vci").checked = false;
+{% else %}
+document.getElementById("vci").checked = true;{% endif %}
+
+
+if (document.getElementById('vci').checked) {
+console.log('tes');
+box.style.display = 'block';
+} else {
+
+console.log('tes2');
+box.style.display = 'none';
+}
+
+
+});
+	</script>
+{% endblock %}

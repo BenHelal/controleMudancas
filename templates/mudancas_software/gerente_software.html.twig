@@ -3,18 +3,327 @@
 {% block title %}Hello MudancasSoftwareController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+	<style>
+		.card {
+			z-index: 0;
+			background-color: #ECEFF1;
+			padding-bottom: 20px;
+			margin-top: 0;
+			margin-bottom: 10px;
+			border-radius: 10px;
+		}
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+		.top {
+			padding-top: 10px;
+			padding-left: 13% !important;
+			padding-right: 13% !important;
+		}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/xampp/htdocs/controleMudancas/src/Controller/MudancasSoftwareController.php'|file_link(0) }}">src/Controller/MudancasSoftwareController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/xampp/htdocs/controleMudancas/templates/mudancas_software/index.html.twig'|file_link(0) }}">templates/mudancas_software/index.html.twig</a></code></li>
-    </ul>
-</div>
+		/*Icon progressbar*/
+		#progressbar {
+			margin-bottom: 30px;
+			overflow: hidden;
+			color: #455A64;
+			padding-left: 0;
+			margin-top: 30px;
+		}
+
+		#progressbar li {
+			list-style-type: none;
+			font-size: 13px;
+			width: 20%;
+			float: left;
+			position: relative;
+			font-weight: 400;
+		}
+
+		#progressbar .step0:before {
+			font-family: FontAwesome;
+			content: "\f10c";
+			color: #fff;
+		}
+
+		#progressbar li:before {
+			width: 40px;
+			height: 40px;
+			line-height: 45px;
+			display: block;
+			font-size: 20px;
+			background: #C5CAE9;
+			border-radius: 50%;
+			margin: auto;
+			padding: 0;
+		}
+
+		/*ProgressBar connectors*/
+		#progressbar li:after {
+			content: '';
+			width: 100%;
+			height: 12px;
+			background: #C5CAE9;
+			position: absolute;
+			left: 0;
+			top: 16px;
+			z-index: -1;
+		}
+
+		#progressbar li:last-child:after {
+			border-top-right-radius: 10px;
+			border-bottom-right-radius: 10px;
+			position: absolute;
+			left: -50%;
+		}
+
+		#progressbar li: nth-child(2): after,
+		#progressbar li: nth-child(3): after, {
+			left: 0;
+		}
+
+		#progressbar li:first-child:after {
+			border-top-left-radius: 10px;
+			border-bottom-left-radius: 10px;
+			position: absolute;
+			left: 50%;
+		}
+
+		#progressbar li:last-child:after {
+			border-top-right-radius: 50px;
+			border-bottom-right-radius: 50px;
+		}
+
+		#progressbar li:first-child:after {
+			border-top-left-radius: 10px;
+			border-bottom-left-radius: 10px;
+		}
+
+		/*Color number of the step and the connector before it*/
+		#progressbar li.active:before,
+		#progressbar li.active:after {
+			background: #f99d1b;
+		}
+
+		#progressbar li.active:before {
+			font-family: FontAwesome;
+			content: "\f00c";
+		}
+
+		.icon {
+			width: 60px;
+			height: 60px;
+			margin-right: 10px;
+		}
+
+		.icon-content {
+			padding-bottom: 20px;
+		}
+
+		@media screen and(max-width: 992px) {
+			.icon-content {
+				width: 50%;
+			}
+		}
+	</style>
+	<div class="card">
+		<div class="row d-flex justify-content-between px-3 top">
+			<div class="d-flex">
+			    <a style="color: black;text-decoration: none;" 
+					href="{{path('Softindex',{'id':m.id} )}}">
+					<h5>
+						Mudanças: 
+						<span class="text-primary font-weight-bold">#{{m.id}}</span>
+					</h5>
+				</a>
+			</div>
+
+			<div class="d-flex flex-column text-sm-right">
+				<a style="color: black;text-decoration: none;" 
+					href="{{path('flow',{'id':m.id} )}}">
+					<p class="mb-0">Mudanças criadas: <span>{{m.datacreation}}</span></p>
+					<p>Fluxos de processo</p>
+				</a>
+			</div>
+		</div>
+		
+		<!-- Add class 'active' to progress -->
+		<div class="row d-flex justify-content-center">
+			<div class="col-12">
+				<ul id="progressbar" class="text-center">
+					<li class="active step0"></li>
+					<li class="step0"></li>
+					<li class="step0"></li>
+					<li class="step0"></li>
+					<li class="step0"></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="row justify-content-between top">
+		
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('gerente_software',{'id':m.id} )}}">
+					<img class="icon" src="{{ asset('analysing.png') }}"/>
+				</a>
+				<div class="d-flex flex-column">
+					<a style="color: black;text-decoration: none;" href="{{path('gerente_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Demanda<br/>e<br/>verificação
+						</p>
+					</a>
+				</div>
+			</div>
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('Solicitante_software',{'id':m.id} )}}">
+					<img class="icon" src="https://i.imgur.com/9nnc9Et.png"/>
+				</a>
+				<div class="d-flex flex-column">
+
+					<a style="color: black;text-decoration: none;" href="{{path('Solicitante_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Documentação<br/>e<br/>análise
+						</p>
+					</a>
+				</div>
+			</div>
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('dev_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('software-development.png') }}"/>
+
+				</a>
+				<div class="d-flex flex-column">
+
+					<a style="color: black;text-decoration: none;" href="{{path('dev_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Desenvolvimento<br/>e<br/>concepção
+						</p>
+					</a>
+				</div>
+			</div>
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('test_ti_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('testing.png') }}"/>
+
+				</a>
+				<div class="d-flex flex-column">
+
+					<a style="color: black;text-decoration: none;" href="{{path('test_ti_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Verificação<br/>e<br/>teste de TI
+						</p>
+					</a>
+				</div>
+			</div>
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('test_solicitante_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('approve.png') }}"/>
+
+				</a>
+				<div class="d-flex flex-column">
+
+					<a style="color: black;text-decoration: none;" href="{{path('test_solicitante_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Verificação<br/>e<br/>teste do solicitante
+						</p>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+        {{ form_start(form, {'attr':{'class':'form-group', 'id':'test'}}) }}
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.priority) }}
+					{{ form_widget(form.priority,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
+				</div>
+			</div>
+            <div class="row">
+				<div class="col-md-12 mb-3">
+					<label for="mudancas_software_gerente_de_aprovacao_priority">Mudança referenciada</label>
+					{% if m.mudS.ref == "1" %}
+                        <input type="text" value="Sim" maxlength="255" class="form-control" rows="4">
+                    {% else %}    
+                        <input type="text" value="Não" maxlength="255" class="form-control" rows="4">
+                    {% endif %}
+				</div>
+			</div>  
+            
+            <div class="row">
+				<div class="col-md-12 mb-3">
+					<label for="mudancas_software_gerente_de_aprovacao_priority">Nº Mudança anterior</label>
+                    
+                    {% if m.mudS.ref == "1" %}
+					    <input type="text" value="{{m.mudS.numberRef}}" maxlength="255" class="form-control"  rows="4">
+                    {% else %}
+					    <input type="text" value="{{m.mudS.numberRef}}" maxlength="255" class="form-control" disabled rows="4">
+                    {% endif %}
+                </div>
+			</div>
+
+
+
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.gestor) }}
+					{{ form_widget(form.gestor,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
+				</div>
+			</div>
+            
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.date) }}
+					{{ form_widget(form.date,{'attr':{'class':'date form-control','rows': '4','id':'testnomeMudanca'}}) }}
+				</div>
+			</div>
+
+            
+			<div class="row">
+				<div id="1div5" class="col-md-12 mb-3">
+					<label for="1test">Aprovada</label>
+					<select id="1test" class="custom-select" name="1test">
+						<option {% if m.appMan == 2 %}
+						selected="selected"
+					{% endif %} value="Não">Não</option>
+						<option  {% if m.appMan == 1 %}
+						selected="selected"
+					{% endif %}  selected="selected" value="Sim">Sim</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="row">
+				<div id="1div5" class="col-md-12 mb-3">
+					<label for="2test">Comentário</label>
+					<input {% if m.comMan != null %}
+						value="{{m.comMan}}"
+					{% endif %} id="2test" class="form-control" name="2test"/>
+				</div>
+			</div>
+
+			{% if m.mudS.gestor == null %}
+				<div class="row">
+					<div class="col-md-6 mb-3">
+						<button id="btn" class="	btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Adicionar</button>
+					</div>
+				</div>
+			{% endif %}
+
+        {{ form_end(form) }}
+        
+		<div class="row">
+			<div class="col-md-6 mb-3">
+				<a  href="{{path('gestor_software',{'id':m.id} )}}" id="btn" class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Próximo</a>
+			</div>
+		</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+<script>
+$(".date").datepicker({format: "dd-mm-yyyy", language: "pt-BR"});
+$(document).ready(function () {
+$('#mudancas_software_gerente_de_aprovacao_gestor').chosen({});
+});
+</script>
+
 {% endblock %}

@@ -1,20 +1,607 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello MudancasSoftwareController!{% endblock %}
+{% block title %}Hello MudancasSoftwareController!
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+	<style>
+		.flex-container {
+			padding: 0;
+			margin: 0;
+			list-style: none;
+			border: 2px dashed black;
+			border-radius: 25px;
+			-ms-box-orient: horizontal;
+			display: -webkit-box;
+			display: -moz-box;
+			display: -ms-flexbox;
+			display: -moz-flex;
+			display: -webkit-flex;
+			display: flex;
+			justify-content: center;
+		}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/xampp/htdocs/controleMudancas/src/Controller/MudancasSoftwareController.php'|file_link(0) }}">src/Controller/MudancasSoftwareController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/xampp/htdocs/controleMudancas/templates/mudancas_software/index.html.twig'|file_link(0) }}">templates/mudancas_software/index.html.twig</a></code></li>
-    </ul>
-</div>
+		.nowrap {
+			-webkit-flex-wrap: nowrap;
+			flex-wrap: nowrap;
+		}
+
+		.wrap {
+			-webkit-flex-wrap: wrap;
+			flex-wrap: wrap;
+		}
+		.wrap li {
+			background: transparant;
+		}
+
+		.wrap-reverse {
+			-webkit-flex-wrap: wrap-reverse;
+			flex-wrap: wrap-reverse;
+		}
+		.wrap-reverse li {
+			background: transparant;
+		}
+
+		.flex-item {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.pic {
+			width: 100px;
+			border-radius: 50%;
+			border: double 6px white;
+			background-image: linear-gradient(white, white), radial-gradient(circle at top right);
+			background-origin: border-box;
+			background-clip: content-box, border-box;
+		}
+		.card {
+			z-index: 0;
+			background-color: #ECEFF1;
+			padding-bottom: 20px;
+			margin-top: 0;
+			margin-bottom: 10px;
+			border-radius: 10px;
+		}
+
+		.top {
+			padding-top: 10px;
+			padding-left: 13% !important;
+			padding-right: 13% !important;
+		}
+
+		/*Icon progressbar*/
+		#progressbar {
+			margin-bottom: 30px;
+			overflow: hidden;
+			color: #455A64;
+			padding-left: 0;
+			margin-top: 30px;
+		}
+
+		#progressbar li {
+			list-style-type: none;
+			font-size: 13px;
+			width: 20%;
+			float: left;
+			position: relative;
+			font-weight: 400;
+		}
+
+		#progressbar .step0:before {
+			font-family: FontAwesome;
+			content: "\f10c";
+			color: #fff;
+		}
+
+		#progressbar li:before {
+			width: 40px;
+			height: 40px;
+			line-height: 45px;
+			display: block;
+			font-size: 20px;
+			background: #C5CAE9;
+			border-radius: 50%;
+			margin: auto;
+			padding: 0;
+		}
+
+		/*ProgressBar connectors*/
+		#progressbar li:after {
+			content: '';
+			width: 100%;
+			height: 12px;
+			background: #C5CAE9;
+			position: absolute;
+			left: 0;
+			top: 16px;
+			z-index: -1;
+		}
+
+		#progressbar li:last-child:after {
+			border-top-right-radius: 10px;
+			border-bottom-right-radius: 10px;
+			position: absolute;
+			left: -50%;
+		}
+
+		#progressbar li: nth-child(2): after,
+		#progressbar li: nth-child(3): after, {
+			left: 0;
+		}
+
+		#progressbar li:first-child:after {
+			border-top-left-radius: 10px;
+			border-bottom-left-radius: 10px;
+			position: absolute;
+			left: 50%;
+		}
+
+		#progressbar li:last-child:after {
+			border-top-right-radius: 50px;
+			border-bottom-right-radius: 50px;
+		}
+
+		#progressbar li:first-child:after {
+			border-top-left-radius: 10px;
+			border-bottom-left-radius: 10px;
+		}
+
+		/*Color number of the step and the connector before it*/
+		#progressbar li.active:before,
+		#progressbar li.active:after {
+			background: #f99d1b;
+		}
+
+		#progressbar li.active:before {
+			font-family: FontAwesome;
+			content: "\f00c";
+		}
+
+		.icon {
+			width: 60px;
+			height: 60px;
+			margin-right: 10px;
+		}
+
+		.icon-content {
+			padding-bottom: 20px;
+		}
+
+		@media screen and(max-width: 992px) {
+			.icon-content {
+				width: 50%;
+			}
+		}
+
+
+		.drop-title {
+			color: #444;
+			font-size: 20px;
+			font-weight: bold;
+			text-align: center;
+			transition: color 0.2s ease-in-out;
+		}
+
+
+		input[type=file] {
+			width: 350px;
+			max-width: 100%;
+			color: #444;
+			padding: 5px;
+			background: #fff;
+			border-radius: 10px;
+			border: 1px solid #555;
+		}
+
+		input[type=file]::file-selector-button {
+			margin-right: 20px;
+			border: none;
+			background-color: #0c2c01;
+			padding: 10px 20px;
+			border-radius: 10px;
+			color: #fff;
+			cursor: pointer;
+			transition: background 0.2s ease-in-out;
+		}
+
+		input[type=file]::file-selector-button:hover {
+			background: #0d45a5;
+		}
+	</style>
+	<div class="card">
+		<div class="row d-flex justify-content-between px-3 top">
+			<div class="d-flex">
+			    <a style="color: black;text-decoration: none;" 
+					href="{{path('Softindex',{'id':m.id} )}}">
+					<h5>
+						Mudanças: 
+						<span class="text-primary font-weight-bold">#{{m.id}}</span>
+					</h5>
+				</a>
+			</div>
+
+			<div class="d-flex flex-column text-sm-right">
+				<a style="color: black;text-decoration: none;" 
+					href="{{path('flow',{'id':m.id} )}}">
+					<p class="mb-0">Mudanças criadas: <span>{{m.datacreation}}</span></p>
+					<p>Fluxos de processo</p>
+				</a>
+			</div>
+		</div>
+		<!-- Add class 'active' to progress -->
+		<div class="row d-flex justify-content-center">
+			<div class="col-12">
+				<ul id="progressbar" class="text-center">
+					<li class="active step0"></li>
+					<li class="active step0"></li>
+					<li class="active step0"></li>
+					<li class="active step0"></li>
+					<li class="step0"></li>
+				</ul>
+			</div>
+		</div>
+		<div class="row justify-content-between top">
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('gerente_software',{'id':m.id} )}}">
+					<img class="icon" src="{{ asset('analysing.png') }}"/>
+				</a>
+				<div class="d-flex flex-column">
+					<a style="color: black;text-decoration: none;" href="{{path('gerente_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Demanda<br/>e<br/>verificação
+						</p>
+					</a>
+				</div>
+			</div>
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('Solicitante_software',{'id':m.id} )}}">
+					<img class="icon" src="https://i.imgur.com/9nnc9Et.png"/>
+				</a>
+				<div class="d-flex flex-column">
+
+					<a style="color: black;text-decoration: none;" href="{{path('Solicitante_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Documentação<br/>e<br/>análise
+						</p>
+					</a>
+				</div>
+			</div>
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('dev_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('software-development.png') }}"/>
+
+				</a>
+				<div class="d-flex flex-column">
+
+					<a style="color: black;text-decoration: none;" href="{{path('dev_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Desenvolvimento<br/>e<br/>concepção
+						</p>
+					</a>
+				</div>
+			</div>
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('test_ti_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('testing.png') }}"/>
+
+				</a>
+				<div class="d-flex flex-column">
+
+					<a style="color: black;text-decoration: none;" href="{{path('test_ti_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Verificação<br/>e<br/>teste de TI
+						</p>
+					</a>
+				</div>
+			</div>
+			<div class="row d-flex icon-content">
+
+				<a style="text-decoration: none;" href="{{path('test_solicitante_software',{'id':m.id} )}}">
+					<img class="icon" src="{{ asset('approve.png') }}"/>
+				</a>
+				<div class="d-flex flex-column">
+
+					<a style="color: black;text-decoration: none;" href="{{path('test_solicitante_software',{'id':m.id} )}}">
+						<p class="font-weight-bold">
+							Verificação<br/>e<br/>teste do solicitante
+						</p>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+		{% for item in m.muds.stepsTest %}
+		<div class="row">
+			<div class="col-md-2 mb-3">
+				<label for="1">Fase</label>
+				<input class="form-control" value="{{item.step}}">
+			</div>
+			<div class="col-md-3 mb-3">
+				<label for="1desc">Comentário</label>
+				<br>
+				<input value="{{item.comment}}" class="form-control">
+			</div>
+			<div class="col-md-5 mb-3">
+				<label>Data de Levantamento</label>
+				<input value="{{item.date}}" type="date" lang="pt-BR" class="date form-control">
+			</div>
+			
+			<div class="col-md-5 mb-3">
+				<label>Aprovada</label>
+				<input value="{{item.aprove}}" type="text" lang="pt-BR" class="date form-control">
+			</div>
+			{% if item.doc != null %}
+				
+			<div class="col-md-3 mb-3">
+				<label>Anexo</label><br>
+      			<a href="{{ asset('assets/') }}{{m.id}}/test/ti/{{item.doc}}" style="
+								  						border: none;
+								  						background-color: #0c2c01;
+								  						padding: 10px 20px;
+								  						border-radius: 10px;
+								  						color: #fff;
+								  						cursor: pointer;
+								  						transition: background .2s ease-in-out;">
+					⇬ Baixar arquivos
+				</a>
+			</div>
+			{% endif %}
+
+			{% if perm %}
+				<div class="col-md-2 mb-3">
+					<label>Excluir</label><br>
+      				<a href="{{path('deleteTestTi',{'id':item.id,'idS':m.muds.id, 'idm': m.id} )}}" style="
+									  						border: none;
+									  						background-color: #0c2c01;
+									  						padding: 10px 20px;
+									  						border-radius: 10px;
+									  						color: #fff;
+									  						cursor: pointer;
+									  						transition: background .2s ease-in-out;">
+						Excluir
+					</a>
+				</div>
+			{% endif %}
+		</div>
+		{% else %}
+
+	{% endfor %}
+
+	<form class="form-formulario_login" action="{{ path('AddTestTi_software',{'id': m.mudS.id, 'idm': m.id}) }}" enctype="multipart/form-data" method="post">
+		<div class="row" name="test2" id="test2">
+
+		</div>
+	<div class="col-md-3 mb-3">
+		<a class="btn" style=" min-width: 86px;
+						    				height: 32px;
+						    				display: -ms-flexbox;
+						    				display: flex;
+						    				-ms-flex-align: center;
+						    				align-items: center;
+						    				-ms-flex-pack: center;
+						    				justify-content: center;
+						    				background: #afbace;
+						    				color: #fff;
+						    				box-shadow: none;
+						    				border-radius: 4px;
+						    				padding: 0 5px;
+						    				border: none;" onclick="myFunction()">+ Adicionar Fase</a>
+	</div>
+
+	<label class="drop-container flex-container wrap" for="images" id="dropcontainer">
+{% set noFile = true %}
+		{% for item in m.muds.stepsTest %}
+			{% if item.doc == null %}
+				{% else %}
+					<li class="flex-item" style="text-align: center;margin-right: 20px">
+						<a style="text-decoration: none;" href="{{ asset('assets/') }}{{m.id}}/test/ti/{{item.doc}}">
+							{% if item.doc|split('.')|last  == "xlsx" %}
+								<img src="{{ asset('excel.png') }}" alt="" class="pic">
+							{% elseif item.doc|split('.')|last  == "doc" or  item.doc|split('.')|last  == "docx" %}
+								<img style="" src="{{ asset('word.png') }}" alt="" class="pic">
+							{% elseif  item.doc|split('.')|last  == "pdf"  %}
+								<img src="{{ asset('pdf.png') }}" alt="" class="pic">
+							{% endif %}<br>
+							<span>{{item.step}}</span><br>
+							<span>{{item.doc}}</span>
+						</a>
+					</li>
+						{% set noFile = false %}
+			{% endif %}
+			{% endfor %}
+			{% if noFile %}
+				
+				<span class="drop-title">
+					Documentos anexados<br>
+					Arraste e solte seus arquivos aqui
+				</span>
+			{% endif %}
+	</label>
+
+{% if perm %}
+	
+	<div class="row">
+		<div class="col-md-6 mb-3">
+			<button 
+				type="submit"  
+				id="btn" 
+				class="btn btn-info mt-2 text-white" 
+				style="background-color: #0c2c01;border-color: #0c2c01;">
+					Enviar
+			</button>	
+		</div>
+	</div>	
+
+{% endif %}
+	<div class="row">
+		<div class="col-md-6 mb-3">
+			<a href="{{path('test_solicitante_software',{'id':m.id} )}}" id="btn" class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Próximo</a>
+		</div>
+	</div>
+
+
+
+		<br>
+		<br>
+		<br>
+		<br>
+
+	</form>
+	<!-- Load Babel -->
+	<!-- v6 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
+	<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+	<!-- Your custom script here -->
+	<script type="text/babel">
+		const dropContainer = document.getElementById("dropcontainer")
+				  const fileInput = document.getElementById("mudancas_gestor_software_docs")
+				
+				  dropContainer.addEventListener("dragover", (e) => {
+				    // prevent default to allow drop
+				    e.preventDefault()
+				  }, false)
+				
+				  dropContainer.addEventListener("dragenter", () => {
+				    dropContainer.classList.add("drag-active")
+				  })
+				
+				  dropContainer.addEventListener("dragleave", () => {
+				    dropContainer.classList.remove("drag-active")
+				  })
+				
+				  dropContainer.addEventListener("drop", (e) => {
+				    e.preventDefault()
+				    dropContainer.classList.remove("drag-active")
+				    fileInput.files = e.dataTransfer.files
+				  })
+
+	</script>
+
+	<script>
+
+		$(document).ready(function () {
+$('#mudancas_software_gerente_de_aprovacao_gestor').chosen({});
+});
+
+var i = 0;
+var array = ["Não", "Sim"];
+var i = 0;
+
+
+if (i === 0) {
+document.getElementById("btnSub").style.display = 'none';
+}
+
+
+function myFunction() {
+i++;
+const div = document.createElement("div");
+div.setAttribute('id', i + 'div');
+div.setAttribute('class', 'col-md-6 mb-3');
+document.getElementById('test2').appendChild(div);
+
+const label = document.createElement('label');
+label.setAttribute('for', i);
+label.innerHTML = "Fase";
+document.getElementById(i + 'div').appendChild(label);
+// 'class':'form-control'
+const node = document.createElement("input");
+node.setAttribute('class', 'form-control');
+node.setAttribute('id', i);
+node.setAttribute('name', i);
+document.getElementById(i + 'div').appendChild(node);
+
+
+const div3 = document.createElement("div");
+div3.setAttribute('id', i + 'div3');
+div3.setAttribute('class', 'col-md-6 mb-3');
+document.getElementById('test2').appendChild(div3);
+
+const label3 = document.createElement('label');
+label3.setAttribute('for', i + 'desc');
+label3.innerHTML = "Comentário";
+document.getElementById(i + 'div3').appendChild(label3);
+
+const br = document.createElement('br');
+document.getElementById(i + 'div3').appendChild(br);
+
+const node3 = document.createElement("input");
+node3.setAttribute('id', i + 'desc');
+node3.setAttribute('name', i + 'desc');
+node3.setAttribute('class', 'form-control');
+document.getElementById(i + 'div3').appendChild(node3);
+
+
+const div2 = document.createElement("div");
+div2.setAttribute('id', i + 'div2');
+div2.setAttribute('class', 'col-md-5 mb-3');
+document.getElementById('test2').appendChild(div2);
+
+const label2 = document.createElement('label');
+label2.setAttribute('for', i + 'test');
+label2.innerHTML = "Data da ocorrência";
+document.getElementById(i + 'div2').appendChild(label2);
+
+const node2 = document.createElement("input");
+node2.setAttribute('id', i + 'date');
+node2.setAttribute('name', i + 'date');
+node2.setAttribute('type', 'date');
+node2.setAttribute('lang', 'pt-BR');
+node2.setAttribute('class', 'date form-control');
+document.getElementById(i + 'div2').appendChild(node2);
+
+
+const div5 = document.createElement("div");
+div5.setAttribute('id', i + 'div5');
+div5.setAttribute('class', 'col-md-5 mb-3');
+document.getElementById('test2').appendChild(div5);
+
+const label5 = document.createElement('label');
+label5.setAttribute('for', i + 'test');
+label5.innerHTML = "Aprovada";
+document.getElementById(i + 'div5').appendChild(label5);
+
+
+const node5 = document.createElement("select");
+node5.setAttribute('id', i + 'test');
+node5.setAttribute('class', 'custom-select');
+node5.setAttribute('name', i + 'test');
+document.getElementById(i + 'div5').appendChild(node5);
+for (var j = 0; j < array.length; j++) {
+var option = document.createElement("option");
+option.value = array[j];
+option.text = array[j];
+node5.appendChild(option);
+}
+
+const div4 = document.createElement("div");
+div4.setAttribute('id', i + 'div4');
+div4.setAttribute('class', 'col-md-2 mb-3');
+document.getElementById('test2').appendChild(div4);
+
+const label4 = document.createElement('label');
+label4.setAttribute('for', i + 'test');
+label4.innerHTML = "Anexo";
+document.getElementById(i + 'div4').appendChild(label4);
+
+const node4 = document.createElement("input");
+node4.setAttribute('id', i + 'file');
+node4.setAttribute('name', i + 'file');
+node4.setAttribute('type', 'file');
+document.getElementById(i + 'div4').appendChild(node4);
+
+if (i === 1) {
+document.getElementById("btnSub").style.display = 'inline';
+}
+}
+	</script>
+
+
 {% endblock %}
