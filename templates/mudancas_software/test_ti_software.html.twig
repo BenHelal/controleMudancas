@@ -154,7 +154,7 @@
 		/*Color number of the step and the connector before it*/
 		#progressbar li.active:before,
 		#progressbar li.active:after {
-			background: #f99d1b;
+			background: #00C9A7;
 		}
 
 		#progressbar li.active:before {
@@ -318,6 +318,18 @@
 		</div>
 	</div>
 
+		<h3>
+		Lista adicionada por Testadores TI :
+	<button style="
+border: none;
+background-color: green-light;
+padding: 10px 20px;
+border-radius: 10px;
+color: #fff;
+cursor: pointer;
+transition: background .2s ease-in-out;" onclick="visTest()"><img  style="width: 10px" src="{{ asset('visible.png') }}"/></button>
+	</h3>
+<div id="testit">
 		{% for item in m.muds.stepsTest %}
 		<div class="row">
 			<div class="col-md-2 mb-3">
@@ -355,7 +367,7 @@
 			</div>
 			{% endif %}
 
-			{% if perm %}
+			{% if perm and m.muds.doctestsol == null  %}
 				<div class="col-md-2 mb-3">
 					<label>Excluir</label><br>
       				<a href="{{path('deleteTestTi',{'id':item.id,'idS':m.muds.id, 'idm': m.id} )}}" style="
@@ -374,13 +386,89 @@
 		{% else %}
 
 	{% endfor %}
+	</div>
 
+	<h3>
+		Lista adicionada por Testadores TI Solicitante :
+		<button style="
+			border: none;
+			background-color: green-light;
+			padding: 10px 20px;
+			border-radius: 10px;
+			color: #fff;
+			cursor: pointer;
+			transition: background .2s ease-in-out;" onclick="visTests()">
+				<img  style="width: 10px" src="{{ asset('visible.png') }}"/>
+		</button>
+	</h3>
+	<div id="tests">
+	{% for item in m.muds.stepsTestSol %}
+		{% if item.aprove != 'Sim' %}
+			
+		<div class="row">
+			<div class="col-md-2 mb-3">
+				<label for="1">Fase</label>
+				<input class="form-control" value="{{item.step}}">
+			</div>
+			<div class="col-md-3 mb-3">
+				<label for="1desc">Comentário</label>
+				<br>
+				<input value="{{item.comment}}" class="form-control">
+			</div>
+			<div class="col-md-5 mb-3">
+				<label>Data de Levantamento</label>
+				<input value="{{item.date}}" type="date" lang="pt-BR" class="date form-control">
+			</div>
+			
+			<div class="col-md-5 mb-3">
+				<label>Aprovada</label>
+				<input value="{{item.aprove}}" type="text" lang="pt-BR" class="date form-control">
+			</div>
+			{% if item.doc != null %}
+				
+			<div class="col-md-3 mb-3">
+				<label>Anexo</label><br>
+      			<a href="{{ asset('assets/') }}{{m.id}}/test/sol/{{item.doc}}" style="
+								  						border: none;
+								  						background-color: #0c2c01;
+								  						padding: 10px 20px;
+								  						border-radius: 10px;
+								  						color: #fff;
+								  						cursor: pointer;
+								  						transition: background .2s ease-in-out;">
+					⇬ Baixar arquivos
+				</a>
+			</div>
+			{% endif %}
+
+			{% if perm and m.muds.doctestsol == null  %}
+				<div class="col-md-2 mb-3">
+					<label>Excluir</label><br>
+      				<a href="{{path('deleteTestSol',{'id':item.id,'idS':m.muds.id, 'idm': m.id} )}}" style="
+									  						border: none;
+									  						background-color: #0c2c01;
+									  						padding: 10px 20px;
+									  						border-radius: 10px;
+									  						color: #fff;
+									  						cursor: pointer;
+									  						transition: background .2s ease-in-out;">
+						Excluir
+					</a>
+				</div>
+			{% endif %}
+		</div>
+			{% endif %}
+	{% endfor %}
+	</div>
+	<h3>Novas etapas do Testadores :</h3>
 	<form class="form-formulario_login" action="{{ path('AddTestTi_software',{'id': m.mudS.id, 'idm': m.id}) }}" enctype="multipart/form-data" method="post">
 		<div class="row" name="test2" id="test2">
 
 		</div>
-	<div class="col-md-3 mb-3">
-		<a class="btn" style=" min-width: 86px;
+		
+		{% if perm and m.muds.doctestsol == null  %}
+			<div class="col-md-3 mb-3">
+				<a class="btn" style=" min-width: 86px;
 						    				height: 32px;
 						    				display: -ms-flexbox;
 						    				display: flex;
@@ -394,10 +482,10 @@
 						    				border-radius: 4px;
 						    				padding: 0 5px;
 						    				border: none;" onclick="myFunction()">+ Adicionar Fase</a>
-	</div>
-
+			</div>
+		{% endif %}
 	<label class="drop-container flex-container wrap" for="images" id="dropcontainer">
-{% set noFile = true %}
+		{% set noFile = true %}
 		{% for item in m.muds.stepsTest %}
 			{% if item.doc == null %}
 				{% else %}
@@ -426,7 +514,7 @@
 			{% endif %}
 	</label>
 
-{% if perm %}
+{% if perm and m.muds.doctestsol == null  %}
 	
 	<div class="row">
 		<div class="col-md-6 mb-3">
@@ -485,6 +573,24 @@
 	</script>
 
 	<script>
+
+function visTest() {
+  var x = document.getElementById("testit");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
+
+function visTests() {
+  var x = document.getElementById("tests");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
 
 		$(document).ready(function () {
 $('#mudancas_software_gerente_de_aprovacao_gestor').chosen({});

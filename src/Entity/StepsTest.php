@@ -32,9 +32,25 @@ class StepsTest
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $aprove = null;
 
+    
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $affect = null;
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getAffect(): ?string
+    {
+        return $this->affect;
+    }
+
+    public function setAffect(string $affect): self
+    {
+        $this->affect = $affect;
+
+        return $this;
     }
 
     public function getMudancasSoftware(): ?MudancasSoftware

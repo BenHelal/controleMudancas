@@ -154,7 +154,7 @@
 		/*Color number of the step and the connector before it*/
 		#progressbar li.active:before,
 		#progressbar li.active:after {
-			background: #f99d1b;
+			background: #00C9A7;
 		}
 
 		#progressbar li.active:before {
@@ -317,7 +317,20 @@
 			</div>
 		</div>
 	</div>
-
+	<h3>
+		Lista adicionada por Testadores Solicitante :
+		<button style="
+			border: none;
+			background-color: green-light;
+			padding: 10px 20px;
+			border-radius: 10px;
+			color: #fff;
+			cursor: pointer;
+			transition: background .2s ease-in-out;" onclick="visTests()">
+				<img  style="width: 10px" src="{{ asset('visible.png') }}"/>
+		</button>
+	</h3>
+	<div id="tests">
 		{% for item in m.muds.stepsTestSol %}
 		<div class="row">
 			<div class="col-md-2 mb-3">
@@ -355,7 +368,7 @@
 			</div>
 			{% endif %}
 
-			{% if perm %}
+			{% if perm and m.muds.doctestsol == null %}
 				<div class="col-md-2 mb-3">
 					<label>Excluir</label><br>
       				<a href="{{path('deleteTestSol',{'id':item.id,'idS':m.muds.id, 'idm': m.id} )}}" style="
@@ -374,28 +387,92 @@
 		{% else %}
 
 	{% endfor %}
+	</div>
 
+		<h3>
+		Lista adicionada por Testadores TI :
+	<button style="
+border: none;
+background-color: green-light;
+padding: 10px 20px;
+border-radius: 10px;
+color: #fff;
+cursor: pointer;
+transition: background .2s ease-in-out;" onclick="visTest()"><img  style="width: 10px" src="{{ asset('visible.png') }}"/></button>
+	</h3>
+<div id="testit">{% set noFile = true %}
+		{% for item in m.muds.stepsTest %}
+		{% if item.aprove == "Sim" %}	
+		
+						{% set noFile = false %}
+		<div class="row">
+			<div class="col-md-2 mb-3">
+				<label for="1">Fase</label>
+				<input class="form-control" value="{{item.step}}">
+			</div>
+			<div class="col-md-3 mb-3">
+				<label for="1desc">Comentário</label>
+				<br>
+				<input value="{{item.comment}}" class="form-control">
+			</div>
+			<div class="col-md-5 mb-3">
+				<label>Data de Levantamento</label>
+				<input value="{{item.date}}" type="date" lang="pt-BR" class="date form-control">
+			</div>
+			
+			<div class="col-md-5 mb-3">
+				<label>Aprovada</label>
+				<input value="{{item.aprove}}" type="text" lang="pt-BR" class="date form-control">
+			</div>
+			{% if item.doc != null %}
+				
+			<div class="col-md-3 mb-3">
+				<label>Anexo</label><br>
+      			<a href="{{ asset('assets/') }}{{m.id}}/test/ti/{{item.doc}}" style="
+								  						border: none;
+								  						background-color: #0c2c01;
+								  						padding: 10px 20px;
+								  						border-radius: 10px;
+								  						color: #fff;
+								  						cursor: pointer;
+								  						transition: background .2s ease-in-out;">
+					⇬ Baixar arquivos
+				</a>
+			</div>
+			{% endif %}
+
+			</div>
+		{% endif %}
+	{% endfor %}
+	</div>
+<br>
+<h3>
+		
+		Novas etapas do Solicitante :</h3>
 	<form class="form-formulario_login" action="{{ path('AddTestSol_software',{'id': m.mudS.id, 'idm': m.id}) }}" enctype="multipart/form-data" method="post">
 
 
 		<div class="row" name="test2" id="test2"></div>
-		<div class="col-md-3 mb-3">
-			<a class="btn" style=" min-width: 86px;
-				    				height: 32px;
-				    				display: -ms-flexbox;
-				    				display: flex;
-				    				-ms-flex-align: center;
-				    				align-items: center;
-				    				-ms-flex-pack: center;
-				    				justify-content: center;
-				    				background: #afbace;
-				    				color: #fff;
-				    				box-shadow: none;
-				    				border-radius: 4px;
-				    				padding: 0 5px;
-				    				border: none;" onclick="myFunction()">+ Adicionar Fase</a>
-		</div>
-
+		
+		
+		{% if perm  and m.muds.doctestsol == null %}
+			<div class="col-md-3 mb-3">
+				<a class="btn" style=" min-width: 86px;
+					    				height: 32px;
+					    				display: -ms-flexbox;
+					    				display: flex;
+					    				-ms-flex-align: center;
+					    				align-items: center;
+					    				-ms-flex-pack: center;
+					    				justify-content: center;
+					    				background: #afbace;
+					    				color: #fff;
+					    				box-shadow: none;
+					    				border-radius: 4px;
+					    				padding: 0 5px;
+					    				border: none;" onclick="myFunction()">+ Adicionar Fase</a>
+			</div>
+		{% endif %}
 		<label class="drop-container flex-container wrap" for="images" id="dropcontainer">
 			{% set noFile = true %}
 			{% for item in m.muds.stepsTestSol %}
@@ -429,22 +506,61 @@
 		</label>
 
 		
-		{% if perm %}
-			<div class="row">
-				<div class="col-md-6 mb-3">
-					<button type="submit" id="btn" class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">
-						Enviar
-					</button>
-				</div>
+		{% if perm and m.muds.doctestsol == null %}
+			<div class="col-md-6 mb-3">
+				<button type="submit" id="btn" class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">
+					Enviar
+				</button>
+			</div>	
+		{% endif %}
+		{% if perm and m.muds.doctestsol == null and m.muds.stepsTestSol|length > 0 %}
+			<div class="col-md-2 mb-3">
+      			<a   data-toggle="modal" data-target="#closeTest" class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">
+					Concluir teste
+				</a>
 			</div>
 		{% endif %}
-		<div class="row">
-			<div class="col-md-6 mb-3">
-				<a href="{{path('test_solicitante_software',{'id':m.id} )}}" id="btn" class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Próximo</a>
-			</div>
-		</div>
 
 	</form>
+
+
+		<div class="modal fade" id="closeTest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="exampleModalLongTitle">Feche o Teste</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<ul>
+									<li>
+										<h5>Observe bem :<h5>
+										<ul>
+													<li>
+														se você fechar o teste o software mudancas estará pronto para ser implementado o mais rápido possível
+													</li>
+													<li>
+														você não poderá mais adicionar outro teste relacionado a esta versão da documentação.
+													</li>
+													<li>qualquer alteração após esta divisão será através da criação de novas mudancas e nova documentação.</li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+							<div class="modal-footer">
+								<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
+								<a  href="{{path('CloseTestSol',{'idS':m.muds.id, 'idm': m.id} )}}"  class="btn btn-info mt-2 text-white">Concluir teste</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
 	<!-- Load Babel -->
 	<!-- v6 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
 	<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -474,130 +590,145 @@
 
 	</script>
 
-
 	<script>
 
-		$(document).ready(function () {
-$('#mudancas_software_gerente_de_aprovacao_gestor').chosen({});
-});
+		function visTest() {
+		  var x = document.getElementById("testit");
+		  if (x.style.display === "none") {
+		    x.style.display = "block";
+		  } else {
+		    x.style.display = "none";
+		  }
+		}
 
-var i = 0;
-var array = ["Não", "Sim"];
-var i = 0;
+		function visTests() {
+		  var x = document.getElementById("tests");
+		  if (x.style.display === "none") {
+		    x.style.display = "block";
+		  } else {
+		    x.style.display = "none";
+		  }
+		}
+				$(document).ready(function () {
+		$('#mudancas_software_gerente_de_aprovacao_gestor').chosen({});
+		});
 
-
-if (i === 0) {
-document.getElementById("btnSub").style.display = 'none';
-}
-
-
-function myFunction() {
-i++;
-const div = document.createElement("div");
-div.setAttribute('id', i + 'div');
-div.setAttribute('class', 'col-md-6 mb-3');
-document.getElementById('test2').appendChild(div);
-
-const label = document.createElement('label');
-label.setAttribute('for', i);
-label.innerHTML = "Fase";
-document.getElementById(i + 'div').appendChild(label);
-// 'class':'form-control'
-const node = document.createElement("input");
-node.setAttribute('class', 'form-control');
-node.setAttribute('id', i);
-node.setAttribute('name', i);
-document.getElementById(i + 'div').appendChild(node);
+		var i = 0;
+		var array = ["Não", "Sim"];
+		var i = 0;
 
 
-const div3 = document.createElement("div");
-div3.setAttribute('id', i + 'div3');
-div3.setAttribute('class', 'col-md-6 mb-3');
-document.getElementById('test2').appendChild(div3);
-
-const label3 = document.createElement('label');
-label3.setAttribute('for', i + 'desc');
-label3.innerHTML = "Comentário";
-document.getElementById(i + 'div3').appendChild(label3);
-
-const br = document.createElement('br');
-document.getElementById(i + 'div3').appendChild(br);
-
-const node3 = document.createElement("input");
-node3.setAttribute('id', i + 'desc');
-node3.setAttribute('name', i + 'desc');
-node3.setAttribute('class', 'form-control');
-document.getElementById(i + 'div3').appendChild(node3);
+		if (i === 0) {
+		document.getElementById("btnSub").style.display = 'none';
+		}
 
 
-const div2 = document.createElement("div");
-div2.setAttribute('id', i + 'div2');
-div2.setAttribute('class', 'col-md-3 mb-3');
-document.getElementById('test2').appendChild(div2);
+		function myFunction() {
+		i++;
+		const div = document.createElement("div");
+		div.setAttribute('id', i + 'div');
+		div.setAttribute('class', 'col-md-6 mb-3');
+		document.getElementById('test2').appendChild(div);
 
-const label2 = document.createElement('label');
-label2.setAttribute('for', i + 'test');
-label2.innerHTML = "Data da ocorrência";
-document.getElementById(i + 'div2').appendChild(label2);
-
-const node2 = document.createElement("input");
-node2.setAttribute('id', i + 'date');
-node2.setAttribute('name', i + 'date');
-node2.setAttribute('type', 'date');
-node2.setAttribute('lang', 'pt-BR');
-node2.setAttribute('class', 'date form-control');
-document.getElementById(i + 'div2').appendChild(node2);
-
-
-const div5 = document.createElement("div");
-div5.setAttribute('id', i + 'div5');
-div5.setAttribute('class', 'col-md-3 mb-3');
-document.getElementById('test2').appendChild(div5);
-
-const label5 = document.createElement('label');
-label5.setAttribute('for', i + 'test');
-label5.innerHTML = "Aprovada";
-document.getElementById(i + 'div5').appendChild(label5);
+		const label = document.createElement('label');
+		label.setAttribute('for', i);
+		label.innerHTML = "Fase";
+		document.getElementById(i + 'div').appendChild(label);
+		// 'class':'form-control'
+		const node = document.createElement("input");
+		node.setAttribute('class', 'form-control');
+		node.setAttribute('id', i);
+		node.setAttribute('name', i);
+		document.getElementById(i + 'div').appendChild(node);
 
 
-const node5 = document.createElement("select");
-node5.setAttribute('id', i + 'test');
-node5.setAttribute('class', 'custom-select');
-node5.setAttribute('name', i + 'test');
-document.getElementById(i + 'div5').appendChild(node5);
+		const div3 = document.createElement("div");
+		div3.setAttribute('id', i + 'div3');
+		div3.setAttribute('class', 'col-md-6 mb-3');
+		document.getElementById('test2').appendChild(div3);
 
-for (var j = 0; j < array.length; j++) {
-var option = document.createElement("option");
-option.value = array[j];
-option.text = array[j];
-node5.appendChild(option);
-}
+		const label3 = document.createElement('label');
+		label3.setAttribute('for', i + 'desc');
+		label3.innerHTML = "Comentário";
+		document.getElementById(i + 'div3').appendChild(label3);
 
+		const br = document.createElement('br');
+		document.getElementById(i + 'div3').appendChild(br);
 
-const div4 = document.createElement("div");
-div4.setAttribute('id', i + 'div4');
-div4.setAttribute('class', 'col-md-3 mb-3');
-document.getElementById('test2').appendChild(div4);
-
-const label4 = document.createElement('label');
-label4.setAttribute('for', i + 'test');
-label4.innerHTML = "Anexo";
-document.getElementById(i + 'div4').appendChild(label4);
+		const node3 = document.createElement("input");
+		node3.setAttribute('id', i + 'desc');
+		node3.setAttribute('name', i + 'desc');
+		node3.setAttribute('class', 'form-control');
+		document.getElementById(i + 'div3').appendChild(node3);
 
 
-const node4 = document.createElement("input");
-node4.setAttribute('id', i + 'file');
-node4.setAttribute('name', i + 'file');
-node4.setAttribute('type', 'file');
-document.getElementById(i + 'div4').appendChild(node4);
+		const div2 = document.createElement("div");
+		div2.setAttribute('id', i + 'div2');
+		div2.setAttribute('class', 'col-md-3 mb-3');
+		document.getElementById('test2').appendChild(div2);
+
+		const label2 = document.createElement('label');
+		label2.setAttribute('for', i + 'test');
+		label2.innerHTML = "Data da ocorrência";
+		document.getElementById(i + 'div2').appendChild(label2);
+
+		const node2 = document.createElement("input");
+		node2.setAttribute('id', i + 'date');
+		node2.setAttribute('name', i + 'date');
+		node2.setAttribute('type', 'date');
+		node2.setAttribute('lang', 'pt-BR');
+		node2.setAttribute('class', 'date form-control');
+		document.getElementById(i + 'div2').appendChild(node2);
 
 
-if (i === 1) {
-document.getElementById("btnSub").style.display = 'inline';
-}
+		const div5 = document.createElement("div");
+		div5.setAttribute('id', i + 'div5');
+		div5.setAttribute('class', 'col-md-3 mb-3');
+		document.getElementById('test2').appendChild(div5);
 
-}
+		const label5 = document.createElement('label');
+		label5.setAttribute('for', i + 'test');
+		label5.innerHTML = "Aprovada";
+		document.getElementById(i + 'div5').appendChild(label5);
+
+
+		const node5 = document.createElement("select");
+		node5.setAttribute('id', i + 'test');
+		node5.setAttribute('class', 'custom-select');
+		node5.setAttribute('name', i + 'test');
+		document.getElementById(i + 'div5').appendChild(node5);
+
+		for (var j = 0; j < array.length; j++) {
+		var option = document.createElement("option");
+		option.value = array[j];
+		option.text = array[j];
+		node5.appendChild(option);
+		}
+
+
+		const div4 = document.createElement("div");
+		div4.setAttribute('id', i + 'div4');
+		div4.setAttribute('class', 'col-md-3 mb-3');
+		document.getElementById('test2').appendChild(div4);
+
+		const label4 = document.createElement('label');
+		label4.setAttribute('for', i + 'test');
+		label4.innerHTML = "Anexo";
+		document.getElementById(i + 'div4').appendChild(label4);
+
+
+		const node4 = document.createElement("input");
+		node4.setAttribute('id', i + 'file');
+		node4.setAttribute('name', i + 'file');
+		node4.setAttribute('type', 'file');
+		document.getElementById(i + 'div4').appendChild(node4);
+
+
+		if (i === 1) {
+		document.getElementById("btnSub").style.display = 'inline';
+		}
+
+		}
 	</script>
-
 
 {% endblock %}

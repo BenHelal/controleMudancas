@@ -155,7 +155,7 @@
 		/*Color number of the step and the connector before it*/
 		#progressbar li.active:before,
 		#progressbar li.active:after {
-			background: #f99d1b;
+			background: #00C9A7;
 		}
 
 		#progressbar li.active:before {
@@ -417,7 +417,9 @@
 			</div>
 		</div>
 	</div>
-	<main id='main'>
+	{% if manager %}
+		
+		<main id='main'>
 		<nav id="nav" style="--count: 4;">
 			<ul id="ul">
 				<li id="li" style="--index: 1;">
@@ -486,8 +488,9 @@
 				</li>
 			</ul>
 		</nav>
-	</main>
+		</main>
 
+	{% endif %}
 
 	<dialog id="dialog">
 		<button onclick="window.dialog.close();" aria-label="close" class="x">X</button>
@@ -567,13 +570,28 @@
 			{{ form_widget(form.priorityGestor,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
 		</div>
 	</div>
-
 	<div class="row">
-		<div class="col-md-12 mb-3">
+		<div class="col-md-9 mb-3">
+			{{ form_label(form.iniciar) }}
+			{{ form_widget(form.iniciar,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
+		</div>
+		<div class="col-md-3 mb-3">
 			{{ form_label(form.dateInicio) }}
 			{{ form_widget(form.dateInicio,{'attr':{'class':'date form-control','rows': '4','id':'testnomeMudanca'}}) }}
 		</div>
 	</div>
+	{% if areaImpactadaDidntApp == false %}
+		<div class="row">
+			<div class="col-md-3 mb-3">
+				{{ form_label(form.appGestor) }}
+				{{ form_widget(form.appGestor,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
+			</div>
+			<div class="col-md-9 mb-3">
+				{{ form_label(form.commentGestor) }}
+				{{ form_widget(form.commentGestor,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
+			</div>
+		</div>
+	{% endif %}
 
 	{% for item in m.muds.stepsgestor %}
 		<div class="row">
@@ -603,41 +621,45 @@
 					⇬ Baixar arquivos
 				</a>
 			</div>
-			<div class="col-md-2 mb-3">
-				<label>Excluir</label><br>
-				<a href="{{path('deleteStepGestor',{'id':item.id,'idS':m.muds.id, 'idm': m.id} )}}" style="
-																				  						border: none;
-																				  						background-color: #0c2c01;
-																				  						padding: 10px 20px;
-																				  						border-radius: 10px;
-																				  						color: #fff;
-																				  						cursor: pointer;
-																				  						transition: background .2s ease-in-out;">
-					Excluir
-				</a>
-			</div>
+			{% if manager and m.appGest == null %}
+				<div class="col-md-2 mb-3">
+					<a href="{{path('deleteStepGestor',{'id':item.id,'idS':m.muds.id, 'idm': m.id} )}}" style="
+																					  						border: none;
+																					  						background-color: #0c2c01;
+																					  						padding: 10px 20px;
+																					  						border-radius: 10px;
+																					  						color: #fff;
+																					  						cursor: pointer;
+																					  						transition: background .2s ease-in-out;">
+						Excluir
+					</a>
+				</div>
+			{% endif %}
 		</div>
 		{% else %}
 
 	{% endfor %}
 
 	<div class="row" name="test2" id="test2"></div>
-	<div class="col-md-3 mb-3">
-		<a class="btn" style=" min-width: 86px;
-									    				height: 32px;
-									    				display: -ms-flexbox;
-									    				display: flex;
-									    				-ms-flex-align: center;
-									    				align-items: center;
-									    				-ms-flex-pack: center;
-									    				justify-content: center;
-									    				background: #afbace;
-									    				color: #fff;
-									    				box-shadow: none;
-									    				border-radius: 4px;
-									    				padding: 0 5px;
-									    				border: none;" onclick="myFunction()">+ Adicionar Fase</a>
-	</div>
+	{% if manager and m.appGest == null %}
+		<div class="col-md-3 mb-3">
+			<a class="btn" style=" 
+								min-width: 86px;
+								height: 32px;
+								display: -ms-flexbox;
+								display: flex;
+								-ms-flex-align: center;
+								align-items: center;
+								-ms-flex-pack: center;
+								justify-content: center;
+								background: #afbace;
+								color: #fff;
+								box-shadow: none;
+								border-radius: 4px;
+								padding: 0 5px;
+								border: none;" onclick="myFunction()">+ Adicionar Fase</a>
+		</div>
+	{% endif %}
 
 
 	<label class="drop-container flex-container wrap" for="images" id="dropcontainer">
@@ -672,48 +694,10 @@
 		{% endif %}
 	</label>
 	<br>
-	{% if areaImpactadaDidntApp == false and m.mangerMudancas.id == person.id %}
-		<div class="row">
-			<div id="appdiv" class="col-md-12 mb-3">
-				<label for="app">Aprovada</label>
-				<select id="app" class="custom-select" name="app">
-					<option {% if m.appMan == 2 %} selected="selected" {% endif %} value="2">Não</option>
-					<option {% if m.appMan == 1 %} selected="selected" {% endif %} selected="selected" value="1">Sim</option>
-				</select>
-			</div>
-		</div>
 
-		<div class="row">
-			<div id="appComdiv" class="col-md-12 mb-3">
-				<label for="appCom">Comentário</label>
-				<input {% if m.comMan != null %} value="{{m.comMan}}" {% endif %} id="appCom" class="form-control" name="appCom"/>
-			</div>
-		</div>
-	{% elseif areaImpactadaDidntApp == false and m.mangerMudancas.id != person.id and m.appMan != null %}
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				<label for="app">Aprovada</label>
-				<select class="custom-select">
-					<option {% if m.appMan == 2 %} selected="selected" {% endif %} value="2">
-						Não
-					</option>
-					<option {% if m.appMan == 1 %} selected="selected" {% endif %} value="1">
-						Sim
-					</option>
-				</select>
-			</div>
-		</div>
-		<div class="row">
-			<div id="appComdiv" class="col-md-12 mb-3">
-				<label for="appCom">Comentário</label>
-				<input {% if m.comMan != null %} value="{{m.comMan}}" {% endif %} id="appCom" class="form-control" name="appCom"/>
-			</div>
-		</div>
+	{% if manager and m.appGest == null %}
+		<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Enviar</button>
 	{% endif %}
-
-
-	<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Enviar</button>
-
 	{{ form_end(form) }}
 
 	<div class="row">
@@ -722,7 +706,11 @@
 		</div>
 	</div>
 
-
+	{% if manager and m.muds.docTestSol  != null and m.muds.appGestor != null %}
+		<a class="btn btn-info mt-2 text-white" data-toggle="modal" data-target="#imp">
+			Implementação
+		</a>	
+	{% endif %}
 	<!-- Load Babel -->
 	<!-- v6 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
 	<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -861,4 +849,53 @@
 	<script>
 		$(".date").datepicker({format: "dd-mm-yyyy", language: "pt-BR"});
 	</script>
+
+
+	{% if manager and m.muds.docTestSol   != null   %}
+
+					<div class="modal fade" id="imp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h2>Implementação</h2<buttontype="button"class="close"data-dismiss="modal"aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+
+							</div>
+							<div class="modal-body">
+								{{ form_start(formImp, {'attr':{'class':'form-group'}}) }}
+								<div class="row" style="margin-right: 12px; margin-left: 5px;">
+									<div class="col-md-12 mb-3">
+										{{ form_label(formImp.implemented) }}
+										{{ form_widget(formImp.implemented,{'attr':{'class':'form-control'}}) }}</div>
+									<div class="col-md-12 mb-3">
+										{{ form_label(formImp.impDesc) }}
+										{{ form_widget(formImp.impDesc,{'attr':{'class':'form-control'}}) }}
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
+
+										<input class="btn btn-info mt-2 text-white" value="Validar" type="submit"/>
+
+
+									</div>
+									{{ form_end(form) }}
+								</div>
+							</div>
+
+							<script>
+								const textarea = document.getElementById("textarea");
+const hiddenInput = document.getElementById("hiddenInput");
+const hiddenInput2 = document.getElementById("hiddenInput2");
+
+textarea.addEventListener("input", function () {
+hiddenInput.value = textarea.value;
+hiddenInput2.value = textarea.value;
+});
+							</script>
+
+						</div>
+					{% endif %}
+
+
 {% endblock %}

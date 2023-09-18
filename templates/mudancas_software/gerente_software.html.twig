@@ -100,7 +100,7 @@
 		/*Color number of the step and the connector before it*/
 		#progressbar li.active:before,
 		#progressbar li.active:after {
-			background: #f99d1b;
+			background: #00C9A7;
 		}
 
 		#progressbar li.active:before {
@@ -301,7 +301,7 @@
 				</div>
 			</div>
 
-			{% if m.mudS.gestor == null %}
+			{% if m.mudS.gestor == null and m.areaResp.manager.id == person.id %}
 				<div class="row">
 					<div class="col-md-6 mb-3">
 						<button id="btn" class="	btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Adicionar</button>

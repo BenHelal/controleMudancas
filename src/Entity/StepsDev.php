@@ -31,6 +31,14 @@ class StepsDev
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $dateEnd = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $affect = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $approveTest = null;
+
+    
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +52,30 @@ class StepsDev
     public function setMudancasSoftware(?MudancasSoftware $mudancasSoftware): self
     {
         $this->mudancasSoftware = $mudancasSoftware;
+
+        return $this;
+    }
+
+    public function getApproveTest(): ?string
+    {
+        return $this->approveTest;
+    }
+
+    public function setApproveTest(string $approveTest): self
+    {
+        $this->approveTest = $approveTest;
+
+        return $this;
+    }
+
+    public function getAffect(): ?string
+    {
+        return $this->affect;
+    }
+
+    public function setAffect(string $affect): self
+    {
+        $this->affect = $affect;
 
         return $this;
     }

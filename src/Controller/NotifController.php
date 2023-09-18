@@ -66,7 +66,6 @@ class NotifController extends AbstractController
             foreach ($sps as $key => $sp) {
                 if ($sp->getSector()->getCoordinator() == $person ) {
                     $oneOfSp = $sp;
-                    
                 }
             
         }
@@ -86,6 +85,9 @@ class NotifController extends AbstractController
                         if ($oneOfSp != null) {
                             $sp->setComment($d['comment']);
                             $sp->setAppSectorMan($d['appSectorMan']);
+                            date_default_timezone_set("America/Sao_Paulo");
+                            $time = new \DateTime();
+                            $sp->setDataCreation($time);
                         }
                         $em->persist($sp);
                         $em->flush();

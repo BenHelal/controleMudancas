@@ -376,7 +376,6 @@ próximas etapas desta mudança.<br>
 							</a>
 						</p>
 
-
 					{% elseif demand == 'approved_gestor' %}
 						<h1 class="text-center">Olá
 							{{ mud.addBy.name }},<br></h1>
@@ -472,6 +471,85 @@ próximas etapas desta mudança.<br>
 						Por gentileza acessar, verificar e definir o gestor/responsável por esta mudança.
 						<p class="block text-center">
 							<a href="http://{{ip}}/controleMudancas/public/approve/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							</a>
+						</p>
+
+					{% elseif demand == 'developer' %}
+						<h1 class="text-center">
+							Olá
+							{{ sendTo.name }},
+							<br>
+						</h1>
+							Há uma nova notificação para você
+						<br>
+						Mudança:
+							{{mud.id }}
+							{{mud.nomeMudanca}}<br>
+							Fase: Gestor adiciona você como Desenvolvedor 
+						<br>
+						
+						Por gentileza acessar, verifique e defina a Tarefa para esta mudança.
+						<p class="block text-center">
+							<a href="http://{{ip}}/controleMudancas/public/mudancas/software/Dev/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							</a>
+						</p>
+
+					{% elseif demand == 'testTi' %}
+						<h1 class="text-center">
+							Olá
+							{{ sendTo.name }},
+							<br>
+						</h1>
+							Há uma nova notificação para você
+						<br>
+							Mudança:
+								{{mud.id }}
+								{{mud.nomeMudanca}}<br>
+								Fase: Gestor adiciona você como Testador Ti
+						<br>
+						
+						Por gentileza acessar, verifique e defina a Tarefa para esta mudança.
+						<p class="block text-center">
+							<a href="http://{{ip}}/controleMudancas/public/mudancas/software/test/ti/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							</a>
+						</p>	
+					{% elseif demand == 'testSol' %}
+						<h1 class="text-center">
+							Olá
+							{{ sendTo.name }},
+							<br>
+						</h1>
+							Há uma nova notificação para você
+						<br>
+							Mudança:
+								{{mud.id }}
+								{{mud.nomeMudanca}}<br>
+								Fase: Gestor adiciona você como Testador de cliente
+						<br>
+						
+						Por gentileza acessar, verifique e defina a Tarefa para esta mudança.
+						<p class="block text-center">
+							<a href="http://{{ip}}/controleMudancas/public/mudancas/software/test/solicitante/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							</a>
+						</p>
+					
+					{% elseif demand == 'testSolCloseTest' %}
+						<h1 class="text-center">
+							Olá
+							{{ sendTo.name }},
+							<br>
+						</h1>
+							Há uma nova notificação para você
+						<br>
+							Mudança:
+								{{mud.id }}
+								{{mud.nomeMudanca}}<br>
+								Fase: Testador do cliente fecha o teste
+						<br>
+						
+						Por gentileza acessar, verifique e defina a Tarefa para esta mudança.
+						<p class="block text-center">
+							<a href="http://{{ip}}/controleMudancas/public/mudancas/software/Gestor/Mudança/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
 							</a>
 						</p>
 					{% endif %}

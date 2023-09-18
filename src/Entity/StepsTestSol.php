@@ -27,7 +27,9 @@ class StepsTestSol
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $aprove = null;
-
+    
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $affect = null;
 
     #[ORM\ManyToOne(inversedBy: 'stepsTestSol')]
     private ?MudancasSoftware $mudancasSoftware = null;
@@ -36,6 +38,19 @@ class StepsTestSol
     {
         return $this->id;
     }
+
+    public function getAffect(): ?string
+    {
+        return $this->affect;
+    }
+
+    public function setAffect(string $affect): self
+    {
+        $this->affect = $affect;
+
+        return $this;
+    }
+
 
     public function getMudancasSoftware(): ?MudancasSoftware
     {

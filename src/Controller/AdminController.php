@@ -450,87 +450,85 @@ class AdminController extends AbstractController
             $em = $doctrine->getManager();
             $mudancas = $em->getRepository(Mudancas::class)->find($id);
             $conn = $doctrine->getConnection();
+            $mudf = $mudancas->getTypeMud(); 
+            /*if ($mudf == '1') {
+                $mudf = $mudancas->getMudS();
+                $stepsGestor = $mudf->getStepsGestor();
+
+                foreach ($stepsGestor as $key => $value) {
+                    $sql = 'Delete FROM steps_gestor WHERE id = :mudancas_id ;';
+                    $stmt = $conn->prepare($sql);
+                    $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
+                    $ln2 =  $resultSet->fetchAllAssociative();
+                }
+
+                $stepDev = $mudf->getStepsGestor();
+
+                foreach ($stepDev as $key => $value) {
+                    $sql = 'Delete FROM steps_dev WHERE id = :mudancas_id ;';
+                    $stmt = $conn->prepare($sql);
+                    $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
+                    $ln2 =  $resultSet->fetchAllAssociative();
+                }
+                $stepsTest = $mudf->getStepsGestor();
+                foreach ($stepsTest as $key => $value) {
+                    $sql = 'Delete FROM steps_test WHERE id = :mudancas_id ;';
+                    $stmt = $conn->prepare($sql);
+                    $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
+                    $ln2 =  $resultSet->fetchAllAssociative();
+                }
+
+                $stepsTestSol = $mudf->getStepsGestor();                
+                foreach ($stepsTestSol as $key => $value) {
+                    $sql = 'Delete FROM steps_test_sol WHERE id = :mudancas_id ;';
+                    $stmt = $conn->prepare($sql);
+                    $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
+                    $ln2 =  $resultSet->fetchAllAssociative();
+                }
+                
+                $developers = $mudf->getStepsGestor();          
+                foreach ($developers as $key => $value) {
+                    try {
+                        //code...
+                        $sql = 'Delete FROM developers_mud WHERE id = :mudancas_id ;';
+                        $stmt = $conn->prepare($sql);
+                        $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
+                        $ln2 =  $resultSet->fetchAllAssociative();
+                    } catch (\Throwable $th) {
+                        //throw $th;
+                    }
+                }
+
+                $testers = $mudf->getStepsGestor();   
+                foreach ($testers as $key => $value) {
+                    $sql = 'Delete FROM testers_mud WHERE id = :mudancas_id ;';
+                    $stmt = $conn->prepare($sql);
+                    $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
+                    $ln2 =  $resultSet->fetchAllAssociative();
+                }
+
+                $testersti = $mudf->getStepsGestor();   
+                foreach ($testersti as $key => $value) {
+                    $sql = 'Delete FROM testers_ti WHERE id = :mudancas_id ;';
+                    $stmt = $conn->prepare($sql);
+                    $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
+                    $ln2 =  $resultSet->fetchAllAssociative();
+                }
+
+
+                $sql = 'Delete FROM mudancas_software WHERE id = :mudancas_id ;';
+                $stmt = $conn->prepare($sql);
+                $resultSet = $stmt->executeQuery(['mudancas_id' => $mudf->getId()]);
+                $ln2 =  $resultSet->fetchAllAssociative();
+            }*/
+
+           
             $sql = 'select * FROM process WHERE mudancas_id = :mudancas_id ;';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
-            /*if($mudancas->getTypeMud() == '1'){
-                
-                $muds = $em->getRepository(MudancasSoftware::class)->find($mudancas->getMudS()->getId());
-                
-                //Delete all Test Solicitation steps
-                foreach ($muds->getStepsTestSol() as $key => $value) {
-                    $publicDirectory = $this->getParameter('kernel.project_dir');
-                    $excelFilepath =  $publicDirectory . '/public/assets/' . $mudancas->getId().'/test/sol';
-                    if ( $value->getDoc() != null) {
-                        $delete  = unlink($excelFilepath.'/'. $value->getDoc());
-                        if($delete){
-                            echo "delete success";
-                        }else{
-                            echo "delete not success";
-                        }
-                    }
-                    $muds->removeStepsTestSol($value);
-                    $em->remove($value);
-                }
-                $em->remove($muds->getStepsTestSol());
-                
-                //Delete all Test IT steps
-                foreach ($muds->getStepsTest() as $key => $value) {
-                    $publicDirectory = $this->getParameter('kernel.project_dir');
-                    $excelFilepath =  $publicDirectory . '/public/assets/' . $mudancas->getId().'/test/ti';
-                    if ($value->getDoc() != null) {
-                        $delete  = unlink($excelFilepath.'/'. $value->getDoc());
-                        if($delete){
-	                        echo "delete success";
-                        }else{
-	                        echo "delete not success";
-                        }
-                    }
-                    
-                    $muds->removeStepsTest($value);
-                    $em->remove($value);
-                }
-                $em->remove($muds->getStepsTest());
-                
-                $em->remove($muds->getStepsTest());
-                //Delete all Dev steps
-                foreach ($muds->getStepDev() as $key => $value) {
-                    $publicDirectory = $this->getParameter('kernel.project_dir');
-                    $excelFilepath =  $publicDirectory . '/public/assets/' . $mudancas->getId().'/dev';
-                    if ($value->getDoc() != null) {
-                        $delete  = unlink($excelFilepath.'/'. $value->getDoc());
-                        if($delete){
-	                        echo "delete success";
-                        }else{
-	                        echo "delete not success";
-                        }
-                    }
-                    $muds->removeStepDev($value);
-                    $em->remove($value);
-                }
-                $em->remove($muds->getStepDev());
-                                
-                
-                //Delete all gestor steps
-                foreach ($muds->getStepsGestor() as $key => $value) {
-                    $publicDirectory = $this->getParameter('kernel.project_dir');
-                    $excelFilepath =  $publicDirectory . '/public/assets/' . $mudancas->getId();
-                    if ($value->getDoc() != null) {
-                        $delete  = unlink($excelFilepath.'/'. $value->getDoc());
-                        if($delete){
-	                        echo "delete success";
-                        }else{
-	                        echo "delete not success";
-                        }
-                    }
-                    $muds->removeStepsGestor($value);
-                    $em->remove($value);
-                }
 
-                $em->remove($muds);
-            }*/
-
+            
 
             foreach ($ln as $key => $value) {
                 $sql = 'Delete FROM sector_process WHERE process_id = :mudancas_id ;';
@@ -858,6 +856,7 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('app_mudancas');
         }
     }
+
     #[Route('/delete/sector/{id}', name: 'delete_sector')]
     public  function deletesectorById($id, ManagerRegistry $doctrine, Request $request)
     {
@@ -1121,6 +1120,11 @@ class AdminController extends AbstractController
         }
 
         return;
+    }
+
+    #[Route('/export')]
+    public function getExportData(ManagerRegistry $doctrine, Request $request){
+        
     }
 }
 

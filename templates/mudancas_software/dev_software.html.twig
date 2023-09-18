@@ -154,7 +154,7 @@
 		/*Color number of the step and the connector before it*/
 		#progressbar li.active:before,
 		#progressbar li.active:after {
-			background: #f99d1b;
+			background: #00C9A7;
 		}
 
 		#progressbar li.active:before {
@@ -318,7 +318,108 @@
 			</div>
 		</div>
 	</div>
-	{% for item in m.muds.stepDev %}
+
+	
+	<h3>
+		Lista adicionada por Desenvolvedores :
+		<button style="
+			border: none;
+			background-color: green-light;
+			padding: 10px 20px;
+			border-radius: 10px;
+			color: #fff;
+			cursor: pointer;
+			transition: background .2s ease-in-out;" onclick="visDev()"><img  style="width: 10px" src="{{ asset('visible.png') }}"/></button>
+	</h3>
+	
+	
+	<div id="hide">
+		{% for item in m.muds.stepDev %}
+			<div class="row">
+				<div class="col-md-3 mb-3">
+					<label for="1">Fase</label>
+					<input class="form-control" value="{{item.step}}">
+				</div>
+				<div class="col-md-9 mb-3">
+					<label for="1desc">Comentário</label>
+					<br>
+					<input value="{{item.comment}}" class="form-control">
+				</div>
+				<div class="col-md-4 mb-3">
+					<label for="1inputtest">Execute esta tarefa para testar</label>
+					<br>
+					<input 
+						{% if item.affect == null %}
+							value="Não"
+						{% else %}
+							value="{{item.affect}}"
+						{% endif %} class="form-control">
+				</div>
+				<div class="col-md-3 mb-3">
+					<label>Data de Levantamento</label>
+					<input value="{{item.date}}" type="date" lang="pt-BR" class="date form-control">
+				</div>
+
+				<div class="col-md-3 mb-3">
+					<label>Data Final</label>
+					<input value="{{item.dateend}}" type="date" lang="pt-BR" class="date form-control">
+				</div>
+				</div>
+			<div class="row">
+				{% if item.doc != null %}
+
+				<div class="col-md-3 mb-3">
+					<label>Anexo</label><br>
+    	  			<a href="{{ asset('assets/') }}{{m.id}}/dev/{{item.doc}}" style="
+									  						border: none;
+									  						background-color: #0c2c01;
+									  						padding: 10px 20px;
+									  						border-radius: 10px;
+									  						color: #fff;
+									  						cursor: pointer;
+									  						transition: background .2s ease-in-out;">
+						⇬ Baixar arquivos
+					</a>
+				</div>
+				{% endif %}
+
+				{% if perm  and m.muds.doctestsol == null %}
+					<div class="col-md-2 mb-3">
+    	  				<a href="{{path('deleteStepDev',{'id':item.id,'idS':m.muds.id, 'idm': m.id} )}}" style="
+										  						border: none;
+										  						background-color: #0c2c01;
+										  						padding: 10px 20px;
+										  						border-radius: 10px;
+										  						color: #fff;
+										  						cursor: pointer;
+										  						transition: background .2s ease-in-out;">Excluir
+						
+						</a>
+					</div>
+				{% endif %}
+			</div>
+			{% else %}
+
+		{% endfor %}
+	</div>
+
+	<h3>
+		Lista adicionada por Testadores :
+	<button style="
+border: none;
+background-color: green-light;
+padding: 10px 20px;
+border-radius: 10px;
+color: #fff;
+cursor: pointer;
+transition: background .2s ease-in-out;" onclick="visTest()"><img  style="width: 10px" src="{{ asset('visible.png') }}"/></button>
+	</h3>
+	
+	
+	<div id="hideTest">
+		{% for item in m.muds.stepsTest %}
+		
+		{% if item.aprove != 'Sim' %}
 		<div class="row">
 			<div class="col-md-2 mb-3">
 				<label for="1">Fase</label>
@@ -335,14 +436,14 @@
 			</div>
 			
 			<div class="col-md-5 mb-3">
-				<label>Data Final</label>
-				<input value="{{item.dateend}}" type="date" lang="pt-BR" class="date form-control">
+				<label>Aprovada</label>
+				<input value="{{item.aprove}}" type="text" lang="pt-BR" class="date form-control">
 			</div>
 			{% if item.doc != null %}
 				
 			<div class="col-md-3 mb-3">
 				<label>Anexo</label><br>
-      			<a href="{{ asset('assets/') }}{{m.id}}/dev/{{item.doc}}" style="
+      			<a href="{{ asset('assets/') }}{{m.id}}/test/ti/{{item.doc}}" style="
 								  						border: none;
 								  						background-color: #0c2c01;
 								  						padding: 10px 20px;
@@ -354,26 +455,14 @@
 				</a>
 			</div>
 			{% endif %}
-
-			{% if perm %}
-				<div class="col-md-2 mb-3">
-					<label>Excluir</label><br>
-      				<a href="{{path('deleteStepDev',{'id':item.id,'idS':m.muds.id, 'idm': m.id} )}}" style="
-									  						border: none;
-									  						background-color: #0c2c01;
-									  						padding: 10px 20px;
-									  						border-radius: 10px;
-									  						color: #fff;
-									  						cursor: pointer;
-									  						transition: background .2s ease-in-out;">
-						Excluir
-					</a>
-				</div>
-			{% endif %}
 		</div>
-		{% else %}
-
+			{% endif %}
 	{% endfor %}
+	</div>
+<br>
+<h3>
+		
+		Novas etapas do Desenvolvedor :</h3>
 	<form 
 		class="form-formulario_login" 
 		action="{{ path('AddDev_software',{'id': m.mudS.id, 'idm': m.id}) }}" 
@@ -381,7 +470,7 @@
 		method="post">
 		<div class="row" name="test2" id="test2"></div>	
 
-	{% if perm %}
+	{% if perm   and m.muds.doctestsol == null %}
 		<div class="col-md-3 mb-3">
 			<a class="btn" style=" min-width: 86px;
 				    				height: 32px;
@@ -399,9 +488,12 @@
 				    				border: none;" onclick="myFunction()">+ Adicionar Fase</a>
 		</div>
 	{% endif %}
+
 	<label class="drop-container flex-container wrap" for="images" id="dropcontainer">
 
 {% set noFile = true %}
+
+
 		{% for item in m.muds.stepDev %}
 			{% if item.doc == null %}
 
@@ -421,8 +513,29 @@
 						</a>
 					</li>
 						{% set noFile = false %}
-			{% endif %}
-			{% endfor %}
+						{% endif %}
+								<div class="modal fade" id="Contato" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h4 class="modal-title" id="exampleModalLongTitle">Contato</h4>
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<div class="modal-body">
+												<div class="row">
+												</div>
+					
+												<div class="modal-footer">
+													<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
+													<a class="btn btn-info mt-2 text-white">data</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+						{% endfor %}
 			{% if noFile %}
 				
 				<span class="drop-title">
@@ -433,7 +546,7 @@
 	</label>
 	<br>	
 	
-			{% if perm %}
+			{% if perm  and m.muds.doctestsol == null %}
 	<div class="row">
 		<div class="col-md-6 mb-3">
 			<button 
@@ -453,13 +566,7 @@
 				class="btn btn-info mt-2 text-white" 
 				style="background-color: #0c2c01;border-color: #0c2c01;">Próximo</a>
 		</div>
-	</div>			
-	
-
-		<br>
-		<br>
-		<br>
-		<br>
+	</div>		
 
 	</form>
 	<!-- Load Babel -->
@@ -494,13 +601,44 @@
 
 	<script>
 
+function visDev() {
+  var x = document.getElementById("hide");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
 		$(document).ready(function () {
 $('#mudancas_software_gerente_de_aprovacao_gestor').chosen({});
 });
 
+function visTest() {
+  var x = document.getElementById("hideTest");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
+		$(document).ready(function () {
+$('#mudancas_software_gerente_de_aprovacao_gestor').chosen({});
+});
+
+function visTester() {
+  var x = document.getElementById("hide");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
+		$(document).ready(function () {
+$('#mudancas_software_gerente_de_aprovacao_gestor').chosen({});
+});
 
 var i = 0;
-var array = ["OK", "FALHA"];
+var array = ["Não", "Sim"];
 var i = 0;
 
 
@@ -546,6 +684,31 @@ node3.setAttribute('id', i + 'desc');
 node3.setAttribute('name', i + 'desc');
 node3.setAttribute('class', 'form-control');
 document.getElementById(i + 'div3').appendChild(node3);
+
+
+const divtest = document.createElement("div");
+divtest.setAttribute('id', i + 'divtest');
+divtest.setAttribute('class', 'col-md-6 mb-3');
+document.getElementById('test2').appendChild(divtest);
+
+const labeltest = document.createElement('label');
+labeltest.setAttribute('for', i + 'labeltest');
+labeltest.innerHTML = "Execute esta tarefa para testar";
+document.getElementById(i + 'divtest').appendChild(labeltest);
+
+
+
+const inputtest = document.createElement("select");
+inputtest.setAttribute('id', i + 'inputtest');
+inputtest.setAttribute('class', 'custom-select');
+inputtest.setAttribute('name', i + 'inputtest');
+document.getElementById(i + 'divtest').appendChild(inputtest);
+for (var j = 0; j < array.length; j++) {
+var option = document.createElement("option");
+option.value = array[j];
+option.text = array[j];
+inputtest.appendChild(option);
+}
 
 
 const div2 = document.createElement("div");

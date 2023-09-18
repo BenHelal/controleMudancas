@@ -40,7 +40,12 @@ class MudancasSoftware
 
     /*******************
      * Gestor da Mudança
-     * **********************/
+    ***********************/
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $appGestor = null;
+
+    #[ORM\Column(length: 500000000, nullable: true)]
+    private ?string $commentGestor = null;
 
      #[ORM\Column(length: 255, nullable: true)]
      private ?string $priorityGestor = null;
@@ -103,7 +108,6 @@ class MudancasSoftware
     #[JoinTable(name: 'developers_mud')]
     private Collection $developers;
 
-    
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[JoinTable(name: 'testers_ti')]
     private Collection $testersti;
@@ -127,6 +131,31 @@ class MudancasSoftware
     {
         return $this->id;
     }
+
+    public function getCommentGestor(): ?string
+    {
+        return $this->commentGestor;
+    }
+
+    public function setCommentGestor(string $commentGestor): self
+    {
+        $this->commentGestor = $commentGestor;
+        return $this;
+    }
+
+    public function getAppGestor(): ?string
+    {
+        return $this->appGestor;
+    }
+
+    public function setAppGestor(string $appGestor): self
+    {
+        $this->appGestor = $appGestor;
+
+        return $this;
+    }
+
+
 
     public function getPriority(): ?string
     {
@@ -421,7 +450,7 @@ class MudancasSoftware
      */
     public function getTestersti(): Collection
     {
-        return $this->testers;
+        return $this->testersti;
     }
 
     public function addTestersti(Person $testersti): self
