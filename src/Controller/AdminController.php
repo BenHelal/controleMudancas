@@ -545,6 +545,7 @@ class AdminController extends AbstractController
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
 
+            /**testet */
             $sql = 'DELETE em
             FROM email em
             WHERE em.mudancas_id = :email;';
