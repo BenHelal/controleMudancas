@@ -1123,9 +1123,35 @@ class AdminController extends AbstractController
         return;
     }
 
-    #[Route('/export')]
+    #[Route('/export', name:'export')]
     public function getExportData(ManagerRegistry $doctrine, Request $request){
-        
+        $session = new Session();
+        $session = $request->getSession();
+
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $list = $em->getRepository(Mudancas::class)->findAll();
+            //list of sector 
+            $sectors = $em->getRepository(Sector::class)->findAll();
+            //manager
+            $managers = [];
+            foreach ($sectors as $key => $value) {
+                # code...
+                array_push($managers, $value->getManager());
+                
+            } 
+            dd($managers);
+            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            return $this->render('admin/listMudancas.html.twig', [
+                'controller_name' => 'Atualizar Mudancas',
+                'login' => 'null',
+                'type' => 'list',
+                'p' => $person,
+                'mudancas' => $list,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_mudancas');
+        }
     }
 }
 
