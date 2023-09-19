@@ -1134,19 +1134,15 @@ class AdminController extends AbstractController
             //list of sector 
             $sectors = $em->getRepository(Sector::class)->findAll();
             //manager
-            $managers = [];
-            foreach ($sectors as $key => $value) {
-                # code...
-                array_push($managers, $value->getManager());
-                
-            } 
-            dd($managers);
+            $managers = $em->getRepository(Person::class)->findAll();
             $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
             return $this->render('admin/listMudancas.html.twig', [
                 'controller_name' => 'Atualizar Mudancas',
                 'login' => 'null',
                 'type' => 'list',
                 'p' => $person,
+                'managers' => $managers,
+                'sectors' => $sectors,
                 'mudancas' => $list,
             ]);
         } else {

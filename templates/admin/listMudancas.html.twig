@@ -13,6 +13,13 @@
   <script>
     // setTimeout(function () { //window.location.reload(); //}, 5000);
   </script>
+  <style>
+    .clicker { width:300px; height:50px; outline:none; cursor:pointer; }
+
+    .hiddendiv{ display:none; height:400px; }
+
+    .clicker:focus + .hiddendiv{ display:block; }
+  </style>
   <div class="container-fluid">
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -27,117 +34,129 @@
           placeholder="Procurar.." />
       </div>
 
-      <div class="row">
-        <div class="col-md-4 mb-3">
-          <label for="cars">Status da Aprovação :</label>
-          <select name="cars" class="form-control" id="cars">
-            <option value="volvo"></option>
-            <option value="volvo">
-              close
-            </option>
-            <option value="saab">
-              open
-            </option>
-          </select>
+      <div class="clicker" tabindex="1">
+        Exportar dados
+      </div>
+      <div class="hiddendiv">
+        <form >
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="cars">Status da Aprovação :</label>
+            <select name="cars" class="form-control" id="statusApp">
+              <option value="null"></option>
+              <option value="fechado">
+                Fechado
+              </option>
+              <option value="aberto">
+                Aberto
+              </option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="cars">Período de Data Estimada de Início :</label>
+            <input id="dateInicio" value=""
+              type="date"
+              lang="pt-BR"
+              class="date form-control" />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="cars">Período de Data Estimada de Término :</label>
+            <input id="dateTermino" value=""
+              type="date"
+              lang="pt-BR"
+              class="date form-control" />
+          </div>
         </div>
 
-        <div class="col-md-4 mb-3">
-          <label for="cars">Período de Data Estimada de Início :</label>
-          <input value="" type="date" lang="pt-BR" class="date form-control" />
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="cars">Tipo de Aprovação :</label>
+            <select  class="form-control" name="cars" id="cars">
+              <option value="volvo"></option>
+              <option value="volvo">
+                close
+              </option>
+              <option value="saab">
+                open
+              </option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="cars">Área :</label>
+
+            <select name="cars" class="form-control" id="cars">
+              <option value="null"></option>
+              {% for item in sectors %}
+                <option value="{{ item.name }}">
+                  {{ item.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="cars">Cliente :</label>
+
+            <select class="form-control" name="cars" id="cars">
+              <option value="null"></option>
+              <option value="volvo">
+                Sim
+              </option>
+              <option value="saab">
+                Nao
+              </option>
+            </select>
+          </div>
         </div>
-        <div class="col-md-4 mb-3">
-          <label for="cars">Período de Data Estimada de Término :</label>
-          <input value="" type="date" lang="pt-BR" class="date form-control" />
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="col-md-4 mb-3">
-          <label for="cars">Tipo de Aprovação :</label>
-          <select class="form-control" name="cars" id="cars">
-            <option value="volvo"></option>
-            <option value="volvo">
-              close
-            </option>
-            <option value="saab">
-              open
-            </option>
-          </select>
-        </div>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="cars">Nome do Aprovador :</label>
+            <select class="form-control" name="cars" id="cars">
+              <option value="null"></option>
+              {% for item in managers %}
+                {% if item != null %}
+                  <option value="{{ item.name }}">
+                    {{ item.name }}
+                  </option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
 
-        
-        <div class="col-md-4 mb-3">
-        <label for="cars">Área :</label>
+          <div class="col-md-4 mb-3">
+            <label for="cars">Data da Aprovação :</label>
+            <input value=""
+              type="date"
+              lang="pt-BR"
+              class="date form-control" />
+          </div>
 
-        <select name="cars" class="form-control" id="cars">
-          <option value="volvo"></option>
-          <option value="volvo">
-            close
-          </option>
-          <option value="saab">
-            open
-          </option>
-        </select>
-      </div>
+          <div class="col-md-4 mb-3">
+            <label for="cars">Status da Aprovação :</label>
 
-
-        <div class="col-md-4 mb-3">
-        <label for="cars">Cliente :</label>
-
-        <select class="form-control" name="cars" id="cars">
-          <option value="volvo">
-            Sim
-          </option>
-          <option value="saab">
-            Nao
-          </option>
-        </select>
-      </div>
-      </div>
-
-
-      <div class="row">
-            <div class="col-md-4 mb-3">
-                <label for="cars">Nome do Aprovador :</label>
-                <select class="form-control" name="cars" id="cars">
-                    <option value="volvo">
-                        close
-                    </option>
-                    <option value="saab">
-                        open
-                    </option>
-                </select>
+            <select class="form-control" name="cars" id="cars">
+              <option value="volvo"></option>
+              <option value="volvo">
+                close
+              </option>
+              <option value="saab">
+                open
+              </option>
+            </select>
+            <div class="col-md-12 mb-3">
+              <label for="cars">Comentário :</label>
+              <input value="" class="form-control" />
             </div>
-
-            <div class="col-md-4 mb-3">
-                <label for="cars">Data da Aprovação :</label>
-                <input value="" type="date" lang="pt-BR" class="date form-control" />
-            </div>
-
-
-        <div class="col-md-4 mb-3">
-      <label for="cars">Status da Aprovação :</label>
-
-      <select class="form-control" name="cars" id="cars">
-        <option value="volvo">
-          
-        </option>
-        <option value="volvo">
-          close
-        </option>
-        <option value="saab">
-          open
-        </option>
-      </select>
-        <div class="col-md-12 mb-3">
-      <label for="cars">Comentário :</label>
-      <input value=""
-        class="form-control" />
+            <a href="{{ path('export') }}">Export</a>
+          </div>
+        </div>
+        </form>
       </div>
-      <a href="{{ path('export') }}">Export</a>
-      
-      </div>
-      
+
+
       <div class="card-body">
         <div class="table-responsive">
           {% if mudancas != null %}
@@ -155,18 +174,22 @@
                     class="list-group-item list-group-item-action flex-column align-items-start">
                     <div class="d-flex w-100 justify-content-between">
                       <h5 class="mb-1">
-                        Número da mudança: {{ m.id }}
+                        Número da mudança:
+                        {{ m.id }}
                       </h5>
                       <medium>
-                        Nome da mudança: {{ m.nomeMudanca }}
+                        Nome da mudança:
+                        {{ m.nomeMudanca }}
                       </medium>
                     </div>
                     <div class="d-flex w-100 justify-content-between">
                       <p class="mb-1">
-                        Descrição da Mudança: {{ m.descImpacto }}
+                        Descrição da Mudança:
+                        {{ m.descImpacto }}
                       </p>
                       <medium>
-                        Descrição do Impacto: {{ m.descImpacto }}
+                        Descrição do Impacto:
+                        {{ m.descImpacto }}
                       </medium>
                     </div>
                     <div class="d-flex w-100 justify-content-between">
@@ -190,7 +213,7 @@
   <script>
     $(document).ready(function () { $("#myInput").on("keyup", function () {
 
-    var value = $(this).val().toLowerCase(); //console.log(value);
+    var value = $(this).val().toLowerCase(); // console.log(value);
 
     $("#myTable a").filter(function () {
     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1) }); }); });
