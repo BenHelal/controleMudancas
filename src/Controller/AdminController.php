@@ -1154,7 +1154,7 @@ class AdminController extends AbstractController
             } else {
 
                 $list = $em->getRepository(Mudancas::class)->findAll();
-                if ($request->request->get('client') != null) {
+                /*if ($request->request->get('client') != null) {
 
                     $listA = [];
                     foreach ($list as $key => $value) {
@@ -1169,8 +1169,9 @@ class AdminController extends AbstractController
                 // Date Filter 
                 if ($request->request->get('dateInicio') != null) {
                     $listA = [];
-                    foreach ($list as $key => $value) {
-                        if ($request->request->get('dateTermino') != null) {
+                    
+                    if ($request->request->get('dateTermino') != null) {
+                        foreach ($list as $key => $value) {
                             $d1 = new DateTime($request->request->get('dateInicio') . '00:00:00');
                             $d2 = new DateTime($value->getStartMudancas() . '00:00:00');
 
@@ -1180,15 +1181,20 @@ class AdminController extends AbstractController
                             if ($d1 == $d2 && $d3 == $d4) {
                                 array_push($listA, $value);
                             }
-                        } else {
+                        } 
+                        
+                        $list = $listA;
+                    }else {
+                        
+                        foreach ($list as $key => $value) {
                             $d1 = new DateTime($request->request->get('dateInicio') . '00:00:00');
                             $d2 = new DateTime($value->getStartMudancas() . '00:00:00');
                             if ($d1 == $d2) {
                                 array_push($listA, $value);
                             }
                         }
+                        $list = $listA;
                     }
-                    $list = $listA;
                 } else {
 
                     if ($request->request->get('dateTermino') != null) {
@@ -1199,12 +1205,9 @@ class AdminController extends AbstractController
                                 array_push($listA, $value);
                             }
                         }
-
                         $list = $listA;
-                    } else {
-                        $listA = $list;
                     }
-                }
+                }*/
 
 
                 if ($request->request->get('status') == "Mudança Rejeitada") {
