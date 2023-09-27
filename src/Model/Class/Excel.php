@@ -520,7 +520,9 @@ class Excel
                 $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                 $sheet->setCellValue($lastArrayIndex . '1', 'Nome do Aprovador');
                 $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
-                $sheet->setCellValue($lastArrayIndex . $a, $procSec->getPerson()->getName());
+                if($procSec->getPerson() != null){
+                    $sheet->setCellValue($lastArrayIndex . $a, $procSec->getPerson()->getName());
+                }
 
 
                 
