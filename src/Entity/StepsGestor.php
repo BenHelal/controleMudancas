@@ -19,7 +19,7 @@ class StepsGestor
     #[ORM\Column(length: 255)]
     private ?string $step = null;
 
-    #[ORM\Column(length: 30000, nullable: true)]
+    #[ORM\Column(length: 500000000, nullable: true)]
     private ?string $comment = null;
 
     #[ORM\Column(length: 255, nullable: true)]
