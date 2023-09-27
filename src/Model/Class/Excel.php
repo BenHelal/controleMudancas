@@ -274,7 +274,7 @@ class Excel
                 $mudancas[$i]->getManagerUserApp() == 1 &&
                 $mudancas[$i]->getManagerUserAdd() != null &&
                 $mudancas[$i]->getManagerUserAdd() != $mudancas[$i]->getAddBy() &&
-                $mudancas[$i]->getManagerUserAdd != null
+                $mudancas[$i]->getManagerUserAdd() != null
             ) {
                 $sheet->setCellValue("CC" . $a, "Aprovado");
             } elseif ($mudancas[$i]->getManagerUserApp() == 1 && ($mudancas[$i]->getManagerUserAdd() == $mudancas[$i]->getAddBy()  ||  $mudancas[$i]->getManagerUserAdd() == null)) {
