@@ -688,58 +688,82 @@ class Excel
                 $lastArrayIndex2 = $lastArrayIndex2;
             }
 
-/*
-                # code...
-                if ($in + 1 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
+            if ($mudancas[$i]->getImplemented() != null) {
+                $j = 0;
+                while ($j <= 5) {
+                    if ($in + 1 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 26];
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
+                        }
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 1];
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
                     }
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 1];
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                }
+        
+                    if ($in + 2 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 26];
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
+                        }
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 2];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
     
-                if ($in + 2 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
-                    }
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 2];
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    if ($j == 0) {
+                        #  ...
+                        $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
+                        $sheet->setCellValue($lastArrayIndex . '1', 'Tipo de Aprovação');
+                        $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
+                        $sheet->setCellValue($lastArrayIndex . $a, 'Dados de implementação');
+                    }elseif ($j == 1) {
+                        $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
+                        $sheet->setCellValue($lastArrayIndex . '1', 'Área/Cliente');
+                        $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
+                        $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMangerMudancas()->getFunction()->getName());   
+                    }elseif( $j == 2){
+                       $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
+                       $sheet->setCellValue($lastArrayIndex . '1', 'Nome do Aprovador');
+                       $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
+                       $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMangerMudancas()->getName());   
+                    }elseif( $j == 3){
+                        $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
+                        $sheet->setCellValue($lastArrayIndex . '1', 'Data da Aprovação');
+                        $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
+                        $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getDateOfImp());   
+                    }elseif($j == 4 ){
+                        $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
+                        $sheet->setCellValue($lastArrayIndex . '1', 'Status Aprovação');
+                        $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
+                        if($mudancas[$i]->getImplemented()=="1"){
+                            $sheet->setCellValue($lastArrayIndex . $a , "Implementada");
+                        }elseif($mudancas[$i]->getImplemented()=="2"){
+                            $sheet->setCellValue($lastArrayIndex . $a , "Não implementado");    
+                        }else{
+                            $sheet->setCellValue($lastArrayIndex . $a , "Dados não disponíveis");    
+                        }
+                    }elseif ($j == 5) {
+                        $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
+                        $sheet->setCellValue($lastArrayIndex . '1', 'Comentário');
+                        $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
+                        $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getImpDesc());
+                    }      
+                    $j = $j+1;
                 }
-
-                
-                $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
-                $sheet->setCellValue($lastArrayIndex . '1', 'Tipo de Aprovação');
-                $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
-                $sheet->setCellValue($lastArrayIndex . $a, 'Área Impactada');
-                
-                $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
-                if($mudancas[$i]->getImplemented()=="1"){
-                    $sheet->setCellValue($lastArrayIndex . $a , "Implementada");
-                }elseif($mudancas[$i]->getImplemented()=="2"){
-                    $sheet->setCellValue($lastArrayIndex . $a , "Não implementado");    
-                }else{
-                    $sheet->setCellValue($lastArrayIndex . $a , "Dados não disponíveis");    
-                }*/
-            
-
-            /*
-            */
+            }
 
             $a = $a + 3;
             $b = $b + 3;
