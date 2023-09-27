@@ -16,9 +16,9 @@
   <style>
     .clicker { width:300px; height:50px; outline:none; cursor:pointer; }
 
-    .hiddendiv{ display:none; height:400px; }
+    .hiddendiv{ display:block; height:400px; }
 
-    .clicker:focus + .hiddendiv{ display:block; }
+    .clicker:focus + .hiddendiv{ display:none; }
   </style>
   <div class="container-fluid">
     <!-- DataTales Example -->
@@ -34,59 +34,88 @@
           placeholder="Procurar.." />
       </div>
 
-      <div class="clicker" tabindex="1">
+      <div id="clicker" tabindex="1">
         Exportar dados
       </div>
-      <div class="hiddendiv">
-        <form >
+
+      <div id="hiddendiv">
+        <form class="form-formulario_login" enctype="multipart/form-data" method="post"  action="{{path('export')}}"  >
         <div class="row">
           <div class="col-md-4 mb-3">
             <label for="cars">Status da Aprovação :</label>
-            <select name="cars" class="form-control" id="statusApp">
+            <select id="status" name="status" class="form-control" >
               <option value="null"></option>
-              <option value="fechado">
-                Fechado
-              </option>
-              <option value="aberto">
-                Aberto
-              </option>
+              <option value="Solicitação Aprovada">
+                  Status: Solicitação Aprovada
+              </option>		
+              <option value="Solicitação Reprovada">
+                  Status: Solicitação Reprovada
+              </option>		
+              <option value="Mudança Aprovada">
+                  Status: Mudança Aprovada  
+              </option>		
+              <option value="Mudança Reprovada">
+                  Status: Mudança Reprovada		
+              </option>		
+              <option value="Mudança Aceita">
+            			Status: Mudança Aceita
+              </option>	
+              <option value="Mudança Rejeitada">
+									Status: Mudança Rejeitada
+              </option>		
+              <option value="Mudança implementada">
+                  Status: Mudança implementada		
+              </option>		
+              <option value="Mudança não implementada  implementadas e fechadas">
+                  Status:  Mudança não implementada  implementadas e fechadas
+              </option>			
+              <option value="Mudança Aberta">
+                Status:  Mudança Aberta				
+              </option>			
             </select>
           </div>
 
           <div class="col-md-4 mb-3">
             <label for="cars">Período de Data Estimada de Início :</label>
-            <input id="dateInicio" value=""
+            <input id="dateInicio" name="dateInicio" value=""
               type="date"
               lang="pt-BR"
               class="date form-control" />
           </div>
           <div class="col-md-4 mb-3">
             <label for="cars">Período de Data Estimada de Término :</label>
-            <input id="dateTermino" value=""
+            <input id="dateTermino" name="dateTermino" value=""
               type="date"
               lang="pt-BR"
               class="date form-control" />
           </div>
         </div>
-
         <div class="row">
           <div class="col-md-4 mb-3">
             <label for="cars">Tipo de Aprovação :</label>
-            <select  class="form-control" name="cars" id="cars">
-              <option value="volvo"></option>
-              <option value="volvo">
-                close
+            <select  class="form-control" name="tipo" id="tipo">
+              <option value="null"></option>
+              <option value="Solicitante">
+                Solicitante
               </option>
-              <option value="saab">
-                open
+              <option value="Gerente Solicitante">
+                Gerente Solicitante
+              </option>
+              <option value="Gerente Aprovação">
+                Gerente Aprovação
+              </option>
+              <option value="Gestor da Mudança">
+                Gestor da Mudança
+              </option>
+              <option value="Área Impactada">
+                Área Impactada
               </option>
             </select>
           </div>
-
           <div class="col-md-4 mb-3">
             <label for="cars">Área :</label>
 
-            <select name="cars" class="form-control" id="cars">
+            <select name="area" class="form-control" id="area">
               <option value="null"></option>
               {% for item in sectors %}
                 <option value="{{ item.name }}">
@@ -98,15 +127,13 @@
 
           <div class="col-md-4 mb-3">
             <label for="cars">Cliente :</label>
-
-            <select class="form-control" name="cars" id="cars">
+            <select class="form-control" name="client" id="client">
               <option value="null"></option>
-              <option value="volvo">
-                Sim
-              </option>
-              <option value="saab">
-                Nao
-              </option>
+              {% for item in client %}
+                <option value="">
+                  {{item.name}}
+                </option>
+              {% endfor %}
             </select>
           </div>
         </div>
@@ -114,7 +141,7 @@
         <div class="row">
           <div class="col-md-4 mb-3">
             <label for="cars">Nome do Aprovador :</label>
-            <select class="form-control" name="cars" id="cars">
+            <select class="form-control" name="person" id="person">
               <option value="null"></option>
               {% for item in managers %}
                 {% if item != null %}
@@ -129,34 +156,36 @@
           <div class="col-md-4 mb-3">
             <label for="cars">Data da Aprovação :</label>
             <input value=""
+              id="dateApp"
+              name="dateApp"
               type="date"
               lang="pt-BR"
               class="date form-control" />
           </div>
 
-          <div class="col-md-4 mb-3">
-            <label for="cars">Status da Aprovação :</label>
-
-            <select class="form-control" name="cars" id="cars">
-              <option value="volvo"></option>
-              <option value="volvo">
-                close
-              </option>
-              <option value="saab">
-                open
-              </option>
-            </select>
-            <div class="col-md-12 mb-3">
+          <div class="col-md-12 mb-3">
               <label for="cars">Comentário :</label>
               <input value="" class="form-control" />
-            </div>
-            <a href="{{ path('export') }}">Export</a>
           </div>
+          
+        <div class="row">
+        
+          <div class="col-md-5 mb-3">
+            <button style="margin-left : 15px" class="btn btn-info mt-2 text-white" type="submit">Procurar</button>
         </div>
-        </form>
+        </div>
       </div>
-
-
+    </form>
+  </div>
+  
+      <form class="form-formulario_login" enctype="multipart/form-data" method="post"  action="{{path('exportResult')}}"  >
+        {% for m in mudancas %}
+          <input id="{{ loop.index }}" name="{{ loop.index }}" hidden value="{{m.id}}" >
+        {% endfor %}
+        
+        <button type="submit" id="btn" class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Exportar dados</button>
+      </form>      
+      
       <div class="card-body">
         <div class="table-responsive">
           {% if mudancas != null %}
@@ -173,7 +202,7 @@
                     }}"
                     class="list-group-item list-group-item-action flex-column align-items-start">
                     <div class="d-flex w-100 justify-content-between">
-                      <h5 class="mb-1">
+                      <h5  class="mb-1">
                         Número da mudança:
                         {{ m.id }}
                       </h5>
@@ -209,7 +238,15 @@
       </div>
     </div>
   </div>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+$('#hiddendiv').hide();
+  $("#clicker").click(function(){
+    $("#hiddendiv").toggle();
+  });
+});
+</script>
   <script>
     $(document).ready(function () { $("#myInput").on("keyup", function () {
 

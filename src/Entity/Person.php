@@ -43,8 +43,6 @@ class Person
     #[ORM\ManyToOne]
     private ?Sector $function = null;
 
-
-
     public function getId(): ?int
     {
         return $this->id;

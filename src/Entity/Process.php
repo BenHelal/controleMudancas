@@ -52,7 +52,6 @@ class Process
     public function setMudancas(Mudancas $mudancas): self
     {
         $this->mudancas = $mudancas;
-
         return $this;
     }
 

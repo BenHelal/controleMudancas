@@ -25,13 +25,13 @@ class Mudancas
     private ?string $descMudanca = null;
 
     #[ORM\Column(length: 4294967295)]
+    private ?string $justif = null;
+
+    #[ORM\Column(length: 4294967295)]
     private ?string $descImpacto = null;
 
     #[ORM\Column(length: 4294967295)]
     private ?string $descImpactoArea = null;
-
-    #[ORM\Column(length: 4294967295)]
-    private ?string $justif = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $approved = null;
