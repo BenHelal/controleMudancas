@@ -1137,72 +1137,76 @@ class AdminController extends AbstractController
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
 
-            if ((
-                $request->request->get('status') == "null" &
-                $request->request->get('dateInicio') == "" &
-                $request->request->get('dateTermino') == "" &
-                $request->request->get('tipo') == "null" &
-                $request->request->get('area') == "null" &
-                $request->request->get('client') == "null" &
-                $request->request->get('person') == "null" &
-                $request->request->get('dateApp') == "" )|| sizeof($request->request)== 0 
+            if (($request->request->get('status') == "null" &
+                    $request->request->get('dateInicio') == "" &
+                    $request->request->get('dateTermino') == "" &
+                    $request->request->get('tipo') == "null" &
+                    $request->request->get('area') == "null" &
+                    $request->request->get('client') == "null" &
+                    $request->request->get('person') == "null" &
+                    $request->request->get('dateApp') == "") || sizeof($request->request) == 0
             ) {
                 $list = $em->getRepository(Mudancas::class)->findAll();
                 $sectors = $em->getRepository(Sector::class)->findAll();
                 $client = $em->getRepository(Client::class)->findAll();
                 $managers = $em->getRepository(Person::class)->findAll();
                 $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
-               
             } else {
-                
+
                 $list = $em->getRepository(Mudancas::class)->findAll();
-                $listA = [];
-                foreach ($list as $key => $value) {
-                    if($request->request->get('client')!= null){
-                        if($value->getClient() != null){
-                            if($value->getClient()->getName() == $request->request->get('client')){
-                                array_push($listA,$value);
+                if ($request->request->get('client') != null) {
+
+                    $listA = [];
+                    foreach ($list as $key => $value) {
+                        if ($value->getClient() != null) {
+                            if ($value->getClient()->getName() == $request->request->get('client')) {
+                                array_push($listA, $value);
                             }
-                            
                         }
-                        
+                    }
+                    $list = $listA;
+                }
+                // Date Filter 
+                if ($request->request->get('dateInicio') != null) {
+                    $listA = [];
+                    foreach ($list as $key => $value) {
+                        if ($request->request->get('dateTermino') != null) {
+                            $d1 = new DateTime($request->request->get('dateInicio') . '00:00:00');
+                            $d2 = new DateTime($value->getStartMudancas() . '00:00:00');
+
+                            $d3 = new DateTime($request->request->get('dateTermino') . '00:00:00');
+                            $d4 = new DateTime($value->getEndMudancas() . '00:00:00');
+
+                            if ($d1 == $d2 && $d3 == $d4) {
+                                array_push($listA, $value);
+                            }
+                        } else {
+                            $d1 = new DateTime($request->request->get('dateInicio') . '00:00:00');
+                            $d2 = new DateTime($value->getStartMudancas() . '00:00:00');
+                            if ($d1 == $d2) {
+                                array_push($listA, $value);
+                            }
+                        }
+                    }
+                    $list = $listA;
+                } else {
+
+                    if ($request->request->get('dateTermino') != null) {
+                        foreach ($list as $key => $value) {
+                            $d3 = new DateTime($request->request->get('dateTermino') . '00:00:00');
+                            $d4 = new DateTime($value->getEndMudancas() . '00:00:00');
+                            if ($d3 == $d4) {
+                                array_push($listA, $value);
+                            }
+                        }
+
+                        $list = $listA;
+                    } else {
+                        $listA = $list;
                     }
                 }
-                $list = $listA;
-                // Date Filter 
-                $listA = [];
-                foreach ($list as $key => $value) {
-                    if($request->request->get('dateInicio')!= null){
-                        if($request->request->get('dateTermino') != null){
-                            $d1 = new DateTime($request->request->get('dateInicio') .'00:00:00');
-                            $d2 = new DateTime($value->getStartMudancas() .'00:00:00');
-                            
-                            $d3 = new DateTime($request->request->get('dateTermino') .'00:00:00');
-                            $d4 = new DateTime($value->getEndMudancas() .'00:00:00');
-                            
-                            if($d1 == $d2 && $d3 == $d4){
-                                array_push($listA, $value);
-                            } 
-                        }else{
-                            $d1 = new DateTime($request->request->get('dateInicio') .'00:00:00');
-                            $d2 = new DateTime($value->getStartMudancas() .'00:00:00');
-                            if($d1 == $d2){
-                                array_push($listA, $value);
-                            } 
-                        }
-                    }else{
-                        if($request->request->get('dateTermino') != null){
-                            $d3 = new DateTime($request->request->get('dateTermino') .'00:00:00');
-                            $d4 = new DateTime($value->getEndMudancas() .'00:00:00');
-                            if($d3 == $d4){
-                                array_push($listA, $value);
-                            } 
-                        }else{
-                            $listA = $list;
-                        }
-                    }               
-                }
-                $list = $listA;
+
+
                 if ($request->request->get('status') == "Mudança Rejeitada") {
                     $listA = [];
                     foreach ($list as $key => $value) {
@@ -1212,186 +1216,185 @@ class AdminController extends AbstractController
                     }
                     $list = $listA;
                     if ($request->request->get('tipo') == "Solicitante") {
-                                $listA = [];
+                        $listA = [];
+                        foreach ($list as $key => $value) {
+                            if (
+                                $value->getAddBy()->getName() == $request->request->get('person')
+                            ) {
+                                array_push($listA, $value);
+                            }
+                        }
+                    } elseif ($request->request->get('tipo') == "Gerente Solicitante") {
+                        $listA = [];
+                        if ($request->request->get('area') != "null") {
+                            if ($request->request->get('person') != "null") {
                                 foreach ($list as $key => $value) {
                                     if (
-                                        $value->getAddBy()->getName() == $request->request->get('person')
+                                        $value->getAddBy()->getFunction()->getManager()->getName() == $request->request->get('person') &&
+                                        $value->getAddBy()->getFunction()->getName() == $request->request->get('area')
                                     ) {
                                         array_push($listA, $value);
                                     }
-                                    }
-                                
-                    } elseif ($request->request->get('tipo') == "Gerente Solicitante") {
-                                $listA = [];
-                                if ($request->request->get('area') != "null") {
-                                    if ($request->request->get('person') != "null") {
-                                        foreach ($list as $key => $value) {
-                                            if (
-                                                $value->getAddBy()->getFunction()->getManager()->getName() == $request->request->get('person') &&
-                                                $value->getAddBy()->getFunction()->getName() == $request->request->get('area')
-                                            ) {
-                                                array_push($listA, $value);
-                                            }
-                                        }
-                                    } else {
-                                        foreach ($list as $key => $value) {
-                                            if (
-                                                $value->getAddBy()->getFunction()->getName() == $request->request->get('area')
-                                            ) {
-                                                array_push($listA, $value);
-                                            }
-                                        }
-                                    }
-                                    $list = $listA;
-                                } elseif ($request->request->get('person') != "null") {
-                                    foreach ($list as $key => $value) {
-                                        if (
-                                            $value->getAddBy()->getFunction()->getManager()->getName() == $request->request->get('person')
-                                        ) {
-                                            array_push($listA, $value);
-                                        }
-                                    }
-                                } else {
-                                    $list = $em->getRepository(Mudancas::class)->findAll();
                                 }
+                            } else {
+                                foreach ($list as $key => $value) {
+                                    if (
+                                        $value->getAddBy()->getFunction()->getName() == $request->request->get('area')
+                                    ) {
+                                        array_push($listA, $value);
+                                    }
+                                }
+                            }
+                            $list = $listA;
+                        } elseif ($request->request->get('person') != "null") {
+                            foreach ($list as $key => $value) {
+                                if (
+                                    $value->getAddBy()->getFunction()->getManager()->getName() == $request->request->get('person')
+                                ) {
+                                    array_push($listA, $value);
+                                }
+                            }
+                        } else {
+                            $list = $em->getRepository(Mudancas::class)->findAll();
+                        }
                     } elseif ($request->request->get('tipo') == "Gerente Aprovação") {
-                                $listA = [];
-                                if ($request->request->get('area') != "null") {
-                                    if ($request->request->get('person') != "null") {
-                                        foreach ($list as $key => $value) {
-                                            if (
-                                                $value->getAreaResp()->getManager()->getName() == $request->request->get('person') &&
-                                                $value->getAreaResp()->getName() == $request->request->get('area')
-                                            ) {
-                                                array_push($listA, $value);
-                                            }
-                                        }
-                                    } else {
-                                        foreach ($list as $key => $value) {
-                                            if (
-                                                $value->getAreaResp()->getName() == $request->request->get('area')
-                                            ) {
-                                                array_push($listA, $value);
-                                            }
-                                        }
+                        $listA = [];
+                        if ($request->request->get('area') != "null") {
+                            if ($request->request->get('person') != "null") {
+                                foreach ($list as $key => $value) {
+                                    if (
+                                        $value->getAreaResp()->getManager()->getName() == $request->request->get('person') &&
+                                        $value->getAreaResp()->getName() == $request->request->get('area')
+                                    ) {
+                                        array_push($listA, $value);
                                     }
-                                    $list = $listA;
-                                } elseif ($request->request->get('person') != "null") {
-                                    foreach ($list as $key => $value) {
+                                }
+                            } else {
+                                foreach ($list as $key => $value) {
+                                    if (
+                                        $value->getAreaResp()->getName() == $request->request->get('area')
+                                    ) {
+                                        array_push($listA, $value);
+                                    }
+                                }
+                            }
+                            $list = $listA;
+                        } elseif ($request->request->get('person') != "null") {
+                            foreach ($list as $key => $value) {
+                                if (
+                                    $value->getAreaResp()->getManager()->getName() == $request->request->get('person')
+                                ) {
+                                    array_push($listA, $value);
+                                }
+                            }
+                        } else {
+                            $list = $em->getRepository(Mudancas::class)->findAll();
+                        }
+                    } elseif ($request->request->get('tipo') == "Gestor da Mudança") {
+                        $listA = [];
+                        if ($request->request->get('area') != "null") {
+                            if ($request->request->get('person') != "null") {
+                                foreach ($list as $key => $value) {
+                                    if ($value->getMangerMudancas() != null) {
+                                        # code...
                                         if (
-                                            $value->getAreaResp()->getManager()->getName() == $request->request->get('person')
+                                            $value->getMangerMudancas()->getName() == $request->request->get('person') &&
+                                            $value->getMangerMudancas()->getFunction()->getName() == $request->request->get('area')
                                         ) {
                                             array_push($listA, $value);
                                         }
                                     }
-                                } else {
-                                    $list = $em->getRepository(Mudancas::class)->findAll();
                                 }
-                    } elseif ($request->request->get('tipo') == "Gestor da Mudança") {
-                                $listA = [];
-                                if ($request->request->get('area') != "null") {
-                                    if ($request->request->get('person') != "null") {
-                                        foreach ($list as $key => $value) {
-                                            if ($value->getMangerMudancas() != null) {
-                                                # code...
-                                                if (
-                                                    $value->getMangerMudancas()->getName() == $request->request->get('person') &&
-                                                    $value->getMangerMudancas()->getFunction()->getName() == $request->request->get('area')
-                                                ) {
-                                                    array_push($listA, $value);
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        foreach ($list as $key => $value) {
-                                            if ($value->getMangerMudancas() != null) {
-                                                # code...
-        
-                                                if (
-                                                    $value->getMangerMudancas()->getFunction()->getName() == $request->request->get('area')
-                                                ) {
-                                                    array_push($listA, $value);
-                                                }
-                                            }
+                            } else {
+                                foreach ($list as $key => $value) {
+                                    if ($value->getMangerMudancas() != null) {
+                                        # code...
+
+                                        if (
+                                            $value->getMangerMudancas()->getFunction()->getName() == $request->request->get('area')
+                                        ) {
+                                            array_push($listA, $value);
                                         }
                                     }
-                                    $list = $listA;
-                                } elseif ($request->request->get('person') != "null") {
-                                    foreach ($list as $key => $value) {
-        
-                                        if ($value->getMangerMudancas() != null) {
-                                            if (
-                                                $value->getMangerMudancas()->getName() == $request->request->get('person')
-                                            ) {
-                                                array_push($listA, $value);
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    $list = $em->getRepository(Mudancas::class)->findAll();
                                 }
+                            }
+                            $list = $listA;
+                        } elseif ($request->request->get('person') != "null") {
+                            foreach ($list as $key => $value) {
+
+                                if ($value->getMangerMudancas() != null) {
+                                    if (
+                                        $value->getMangerMudancas()->getName() == $request->request->get('person')
+                                    ) {
+                                        array_push($listA, $value);
+                                    }
+                                }
+                            }
+                        } else {
+                            $list = $em->getRepository(Mudancas::class)->findAll();
+                        }
                     } elseif ($request->request->get('tipo') == "Área Impactada") {
-                                $listA = [];
-                                if ($request->request->get('area') != "null") {
-                                    $proc = [];
-                                    $sec = $em->getRepository(Sector::class)->findOneBy(['name' => $request->request->get('area')]);
-                                    $procSec = $em->getRepository(SectorProcess::class)->findBy(['Sector' => $sec]);
-                                    if ($request->request->get('person') != "null") {
-                                        $process = [];
-                                        foreach ($procSec as $key => $value) {
-                                            if ($value->getPerson()->getName() == $request->request->get('person')) {
-                                                array_push($proc, $value);
-                                            }
-                                        }
-        
-                                        foreach ($proc as $key => $val) {
-                                            $proc = $em->getRepository(Process::class)->find($val->getProcess()->getId());
-                                            array_push($process, $proc);
-                                        }
-        
-                                        foreach ($process as $key => $v) {
-                                            array_push($listA, $v->getMudancas());
-                                        }
-                                    } else {
-                                        foreach ($procSec as $key => $value) {
-                                            $proc = $em->getRepository(Process::class)->find($value->getProcess()->getId());
-                                            array_push($process, $proc);
-        
-                                            foreach ($process as $key => $v) {
-                                                array_push($listA, $v->getMudancas());
-                                            }
-                                        }
+                        $listA = [];
+                        if ($request->request->get('area') != "null") {
+                            $proc = [];
+                            $sec = $em->getRepository(Sector::class)->findOneBy(['name' => $request->request->get('area')]);
+                            $procSec = $em->getRepository(SectorProcess::class)->findBy(['Sector' => $sec]);
+                            if ($request->request->get('person') != "null") {
+                                $process = [];
+                                foreach ($procSec as $key => $value) {
+                                    if ($value->getPerson()->getName() == $request->request->get('person')) {
+                                        array_push($proc, $value);
                                     }
-                                    $list = $listA;
-                                } elseif ($request->request->get('person') != "null") {
-                                    $procSec = $em->getRepository(SectorProcess::class)->findAll();
-                                    foreach ($procSec as $key => $value) {
-                                        if ($procSec->getPerson()->getName() == $request->request->get('person')) {
-                                            array_push($proc, $value);
-                                        }
-                                    }
-        
-                                    foreach ($procSec as $key => $val) {
-                                        $proc = $em->getRepository(Process::class)->find($val->getProcess()->getId());
-                                        array_push($process, $proc);
-                                    }
-        
+                                }
+
+                                foreach ($proc as $key => $val) {
+                                    $proc = $em->getRepository(Process::class)->find($val->getProcess()->getId());
+                                    array_push($process, $proc);
+                                }
+
+                                foreach ($process as $key => $v) {
+                                    array_push($listA, $v->getMudancas());
+                                }
+                            } else {
+                                foreach ($procSec as $key => $value) {
+                                    $proc = $em->getRepository(Process::class)->find($value->getProcess()->getId());
+                                    array_push($process, $proc);
+
                                     foreach ($process as $key => $v) {
                                         array_push($listA, $v->getMudancas());
                                     }
-                                } else {
-                                    $list = $em->getRepository(Mudancas::class)->findAll();
                                 }
+                            }
+                            $list = $listA;
+                        } elseif ($request->request->get('person') != "null") {
+                            $procSec = $em->getRepository(SectorProcess::class)->findAll();
+                            foreach ($procSec as $key => $value) {
+                                if ($procSec->getPerson()->getName() == $request->request->get('person')) {
+                                    array_push($proc, $value);
+                                }
+                            }
+
+                            foreach ($procSec as $key => $val) {
+                                $proc = $em->getRepository(Process::class)->find($val->getProcess()->getId());
+                                array_push($process, $proc);
+                            }
+
+                            foreach ($process as $key => $v) {
+                                array_push($listA, $v->getMudancas());
+                            }
+                        } else {
+                            $list = $em->getRepository(Mudancas::class)->findAll();
+                        }
                     }
                 } elseif ($request->request->get('status') == "Mudança implementada") {
                     $listA = [];
-                    
+
                     foreach ($list as $key => $value) {
                         if ($value->getImplemented() == "1") {
                             array_push($listA, $value);
                         }
                     }
-                    
+
                     $list = $listA;
 
                     if ($request->request->get('tipo') == "Solicitante") {
@@ -2194,7 +2197,7 @@ class AdminController extends AbstractController
                     }
                 } elseif ($request->request->get('status') == "Mudança Aprovada") {
                     $listA = [];
-                   
+
                     if ($request->request->get('tipo') == "Solicitante") {
                         $listA = [];
                         if ($request->request->get('area') != "null") {
@@ -2625,7 +2628,7 @@ class AdminController extends AbstractController
                     }
                 } elseif ($request->request->get('status') == "Mudança Aceita") {
                     $listA = [];
-                    
+
                     if ($request->request->get('tipo') == "Solicitante") {
                         $listA = [];
                         if ($request->request->get('area') != "null") {
@@ -2853,7 +2856,7 @@ class AdminController extends AbstractController
                     }
                 } else {
                     $listA = [];
-                    
+
                     if ($request->request->get('tipo') == "Solicitante") {
                         $listA = [];
                         if ($request->request->get('area') != "null") {
