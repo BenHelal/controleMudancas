@@ -2859,7 +2859,6 @@ class AdminController extends AbstractController
                     }
                 } else {
                     $listA = [];
-
                     if ($request->request->get('tipo') == "Solicitante") {
                         $listA = [];
                         if ($request->request->get('area') != "null") {

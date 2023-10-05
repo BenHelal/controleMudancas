@@ -459,7 +459,7 @@ class Excel
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
                 }
 
-                
+
                 $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                 $sheet->setCellValue($lastArrayIndex . '1', 'Área/Cliente');
                 $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
@@ -508,7 +508,7 @@ class Excel
                 $procSec2 = $em->getRepository(SectorProcess::class)->findAll(['process' => $proc]);
                 $procSec = null;
                 if ($procSec2 != null) {
-                    
+
                     foreach ($procSec2 as $key => $value2) {
                         if ($value2->getSector() == $value) {
                             $procSec = $value2;
@@ -520,12 +520,12 @@ class Excel
                 $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                 $sheet->setCellValue($lastArrayIndex . '1', 'Nome do Aprovador');
                 $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
-                if($procSec->getPerson() != null){
+                if ($procSec->getPerson() != null) {
                     $sheet->setCellValue($lastArrayIndex . $a, $procSec->getPerson()->getName());
                 }
 
 
-                
+
 
                 $in = array_search($lastArrayIndex2[1], $arrayAlphabet);
                 $in0 = array_search($lastArrayIndex2[0], $arrayAlphabet);
@@ -680,7 +680,7 @@ class Excel
                 } else {
                     $sheet->setCellValue($lastArrayIndex . $a, "Não dados");
                 }
-                
+
                 $in = array_search($lastArrayIndex2[1], $arrayAlphabet);
                 $in0 = array_search($lastArrayIndex2[0], $arrayAlphabet);
 
@@ -706,7 +706,7 @@ class Excel
                         $in = array_search($lastArrayIndex22, $arrayAlphabet);
                         $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
                     }
-        
+
                     if ($in + 2 > 25) {
                         $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 26];
                         $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
@@ -722,46 +722,49 @@ class Excel
                         $in = array_search($lastArrayIndex22, $arrayAlphabet);
                         $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
                     }
-    
+
                     if ($j == 0) {
                         #  ...
                         $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                         $sheet->setCellValue($lastArrayIndex . '1', 'Tipo de Aprovação');
                         $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
                         $sheet->setCellValue($lastArrayIndex . $a, 'Dados de implementação');
-                    }elseif ($j == 1) {
+                    } elseif ($j == 1) {
                         $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                         $sheet->setCellValue($lastArrayIndex . '1', 'Área/Cliente');
                         $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
-                        $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMangerMudancas()->getFunction()->getName());   
-                    }elseif( $j == 2){
-                       $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
-                       $sheet->setCellValue($lastArrayIndex . '1', 'Nome do Aprovador');
-                       $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
-                       $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMangerMudancas()->getName());   
-                    }elseif( $j == 3){
+                        if ($mudancas[$i]->getMangerMudancas()->getFunction() != null) {
+
+                            $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMangerMudancas()->getFunction()->getName());
+                        }
+                    } elseif ($j == 2) {
+                        $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
+                        $sheet->setCellValue($lastArrayIndex . '1', 'Nome do Aprovador');
+                        $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
+                        $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMangerMudancas()->getName());
+                    } elseif ($j == 3) {
                         $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                         $sheet->setCellValue($lastArrayIndex . '1', 'Data da Aprovação');
                         $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
-                        $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getDateOfImp());   
-                    }elseif($j == 4 ){
+                        $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getDateOfImp());
+                    } elseif ($j == 4) {
                         $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                         $sheet->setCellValue($lastArrayIndex . '1', 'Status Aprovação');
                         $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
-                        if($mudancas[$i]->getImplemented()=="1"){
-                            $sheet->setCellValue($lastArrayIndex . $a , "Implementada");
-                        }elseif($mudancas[$i]->getImplemented()=="2"){
-                            $sheet->setCellValue($lastArrayIndex . $a , "Não implementado");    
-                        }else{
-                            $sheet->setCellValue($lastArrayIndex . $a , "Dados não disponíveis");    
+                        if ($mudancas[$i]->getImplemented() == "1") {
+                            $sheet->setCellValue($lastArrayIndex . $a, "Implementada");
+                        } elseif ($mudancas[$i]->getImplemented() == "2") {
+                            $sheet->setCellValue($lastArrayIndex . $a, "Não implementado");
+                        } else {
+                            $sheet->setCellValue($lastArrayIndex . $a, "Dados não disponíveis");
                         }
-                    }elseif ($j == 5) {
+                    } elseif ($j == 5) {
                         $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                         $sheet->setCellValue($lastArrayIndex . '1', 'Comentário');
                         $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
                         $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getImpDesc());
-                    }      
-                    $j = $j+1;
+                    }
+                    $j = $j + 1;
                 }
             }
 
@@ -769,6 +772,67 @@ class Excel
             $b = $b + 3;
         }
 
+        foreach ($sheet->getMergeCells() as $cells)
+            $sheet->unmergeCells($cells);
+
+
+        // Get the active worksheet
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        // Get the highest row number and column letter
+        $highestRow = $worksheet->getHighestRow();
+        $highestColumn = $worksheet->getHighestColumn();
+
+        // Convert the highest column letter to a numeric column index
+        //$highestColumnIndex = \PHPExcel_Cell::columnIndexFromString($highestColumn);
+        $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); // e.g. 5              
+        // Loop through rows in reverse order
+        for ($row = $highestRow; $row >= 1; $row--) {
+            $isEmpty = true;
+
+            // Loop through columns
+            for ($col = 1; $col <= $highestColumnIndex; $col++) {
+                $cellValue = $worksheet->getCellByColumnAndRow($col, $row)->getValue();
+
+                if (!empty($cellValue)) {
+                    $isEmpty = false;
+                    break;
+                }
+            }
+
+            // If the entire row is empty, delete it
+            if ($isEmpty) {
+                $worksheet->removeRow($row);
+            }
+        }
+        // Loop through columns
+        for ($col = $highestColumnIndex; $col >= 1; $col--) {
+            $isEmpty = true;
+
+            // Loop through rows
+            for ($row = 1; $row <= $highestRow; $row++) {
+                $cellValue = $worksheet->getCellByColumnAndRow($col, $row)->getValue();
+
+                if (!empty($cellValue)) {
+                    $isEmpty = false;
+                    break;
+                }
+            }
+
+            // If the entire column is empty, delete it
+            if ($isEmpty) {
+                $worksheet->removeColumnByIndex($col);
+            }
+        }
+
         return $spreadsheet;
+    }
+
+    function isEmptyRow($row)
+    {
+        foreach ($row as $cell) {
+            if (null !== $cell) return false;
+        }
+        return true;
     }
 }
