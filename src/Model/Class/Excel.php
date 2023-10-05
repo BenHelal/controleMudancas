@@ -347,7 +347,12 @@ class Excel
             }
             $sheet->mergeCells("DG" . $a . ":DI" . $b);
             if ($mudancas[$i]->getMangerMudancas() != null) {
-                $sheet->setCellValue("DG" . $a, $mudancas[$i]->getMangerMudancas()->getFunction()->getName());
+                
+                if ($mudancas[$i]->getMangerMudancas()->getFunction() != null) {
+                    $sheet->setCellValue("DG" . $a, $mudancas[$i]->getMangerMudancas()->getFunction()->getName());
+                } else {
+                    $sheet->setCellValue("DG" . $a, "Não Dados");
+                }
             } else {
                 $sheet->setCellValue("DG" . $a, "Não Dados");
             }
@@ -385,11 +390,11 @@ class Excel
                 $in = array_search($lastArrayIndex22, $arrayAlphabet);
                 $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
                 if ($in + 1 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
+                    
                     if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
-                    }
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
                     $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
@@ -401,11 +406,13 @@ class Excel
                 }
 
                 if ($in + 2 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+                    
                     if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
-                    }
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
+
+                   
                     $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
@@ -430,11 +437,11 @@ class Excel
                 $lastArrayIndex2 = $lastArrayIndex2;
 
                 if ($in + 1 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
+                    
                     if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
-                    }
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
                     $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
@@ -446,11 +453,11 @@ class Excel
                 }
 
                 if ($in + 2 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+                    
                     if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
-                    }
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
                     $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
@@ -475,11 +482,11 @@ class Excel
                 $lastArrayIndex2 = $lastArrayIndex2;
 
                 if ($in + 1 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
+                    
                     if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
-                    }
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
                     $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
@@ -491,11 +498,11 @@ class Excel
                 }
 
                 if ($in + 2 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+                    
                     if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
-                    }
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
                     $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
@@ -536,11 +543,11 @@ class Excel
                 $lastArrayIndex2 = $lastArrayIndex2;
 
                 if ($in + 1 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
+                    
                     if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
-                    }
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
                     $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
@@ -552,11 +559,11 @@ class Excel
                 }
 
                 if ($in + 2 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+                    
                     if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
-                    }
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
                     $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
@@ -586,11 +593,11 @@ class Excel
                 $lastArrayIndex2 = $lastArrayIndex2;
 
                 if ($in + 1 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
+                    
                     if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
-                    }
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
                     $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
@@ -602,11 +609,11 @@ class Excel
                 }
 
                 if ($in + 2 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+                    
                     if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
-                    }
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
                     $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
@@ -641,11 +648,11 @@ class Excel
                 $lastArrayIndex2 = $lastArrayIndex2;
 
                 if ($in + 1 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
+                    
                     if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
-                    }
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
                     $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
@@ -657,11 +664,11 @@ class Excel
                 }
 
                 if ($in + 2 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 26];
-                    $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+                    
                     if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
-                    }
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
                     $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
@@ -694,10 +701,12 @@ class Excel
                 $j = 0;
                 while ($j <= 5) {
                     if ($in + 1 > 25) {
-                        $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 26];
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
-                        if ($in0 + 1 > 25) {
-                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
+                       if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                        
                         }
                         $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
                         $in = array_search($lastArrayIndex22, $arrayAlphabet);
@@ -710,10 +719,12 @@ class Excel
                     }
 
                     if ($in + 2 > 25) {
-                        $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 26];
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
                         if ($in0 + 1 > 25) {
-                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 26];
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                        
                         }
                         $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
                         $in = array_search($lastArrayIndex22, $arrayAlphabet);
@@ -735,15 +746,26 @@ class Excel
                         $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                         $sheet->setCellValue($lastArrayIndex . '1', 'Área/Cliente');
                         $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
-                        if ($mudancas[$i]->getMangerMudancas()->getFunction() != null) {
-
-                            $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMangerMudancas()->getFunction()->getName());
+                        
+                        if ($mudancas[$i]->getMangerMudancas() != null) {
+                            if ($mudancas[$i]->getMangerMudancas()->getFunction() != null) {
+                                $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMangerMudancas()->getFunction()->getName());
+                            }else{
+                                $sheet->setCellValue("DG" . $a, "Não Dados");
+                            }
+                        }else{
+                            $sheet->setCellValue("DG" . $a, "Não Dados");
                         }
                     } elseif ($j == 2) {
                         $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                         $sheet->setCellValue($lastArrayIndex . '1', 'Nome do Aprovador');
                         $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
+                        if ($mudancas[$i]->getMangerMudancas() != null) {
+
                         $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMangerMudancas()->getName());
+                        }else{
+                            $sheet->setCellValue("DG" . $a, "Não Dados");
+                        }
                     } elseif ($j == 3) {
                         $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                         $sheet->setCellValue($lastArrayIndex . '1', 'Data da Aprovação');
