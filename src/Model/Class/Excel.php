@@ -10,6 +10,8 @@ use Doctrine\Persistence\ManagerRegistry;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Borders;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PHPUnit\TextUI\XmlConfiguration\IniSetting;
 
@@ -824,6 +826,46 @@ class Excel
                 $worksheet->removeColumnByIndex($col);
             }
         }
+
+        // Iterate through each sheet in the workbook
+        foreach ($spreadsheet->getWorksheetIterator() as $worksheet) {
+            // Autofit column widths
+            $columnIterator = $worksheet->getColumnIterator();
+            foreach ($columnIterator as $column) {
+                $worksheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);
+            }
+
+            // Autofit row heights
+            $rowIterator = $worksheet->getRowIterator();
+            foreach ($rowIterator as $row) {
+                $worksheet->getRowDimension($row->getRowIndex())->setRowHeight(-1);
+            }
+        }
+        // Define the background color for row 1 and column A
+        $row1BackgroundColor = 'e0e0e0'; // Yellow background color
+        $columnABackgroundColor = 'e0e0e0'; // Green background color
+
+        // Iterate through each sheet in the workbook
+        foreach ($spreadsheet->getWorksheetIterator() as $worksheet) {
+
+
+            // Set background color for all cells in column A
+            $worksheet->getStyle('A:A')->applyFromArray([
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => $columnABackgroundColor],
+                ],
+            ]);
+            // Set background color for all cells in row 1
+            $worksheet->getStyle('1:1')->applyFromArray([
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => $row1BackgroundColor],
+                ],
+            ]);
+        }
+
+
 
         return $spreadsheet;
     }
