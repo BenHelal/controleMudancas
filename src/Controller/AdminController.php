@@ -12,9 +12,9 @@ use App\Entity\Manager;
 use App\Entity\Mudancas;
 use App\Entity\MudancasSoftware;
 use App\Entity\Person;
-use App\Entity\Process;
 use App\Entity\Requestper;
 use App\Entity\Sector;
+use App\Entity\Process;
 use App\Entity\SectorProcess;
 use App\Form\AddClientType;
 use App\Form\AddPersonType;
@@ -1137,7 +1137,206 @@ class AdminController extends AbstractController
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
 
-            if (($request->request->get('status') == "null" &
+            $mudIds = $request->request->all();
+            if ($mudIds != null) {
+                /*
+                array:8 [▼
+  "status" => "Solicitação Reprovada"
+  "dateInicio" => "2023-10-06"
+  "dateTermino" => "2023-10-23"
+  "tipo" => "Solicitante"
+  "area" => "017 – GARANTIA DA QUALIDADE MATRIZ (CALIBRAÇÃO)"
+  "client" => ""
+  "person" => "João Ramiro"
+  "dateApp" => "2023-10-23"
+] */
+
+
+
+                $emptyOrNullKeys = [];
+
+                $parameters = [];
+                $whereConditions = [];
+                foreach ($mudIds as $key => $value) {
+                    if (empty($value) || $value === "null") {
+                        $emptyOrNullKeys[] = $key;
+                    }
+
+
+
+                    // Assume $sectorId and $processId are variables you're working with.
+                    
+                    if (($value != "null" || $value != "") && ($key === 'status')) {
+                       
+                        /**Status search 
+                         * 
+                         * Solicitação Aprovada
+                         * Solicitação Reprovada
+                         * Mudança Aprovada
+                         * Mudança Reprovada
+                         * Mudança Aceita
+                         * Mudança Rejeitada
+                         * Mudança implementada
+                         * Mudança não implementada  implementadas e fechadas
+                         */
+                        if ($value === 'Solicitação Aprovada') {
+                            $whereConditions[] = "mud.manager_user_app = ?";
+                            $parameters[] = 1;
+
+                            $whereConditions[] = "mud.app_man = ?";
+                            $parameters[] = null;
+                        } 
+                        elseif ($value === 'Solicitação Reprovada') {
+                            $whereConditions[] = "mud.manager_user_app = ?";
+                            $parameters[] = 2;
+
+                            $whereConditions[] = "mud.app_man = ?";
+                            $parameters[] = null;
+                        } 
+                        elseif ($value === 'Mudança Aceita') {
+                            $whereConditions[] = "mud.app_man = ?";
+                            $parameters[] = 1;
+
+                            $whereConditions[] = "mud.app_gest = ?";
+                            $parameters[] = null;
+                        } 
+                        elseif ($value === 'Mudança Rejeitada') {
+                            $whereConditions[] = "mud.app_man = ?";
+                            $parameters[] = 2;
+                        } 
+                        elseif ($value === 'Mudança Aprovada') {
+                            $whereConditions[] = "mud.app_gest = ?";
+                            $parameters[] = 1;
+                        } 
+                        elseif ($value === 'Mudança Reprovada') {
+                            $whereConditions[] = "mud.app_gest = ?";
+                            $parameters[] = 2;
+                        } 
+                        elseif ($value === 'Mudança implementada') {
+                            $whereConditions[] = "mud.implemented = ?";
+                            $parameters[] = 1;
+                        } 
+                        elseif ($value === 'Mudança não implementada  implementadas e fechadas') {
+                            $whereConditions[] = "mud.manager_user_app = ?";
+                            $parameters[] = 2;
+                        }
+                    }elseif (($value != "null" || $value != "") && ($key === 'dateInicio')) {
+                        //dateInicio search
+                        $whereConditions[] = "sp.sector_id = ?";
+                        $parameters[] = $value;
+                    }
+                    elseif (($value != "null" || $value != "") && ($key === 'dateTermino')) {
+                        //dateTermino search 
+                        $whereConditions[] = "sp.sector_id = ?";
+                        $parameters[] = $value;
+                    }
+                    elseif (($value != "null" || $value != "") && ($key === 'tipo')) {
+                        ///tipo search 
+                        $whereConditions[] = "sp.sector_id = ?";
+                        $parameters[] = $value;
+                    }
+                    elseif (($value != "null" || $value != "") && ($key === 'area')) {
+                        //area search
+                        $whereConditions[] = "sp.sector_id = ?";
+                        $parameters[] = $value;
+                    }
+                    elseif (($value != "null" || $value != "") && ($key === 'client')) {
+                        //client search 
+                        $whereConditions[] = "sp.sector_id = ?";
+                        $parameters[] = $value;
+                    }
+                    elseif (($value != "null" || $value != "") && ($key === 'person')) {
+                        //person search 
+                        $whereConditions[] = "sp.sector_id = ?";
+                        $parameters[] = $value;
+                    }
+                    elseif (($value != "null" || $value != "") && ($key === 'dateApp')) {
+                        //dateApp search 
+                        $whereConditions[] = "sp.sector_id = ?";
+                        $parameters[] = $value;
+                    }
+                }
+                // ... Add similar conditions for other parameters as needed ...
+
+                // Always include conditions that don't depend on parameters.
+                $whereConditions[] = "p.mudancas_id = mud.id";
+                $whereConditions[] = "sp.process_id = p.id";
+
+                // Now, build the full SQL string.
+                $em->clear();
+                $sql = 'SELECT mud.id FROM sector_process as sp, mudancas as mud, process as p WHERE ' . implode(' AND ', $whereConditions);
+
+                $conn = $doctrine->getConnection();
+                $stmt = $conn->prepare($sql);
+                $stmt->execute($parameters);
+                $resultSet = $stmt->executeQuery();
+                        // get the id of the Porcess
+                        // dd($process->getId());
+                
+                $dm =  $resultSet->fetchAllAssociative();
+                dd($dm);                       
+            } else {
+
+
+                $sectors = $em->getRepository(Sector::class)->findAll();
+                $list = $em->getRepository(Mudancas::class)->findAll();
+                $client = $em->getRepository(Client::class)->findAll();
+                $managers = $em->getRepository(Person::class)->findAll();
+                $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            }
+            return $this->render('admin/listMudancas.html.twig', [
+                'controller_name' => 'Atualizar Mudancas',
+                'login' => 'null',
+                'type' => 'list',
+                'p' => $person,
+                'client' => $client,
+                'managers' => $managers,
+                'sectors' => $sectors,
+                'mudancas' => $list,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_mudancas');
+        }
+    }
+
+
+    //http://10.100.1.180/controleMudancas/public/adminmud/exportResult
+
+    #[Route('/exportResult', name: 'exportResult')]
+    public function getExportResultData(ManagerRegistry $doctrine, Request $request)
+    {
+        $session = $request->getSession();
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+
+            // Fetch all required Mudancas records in a single query
+            $mudIds = $request->request->all();
+            $mud = $em->getRepository(Mudancas::class)->findBy(['id' => $mudIds]);
+
+            $process = [];
+            foreach ($mud as $value) {
+                $process[] = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
+            }
+
+            $secProcess = [];
+            foreach ($process as $value) {
+                $secProcess[] = $em->getRepository(SectorProcess::class)->findOneBy(['process' => $value]);
+            }
+
+            $spreadsheet = (new Excel())->generateExcel($mud, $doctrine);
+            $writer = new Xlsx($spreadsheet);
+            $publicDirectory = $this->getParameter('kernel.project_dir');
+            $excelFilepath =  $publicDirectory . '/public/Admin.xlsx';
+            $writer->save($excelFilepath);
+            return $this->redirectToRoute('exportFile');
+        }
+    }
+}
+
+
+
+
+            /*if (($request->request->get('status') == "null" &
                     $request->request->get('dateInicio') == "" &
                     $request->request->get('dateTermino') == "" &
                     $request->request->get('tipo') == "null" &
@@ -1154,62 +1353,8 @@ class AdminController extends AbstractController
             } else {
 
                 $list = $em->getRepository(Mudancas::class)->findAll();
-                /*if ($request->request->get('client') != null) {
 
-                    $listA = [];
-                    foreach ($list as $key => $value) {
-                        if ($value->getClient() != null) {
-                            if ($value->getClient()->getName() == $request->request->get('client')) {
-                                array_push($listA, $value);
-                            }
-                        }
-                    }
-                    $list = $listA;
-                }
-                // Date Filter 
-                if ($request->request->get('dateInicio') != null) {
-                    $listA = [];
-                    
-                    if ($request->request->get('dateTermino') != null) {
-                        foreach ($list as $key => $value) {
-                            $d1 = new DateTime($request->request->get('dateInicio') . '00:00:00');
-                            $d2 = new DateTime($value->getStartMudancas() . '00:00:00');
-
-                            $d3 = new DateTime($request->request->get('dateTermino') . '00:00:00');
-                            $d4 = new DateTime($value->getEndMudancas() . '00:00:00');
-
-                            if ($d1 == $d2 && $d3 == $d4) {
-                                array_push($listA, $value);
-                            }
-                        } 
-                        
-                        $list = $listA;
-                    }else {
-                        
-                        foreach ($list as $key => $value) {
-                            $d1 = new DateTime($request->request->get('dateInicio') . '00:00:00');
-                            $d2 = new DateTime($value->getStartMudancas() . '00:00:00');
-                            if ($d1 == $d2) {
-                                array_push($listA, $value);
-                            }
-                        }
-                        $list = $listA;
-                    }
-                } else {
-
-                    if ($request->request->get('dateTermino') != null) {
-                        foreach ($list as $key => $value) {
-                            $d3 = new DateTime($request->request->get('dateTermino') . '00:00:00');
-                            $d4 = new DateTime($value->getEndMudancas() . '00:00:00');
-                            if ($d3 == $d4) {
-                                array_push($listA, $value);
-                            }
-                        }
-                        $list = $listA;
-                    }
-                }*/
-
-
+/*
                 if ($request->request->get('status') == "Mudança Rejeitada") {
                     $listA = [];
                     foreach ($list as $key => $value) {
@@ -3055,66 +3200,4 @@ class AdminController extends AbstractController
                         }
                     }
                 }
-            }
-
-            //list of sector 
-            $sectors = $em->getRepository(Sector::class)->findAll();
-            //manager
-            $client = $em->getRepository(Client::class)->findAll();
-            $managers = $em->getRepository(Person::class)->findAll();
-            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
-
-            return $this->render('admin/listMudancas.html.twig', [
-                'controller_name' => 'Atualizar Mudancas',
-                'login' => 'null',
-                'type' => 'list',
-                'p' => $person,
-                'client' => $client,
-                'managers' => $managers,
-                'sectors' => $sectors,
-                'mudancas' => $list,
-            ]);
-        } else {
-            return $this->redirectToRoute('app_mudancas');
-        }
-    }
-
-
-    #[Route('/exportResult', name: 'exportResult')]
-    public function getExportResultData(ManagerRegistry $doctrine, Request $request)
-    {
-        $session = new Session();
-        $session = $request->getSession();
-        if ($session->get('token_admin') != '') {
-            $em = $doctrine->getManager();
-            $mud = [];
-            for ($i = 1; $i <= sizeof($request->request); $i++) {
-                $m = $em->getRepository(Mudancas::class)->find($request->request->get(strval($i)));
-                array_push($mud, $m);
-            }
-            $spreadsheet = new Excel();
-            //$mud = $em->getRepository(Mudancas::class)->findAll();
-            $process = [];
-            foreach ($mud as $key => $value) {
-                $proc = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
-                array_push($process, $proc);
-            }
-
-            $secProcess = [];
-            foreach ($process as $key => $value) {
-                # code...
-                $procSec = $em->getRepository(SectorProcess::class)->findOneBy(['process' => $value]);
-            }
-
-            $spreadsheet = $spreadsheet->generateExcel($mud, $doctrine);
-            $writer = new Xlsx($spreadsheet);
-            // In this case, we want to write the file in the public directory
-            $publicDirectory = $this->getParameter('kernel.project_dir');
-            // e.g /var/www/project/public/my_first_excel_symfony4.xlsx
-            $excelFilepath =  $publicDirectory . '/public/Admin.xlsx';
-            $writer->save($excelFilepath);
-
-            return $this->redirectToRoute('exportFile');
-        }
-    }
-}
+            }*/

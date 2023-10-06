@@ -52,14 +52,12 @@ class Excel
         $sheet->mergeCells("BZ1:CB3");
         $sheet->mergeCells("CC1:CE3");
         $sheet->mergeCells("CF1:CH3");
-
         $sheet->mergeCells("CI1:CK3");
         $sheet->mergeCells("CL1:CN3");
         $sheet->mergeCells("CO1:CQ3");
         $sheet->mergeCells("CR1:CT3");
         $sheet->mergeCells("CU1:CW3");
         $sheet->mergeCells("CX1:CZ3");
-
         $sheet->mergeCells("DA1:DC3");
         $sheet->mergeCells("DD1:DF3");
         $sheet->mergeCells("DG1:DI3");
@@ -383,7 +381,9 @@ class Excel
 
             $lastArrayIndex = 'DR';
             $lastArrayIndex2 = 'DR';
-
+            $in = array_search($lastArrayIndex22, $arrayAlphabet);
+            $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+            /*
             foreach ($mudancas[$i]->getAreaImpact() as $key => $value) {
 
 
@@ -695,18 +695,16 @@ class Excel
 
                 $lastArrayIndex = $lastArrayIndex2;
                 $lastArrayIndex2 = $lastArrayIndex2;
-            }
+            }*/
 
             if ($mudancas[$i]->getImplemented() != null) {
                 $j = 0;
                 while ($j <= 5) {
                     if ($in + 1 > 25) {
                         $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
-                       if ($in0 + 1 > 25) {
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
+                        if ($in0 + 1 > 25) {
                             $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                        }else{
-                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
-                        
                         }
                         $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
                         $in = array_search($lastArrayIndex22, $arrayAlphabet);
@@ -720,11 +718,9 @@ class Excel
 
                     if ($in + 2 > 25) {
                         $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
                         if ($in0 + 1 > 25) {
                             $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                        }else{
-                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];
-                        
                         }
                         $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
                         $in = array_search($lastArrayIndex22, $arrayAlphabet);
@@ -791,6 +787,8 @@ class Excel
                     $j = $j + 1;
                 }
             }
+
+            
 
             $a = $a + 3;
             $b = $b + 3;
