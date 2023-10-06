@@ -28,6 +28,7 @@ use App\Form\SectorType;
 use App\Entity\Process;
 use App\Entity\SectorProcess;
 use App\Model\Class\Excel;
+use App\Model\Class\Excel2;
 use App\Model\Class\FunctionUsers;
 use App\Model\Class\IpAdress;
 use App\Model\Class\Sessions;
@@ -1127,14 +1128,14 @@ class AdminController extends AbstractController
                 $secProcess[] = $em->getRepository(SectorProcess::class)->findOneBy(['process' => $value]);
             }
 
-            $spreadsheet = (new Excel())->generateExcel($mud, $doctrine);
+            $spreadsheet = (new Excel2())->generateExcel($mud, $doctrine);
             $writer = new Xlsx($spreadsheet);
 
             $publicDirectory = $this->getParameter('kernel.project_dir');
             $excelFilepath =  $publicDirectory . '/public/Admin.xlsx';
             $writer->save($excelFilepath);
 
-            return $this->redirectToRoute('lm');
+            return $this->redirectToRoute('exportFile');
         }
     }
 }

@@ -1781,4 +1781,16 @@ class MudancasController extends AbstractController
 
         return;
     }
+
+    #[Route('/Admin.xlsx', name:'exportFile')]
+    public function getExportResultFile(ManagerRegistry $doctrine, Request $request){
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+
+            return $this->redirectToRoute('lm');
+           
+        }
+    }
 }
