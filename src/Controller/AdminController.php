@@ -25,6 +25,9 @@ use App\Form\PersonType;
 use App\Form\RequestadminType;
 use App\Form\RequestperType;
 use App\Form\SectorType;
+use App\Entity\Process;
+use App\Entity\SectorProcess;
+use App\Model\Class\Excel;
 use App\Model\Class\FunctionUsers;
 use App\Model\Class\IpAdress;
 use App\Model\Class\Sessions;
@@ -34,6 +37,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -1067,6 +1071,71 @@ class AdminController extends AbstractController
         }
 
         return;
+    }
+
+    
+    #[Route('/export', name: 'export')]
+    public function getExportData(ManagerRegistry $doctrine, Request $request)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+
+
+                $sectors = $em->getRepository(Sector::class)->findAll();
+                $list = $em->getRepository(Mudancas::class)->findAll();
+                $client = $em->getRepository(Client::class)->findAll();
+                $managers = $em->getRepository(Person::class)->findAll();
+                $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            
+            return $this->render('admin/listMudancas.html.twig', [
+                'controller_name' => 'Atualizar Mudancas',
+                'login' => 'null',
+                'type' => 'list',
+                'p' => $person,
+                'client' => $client,
+                'managers' => $managers,
+                'sectors' => $sectors,
+                'mudancas' => $list,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_mudancas');
+        }
+    }
+
+    #[Route('/exportResult', name: 'exportResult')]
+    public function getExportResultData(ManagerRegistry $doctrine, Request $request)
+    {
+        $session = $request->getSession();
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+
+            // Fetch all required Mudancas records in a single query
+            //$mudIds = $request->request->all();
+            
+            $mud = $em->getRepository(Mudancas::class)->findAll();
+
+            $process = [];
+            foreach ($mud as $value) {
+                $process[] = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
+            }
+
+            $secProcess = [];
+            foreach ($process as $value) {
+                $secProcess[] = $em->getRepository(SectorProcess::class)->findOneBy(['process' => $value]);
+            }
+
+            $spreadsheet = (new Excel())->generateExcel($mud, $doctrine);
+            $writer = new Xlsx($spreadsheet);
+
+            $publicDirectory = $this->getParameter('kernel.project_dir');
+            $excelFilepath =  $publicDirectory . '/public/Admin.xlsx';
+            $writer->save($excelFilepath);
+
+            return $this->redirectToRoute('lm');
+        }
     }
 }
 
