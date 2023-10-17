@@ -13,7 +13,7 @@ class SectorProcess
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne (targetEntity:"Process", cascade:["persist"])]
     #[ORM\JoinColumn(nullable: true)]
     private ?Process $process = null;
 

@@ -35,6 +35,11 @@ class CloseMudController extends AbstractController
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $mud = $em->getRepository(Mudancas::class)->find($id);
 
+            if($mud->getManagerUserAdd() == null){
+                $mud->setManagerUserAdd($mud->getAddBy()->getFunction()->getManager());
+                $em->flush();
+            }
+
             $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
             if($process != null){
                 $areaImpact = $mud->getAreaImpact();
