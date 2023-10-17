@@ -8,6 +8,7 @@ use App\Entity\ConfigEmail;
 use App\Entity\Departemant;
 use App\Entity\DepartemantMudancass;
 use App\Entity\Email;
+use App\Entity\ExportMud;
 use App\Entity\Manager;
 use App\Entity\Mudancas;
 use App\Entity\Person;
@@ -34,6 +35,7 @@ use App\Model\Class\IpAdress;
 use App\Model\Class\Sessions;
 use App\Model\Class\ThemeFn;
 use App\Model\Class\UsersPermission;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
@@ -105,7 +107,7 @@ class AdminController extends AbstractController
             } else {
                 return $this->redirectToRoute('logoutAdmin');
             }
-        }else {
+        } else {
             return $this->redirectToRoute('logoutAdmin');
         }
     }
@@ -495,7 +497,7 @@ class AdminController extends AbstractController
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
 
-            
+
 
 
             $sql = 'DELETE em
@@ -510,7 +512,7 @@ class AdminController extends AbstractController
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
 
-            
+
             $sql = 'Delete FROM api_token WHERE mud_id = :mudancas_id ;';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
@@ -725,7 +727,7 @@ class AdminController extends AbstractController
         }
     }
 
-    
+
     #[Route('/edit/cliente/{id}', name: 'edit_client')]
     public  function ClientById($id, ManagerRegistry $doctrine, Request $request)
     {
@@ -735,7 +737,7 @@ class AdminController extends AbstractController
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
             $sector = $em->getRepository(Client::class)->find($id);
-            
+
             $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
             $form = $this->createForm(ClientType::class, $sector);
             $form->handleRequest($request);
@@ -834,38 +836,38 @@ class AdminController extends AbstractController
             $em = $doctrine->getManager();
             $sector = $em->getRepository(Sector::class)->find($id);
             $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
-            
+
             $oldCorrdinator = $sector->getCoordinator();
             $oldManager = $sector->getManager();
-            
+
             $form = $this->createForm(SectorType::class, $sector);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                if($sector->getCoordinator() != $oldCorrdinator){
+                if ($sector->getCoordinator() != $oldCorrdinator) {
                     $mudancas = $em->getRepository(Mudancas::class)->findAll();
                     foreach ($mudancas as $key => $mud) {
-                        if($mud->getDone() == null){
+                        if ($mud->getDone() == null) {
                             $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
                             $sectorProcess = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
 
                             foreach ($sectorProcess as $key => $sp) {
-                                if($sp->getSector() == $sector){
-                                    if($sp->getComment() == null & $sp->getAppSectorMan() == null){
+                                if ($sp->getSector() == $sector) {
+                                    if ($sp->getComment() == null & $sp->getAppSectorMan() == null) {
                                         $sp->setPerson($sector->getCoordinator());
                                     }
                                 }
                             }
                         }
-                    }   
+                    }
                 }
 
                 if ($sector->getManager() != $oldManager) {
                     $mudancas = $em->getRepository(Mudancas::class)->findAll();
                     foreach ($mudancas as $key => $mud) {
-                        if($mud->getDone() == null){
-                           if($mud->getManagerUserApp() == null ){
+                        if ($mud->getDone() == null) {
+                            if ($mud->getManagerUserApp() == null) {
                                 $mud->setManagerUserAdd($sector->getManager());
-                           } 
+                            }
                         }
                     }
                 }
@@ -975,8 +977,7 @@ class AdminController extends AbstractController
             $mud = $em->getRepository(Mudancas::class)->find($id);
 
             $this->sendEmail($doctrine, $request, $mud->getClient(), $mud, $person, 'client', false, $mud->getClient());
-            return $this->redirectToRoute('mudAdmin',['id'=> $id]);
-            
+            return $this->redirectToRoute('mudAdmin', ['id' => $id]);
         } else {
             return $this->redirectToRoute('app_mudancas');
         }
@@ -1074,7 +1075,7 @@ class AdminController extends AbstractController
         return;
     }
 
-    
+
     #[Route('/export', name: 'export')]
     public function getExportData(ManagerRegistry $doctrine, Request $request)
     {
@@ -1084,19 +1085,288 @@ class AdminController extends AbstractController
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
 
+            $mudIds = $request->request->all();
+            $empty = true;
+            $listcheckdate = [];
+            $listcheckPerson = [];
+            $listcheckStat = [];
+            foreach ($mudIds as $key => $value) {
+                if ($value != "null") {
+                    if ($value != "") {
+                        $empty = false;
+                    }
+                }
+            }
+            if ($empty == true) {
+                $mudIds = null;
+            }
+            if ($mudIds != null) {
 
+
+
+                $emptyOrNullKeys = [];
+                $list = [];
+                $listDate = [];
+                $listDateInit = [];
+                $listDateTypePers = [];
+                $dateInit = null;
+                $date = null;
+                $export = $em->getRepository(ExportMud::class)->findAll();
+                // Assume $sectorId and $processId are variables you're working with.  
+                for ($i = 0; $i < sizeof($export); $i++) {
+                    $valueExp = $export[$i];
+                    $type = null;
+                    foreach ($mudIds as $key => $value) {
+                        if (($value != "null" || $value != "") && ($key == 'status')) {
+
+                            if ($value === 'Solicitação Aprovada') {
+                                //
+                                if (($valueExp->getMudanca()->getManagerUserApp() == 1) &&
+                                    $valueExp->getMudanca()->getAppMan() == null &&
+                                    $valueExp->getMudanca()->getImplemented() == null
+                                ) {
+                                    array_push($list, $valueExp->getMudanca());
+                                } elseif (($valueExp->getMudanca()->getNansenNumber() != null) &&
+                                    $valueExp->getMudanca()->getAppMan() == null &&
+                                    $valueExp->getMudanca()->getImplemented() == null
+                                ) {
+                                    array_push($list, $valueExp->getMudanca());
+                                } else {
+                                    array_push($listcheckStat, $valueExp->getMudanca()->getId());
+                                }
+                                //var_dump($listcheckStat);
+                            } elseif ($value === 'Solicitação Reprovada') {
+                                if (($valueExp->getMudanca()->getManagerUserApp() == 2) &&
+                                    $valueExp->getMudanca()->getAppMan() == null &&
+                                    $valueExp->getMudanca()->getImplemented() != null
+                                ) {
+                                    array_push($list, $valueExp->getMudanca());
+                                } else {
+                                    array_push($listcheckStat, $valueExp->getMudanca()->getId());
+                                }
+                            } elseif ($value === 'Mudança Aceita') {
+                                if (($valueExp->getMudanca()->getAppGest() == 1) &&
+                                    $valueExp->getMudanca()->getImplemented() == null
+                                ) {
+                                    array_push($list, $valueExp->getMudanca());
+                                } else {
+                                    array_push($listcheckStat, $valueExp->getMudanca()->getId());
+                                }
+                            } elseif ($value === 'Mudança Rejeitada') {
+                                if (($valueExp->getMudanca()->getAppGest() == 2) &&
+                                    $valueExp->getMudanca()->getImplemented() != null
+                                ) {
+                                    array_push($list, $valueExp->getMudanca());
+                                } else {
+                                    $isDone = null;
+                                    foreach ($valueExp->getSectorProcess() as $key => $value) {
+                                        if ($value->getAppSectorMan() == 2) {
+                                            $isDone = 1;
+                                        }
+                                    }
+                                    if ($isDone === 1) {
+                                        array_push($list, $valueExp->getMudanca());
+                                    } else {
+                                        array_push($listcheckStat, $valueExp->getMudanca()->getId());
+                                    }
+                                }
+                            } elseif ($value === 'Mudança Aprovada') {
+                                if (($valueExp->getMudanca()->getAppMan() == 1) &&
+                                    $valueExp->getMudanca()->getAppGest() == null &&
+                                    $valueExp->getMudanca()->getDone() != 'Feito' &&
+                                    $valueExp->getMudanca()->getImplemented() == null
+                                ) {
+                                    array_push($list, $valueExp->getMudanca());
+                                } else {
+                                    array_push($listcheckStat, $valueExp->getMudanca()->getId());
+                                }
+                            } elseif ($value === 'Mudança Reprovada') {
+                                if (($valueExp->getMudanca()->getAppMan() == 2) &&
+                                    $valueExp->getMudanca()->getAppGest() == null
+                                ) {
+                                    array_push($list, $valueExp->getMudanca());
+                                } else {
+                                    array_push($listcheckStat, $valueExp->getMudanca()->getId());
+                                }
+                            } elseif ($value === 'Mudança implementada') {
+                                if (($valueExp->getMudanca()->getAppMan() == 1) &&
+                                    $valueExp->getMudanca()->getAppGest() == 1 &&
+                                    $valueExp->getMudanca()->getImplemented() == 1
+                                ) {
+                                    array_push($list, $valueExp->getMudanca());
+                                } else {
+                                    array_push($listcheckStat, $valueExp->getMudanca()->getId());
+                                }
+                            } elseif ($value === 'Mudança não implementada  implementadas e fechadas') {
+                                if (($valueExp->getMudanca()->getAppMan() == 1) &&
+                                    $valueExp->getMudanca()->getAppGest() == 1 &&
+                                    $valueExp->getMudanca()->getImplemented() == 2
+                                ) {
+                                    array_push($list, $valueExp->getMudanca());
+                                } else {
+                                    array_push($listcheckStat, $valueExp->getMudanca()->getId());
+                                }
+                            }
+                        } elseif (($value != "null" || $value != "") && ($key === 'dateInicio')) {
+                            $dateInit = 0;
+                            try {
+                                $date1 = DateTime::createFromFormat('Y-m-d', $value);
+                                $date2 = DateTime::createFromFormat('d-m-Y', $valueExp->getMudanca()->getStartMudancas());
+                                $date1 = $date1->format('F j, Y');
+                                $date2 = $date2->format('F j, Y');
+                                if ($date1 == $date2) {
+                                    array_push($listDateInit, $valueExp->getMudanca());
+                                }
+                            } catch (\Throwable $th) {
+                            }
+                        } elseif (($value != "null" || $value != "") && ($key === 'dateTermino')) {
+                            //var_dump($value .' '.$valueExp->getMudanca()->getEndMudancas());
+                            $date = 0;
+                            try {
+                                $date1 = DateTime::createFromFormat('Y-m-d', $value);
+                                $date2 = DateTime::createFromFormat('d-m-Y', $valueExp->getMudanca()->getEndMudancas());
+                                $date1 = $date1->format('F j, Y');
+                                $date2 = $date2->format('F j, Y');
+                                if ($date1 == $date2) {
+                                    array_push($listDate, $valueExp->getMudanca());
+                                }
+                            } catch (\Throwable $th) {
+                            }
+                        }
+                        elseif (($value != "null" || $value != "") && ($key === 'tipo')) {
+                            if ($value === 'Solicitante') {
+                                $type = $value;
+                            }elseif ($value === 'Gerente Solicitante') {
+                                $type = $value;
+                            }elseif ($value === 'Gerente Aprovação') {
+                                $type = $value;
+                            }elseif ($value === 'Gestor da Mudança') {
+                                $type = $value;
+                            }elseif ($value === 'Área Impactada') {
+                                $type = $value;
+                            }   
+                        }elseif (($value != "null" || $value != "") && ($key === 'person')) {
+                            if($type == "Solicitante" ){
+                                if($value == $valueExp->getMudanca()->getAddBy()->getName()  ){ 
+                                    array_push($listDateTypePers, $valueExp->getMudanca());
+                                }
+                            }
+                        }
+                        elseif (($value != "null" || $value != "") && ($key === 'area')) {
+                        }
+                        elseif (($value != "null" || $value != "") && ($key === 'client')) {
+                        }
+                        elseif (($value != "null" || $value != "") && ($key === 'dateApp')) {
+                        }
+                    }
+                    /*for ($j = 0; $j< sizeof($list) ; $j++) {
+                        /*foreach ($listcheckdate as $key => $id) { 
+                        try {
+                            if(strval($list[$j]->getId()) == strval($id)){       
+                                    //code...
+                                    unset($list[$j]);
+                            } 
+                        } catch (\Throwable $th) {
+                                //throw $th;
+                            }
+                        }*/
+
+                    /* foreach ($listcheckPerson as $key => $id) { 
+                            try {
+                                if(strval($list[$j]->getId()) == strval($id)){       
+                                        //code...
+                                        unset($list[$j]);
+                                } 
+                            } catch (\Throwable $th) {
+                                    //throw $th;
+                            }
+                        }
+
+                        foreach ($listcheckStat as $key => $id) { 
+                            try {
+                                if(strval($list[$j]->getId()) == strval($id)){    
+                                        unset($list[$j]);
+                                } 
+                            } catch (\Throwable $th) {
+                            }
+                        }
+                    }*/
+                }
+                if (sizeof($listDateInit) != null) {
+                    $listI = [];
+                    foreach ($list as $key => $listItem) {
+                        foreach ($listDateInit as $key => $value) {
+                            if ($listItem->getId() == $value->getId()) {
+                                array_push($listI, $value);
+                            }
+                        }
+                    }
+                    $list = $listI;
+                }
+
+                if (sizeof($listDate) != null) {
+
+                    $listI = [];
+                    foreach ($list as $key => $listItem) {
+                        foreach ($listDate as $key => $value) {
+                            if ($listItem->getId() == $value->getId()) {
+                                array_push($listI, $value);
+                            }
+                        }
+                    }
+                    $list = $listI;
+                }
+
+                if (sizeof($listDateTypePers) != null) {
+
+                    $listI = [];
+                    foreach ($list as $key => $listItem) {
+                        foreach ($listDateTypePers as $key => $value) {
+                            if ($listItem->getId() == $value->getId()) {
+                                array_push($listI, $value);
+                            }
+                        }
+                    }
+                    $list = $listI;
+                }
+
+                
+                $sectors = $em->getRepository(Sector::class)->findAll();
+                $client = $em->getRepository(Client::class)->findAll();
+                $managers = $em->getRepository(Person::class)->findAll();
+                $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            } else {
+
+                $mudIds = [];
                 $sectors = $em->getRepository(Sector::class)->findAll();
                 $list = $em->getRepository(Mudancas::class)->findAll();
                 $client = $em->getRepository(Client::class)->findAll();
                 $managers = $em->getRepository(Person::class)->findAll();
                 $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
-            
+
+                foreach ($list as $key => $value) {
+                    $export = $em->getRepository(ExportMud::class)->findOneBy(['mudanca' => $value->getId()]);
+                    if ($export == null) {
+                        $export = new ExportMud();
+                        $export->setMudanca($value);
+                        $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
+                        $export->setProcess($process);
+                        $sp = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+                        foreach ($sp as $key => $value) {
+                            $export->addSectorProcess($value);
+                        }
+                        $em->persist($export);
+                        $em->flush();
+                    }
+                }
+            }
             return $this->render('admin/listMudancas.html.twig', [
                 'controller_name' => 'Atualizar Mudancas',
                 'login' => 'null',
                 'type' => 'list',
                 'p' => $person,
                 'client' => $client,
+                'muds' => $mudIds,
                 'managers' => $managers,
                 'sectors' => $sectors,
                 'mudancas' => $list,
@@ -1106,6 +1376,9 @@ class AdminController extends AbstractController
         }
     }
 
+
+    //http://10.100.1.180/controleMudancas/public/adminmud/exportResult
+
     #[Route('/exportResult', name: 'exportResult')]
     public function getExportResultData(ManagerRegistry $doctrine, Request $request)
     {
@@ -1114,9 +1387,8 @@ class AdminController extends AbstractController
             $em = $doctrine->getManager();
 
             // Fetch all required Mudancas records in a single query
-            //$mudIds = $request->request->all();
-            
-            $mud = $em->getRepository(Mudancas::class)->findAll();
+            $mudIds = $request->request->all();
+            $mud = $em->getRepository(Mudancas::class)->findBy(['id' => $mudIds]);
 
             $process = [];
             foreach ($mud as $value) {
@@ -1128,15 +1400,12 @@ class AdminController extends AbstractController
                 $secProcess[] = $em->getRepository(SectorProcess::class)->findOneBy(['process' => $value]);
             }
 
-            $spreadsheet = (new Excel2())->generateExcel($mud, $doctrine);
+            $spreadsheet = (new Excel())->generateExcel($mud, $doctrine);
             $writer = new Xlsx($spreadsheet);
-
             $publicDirectory = $this->getParameter('kernel.project_dir');
             $excelFilepath =  $publicDirectory . '/public/Admin.xlsx';
             $writer->save($excelFilepath);
-
             return $this->redirectToRoute('exportFile');
         }
     }
 }
-

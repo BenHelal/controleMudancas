@@ -1,73 +1,258 @@
 {% extends 'baseAdmin.html.twig' %}
 
 {% block body %}
-<link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css"
+    rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // setTimeout(function () { //window.location.reload(); //}, 5000);
+  </script>
+  <style>
+    .clicker { width:300px; height:50px; outline:none; cursor:pointer; }
 
-				<script>
+    .hiddendiv{ display:block; height:400px; }
 
-					setTimeout(function () {
-window.location.reload();
-}, 5000);
-				</script>
-<div class="container-fluid">
-
+    .clicker:focus + .hiddendiv{ display:none; }
+  </style>
+  <div class="container-fluid">
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">lista de Mudanças</h6>
-            <label for="exampleFormControlInput1">Procurar Mudanças</label>
-            <input type="email" class="form-control" id="myInput" placeholder="Procurar..">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+          lista de Mudanças
+        </h6>
+        <label for="exampleFormControlInput1">Procurar Mudanças</label>
+        <input type="email"
+          class="form-control"
+          id="myInput"
+          placeholder="Procurar.." />
+      </div>
 
+      <div id="clicker" tabindex="1">
+        Exportar dados
+      </div>
+
+      <div id="hiddendiv">
+        <form class="form-formulario_login" enctype="multipart/form-data" method="post"  action="{{path('export')}}"  >
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="cars">Status da Aprovação :</label>
+            <select id="status" name="status" class="form-control" >
+              <option value="null"></option>
+              <option value="Solicitação Aprovada">
+                  Status: Solicitação Aprovada
+              </option>		
+              <option value="Solicitação Reprovada">
+                  Status: Solicitação Reprovada
+              </option>		
+              <option value="Mudança Aprovada">
+                  Status: Mudança Aprovada  
+              </option>		
+              <option value="Mudança Reprovada">
+                  Status: Mudança Reprovada		
+              </option>		
+              <option value="Mudança Aceita">
+            			Status: Mudança Aceita
+              </option>	
+              <option value="Mudança Rejeitada">
+									Status: Mudança Rejeitada
+              </option>		
+              <option value="Mudança implementada">
+                  Status: Mudança implementada		
+              </option>		
+              <option value="Mudança não implementada  implementadas e fechadas">
+                  Status:  Mudança não implementada  implementadas e fechadas
+              </option>			
+              <option value="Mudança Aberta">
+                Status:  Mudança Aberta				
+              </option>			
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="cars">Período de Data Estimada de Início :</label>
+            <input id="dateInicio" name="dateInicio" value=""
+              type="date"
+              lang="pt-BR"
+              class="date form-control" />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="cars">Período de Data Estimada de Término :</label>
+            <input id="dateTermino" name="dateTermino" value=""
+              type="date"
+              lang="pt-BR"
+              class="date form-control" />
+          </div>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                {% if mudancas != null %}
-                {% for m in mudancas %}
-                <div id="myTable" class="list-group" style="width: 100%;">
-                    <div class="row" style="width: 100%;">
-                        <a href="{{path('mudAdmin',{'id':m.id} )}}"
-                            class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="cars">Tipo de Aprovação :</label>
+            <select  class="form-control" name="tipo" id="tipo">
+              <option value="null"></option>
+              <option value="Solicitante">
+                Solicitante
+              </option>
+              <option value="Gerente Solicitante">
+                Gerente Solicitante
+              </option>
+              <option value="Gerente Aprovação">
+                Gerente Aprovação
+              </option>
+              <option value="Gestor da Mudança">
+                Gestor da Mudança
+              </option>
+              <option value="Área Impactada">
+                Área Impactada
+              </option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="cars">Área :</label>
 
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">Número da mudança: {{m.id}}</h5>
-                                <medium>Nome da mudança: {{m.nomeMudanca}}</medium>
-                            </div>
-                            <div class="d-flex w-100 justify-content-between">
-                                <p class="mb-1">Descrição da Mudança: {{m.descImpacto}}</p>
-                                <medium>Descrição do Impacto: {{m.descImpacto}}</medium>
-                            </div>
-                            <div class="d-flex w-100 justify-content-between">
-                                <medium>Área impactada: </medium>
-                                <medium></medium>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                {% endfor %}
-                {% else %}
-                Não há Mudanças acessíveis
+            <select name="area" class="form-control" id="area">
+              <option value="null"></option>
+              {% for item in sectors %}
+                <option value="{{ item.name }}">
+                  {{ item.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="cars">Cliente :</label>
+            <select class="form-control" name="client" id="client">
+              <option value="null"></option>
+              {% for item in client %}
+                <option value="">
+                  {{item.name}}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="cars">Nome do Aprovador :</label>
+            <select class="form-control" name="person" id="person">
+              <option value="null"></option>
+              {% for item in managers %}
+                {% if item != null %}
+                  <option value="{{ item.name }}">
+                    {{ item.name }}
+                  </option>
                 {% endif %}
-            </div>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="cars">Data da Aprovação :</label>
+            <input value=""
+              id="dateApp"
+              name="dateApp"
+              type="date"
+              lang="pt-BR"
+              class="date form-control" />
+          </div>
+
+          <div class="col-md-12 mb-3">
+              <label for="cars">Comentário :</label>
+              <input value="" class="form-control" />
+          </div>
+          
+        <div class="row">
+        
+          <div class="col-md-5 mb-3">
+            <button style="margin-left : 15px" class="btn btn-info mt-2 text-white" type="submit">Procurar</button>
         </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+      <form class="form-formulario_login" enctype="multipart/form-data" method="post"  action="{{path('exportResult')}}"  >
+        {% for m in mudancas %}
+          <input id="{{ loop.index }}" name="{{ loop.index }}" hidden value="{{m.id}}" >
+        {% endfor %}
+        
+        <button type="submit" id="btn" class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Exportar dados</button>
+      </form>      
+      
+      <div class="card-body">
+        <div class="table-responsive">
+          {% if mudancas != null %}
+            {% for m in mudancas %}
+              <div id="myTable" class="list-group" style="width: 100%;">
+                <div class="row" style="width: 100%;">
+                  <a href="{{
+                    path(
+                      'mudAdmin',
+                      {
+                        id: m.id
+                      }
+                    )
+                    }}"
+                    class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                      <h5  class="mb-1">
+                        Número da mudança:
+                        {{ m.id }}
+                      </h5>
+                      <medium>
+                        Nome da mudança:
+                        {{ m.nomeMudanca }}
+                      </medium>
+                    </div>
+                    <div class="d-flex w-100 justify-content-between">
+                      <p class="mb-1">
+                        Descrição da Mudança:
+                        {{ m.descImpacto }}
+                      </p>
+                      <medium>
+                        Descrição do Impacto:
+                        {{ m.descImpacto }}
+                      </medium>
+                    </div>
+                    <div class="d-flex w-100 justify-content-between">
+                      <medium>
+                        Área impactada:
+                      </medium>
+                      <medium></medium>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            Não há Mudanças acessíveis
+          {% endif %}
+        </div>
+      </div>
     </div>
-</div>
-
+  </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script>
-    $(document).ready(function () {
-        $("#myInput").on("keyup", function () {
-
-            var value = $(this).val().toLowerCase();
-            //console.log(value);
-
-            $("#myTable a").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
+$(document).ready(function(){
+$('#hiddendiv').hide();
+  $("#clicker").click(function(){
+    $("#hiddendiv").toggle();
+  });
+});
 </script>
+  <script>
+    $(document).ready(function () { $("#myInput").on("keyup", function () {
+
+    var value = $(this).val().toLowerCase(); // console.log(value);
+
+    $("#myTable a").filter(function () {
+    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1) }); }); });
+  </script>
 {% endblock %}

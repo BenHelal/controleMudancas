@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SectorProcessRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SectorProcessRepository::class)]
@@ -34,6 +36,14 @@ class SectorProcess
 
     #[ORM\Column(type:'date',nullable: true)]
     private $dataCreation;
+
+    #[ORM\ManyToMany(targetEntity: ExportMud::class, mappedBy: 'sectorProcess')]
+    private Collection $exportMuds;
+
+    public function __construct()
+    {
+        $this->exportMuds = new ArrayCollection();
+    }
 
     public function getDataCreation()
     {
@@ -111,6 +121,33 @@ class SectorProcess
     public function setPerson(?Person $person): self
     {
         $this->person = $person;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ExportMud>
+     */
+    public function getExportMuds(): Collection
+    {
+        return $this->exportMuds;
+    }
+
+    public function addExportMud(ExportMud $exportMud): static
+    {
+        if (!$this->exportMuds->contains($exportMud)) {
+            $this->exportMuds->add($exportMud);
+            $exportMud->addSectorProcess($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExportMud(ExportMud $exportMud): static
+    {
+        if ($this->exportMuds->removeElement($exportMud)) {
+            $exportMud->removeSectorProcess($this);
+        }
 
         return $this;
     }
