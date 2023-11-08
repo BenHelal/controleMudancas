@@ -1087,8 +1087,6 @@ class AdminController extends AbstractController
 
             $mudIds = $request->request->all();
             $empty = true;
-            $listcheckdate = [];
-            $listcheckPerson = [];
             $listcheckStat = [];
             foreach ($mudIds as $key => $value) {
                 if ($value != "null") {
@@ -1101,21 +1099,20 @@ class AdminController extends AbstractController
                 $mudIds = null;
             }
             if ($mudIds != null) {
-
-
-
-                $emptyOrNullKeys = [];
                 $list = [];
                 $listDate = [];
                 $listDateInit = [];
+                $listDateApp = [];
                 $listDateTypePers = [];
-                $dateInit = null;
-                $date = null;
+                $listMudbyArea = [];
+                $listClient = [];
                 $export = $em->getRepository(ExportMud::class)->findAll();
                 // Assume $sectorId and $processId are variables you're working with.  
                 for ($i = 0; $i < sizeof($export); $i++) {
                     $valueExp = $export[$i];
                     $type = null;
+                    $coordinator = null;
+                    dd($mudIds); 
                     foreach ($mudIds as $key => $value) {
                         if (($value != "null" || $value != "") && ($key == 'status')) {
 
@@ -1206,19 +1203,39 @@ class AdminController extends AbstractController
                                 } else {
                                     array_push($listcheckStat, $valueExp->getMudanca()->getId());
                                 }
-                            }
-                        } elseif (($value != "null" || $value != "") && ($key === 'dateInicio')) {
-                            $dateInit = 0;
-                            try {
-                                $date1 = DateTime::createFromFormat('Y-m-d', $value);
-                                $date2 = DateTime::createFromFormat('d-m-Y', $valueExp->getMudanca()->getStartMudancas());
-                                $date1 = $date1->format('F j, Y');
-                                $date2 = $date2->format('F j, Y');
-                                if ($date1 == $date2) {
-                                    array_push($listDateInit, $valueExp->getMudanca());
+                            } elseif ($value === 'Mudança Aberta') {
+                                if (
+                                    $valueExp->getMudanca()->getManagerUserApp() == null && $valueExp->getMudanca()->getImplemented() != 2
+                                ) {
+                                    array_push($list, $valueExp->getMudanca());
+                                } else {
+                                    array_push($listcheckStat, $valueExp->getMudanca()->getId());
                                 }
-                            } catch (\Throwable $th) {
+                            } else {
+                                array_push($list, $valueExp->getMudanca());
                             }
+                        }/* elseif (($value != "null" || $value != "") && ($key === 'dateInicio')) {
+                                try {
+                                    $date1 = DateTime::createFromFormat('Y-m-d', $value);
+                                    $date2 = DateTime::createFromFormat('d-m-Y', $valueExp->getMudanca()->getStartMudancas());
+                                    $date1 = $date1->format('F j, Y');
+                                    $date2 = $date2->format('F j, Y');
+                                    if ($date1 >= $date2) {
+                                        array_push($listDateInit, $valueExp->getMudanca());
+                                    }
+                                } catch (\Throwable $th) {
+                                }
+                        }elseif (($value != "null" || $value != "") && ($key === 'dateInicioAte')) {
+                                try {
+                                    $date1 = DateTime::createFromFormat('Y-m-d', $value);
+                                    $date2 = DateTime::createFromFormat('d-m-Y', $valueExp->getMudanca()->getStartMudancas());
+                                    $date1 = $date1->format('F j, Y');
+                                    $date2 = $date2->format('F j, Y');
+                                    if ($date1 <= $date2) {
+                                        array_push($listDateInit, $valueExp->getMudanca());
+                                    }
+                                } catch (\Throwable $th) {
+                                }
                         } elseif (($value != "null" || $value != "") && ($key === 'dateTermino')) {
                             //var_dump($value .' '.$valueExp->getMudanca()->getEndMudancas());
                             $date = 0;
@@ -1232,105 +1249,357 @@ class AdminController extends AbstractController
                                 }
                             } catch (\Throwable $th) {
                             }
-                        }
-                        elseif (($value != "null" || $value != "") && ($key === 'tipo')) {
+                        }*/ elseif (($value != "null" || $value != "") && ($key === 'tipo')) {
                             if ($value === 'Solicitante') {
                                 $type = $value;
-                            }elseif ($value === 'Gerente Solicitante') {
+                            } elseif ($value === 'Gerente Solicitante') {
                                 $type = $value;
-                            }elseif ($value === 'Gerente Aprovação') {
+                            } elseif ($value === 'Gerente Aprovação') {
                                 $type = $value;
-                            }elseif ($value === 'Gestor da Mudança') {
+                            } elseif ($value === 'Gestor da Mudança') {
                                 $type = $value;
-                            }elseif ($value === 'Área Impactada') {
+                            } elseif ($value === 'Área Impactada') {
                                 $type = $value;
-                            }   
-                        }elseif (($value != "null" || $value != "") && ($key === 'person')) {
-                            if($type == "Solicitante" ){
-                                if($value == $valueExp->getMudanca()->getAddBy()->getName()  ){ 
-                                    array_push($listDateTypePers, $valueExp->getMudanca());
+                            }
+                        } elseif (($value != "null" || $value != "") && ($key === 'client')) {
+                            if ($valueExp->getMudanca()->getClient() != null) {
+                                if ($value == $valueExp->getMudanca()->getClient()->getName()) {
+                                    array_push($listClient, $valueExp->getMudanca());
                                 }
                             }
-                        }
-                        elseif (($value != "null" || $value != "") && ($key === 'area')) {
-                        }
-                        elseif (($value != "null" || $value != "") && ($key === 'client')) {
-                        }
-                        elseif (($value != "null" || $value != "") && ($key === 'dateApp')) {
-                        }
-                    }
-                    /*for ($j = 0; $j< sizeof($list) ; $j++) {
-                        /*foreach ($listcheckdate as $key => $id) { 
-                        try {
-                            if(strval($list[$j]->getId()) == strval($id)){       
-                                    //code...
-                                    unset($list[$j]);
-                            } 
-                        } catch (\Throwable $th) {
-                                //throw $th;
-                            }
-                        }*/
+                        } elseif (($value != "null" || $value != "") && ($key === 'person')) {
+                            if ($type == "Solicitante") {
 
-                    /* foreach ($listcheckPerson as $key => $id) { 
-                            try {
-                                if(strval($list[$j]->getId()) == strval($id)){       
+                                if ($valueExp->getMudanca()->getAddBy() != null) {
+                                    if ($value == $valueExp->getMudanca()->getAddBy()->getName()) {
+                                        array_push($listDateTypePers, $valueExp->getMudanca());
+                                    }
+                                }
+                            } elseif ($type == "Gerente Solicitante") {
+
+                                if ($valueExp->getMudanca()->getManagerUserAdd() != null) {
+                                    if ($value == $valueExp->getMudanca()->getManagerUserAdd()->getName()) {
+                                        array_push($listDateTypePers, $valueExp->getMudanca());
+                                    }
+                                }
+                            } elseif ($type == "Gerente Aprovação") {
+
+                                if ($valueExp->getMudanca()->getAreaResp()->getManager() != null) {
+                                    if ($value == $valueExp->getMudanca()->getAreaResp()->getManager()->getName()) {
+                                        array_push($listDateTypePers, $valueExp->getMudanca());
+                                    }
+                                }
+                            } elseif ($type == "Gestor da Mudança") {
+                                if ($valueExp->getMudanca()->getMangerMudancas() != null) {
+                                    if ($value == $valueExp->getMudanca()->getMangerMudancas()->getName()) {
+                                        array_push($listDateTypePers, $valueExp->getMudanca());
+                                    }
+                                }
+                            } elseif ($type == "Área Impactada") {
+                                foreach ($valueExp->getMudanca()->getAreaImpact() as $key => $areaI) {
+                                    if ($areaI->getCoordinator() != null) {
+                                        $coordinator = $value;
+                                        if ($coordinator == $areaI->getCoordinator()->getName()) {
+                                            if (sizeof($listDateTypePers) == 0) {
+                                                array_push($listDateTypePers, $valueExp->getMudanca());
+                                            } else {
+                                                if ($listDateTypePers[sizeof($listDateTypePers) - 1] != $valueExp->getMudanca()) {
+                                                    array_push($listDateTypePers, $valueExp->getMudanca());
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                if ($valueExp->getMudanca()->getAddBy() != null) {
+                                    if ($value == $valueExp->getMudanca()->getAddBy()->getName()) {
+                                        if (sizeof($listDateTypePers) == 0) {
+                                            array_push($listDateTypePers, $valueExp->getMudanca());
+                                        } else {
+                                            if ($listDateTypePers[sizeof($listDateTypePers) - 1] != $valueExp->getMudanca()) {
+                                                array_push($listDateTypePers, $valueExp->getMudanca());
+                                            }
+                                        }
+                                    }
+                                }
+                                if ($valueExp->getMudanca()->getManagerUserAdd() != null) {
+                                    if ($value == $valueExp->getMudanca()->getManagerUserAdd()->getName()) {
+                                        if (sizeof($listDateTypePers) == 0) {
+                                            array_push($listDateTypePers, $valueExp->getMudanca());
+                                        } else {
+                                            if ($listDateTypePers[sizeof($listDateTypePers) - 1] != $valueExp->getMudanca()) {
+                                                array_push($listDateTypePers, $valueExp->getMudanca());
+                                            }
+                                        }
+                                    }
+                                }
+                                if ($valueExp->getMudanca()->getAreaResp()->getManager() != null) {
+                                    if ($value == $valueExp->getMudanca()->getAreaResp()->getManager()->getName()) {
+                                        if (sizeof($listDateTypePers) == 0) {
+                                            array_push($listDateTypePers, $valueExp->getMudanca());
+                                        } else {
+                                            if ($listDateTypePers[sizeof($listDateTypePers) - 1] != $valueExp->getMudanca()) {
+                                                array_push($listDateTypePers, $valueExp->getMudanca());
+                                            }
+                                        }
+                                    }
+                                }
+                                if ($valueExp->getMudanca()->getMangerMudancas() != null) {
+                                    if ($value == $valueExp->getMudanca()->getMangerMudancas()->getName()) {
+                                        if (sizeof($listDateTypePers) == 0) {
+                                            array_push($listDateTypePers, $valueExp->getMudanca());
+                                        } else {
+                                            if ($listDateTypePers[sizeof($listDateTypePers) - 1] != $valueExp->getMudanca()) {
+                                                array_push($listDateTypePers, $valueExp->getMudanca());
+                                            }
+                                        }
+                                    }
+                                }
+                                foreach ($valueExp->getMudanca()->getAreaImpact() as $key => $areaI) {
+                                    if ($areaI->getCoordinator() != null) {
+                                        $coordinator = $value;
+                                        if ($coordinator == $areaI->getCoordinator()->getName()) {
+                                            if (sizeof($listDateTypePers) == 0) {
+                                                array_push($listDateTypePers, $valueExp->getMudanca());
+                                            } else {
+                                                if ($listDateTypePers[sizeof($listDateTypePers) - 1] != $valueExp->getMudanca()) {
+                                                    array_push($listDateTypePers, $valueExp->getMudanca());
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } elseif ($value != "" && $key === 'dateApp') {
+                            if ($type === 'Solicitante') {
+                                try {
+                                    $date1 = DateTime::createFromFormat('Y-m-d', $value);
+                                    $date2 = DateTime::createFromFormat('d-m-Y', $valueExp->getMudanca()->getDataCreation());
+                                    $date1 = $date1->format('F j, Y');
+                                    $date2 = $date2->format('F j, Y');
+                                    if ($date1 == $date2) {
+                                        array_push($listDateApp, $valueExp->getMudanca());
+                                    }
+                                } catch (\Throwable $th) {
+                                }
+                            } elseif ($type === 'Gerente Solicitante') {
+                                try {
+                                    $date1 = DateTime::createFromFormat('Y-m-d', $value);
+                                    $date2 = DateTime::createFromFormat('d-m-Y', $valueExp->getMudanca()->getDateMUA());
+                                    $date1 = $date1->format('F j, Y');
+                                    $date2 = $date2->format('F j, Y');
+                                    if ($date1 == $date2) {
+                                        array_push($listDateApp, $valueExp->getMudanca());
+                                    }
+                                } catch (\Throwable $th) {
+                                }
+                            } elseif ($type === 'Gerente Aprovação') {
+                                try {
+                                    $date1 = DateTime::createFromFormat('Y-m-d', $value);
+                                    $date2 = DateTime::createFromFormat('d-m-Y', $valueExp->getMudanca()->getDateAM());
+                                    $date1 = $date1->format('F j, Y');
+                                    $date2 = $date2->format('F j, Y');
+                                    if ($date1 == $date2) {
+                                        array_push($listDateApp, $valueExp->getMudanca());
+                                    }
+                                } catch (\Throwable $th) {
+                                }
+                            } elseif ($type === 'Gestor da Mudança') {
+                                try {
+                                    $date1 = DateTime::createFromFormat('Y-m-d', $value);
+                                    $date2 = DateTime::createFromFormat('d-m-Y', $valueExp->getMudanca()->getDateAG());
+                                    $date1 = $date1->format('F j, Y');
+                                    $date2 = $date2->format('F j, Y');
+                                    if ($date1 == $date2) {
+                                        array_push($listDateApp, $valueExp->getMudanca());
+                                    }
+                                } catch (\Throwable $th) {
+                                }
+                            } elseif ($type === 'Área Impactada') {
+                                //fetech process  /*
+                                foreach ($valueExp->getSectorProcess() as $key => $sp) {
+                                    if ($coordinator != null) {
+                                        if ($sp->getPerson()) {
+                                            if ($sp->getPerson()->getName() == $coordinator) {
+                                                $datestr = strval($sp->getDataCreation());
+                                                try {
+                                                    $date1 = DateTime::createFromFormat('Y-m-d', $value);
+                                                    $date2 = date('Y-m-d', strtotime($sp->getDataCreation()));
+                                                    $date1 = $date1->format('Y-m-d');
+                                                    if ($date1 == $date2) {
+                                                        array_push($listDateApp, $valueExp->getMudanca());
+                                                    }
+                                                } catch (\Throwable $th) {
+                                                    dd($th);
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        try {
+                                            $date1 = DateTime::createFromFormat('Y-m-d', $value);
+                                            $date2 = DateTime::createFromFormat('d-m-Y', $sp->getDataCreation());
+                                            $date1 = $date1->format('F j, Y');
+                                            $date2 = $date2->format('F j, Y');
+                                            if ($date1 == $date2) {
+                                                array_push($listDateApp, $valueExp->getMudanca());
+                                            }
+                                        } catch (\Throwable $th) {
+                                        }
+                                    }
+                                }
+                            }
+                        } elseif ($value != "" && $key === 'area') {
+                            if ($type == "Solicitante" || $type == "Gerente Solicitante") {
+                                if ($valueExp->getMudanca()->getAddBy() != null) {
+                                    try {
+                                        if ($valueExp->getMudanca()->getAddBy()->getFunction() != null) {
+                                            if ($value == $valueExp->getMudanca()->getAddBy()->getFunction()->getName()) {
+                                                array_push($listMudbyArea, $valueExp->getMudanca());
+                                            }
+                                        }
+                                    } catch (\Throwable $th) {
+                                    }
+                                }
+                            } elseif ($type == "Gerente Aprovação") {
+                                if ($valueExp->getMudanca()->getAreaResp() != null) {
+                                    if ($value == $valueExp->getMudanca()->getAreaResp()->getName()) {
+                                        array_push($listMudbyArea, $valueExp->getMudanca());
+                                    }
+                                }
+                            } elseif ($type == "Gestor da Mudança") {
+                                if ($valueExp->getMudanca()->getMangerMudancas() != null) {
+                                    try {
                                         //code...
-                                        unset($list[$j]);
-                                } 
-                            } catch (\Throwable $th) {
-                                    //throw $th;
-                            }
-                        }
 
-                        foreach ($listcheckStat as $key => $id) { 
-                            try {
-                                if(strval($list[$j]->getId()) == strval($id)){    
-                                        unset($list[$j]);
-                                } 
-                            } catch (\Throwable $th) {
-                            }
-                        }
-                    }*/
-                }
-                if (sizeof($listDateInit) != null) {
-                    $listI = [];
-                    foreach ($list as $key => $listItem) {
-                        foreach ($listDateInit as $key => $value) {
-                            if ($listItem->getId() == $value->getId()) {
-                                array_push($listI, $value);
+
+                                        if ($valueExp->getMudanca()->getAddBy()->getFunction() != null) {
+                                            if ($value == $valueExp->getMudanca()->getMangerMudancas()->getFunction()->getName()) {
+                                                array_push($listMudbyArea, $valueExp->getMudanca());
+                                            }
+                                        }
+                                    } catch (\Throwable $th) {
+                                        //throw $th;
+                                    }
+                                }
+                            } elseif ($type == "Área Impactada") {
+                                foreach ($valueExp->getMudanca()->getAreaImpact() as $key => $areaI) {
+                                    if ($areaI != null) {
+                                        if (sizeof($listMudbyArea) == 0) {
+                                            array_push($listMudbyArea, $valueExp->getMudanca());
+                                        } else {
+                                            if ($listMudbyArea[sizeof($listMudbyArea) - 1] != $valueExp->getMudanca()) {
+                                                array_push($listMudbyArea, $valueExp->getMudanca());
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                if ($valueExp->getMudanca()->getAddBy() != null) {
+                                    if ($value == $valueExp->getMudanca()->getAddBy()->getFunction()->getName()) {
+                                        if (sizeof($listMudbyArea) == 0) {
+                                            array_push($listMudbyArea, $valueExp->getMudanca());
+                                        } else {
+                                            if ($listMudbyArea[sizeof($listMudbyArea) - 1] != $valueExp->getMudanca()) {
+                                                
+                                       
+                                           
+                                                array_push($listMudbyArea, $valueExp->getMudanca());
+                                            }
+                                        }
+                                    }
+                                }
+                                if ($valueExp->getMudanca()->getAreaResp() != null) {
+                                    if ($value == $valueExp->getMudanca()->getAreaResp()->getName()) {
+                                        if (sizeof($listMudbyArea) == 0) {
+                                            array_push($listMudbyArea, $valueExp->getMudanca());
+                                        } else {
+                                            if ($listMudbyArea[sizeof($listMudbyArea) - 1] != $valueExp->getMudanca()) {
+                                                array_push($listMudbyArea, $valueExp->getMudanca());
+                                            }
+                                        }
+                                    }
+                                }
+                                if ($valueExp->getMudanca()->getMangerMudancas() != null) {
+                                    if ($valueExp->getMudanca()->getMangerMudancas()->getFunction() != null) {
+                                        if ($value == $valueExp->getMudanca()->getMangerMudancas()->getFunction()->getName()) {
+                                            if (sizeof($listMudbyArea) == 0) {
+                                                array_push($listMudbyArea, $valueExp->getMudanca());
+                                            } else {
+                                                if ($listMudbyArea[sizeof($listMudbyArea) - 1] != $valueExp->getMudanca()) {
+                                                    array_push($listMudbyArea, $valueExp->getMudanca());
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                foreach ($valueExp->getMudanca()->getAreaImpact() as $key => $areaI) {
+                                    if ($areaI != null) {
+                                        if ($value == $areaI->getName()) {
+                                            if (sizeof($listMudbyArea) == 0) {
+                                                array_push($listMudbyArea, $valueExp->getMudanca());
+                                            } else {
+                                                if ($listMudbyArea[sizeof($listMudbyArea) - 1] != $valueExp->getMudanca()) {
+                                                    array_push($listMudbyArea, $valueExp->getMudanca());
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
                             }
                         }
                     }
-                    $list = $listI;
                 }
 
-                if (sizeof($listDate) != null) {
 
-                    $listI = [];
-                    foreach ($list as $key => $listItem) {
-                        foreach ($listDate as $key => $value) {
-                            if ($listItem->getId() == $value->getId()) {
-                                array_push($listI, $value);
+
+                function filterList($list, $filterIds)
+                {
+                    $filteredList = [];
+                    foreach ($list as $item) {
+                        $itemId = $item->getId();
+
+                        foreach ($filterIds as $filterId) {
+                            if ($itemId === $filterId) {
+                                $filteredList[] = $item;
+                                break;
                             }
                         }
                     }
-                    $list = $listI;
+
+                    return $filteredList;
                 }
 
-                if (sizeof($listDateTypePers) != null) {
-
-                    $listI = [];
-                    foreach ($list as $key => $listItem) {
-                        foreach ($listDateTypePers as $key => $value) {
-                            if ($listItem->getId() == $value->getId()) {
-                                array_push($listI, $value);
-                            }
-                        }
+                // Filter by dateInit
+                if (isset($mudIds['dateInicio']) && $mudIds['dateInicio'] !== '') {
+                    $list = filterList($list, $listDateInit);
+                }
+                // Filter by dateTermino
+                if (isset($mudIds['dateTermino']) && $mudIds['dateTermino'] !== '') {
+                    $list = filterList($list, $listDate);
+                }
+                // Filter by client
+                if (isset($mudIds['client']) && $mudIds['client'] !== 'null') {
+                    $list = filterList($list, $listClient);
+                }
+                // Filter by person
+                if (isset($mudIds['person']) && $mudIds['person'] !== 'null') {
+                    if ($coordinator === null) {
+                        $list = filterList($list, $listDateTypePers);
+                    } else {
+                        $list = filterList($list, array_intersect($listDateTypePers, $listMudbyArea));
                     }
-                    $list = $listI;
                 }
-
+                // Filter by area
                 
+                if (isset($mudIds['area']) && $mudIds['area'] !== 'null') {
+                    $list = $listMudbyArea;
+                }
+                // Filter by dateApp
+                if (isset($mudIds['dateApp']) && $mudIds['dateApp'] !== '' && $mudIds['dateApp'] !== 'null') {
+                    $list = filterList($list, $listDateApp);
+                }
+
                 $sectors = $em->getRepository(Sector::class)->findAll();
                 $client = $em->getRepository(Client::class)->findAll();
                 $managers = $em->getRepository(Person::class)->findAll();
@@ -1390,17 +1659,11 @@ class AdminController extends AbstractController
             $mudIds = $request->request->all();
             $mud = $em->getRepository(Mudancas::class)->findBy(['id' => $mudIds]);
 
-            $process = [];
             foreach ($mud as $value) {
-                $process[] = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
+                $ExportMud[] = $em->getRepository(ExportMud::class)->findOneBy(['mudanca' => $value]);
             }
 
-            $secProcess = [];
-            foreach ($process as $value) {
-                $secProcess[] = $em->getRepository(SectorProcess::class)->findOneBy(['process' => $value]);
-            }
-
-            $spreadsheet = (new Excel())->generateExcel($mud, $doctrine);
+            $spreadsheet = (new Excel())->generateExcel($ExportMud, $doctrine);
             $writer = new Xlsx($spreadsheet);
             $publicDirectory = $this->getParameter('kernel.project_dir');
             $excelFilepath =  $publicDirectory . '/public/Admin.xlsx';

@@ -2,18 +2,9 @@
 
 namespace App\Model\Class;
 
-use App\Entity\ExcelConfig;
-use App\Entity\Process;
-use App\Entity\SectorProcess;
-use App\Model\Interface\ExcelBuilderInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Borders;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PHPUnit\TextUI\XmlConfiguration\IniSetting;
 
 class Excel
 {
@@ -144,41 +135,41 @@ class Excel
         for ($i = 0; $i < sizeof($mudancas); $i++) {
 
             $sheet->mergeCells("A" . $a . ":B" . $b);
-            $sheet->setCellValue("A" . $a, $mudancas[$i]->getId());
+            $sheet->setCellValue("A" . $a, $mudancas[$i]->getMudanca()->getId());
 
             $sheet->mergeCells("C" . $a . ":E" . $b);
-            $sheet->setCellValue("C" . $a, $mudancas[$i]->getNomeMudanca());
+            $sheet->setCellValue("C" . $a, $mudancas[$i]->getMudanca()->getNomeMudanca());
 
             $sheet->mergeCells("F" . $a . ":H" . $b);
-            $sheet->setCellValue("F" . $a, $mudancas[$i]->getDescMudanca());
+            $sheet->setCellValue("F" . $a, $mudancas[$i]->getMudanca()->getDescMudanca());
 
             $sheet->mergeCells("I" . $a . ":K" . $b);
-            if ($mudancas[$i]->getNansenName() != null) {
-                $sheet->setCellValue("I" . $a, $mudancas[$i]->getNansenName());
+            if ($mudancas[$i]->getMudanca()->getNansenName() != null) {
+                $sheet->setCellValue("I" . $a, $mudancas[$i]->getMudanca()->getNansenName());
             } else {
                 $sheet->setCellValue("I" . $a, "Nenhum dado disponível");
             }
 
             $sheet->mergeCells("L" . $a . ":N" . $b);
-            if ($mudancas[$i]->getNansenName() != null) {
-                $sheet->setCellValue("L" . $a, $mudancas[$i]->getNansenNumber());
+            if ($mudancas[$i]->getMudanca()->getNansenName() != null) {
+                $sheet->setCellValue("L" . $a, $mudancas[$i]->getMudanca()->getNansenNumber());
             } else {
                 $sheet->setCellValue("L" . $a, "Nenhum dado disponível");
             }
 
             $sheet->mergeCells("O" . $a . ":Q" . $b);
-            $sheet->setCellValue("O" . $a, $mudancas[$i]->getJustif());
+            $sheet->setCellValue("O" . $a, $mudancas[$i]->getMudanca()->getJustif());
 
             $sheet->mergeCells("R" . $a . ":T" . $b);
-            $sheet->setCellValue("R" . $a, $mudancas[$i]->getDescImpacto());
+            $sheet->setCellValue("R" . $a, $mudancas[$i]->getMudanca()->getDescImpacto());
 
             $sheet->mergeCells("U" . $a . ":W" . $b);
-            $sheet->setCellValue("U" . $a, $mudancas[$i]->getDescImpactoArea());
+            $sheet->setCellValue("U" . $a, $mudancas[$i]->getMudanca()->getDescImpactoArea());
 
             $sheet->mergeCells("X" . $a . ":Z" . $b);
 
             $areaImpact = " ";
-            foreach ($mudancas[$i]->getAreaImpact() as $key => $value) {
+            foreach ($mudancas[$i]->getMudanca()->getAreaImpact() as $key => $value) {
                 $areaImpact = $areaImpact . ", " . $value->getName();
             }
             $sheet->setCellValue("X" . $a, $areaImpact);
@@ -190,15 +181,15 @@ class Excel
 
 
             $sheet->mergeCells("AA" . $a . ":AC" . $b);
-            $sheet->setCellValue("AA" . $a, $mudancas[$i]->getAreaResp()->getName());
+            $sheet->setCellValue("AA" . $a, $mudancas[$i]->getMudanca()->getAreaResp()->getName());
 
             /*
              * $sheet->setCellValue('AD1', 'Escolha o Cliente');
              */
 
             $sheet->mergeCells("AD" . $a . ":AF" . $b);
-            if ($mudancas[$i]->getClient() != null) {
-                $sheet->setCellValue("AD" . $a, $mudancas[$i]->getNansenNumber());
+            if ($mudancas[$i]->getMudanca()->getClient() != null) {
+                $sheet->setCellValue("AD" . $a, $mudancas[$i]->getMudanca()->getNansenNumber());
             } else {
                 $sheet->setCellValue("AD" . $a, "Nenhum dado disponível");
             }
@@ -206,8 +197,8 @@ class Excel
             /*
             * $sheet->setCellValue('AG1', 'Gestor da Mudança');*/
             $sheet->mergeCells("AG" . $a . ":AI" . $b);
-            if ($mudancas[$i]->getMangerMudancas() != null) {
-                $sheet->setCellValue("AG" . $a, $mudancas[$i]->getMangerMudancas()->getName());
+            if ($mudancas[$i]->getMudanca()->getMangerMudancas() != null) {
+                $sheet->setCellValue("AG" . $a, $mudancas[$i]->getMudanca()->getMangerMudancas()->getName());
             } else {
                 $sheet->setCellValue("AG" . $a, "Nenhum dado disponível");
             }
@@ -215,23 +206,23 @@ class Excel
             /*
             * $sheet->setCellValue('AJ1', 'Data Estimada de Início');*/
             $sheet->mergeCells("AJ" . $a . ":AL" . $b);
-            $sheet->setCellValue("AJ" . $a, $mudancas[$i]->getStartMudancas());
+            $sheet->setCellValue("AJ" . $a, $mudancas[$i]->getMudanca()->getStartMudancas());
 
             /** $sheet->setCellValue('AM1', 'Data Estimada de Término');*/
             $sheet->mergeCells("AM" . $a . ":AO" . $b);
-            $sheet->setCellValue("AM" . $a, $mudancas[$i]->getEndMudancas());
+            $sheet->setCellValue("AM" . $a, $mudancas[$i]->getMudanca()->getEndMudancas());
 
             /*** $sheet->setCellValue('AP1', 'Data Efetiva de Início'); */
             $sheet->mergeCells("AP" . $a . ":AR" . $b);
-            $sheet->setCellValue("AP" . $a, $mudancas[$i]->getEffictiveStartDate());
+            $sheet->setCellValue("AP" . $a, $mudancas[$i]->getMudanca()->getEffictiveStartDate());
 
             /*** $sheet->setCellValue('AS1', 'Custo');*/
             $sheet->mergeCells("AS" . $a . ":AU" . $b);
-            $sheet->setCellValue("AS" . $a, $mudancas[$i]->getCost());
+            $sheet->setCellValue("AS" . $a, $mudancas[$i]->getMudanca()->getCost());
 
             /*** $sheet->setCellValue('AV1', 'Mudança Implementada'); */
             $sheet->mergeCells("AV" . $a . ":AX" . $b);
-            $sheet->setCellValue("AV" . $a, $mudancas[$i]->getImplemented());
+            $sheet->setCellValue("AV" . $a, $mudancas[$i]->getMudanca()->getImplemented());
 
             /*** $sheet->setCellValue('AY1', 'Tipo de Aprovação'); */
             $sheet->mergeCells("AY" . $a . ":BA" . $b);
@@ -239,14 +230,14 @@ class Excel
 
             /** $sheet->setCellValue('BB1', 'Área/Cliente'); */
             $sheet->mergeCells("BB" . $a . ":BD" . $b);
-            $sheet->setCellValue("BB" . $a, $mudancas[$i]->getAddBy()->getFunction()->getName());
+            $sheet->setCellValue("BB" . $a, $mudancas[$i]->getMudanca()->getAddBy()->getFunction()->getName());
 
             /*** $sheet->setCellValue('BD1', 'Nome do Aprovador'); */
             $sheet->mergeCells("BE" . $a . ":BG" . $b);
-            $sheet->setCellValue("BE" . $a, $mudancas[$i]->getAddBy()->getName());
+            $sheet->setCellValue("BE" . $a, $mudancas[$i]->getMudanca()->getAddBy()->getName());
 
             $sheet->mergeCells("BH" . $a . ":BJ" . $b);
-            $sheet->setCellValue("BH" . $a, strval($mudancas[$i]->getDataCreation()));
+            $sheet->setCellValue("BH" . $a, strval($mudancas[$i]->getMudanca()->getDataCreation()));
 
             $sheet->mergeCells("BK" . $a . ":BM" . $b);
             $sheet->setCellValue("BK" . $a, "N.A");
@@ -257,36 +248,36 @@ class Excel
             $sheet->mergeCells("BQ" . $a . ":BS" . $b);
             $sheet->setCellValue("BQ" . $a, "Gerente Solicitante");
 
-            //$mudancas[$i]->getAddBy()->getFunction()->getManager()->getName()
+            //$mudancas[$i]->getMudanca()->getAddBy()->getFunction()->getManager()->getName()
             $sheet->mergeCells("BT" . $a . ":BV" . $b);
-            $sheet->setCellValue("BT" . $a, $mudancas[$i]->getAddBy()->getFunction()->getName());
+            $sheet->setCellValue("BT" . $a, $mudancas[$i]->getMudanca()->getAddBy()->getFunction()->getName());
 
             $sheet->mergeCells("BW" . $a . ":BY" . $b);
-            $sheet->setCellValue("BW" . $a, $mudancas[$i]->getAddBy()->getFunction()->getManager()->getName());
+            $sheet->setCellValue("BW" . $a, $mudancas[$i]->getMudanca()->getAddBy()->getFunction()->getManager()->getName());
 
 
             $sheet->mergeCells("BZ" . $a . ":CB" . $b);
-            $sheet->setCellValue("BZ" . $a, $mudancas[$i]->getDateMUA());
+            $sheet->setCellValue("BZ" . $a, $mudancas[$i]->getMudanca()->getDateMUA());
 
 
             $sheet->mergeCells("CC" . $a . ":CE" . $b);
             if (
-                $mudancas[$i]->getManagerUserApp() == 1 &&
-                $mudancas[$i]->getManagerUserAdd() != null &&
-                $mudancas[$i]->getManagerUserAdd() != $mudancas[$i]->getAddBy() &&
-                $mudancas[$i]->getManagerUserAdd() != null
+                $mudancas[$i]->getMudanca()->getManagerUserApp() == 1 &&
+                $mudancas[$i]->getMudanca()->getManagerUserAdd() != null &&
+                $mudancas[$i]->getMudanca()->getManagerUserAdd() != $mudancas[$i]->getMudanca()->getAddBy() &&
+                $mudancas[$i]->getMudanca()->getManagerUserAdd() != null
             ) {
                 $sheet->setCellValue("CC" . $a, "Aprovado");
-            } elseif ($mudancas[$i]->getManagerUserApp() == 1 && ($mudancas[$i]->getManagerUserAdd() == $mudancas[$i]->getAddBy()  ||  $mudancas[$i]->getManagerUserAdd() == null)) {
+            } elseif ($mudancas[$i]->getMudanca()->getManagerUserApp() == 1 && ($mudancas[$i]->getMudanca()->getManagerUserAdd() == $mudancas[$i]->getMudanca()->getAddBy()  ||  $mudancas[$i]->getMudanca()->getManagerUserAdd() == null)) {
                 $sheet->setCellValue("CC" . $a, "Aprovação automática");
-            } elseif ($mudancas[$i]->getManagerUserApp() == 2) {
+            } elseif ($mudancas[$i]->getMudanca()->getManagerUserApp() == 2) {
                 $sheet->setCellValue("CC" . $a, "Reprovado");
             } else {
                 $sheet->setCellValue("CC" . $a, "Não verificado");
             }
 
             $sheet->mergeCells("CF" . $a . ":CH" . $b);
-            $sheet->setCellValue("CF" . $a, $mudancas[$i]->getManagerUserComment());
+            $sheet->setCellValue("CF" . $a, $mudancas[$i]->getMudanca()->getManagerUserComment());
 
 
             /********************
@@ -299,31 +290,31 @@ class Excel
             $sheet->mergeCells("CI" . $a . ":CK" . $b);
             $sheet->setCellValue("CI" . $a, "Gerente Aprovação");
 
-            //$mudancas[$i]->getAddBy()->getFunction()->getManager()->getName()
+            //$mudancas[$i]->getMudanca()->getAddBy()->getFunction()->getManager()->getName()
             $sheet->mergeCells("CL" . $a . ":CN" . $b);
-            $sheet->setCellValue("CL" . $a, $mudancas[$i]->getAreaResp()->getName());
+            $sheet->setCellValue("CL" . $a, $mudancas[$i]->getMudanca()->getAreaResp()->getName());
 
             $sheet->mergeCells("CO" . $a . ":CQ" . $b);
-            $sheet->setCellValue("CO" . $a, $mudancas[$i]->getAreaResp()->getManager()->getName());
+            $sheet->setCellValue("CO" . $a, $mudancas[$i]->getMudanca()->getAreaResp()->getManager()->getName());
 
 
             $sheet->mergeCells("CR" . $a . ":CT" . $b);
-            $sheet->setCellValue("CR" . $a, $mudancas[$i]->getDateAM());
+            $sheet->setCellValue("CR" . $a, $mudancas[$i]->getMudanca()->getDateAM());
 
 
             $sheet->mergeCells("CU" . $a . ":CW" . $b);
             if (
-                $mudancas[$i]->getAppMan() == 1
+                $mudancas[$i]->getMudanca()->getAppMan() == 1
             ) {
                 $sheet->setCellValue("CU" . $a, "Aprovado");
-            } elseif ($mudancas[$i]->getAppMan() == 2) {
+            } elseif ($mudancas[$i]->getMudanca()->getAppMan() == 2) {
                 $sheet->setCellValue("CU" . $a, "Reprovado");
             } else {
                 $sheet->setCellValue("CU" . $a, "Não verificado");
             }
 
             $sheet->mergeCells("CX" . $a . ":CZ" . $b);
-            $sheet->setCellValue("CX" . $a, $mudancas[$i]->getManagerUserComment());
+            $sheet->setCellValue("CX" . $a, $mudancas[$i]->getMudanca()->getManagerUserComment());
 
 
             /********************        
@@ -336,18 +327,18 @@ class Excel
             $sheet->mergeCells("DA" . $a . ":DC" . $b);
             $sheet->setCellValue("DA" . $a, "Gestor da Mudança");
 
-            //$mudancas[$i]->getAddBy()->getFunction()->getManager()->getName()
+            //$mudancas[$i]->getMudanca()->getAddBy()->getFunction()->getManager()->getName()
             $sheet->mergeCells("DD" . $a . ":DF" . $b);
-            if ($mudancas[$i]->getMangerMudancas() != null) {
-                $sheet->setCellValue("DD" . $a, $mudancas[$i]->getMangerMudancas()->getName());
+            if ($mudancas[$i]->getMudanca()->getMangerMudancas() != null) {
+                $sheet->setCellValue("DD" . $a, $mudancas[$i]->getMudanca()->getMangerMudancas()->getName());
             } else {
                 $sheet->setCellValue("DD" . $a, "Não Dados");
             }
             $sheet->mergeCells("DG" . $a . ":DI" . $b);
-            if ($mudancas[$i]->getMangerMudancas() != null) {
+            if ($mudancas[$i]->getMudanca()->getMangerMudancas() != null) {
                 
-                if ($mudancas[$i]->getMangerMudancas()->getFunction() != null) {
-                    $sheet->setCellValue("DG" . $a, $mudancas[$i]->getMangerMudancas()->getFunction()->getName());
+                if ($mudancas[$i]->getMudanca()->getMangerMudancas()->getFunction() != null) {
+                    $sheet->setCellValue("DG" . $a, $mudancas[$i]->getMudanca()->getMangerMudancas()->getFunction()->getName());
                 } else {
                     $sheet->setCellValue("DG" . $a, "Não Dados");
                 }
@@ -356,71 +347,102 @@ class Excel
             }
 
             $sheet->mergeCells("DJ" . $a . ":DL" . $b);
-            $sheet->setCellValue("DJ" . $a, $mudancas[$i]->getDateAG());
+            $sheet->setCellValue("DJ" . $a, $mudancas[$i]->getMudanca()->getDateAG());
 
 
             $sheet->mergeCells("DM" . $a . ":DO" . $b);
             if (
-                $mudancas[$i]->getAppGest() == 1
+                $mudancas[$i]->getMudanca()->getAppGest() == 1
             ) {
                 $sheet->setCellValue("DM" . $a, "Aprovado");
-            } elseif ($mudancas[$i]->getAppGest() == 2) {
+            } elseif ($mudancas[$i]->getMudanca()->getAppGest() == 2) {
                 $sheet->setCellValue("DM" . $a, "Reprovado");
             } else {
                 $sheet->setCellValue("DM" . $a, "Não verificado");
             }
 
             $sheet->mergeCells("DP" . $a . ":DR" . $b);
-            $sheet->setCellValue("DP" . $a, $mudancas[$i]->getComGest());
+            $sheet->setCellValue("DP" . $a, $mudancas[$i]->getMudanca()->getComGest());
 
 
 
 
             $lastArrayIndex1 = 'D';
             $lastArrayIndex22 = 'R';
+            $otherIndex = 'A';
 
             $lastArrayIndex = 'DR';
             $lastArrayIndex2 = 'DR';
 
-            foreach ($mudancas[$i]->getAreaImpact() as $key => $value) {
-
+            foreach ($mudancas[$i]->getMudanca()->getAreaImpact() as $key => $value) {
 
                 $in = array_search($lastArrayIndex22, $arrayAlphabet);
                 $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                if ($in + 1 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
+                if($in != 25 && $in0!=25)
+                {
+                    if ($in + 1 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
+
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 1];
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+
+                    if ($in + 2 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
+
                     
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 2];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+                }else{
+                    /*        
+                    $lastArrayIndex1 = 'D';
+                    $lastArrayIndex22 = 'R';
+                    $otherIndex = 'A';
+
+                    $lastArrayIndex = 'DR';
+                    $lastArrayIndex2 = 'DR';
+                    
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 1];
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    */
+                    
+                    $in3 = array_search($otherIndex, $arrayAlphabet);
+                    
+                    if ($in3 + 2 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in3 + 2) - 25];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in3 + 2];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+                    
                 }
 
-                if ($in + 2 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
-                    
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
-
-                   
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 2];
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                }
-
+                
 
                 $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                 $sheet->setCellValue($lastArrayIndex . '1', 'Tipo de Aprovação');
@@ -434,36 +456,68 @@ class Excel
                 $lastArrayIndex = $lastArrayIndex2;
                 $lastArrayIndex2 = $lastArrayIndex2;
 
-                if ($in + 1 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
-                    
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 1];
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                }
+                if($in != 25 && $in0!=25)
+                {
+                    if ($in + 1 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
 
-                if ($in + 2 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 1];
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+
+                    if ($in + 2 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
+
                     
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 2];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+                }else{
+                    /*        
+                    $lastArrayIndex1 = 'D';
+                    $lastArrayIndex22 = 'R';
+                    $otherIndex = 'A';
+
+                    $lastArrayIndex = 'DR';
+                    $lastArrayIndex2 = 'DR';
+                    
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 2];
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    */
+                    
+                    $in3 = array_search($otherIndex, $arrayAlphabet);
+                    
+                    if ($in3 + 2 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in3 + 2) - 25];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in3 + 2];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+                    
                 }
 
 
@@ -479,41 +533,72 @@ class Excel
                 $lastArrayIndex = $lastArrayIndex2;
                 $lastArrayIndex2 = $lastArrayIndex2;
 
-                if ($in + 1 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
-                    
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 1];
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                }
+                if($in != 25 && $in0!=25)
+                {
+                    if ($in + 1 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
 
-                if ($in + 2 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 1];
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+
+                    if ($in + 2 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
+
                     
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 2];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+                }else{
+                    /*        
+                    $lastArrayIndex1 = 'D';
+                    $lastArrayIndex22 = 'R';
+                    $otherIndex = 'A';
+
+                    $lastArrayIndex = 'DR';
+                    $lastArrayIndex2 = 'DR';
+                    
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 2];
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    */
+                    
+                    $in3 = array_search($otherIndex, $arrayAlphabet);
+                    
+                    if ($in3 + 2 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in3 + 2) - 25];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in3 + 2];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+                    
                 }
-                $em = $doctrine->getManager();
-                $proc = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mudancas[$i]]);
-                $procSec2 = $em->getRepository(SectorProcess::class)->findAll(['process' => $proc]);
+                $procSec2 = $mudancas[$i]->getSectorProcess();
                 $procSec = null;
+                
                 if ($procSec2 != null) {
 
                     foreach ($procSec2 as $key => $value2) {
@@ -527,8 +612,11 @@ class Excel
                 $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                 $sheet->setCellValue($lastArrayIndex . '1', 'Nome do Aprovador');
                 $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
+                
+                if ($procSec != null) {
                 if ($procSec->getPerson() != null) {
                     $sheet->setCellValue($lastArrayIndex . $a, $procSec->getPerson()->getName());
+                }
                 }
 
 
@@ -540,38 +628,69 @@ class Excel
                 $lastArrayIndex = $lastArrayIndex2;
                 $lastArrayIndex2 = $lastArrayIndex2;
 
-                if ($in + 1 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
-                    
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 1];
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                }
+                if($in != 25 && $in0!=25)
+                {
+                    if ($in + 1 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
 
-                if ($in + 2 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
-                    
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 2];
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                }
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 1];
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
 
+                    if ($in + 2 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
+
+                    
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 2];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+                }else{
+                    /*        
+                    $lastArrayIndex1 = 'D';
+                    $lastArrayIndex22 = 'R';
+                    $otherIndex = 'A';
+
+                    $lastArrayIndex = 'DR';
+                    $lastArrayIndex2 = 'DR';
+                    
+                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    */
+                    
+                    $in3 = array_search($otherIndex, $arrayAlphabet);
+                    
+                    if ($in3 + 2 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in3 + 2) - 25];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in3 + 2];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+                    
+                }
 
                 $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                 $sheet->setCellValue($lastArrayIndex . '1', 'Data da Aprovação');
@@ -590,36 +709,68 @@ class Excel
                 $lastArrayIndex = $lastArrayIndex2;
                 $lastArrayIndex2 = $lastArrayIndex2;
 
-                if ($in + 1 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
-                    
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 1];
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                }
+                if($in != 25 && $in0!=25)
+                {
+                    if ($in + 1 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
 
-                if ($in + 2 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 1];
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+
+                    if ($in + 2 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
+
                     
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 2];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+                }else{
+                    /*        
+                    $lastArrayIndex1 = 'D';
+                    $lastArrayIndex22 = 'R';
+                    $otherIndex = 'A';
+
+                    $lastArrayIndex = 'DR';
+                    $lastArrayIndex2 = 'DR';
+                    
                     $in = array_search($lastArrayIndex22, $arrayAlphabet);
                     $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 2];
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    */
+                    
+                    $in3 = array_search($otherIndex, $arrayAlphabet);
+                    
+                    if ($in3 + 2 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in3 + 2) - 25];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in3 + 2];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+                    
                 }
 
 
@@ -645,38 +796,69 @@ class Excel
                 $lastArrayIndex = $lastArrayIndex2;
                 $lastArrayIndex2 = $lastArrayIndex2;
 
-                if ($in + 1 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
-                    
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 1];
-                    $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                }
+                if($in != 25 && $in0!=25)
+                {
+                    if ($in + 1 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 1) - 25];
 
-                if ($in + 2 > 25) {
-                    $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
-                    
-                    if ($in0 + 1 > 25) {
-                        $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
-                    }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                } else {
-                    $lastArrayIndex22 = $arrayAlphabet[$in + 2];
-                    $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
-                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
-                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
-                }
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 1];
+                        $lastArrayIndex = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
 
+                    if ($in + 2 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in + 2) - 25];
+
+                        if ($in0 + 1 > 25) {
+                            $lastArrayIndex1 = $arrayAlphabet[($in0 + 1) - 25];
+                        }else{$lastArrayIndex1 = $arrayAlphabet[($in0 + 1)];}
+
+                    
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in + 2];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+                }else{
+                    /*        
+                    $lastArrayIndex1 = 'D';
+                    $lastArrayIndex22 = 'R';
+                    $otherIndex = 'A';
+
+                    $lastArrayIndex = 'DR';
+                    $lastArrayIndex2 = 'DR';
+                    
+                    $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                    $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    */
+                    
+                    $in3 = array_search($otherIndex, $arrayAlphabet);
+                    
+                    if ($in3 + 2 > 25) {
+                        $lastArrayIndex22 = $arrayAlphabet[($in3 + 2) - 25];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    } else {
+                        $lastArrayIndex22 = $arrayAlphabet[$in3 + 2];
+                        $lastArrayIndex2 = $lastArrayIndex1 . $lastArrayIndex22;
+                        $in = array_search($lastArrayIndex22, $arrayAlphabet);
+                        $in0 = array_search($lastArrayIndex1, $arrayAlphabet);
+                    }
+                    
+                }
 
                 $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                 $sheet->setCellValue($lastArrayIndex . '1', 'Comentário');
@@ -695,7 +877,7 @@ class Excel
                 $lastArrayIndex2 = $lastArrayIndex2;
             }
 
-            if ($mudancas[$i]->getImplemented() != null) {
+            if ($mudancas[$i]->getMudanca()->getImplemented() != null) {
                 $j = 0;
                 while ($j <= 5) {
                     if ($in + 1 > 25) {
@@ -741,9 +923,9 @@ class Excel
                         $sheet->setCellValue($lastArrayIndex . '1', 'Área/Cliente');
                         $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
                         
-                        if ($mudancas[$i]->getMangerMudancas() != null) {
-                            if ($mudancas[$i]->getMangerMudancas()->getFunction() != null) {
-                                $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMangerMudancas()->getFunction()->getName());
+                        if ($mudancas[$i]->getMudanca()->getMangerMudancas() != null) {
+                            if ($mudancas[$i]->getMudanca()->getMangerMudancas()->getFunction() != null) {
+                                $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMudanca()->getMangerMudancas()->getFunction()->getName());
                             }else{
                                 $sheet->setCellValue("DG" . $a, "Não Dados");
                             }
@@ -754,9 +936,9 @@ class Excel
                         $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                         $sheet->setCellValue($lastArrayIndex . '1', 'Nome do Aprovador');
                         $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
-                        if ($mudancas[$i]->getMangerMudancas() != null) {
+                        if ($mudancas[$i]->getMudanca()->getMangerMudancas() != null) {
 
-                        $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMangerMudancas()->getName());
+                        $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMudanca()->getMangerMudancas()->getName());
                         }else{
                             $sheet->setCellValue("DG" . $a, "Não Dados");
                         }
@@ -764,14 +946,14 @@ class Excel
                         $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                         $sheet->setCellValue($lastArrayIndex . '1', 'Data da Aprovação');
                         $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
-                        $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getDateOfImp());
+                        $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMudanca()->getDateOfImp());
                     } elseif ($j == 4) {
                         $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                         $sheet->setCellValue($lastArrayIndex . '1', 'Status Aprovação');
                         $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
-                        if ($mudancas[$i]->getImplemented() == "1") {
+                        if ($mudancas[$i]->getMudanca()->getImplemented() == "1") {
                             $sheet->setCellValue($lastArrayIndex . $a, "Implementada");
-                        } elseif ($mudancas[$i]->getImplemented() == "2") {
+                        } elseif ($mudancas[$i]->getMudanca()->getImplemented() == "2") {
                             $sheet->setCellValue($lastArrayIndex . $a, "Não implementado");
                         } else {
                             $sheet->setCellValue($lastArrayIndex . $a, "Dados não disponíveis");
@@ -780,7 +962,7 @@ class Excel
                         $sheet->mergeCells($lastArrayIndex . '1:' . $lastArrayIndex2 . '3');
                         $sheet->setCellValue($lastArrayIndex . '1', 'Comentário');
                         $sheet->mergeCells($lastArrayIndex . $a . ':' . $lastArrayIndex2 . $b);
-                        $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getImpDesc());
+                        $sheet->setCellValue($lastArrayIndex . $a, $mudancas[$i]->getMudanca()->getImpDesc());
                     }
                     $j = $j + 1;
                 }

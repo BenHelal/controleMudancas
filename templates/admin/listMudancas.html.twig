@@ -40,8 +40,8 @@
 
       <div id="hiddendiv">
         <form class="form-formulario_login" enctype="multipart/form-data" method="post"  action="{{path('export')}}"  >
-        <div class="row">
-          <div class="col-md-4 mb-3">
+        
+          <div class="col-md-12 mb-3">
             <label for="cars">Status da Aprovação :</label>
             <select id="status" name="status" class="form-control" >
               <option value="null"></option>
@@ -74,24 +74,46 @@
               </option>			
             </select>
           </div>
-
-          <div class="col-md-4 mb-3">
-            <label for="cars">Período de Data Estimada de Início :</label>
+          
+          <div style="padding : 10px" class="row">
+          <div class="col-md-6 mb-3">
+            <label for="cars">Período de Data Estimada de Início De:</label>
             <input id="dateInicio" name="dateInicio" value=""
               type="date"
               lang="pt-BR"
               class="date form-control" />
           </div>
-          <div class="col-md-4 mb-3">
-            <label for="cars">Período de Data Estimada de Término :</label>
+          <div class="col-md-6 mb-3">
+            <label for="cars">Data Estimada de Início Até:</label>
+            <input value=""
+              id="dateInicioAte"
+              name="dateInicioAte"
+              type="date"
+              lang="pt-BR"
+              class="date form-control" />
+          </div>
+          </div>
+          <div style="padding : 10px" class="row">
+          <div class="col-md-6 mb-3">
+            <label for="cars">Período de Data Estimada de Término De:</label>
             <input id="dateTermino" name="dateTermino" value=""
               type="date"
               lang="pt-BR"
               class="date form-control" />
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-4 mb-3">
+          
+          <div class="col-md-6 mb-3">
+            <label for="cars">Data Estimada de Término Até:</label>
+            <input value=""
+              id="dateTerminoAte"
+              name="dateTerminoAte"
+              type="date"
+              lang="pt-BR"
+              class="date form-control" />
+          </div>
+          </div>
+
+          <div class="col-md-12 mb-3">
             <label for="cars">Tipo de Aprovação :</label>
             <select  class="form-control" name="tipo" id="tipo">
               <option value="null"></option>
@@ -112,34 +134,7 @@
               </option>
             </select>
           </div>
-          <div class="col-md-4 mb-3">
-            <label for="cars">Área :</label>
-
-            <select name="area" class="form-control" id="area">
-              <option value="null"></option>
-              {% for item in sectors %}
-                <option value="{{ item.name }}">
-                  {{ item.name }}
-                </option>
-              {% endfor %}
-            </select>
-          </div>
-
-          <div class="col-md-4 mb-3">
-            <label for="cars">Cliente :</label>
-            <select class="form-control" name="client" id="client">
-              <option value="null"></option>
-              {% for item in client %}
-                <option value="">
-                  {{item.name}}
-                </option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-4 mb-3">
+          <div class="col-md-12 mb-3">
             <label for="cars">Nome do Aprovador :</label>
             <select class="form-control" name="person" id="person">
               <option value="null"></option>
@@ -153,8 +148,9 @@
             </select>
           </div>
 
-          <div class="col-md-4 mb-3">
-            <label for="cars">Data da Aprovação :</label>
+          <div style="padding : 10px" class="row">
+          <div class="col-md-6 mb-3">
+            <label for="cars">Data da Aprovação De:</label>
             <input value=""
               id="dateApp"
               name="dateApp"
@@ -163,18 +159,52 @@
               class="date form-control" />
           </div>
 
+          <div class="col-md-6 mb-3">
+            <label for="cars">Data da Aprovação Até:</label>
+            <input value=""
+              id="dateAppAte"
+              name="dateAppAte"
+              type="date"
+              lang="pt-BR"
+              class="date form-control" />
+          </div>
+          </div>
+
+          <div class="col-md-12 mb-3">
+            <label for="cars">Área :</label>
+
+            <select name="area" class="form-control" id="area">
+              <option value="null"></option>
+              {% for item in sectors %}
+                <option value="{{ item.name }}">
+                  {{ item.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-12 mb-3">
+            <label for="cars">Cliente :</label>
+            <select class="form-control" name="client" id="client">
+              <option value="null"></option>
+              {% for item in client %}
+                <option value="{{ item.name }}">
+                  {{item.name}}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
           <div class="col-md-12 mb-3">
               <label for="cars">Comentário :</label>
               <input value="" class="form-control" />
           </div>
-          
         <div class="row">
         
           <div class="col-md-5 mb-3">
             <button style="margin-left : 15px" class="btn btn-info mt-2 text-white" type="submit">Procurar</button>
+          </div>
         </div>
-        </div>
-      </div>
     </form>
   </div>
   
