@@ -896,14 +896,39 @@ class AdminController extends AbstractController
         if ($session->get('token_admin') != '') {
             $em = $doctrine->getManager();
             $sector = $em->getRepository(Sector::class)->find($id);
+            
+            $oldCoordinator = $sector->getCoordinator();
+            $oldManager = $sector->getManager();
+
             $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
             $form = $this->createForm(SectorType::class, $sector);
             $form->handleRequest($request);
+            
             if ($form->isSubmitted() && $form->isValid()) {
+
+                if($oldCoordinator != $sector->getCoordinator()){
+                    $SectorProcess = $em->getRepository(SectorProcess::class)->findBy(['person' => $oldCoordinator]);
+                    foreach ($SectorProcess as $key => $value) {
+                    
+                        $value->setPerson($sector->getCoordinator()); 
+                        $em->persist($value);
+                        $em->flush();
+                    }
+                }
+
+                
+                if($oldManager != $sector->getManager()){
+                    $SectorProcess = $em->getRepository(SectorProcess::class)->findBy(['person' => $oldManager]);
+                    foreach ($SectorProcess as $key => $value) {
+                        $value->setPerson($sector->getManager());
+                        $em->persist($value);
+                        $em->flush();
+                    }
+                }
 
                 $em->persist($sector);
                 $em->flush();
-                return $this->redirectToRoute('app_sectors');
+             //   return $this->redirectToRoute('app_sectors');
             }
             return $this->render('admin/sectors.html.twig', [
                 'controller_name' => 'Atualizar Mudancas',
