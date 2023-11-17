@@ -39,6 +39,14 @@ class MudancasRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByType(int $type)
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.typeMud = :typeMud')
+            ->setParameter('typeMud', $type)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Mudancas[] Returns an array of Mudancas objects
 //     */

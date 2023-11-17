@@ -228,48 +228,25 @@
 													{% set foo = true %}
 												{% endif %}
 											{% endfor %}
-	
+										
+								
 											{% if foo == true %}
-												<li class="list-group-item d-flex justify-content-between lh-condensed">
-													<a href="{{path('app_notif',{id: row.id})}}">
-														<div>
-															<h6 class="my-0">Nome do Mudança:
-																{{row.nomeMudanca}}
-															</h6>
+											
+											<li class="list-group-item d-flex justify-content-between lh-condensed">
+												<a href="{{path('app_notif',{id: row.id})}}">
+													<div>
+														<h6 class="my-0">Nome do Mudança:
+															{{row.nomeMudanca}}
+														</h6>
 
-															<small class="text-muted">Número da mudança :
-																{{row.id}}
-															</small>
-														</div>
-													</a>
-												</li>
+														<small class="text-muted">Número da mudança :
+															{{row.id}}
+														</small>
+													</div>
+												</a>
+											</li>
 											{% endif %}
 										{% endif %}
-									{% elseif row.typeMud =='1' %}
-									{% set foo = false %}
-										
-											{% for item in row.areaImpact %}
-												{% if item.coordinator == person %}
-													{% set foo = true %}
-												{% endif %}
-											{% endfor %}
-	
-											{% if foo == true %}
-												<li class="list-group-item d-flex justify-content-between lh-condensed">
-													<a href="{{path('app_notif',{id: row.id})}}">
-														<div>
-															<h6 class="my-0">Nome do Mudança:
-																{{row.nomeMudanca}}
-															</h6>
-
-															<small class="text-muted">Número da mudança :
-																{{row.id}}
-															</small>
-														</div>
-													</a>
-												</li>
-											{% endif %}
-
 									{% endif %}
 								{% endfor %}
 							{% endif %}

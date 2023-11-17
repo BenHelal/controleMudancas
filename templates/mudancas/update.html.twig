@@ -181,7 +181,7 @@
 			<div class="row">
 				<div class="col-md-12 mb-3">
 					{{ form_label(form.typeMud) }}
-					{{ form_widget(form.typeMud,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
+					{{ form_widget(form.typeMud,{'attr':{'class':'form-control','rows': '4','readonly':'readonly','id':'testnomeMudanca'}}) }}
 				</div>
 			</div>
 			
@@ -658,7 +658,7 @@
 
 						</div>
 
-		{% if person.function != null %}
+				{% if person.function != null %}
 						{% if person.permission == 'ler criar atualização' or person.permission =='ler criar' or person.permission =='tudo' %}
 							<div class="row">
 								<div class="col-md-6 mb-3">
@@ -666,8 +666,8 @@
 								</div>
 							</div>
 						{% endif %}
-						{{ form_end(form) }}
 				{% endif %}
+						{{ form_end(form) }}
 			{% endif %}
 
 

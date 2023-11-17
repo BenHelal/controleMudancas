@@ -128,19 +128,19 @@
 	<div class="card">
 		<div class="row d-flex justify-content-between px-3 top">
 			<div class="d-flex">
-			    <a style="color: black;text-decoration: none;" 
-					href="{{path('Softindex',{'id':m.id} )}}">
+				<a style="color: black;text-decoration: none;" href="{{path('Softindex',{'id':m.id} )}}">
 					<h5>
-						Mudanças: 
+						Mudanças:
 						<span class="text-primary font-weight-bold">#{{m.id}}</span>
 					</h5>
 				</a>
 			</div>
 
 			<div class="d-flex flex-column text-sm-right">
-				<a style="color: black;text-decoration: none;" 
-					href="{{path('flow',{'id':m.id} )}}">
-					<p class="mb-0">Mudanças criadas: <span>{{m.datacreation}}</span></p>
+				<a style="color: black;text-decoration: none;" href="{{path('flow',{'id':m.id} )}}">
+					<p class="mb-0">Mudanças criadas:
+						<span>{{m.datacreation}}</span>
+					</p>
 					<p>Fluxos de processo</p>
 				</a>
 			</div>
@@ -149,7 +149,7 @@
 		<div class="row d-flex justify-content-center">
 			<div class="col-12">
 				<ul id="progressbar" class="text-center">
-				
+
 					{% if m.mudS.ref == null %}
 						<li class="step0"></li>
 						<li class="step0"></li>
@@ -190,7 +190,7 @@
 			</div>
 		</div>
 		<div class="row justify-content-between top">
-		
+
 			<div class="row d-flex icon-content">
 
 				<a style="text-decoration: none;" href="{{path('gerente_software',{'id':m.id} )}}">
@@ -271,7 +271,8 @@
 				<label for="mudancas_typeMud" class="required">Mudança referenciada</label>
 				<select id="mudancas_typeMud" name="mudancas[typeMud]" class="form-control" rows="4">
 					<option value="2">Não</option>
-					<option value="1" selected="selected">Sim</option></select>
+					<option value="1" selected="selected">Sim</option>
+				</select>
 			</div>
 		</div>
 		<div class="row">
@@ -280,14 +281,15 @@
 				<textarea id="mudancas_numberRef" name="mudancas[numberRef]" required="required" class="form-control" rows="4">{{ m.mudS.numberRef }}</textarea>
 			</div>
 		</div>
-		{% else %}
-		
+	{% else %}
+
 		<div class="row">
 			<div class="col-md-12 mb-3">
 				<label for="mudancas_typeMud" class="required">Mudança referenciada</label>
 				<select id="mudancas_typeMud" name="mudancas[typeMud]" class="form-control" rows="4">
 					<option value="2" selected="selected">Não</option>
-					<option value="1" >Sim</option></select>
+					<option value="1">Sim</option>
+				</select>
 			</div>
 		</div>
 	{% endif %}
@@ -397,9 +399,9 @@
 	</div>
 
 	{{ form_end(form) }}
-<script>
+	<script>
 
-$(document).ready(function () {
+		$(document).ready(function () {
 
 const box = document.getElementById('nanseForm');
 if (document.getElementById('mudancas_nansenName').value == '') {
@@ -430,7 +432,7 @@ document.getElementById('mudancas_nansenNumber').value = '';
 box.style.display = 'none';
 }
 }
-</script>
+	</script>
 
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -446,18 +448,12 @@ box.style.display = 'none';
 }
 }
 $(document).ready(function () {
-
-
 const box = document.getElementById('vcg');
 $('#mudancas_areaImpact').chosen({});
 $('#mudancas_areaResp').chosen({});
-$('#mudancas_client').chosen({});{% if m.client == null %}
-document.getElementById("vci").checked = false;
+$('#mudancas_client').chosen({});{% if m.client == null %}document.getElementById("vci").checked = false;
 {% else %}
-document.getElementById("vci").checked = true;{% endif %}
-
-
-if (document.getElementById('vci').checked) {
+document.getElementById("vci").checked = true;{% endif %}if (document.getElementById('vci').checked) {
 console.log('tes');
 box.style.display = 'block';
 } else {

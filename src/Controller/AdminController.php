@@ -457,77 +457,6 @@ class AdminController extends AbstractController
             $mudancas = $em->getRepository(Mudancas::class)->find($id);
             $conn = $doctrine->getConnection();
             $mudf = $mudancas->getTypeMud();
-            /*if ($mudf == '1') {
-                $mudf = $mudancas->getMudS();
-                $stepsGestor = $mudf->getStepsGestor();
-
-                foreach ($stepsGestor as $key => $value) {
-                    $sql = 'Delete FROM steps_gestor WHERE id = :mudancas_id ;';
-                    $stmt = $conn->prepare($sql);
-                    $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
-                    $ln2 =  $resultSet->fetchAllAssociative();
-                }
-
-                $stepDev = $mudf->getStepsGestor();
-
-                foreach ($stepDev as $key => $value) {
-                    $sql = 'Delete FROM steps_dev WHERE id = :mudancas_id ;';
-                    $stmt = $conn->prepare($sql);
-                    $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
-                    $ln2 =  $resultSet->fetchAllAssociative();
-                }
-                $stepsTest = $mudf->getStepsGestor();
-                foreach ($stepsTest as $key => $value) {
-                    $sql = 'Delete FROM steps_test WHERE id = :mudancas_id ;';
-                    $stmt = $conn->prepare($sql);
-                    $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
-                    $ln2 =  $resultSet->fetchAllAssociative();
-                }
-
-                $stepsTestSol = $mudf->getStepsGestor();                
-                foreach ($stepsTestSol as $key => $value) {
-                    $sql = 'Delete FROM steps_test_sol WHERE id = :mudancas_id ;';
-                    $stmt = $conn->prepare($sql);
-                    $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
-                    $ln2 =  $resultSet->fetchAllAssociative();
-                }
-                
-                $developers = $mudf->getStepsGestor();          
-                foreach ($developers as $key => $value) {
-                    try {
-                        //code...
-                        $sql = 'Delete FROM developers_mud WHERE id = :mudancas_id ;';
-                        $stmt = $conn->prepare($sql);
-                        $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
-                        $ln2 =  $resultSet->fetchAllAssociative();
-                    } catch (\Throwable $th) {
-                        //throw $th;
-                    }
-                }
-
-                $testers = $mudf->getStepsGestor();   
-                foreach ($testers as $key => $value) {
-                    $sql = 'Delete FROM testers_mud WHERE id = :mudancas_id ;';
-                    $stmt = $conn->prepare($sql);
-                    $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
-                    $ln2 =  $resultSet->fetchAllAssociative();
-                }
-
-                $testersti = $mudf->getStepsGestor();   
-                foreach ($testersti as $key => $value) {
-                    $sql = 'Delete FROM testers_ti WHERE id = :mudancas_id ;';
-                    $stmt = $conn->prepare($sql);
-                    $resultSet = $stmt->executeQuery(['mudancas_id' => $value->getId()]);
-                    $ln2 =  $resultSet->fetchAllAssociative();
-                }
-
-
-                $sql = 'Delete FROM mudancas_software WHERE id = :mudancas_id ;';
-                $stmt = $conn->prepare($sql);
-                $resultSet = $stmt->executeQuery(['mudancas_id' => $mudf->getId()]);
-                $ln2 =  $resultSet->fetchAllAssociative();
-            }*/
-
 
             $sql = 'select * FROM process WHERE mudancas_id = :mudancas_id ;';
             $stmt = $conn->prepare($sql);
@@ -575,7 +504,7 @@ class AdminController extends AbstractController
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
 
-            return $this->redirectToRoute('lm');
+            return $this->redirectToRoute('export');
         } else {
             return $this->redirectToRoute('app_mudancas');
         }
@@ -973,7 +902,6 @@ class AdminController extends AbstractController
         }
     }
 
-
     #[Route('/email', name: 'email')]
     public function emaill(ManagerRegistry $doctrine, Request $request)
     {
@@ -1017,7 +945,6 @@ class AdminController extends AbstractController
         }
     }
 
-
     #[Route('/email/{id}', name: 'emailAdmin')]
     public function emailSendToClient(ManagerRegistry $doctrine, Request $request, $id)
     {
@@ -1038,7 +965,6 @@ class AdminController extends AbstractController
 
     public function sendEmail(ManagerRegistry $doctrine, Request $request, $sendTo, $mud, $per, $demand,  $gestor, $client = null)
     {
-
         $em = $doctrine->getManager();
         $config = $em->getRepository(ConfigEmail::class)->find(1);
         if ($config == null) {
@@ -1141,15 +1067,15 @@ class AdminController extends AbstractController
             if ($mudIds != null) {
                 /*
                 array:8 [▼
-  "status" => "Solicitação Reprovada"
-  "dateInicio" => "2023-10-06"
-  "dateTermino" => "2023-10-23"
-  "tipo" => "Solicitante"
-  "area" => "017 – GARANTIA DA QUALIDADE MATRIZ (CALIBRAÇÃO)"
-  "client" => ""
-  "person" => "João Ramiro"
-  "dateApp" => "2023-10-23"
-] */
+                     "status" => "Solicitação Reprovada"
+                     "dateInicio" => "2023-10-06"
+                     "dateTermino" => "2023-10-23"
+                     "tipo" => "Solicitante"
+                     "area" => "017 – GARANTIA DA QUALIDADE MATRIZ (CALIBRAÇÃO)"
+                     "client" => ""
+                     "person" => "João Ramiro"
+                     "dateApp" => "2023-10-23"
+                ] */
 
 
 

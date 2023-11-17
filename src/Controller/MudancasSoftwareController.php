@@ -83,6 +83,30 @@ class MudancasSoftwareController extends AbstractController
         }
     }
 
+    /*-
+        Hethi 9balha order Display 
+    ********/
+    #[Route('/order/mud/{id}', name:'orderMudancas')]
+    public function orderMudanc(ManagerRegistry $doctrine, Request $request, $id)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_jwt') != '') {
+            $em = $doctrine->getManager();
+            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+            $allMudancas = $em->getRepository(Mudancas::class)->findByType("1");
+            return $this->render('mudancas_software/changeOrderView.html.twig', [
+                'controller_name' => 'MudancasSoftwareController',
+                'login' => 'null',
+                'creation' => 'false',
+                'm' => $allMudancas,
+                'person' => $person,
+            ]);
+        }else{
+            return $this->redirectToRoute('log_employer');
+        }
+    }
+
     #[Route('/mudancas/software/solfirst/Aprocao/{id}', name: 'solfirst_software')]
     public function solfirst(ManagerRegistry $doctrine, Request $request, $id)
     {
@@ -98,7 +122,7 @@ class MudancasSoftwareController extends AbstractController
             $mud = $em->getRepository(Mudancas::class)->find($id);
 
             $mudSoft = $mud->getMudS();
-
+            $mudSoft->setGestor($mud->getMangerMudancas());
             if (($mud->getAddBy() == $person & $mudSoft->getRef() != null) || $mud->getAddBy() != $person) {
                 # code...
                 return $this->redirectToRoute('Softindex', ['id' => $mud->getId()]);
@@ -1042,10 +1066,29 @@ class MudancasSoftwareController extends AbstractController
         }
     }
 
-    public function sendEmail(ManagerRegistry $doctrine, Request $request, $sendTo, $mud, $per, $demand,  $gestor, $client = null)
+    /**
+     * Sends an email using PHPMailer.
+     *
+     * @param ManagerRegistry $doctrine The Doctrine ManagerRegistry instance.
+     * @param mixed $request The request object.
+     * @param mixed $sendTo The email address to send the email to.
+     * @param mixed $mud The MudancasSoftware object.
+     * @param mixed $per The Per object.
+     * @param mixed $demand The demand object.
+     * @param mixed $gestor The gestor object.
+     * @param mixed $client The client object (optional).
+     * @return PHPMailer The PHPMailer instance used to send the email.
+     */
+    public function sendEmail(ManagerRegistry $doctrine, $sendTo, $mud, $per, $demand,  $gestor, $client = null)
     {
-
         $em = $doctrine->getManager();
+        /**
+         * This code retrieves the configuration email from the database and creates a new configuration if it doesn't exist.
+         * The configuration includes the SMTP server details, email credentials, and other settings.
+         * 
+         * @param EntityManagerInterface $em The entity manager used to interact with the database.
+         * @return void
+         */
         $config = $em->getRepository(ConfigEmail::class)->find(1);
         if ($config == null) {
             $config = new ConfigEmail();
@@ -1127,11 +1170,10 @@ class MudancasSoftwareController extends AbstractController
             //$mail->ClearAttachments();
 
             return $this->redirectToRoute('app_mudancas');
-        } catch (Exception $e) {
+        } catch (Exception $ex) {
             //   echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
 
         return;
     }
-    //docTestSol
 }

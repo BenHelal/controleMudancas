@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    #item-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 20px;
+      border: 1px solid #ccc;
+    }
+
+    .draggable {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin: 5px;
+      background-color: #f4f4f4;
+      cursor: grab;
+    }
+
+    select {
+      margin-left: 10px;
+    }
+  </style>
+  <title>Draggable Item List with Order Selection</title>
+</head>
+<body>
+
+  <ul id="item-list">
+    <li class="draggable" data-id="1">
+      <span>Item 1</span>
+      <select class="order-select" onchange="changeOrder(this)">
+        <option value="1" selected>1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </li>
+    <li class="draggable" data-id="2">
+      <span>Item 2</span>
+      <select class="order-select" onchange="changeOrder(this)">
+        <option value="1">1</option>
+        <option value="2" selected>2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </li>
+    <li class="draggable" data-id="3">
+      <span>Item 3</span>
+      <select class="order-select" onchange="changeOrder(this)">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3" selected>3</option>
+        <option value="4">4</option>
+      </select>
+    </li>
+    <li class="draggable" data-id="4">
+      <span>Item 4</span>
+      <select class="order-select" onchange="changeOrder(this)">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4" selected>4</option>
+      </select>
+    </li>
+  </ul>
+
+  <script>
+    const itemList = document.getElementById('item-list');
+
+    new Sortable(itemList, {
+      animation: 150,
+      handle: '.draggable',
+      onUpdate: function (evt) {
+        updateOrder(evt.from.children);
+        const orderData = getOrderData(itemList);
+        updateOrderOnServer(orderData);
+      }
+    });
+
+    function updateOrder(items) {
+      Array.from(items).forEach((item, index) => {
+        const orderSelect = item.querySelector('.order-select');
+        orderSelect.selectedIndex = index;
+      });
+    }
+
+    function changeOrder(select) {
+      const listItem = select.closest('.draggable');
+      const newIndex = parseInt(select.value) - 1;
+
+      itemList.insertBefore(listItem, itemList.children[newIndex]);
+      updateOrder(itemList.children);
+
+      const orderData = getOrderData(itemList);
+      updateOrderOnServer(orderData);
+    }
+
+    function getOrderData(itemList) {
+      const orderData = [];
+      Array.from(itemList.children).forEach(item => {
+        orderData.push({
+          id: item.getAttribute('data-id'),
+          order: item.querySelector('.order-select').value
+        });
+      });
+      return orderData;
+    }
+
+    function updateOrderOnServer(orderData) {
+      // Send AJAX request to update order on the server
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'update_order.php', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status === 200) {
+            console.log('Order updated on the server');
+          } else {
+            console.error('Error updating order on the server');
+          }
+        }
+      };
+
+      xhr.send(JSON.stringify(orderData));
+    }
+  </script>
+
+</body>
+
+{% endblock %}
