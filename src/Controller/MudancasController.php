@@ -1,17 +1,8 @@
-/**
- * This method is the index action of the MudancasController.
- * It retrieves data from the database and renders the index view.
- *
- * @param ManagerRegistry $doctrine The Doctrine ManagerRegistry
- * @param Request $request The Symfony Request object
- * @return Response The Symfony Response object
- */
 <?php
 
 namespace App\Controller;
 
 use App\Entity\ApiToken;
-use App\Entity\Client;
 use App\Entity\ConfigEmail;
 use App\Entity\Departemant;
 use App\Entity\Email;
@@ -25,7 +16,6 @@ use App\Entity\Sector;
 use App\Entity\SectorProcess;
 use App\Entity\TokenData;
 use App\Form\GerenteMudType;
-use App\Form\Mudancasgestor2Type;
 use App\Form\MudancasgestorImpType;
 use App\Form\MudancasgestorType;
 use App\Form\MudancasManagerType;
@@ -37,14 +27,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-
-use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-
+/**
+ * This method is the index action of the MudancasController.
+ * It retrieves data from the database and renders the index view.
+ *
+ * @param ManagerRegistry $doctrine The Doctrine ManagerRegistry
+ * @param Request $request The Symfony Request object
+ * @return Response The Symfony Response object
+ */
 class MudancasController extends AbstractController
 {
     #[Route('/mudancas', name: 'app_mudancas')]

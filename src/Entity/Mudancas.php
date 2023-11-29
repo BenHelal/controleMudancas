@@ -130,6 +130,23 @@ class Mudancas
    
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $typeMud = null;
+    
+
+    #[ORM\Column(nullable: true)]
+    private  ?int $orderNumber;
+
+    // Other properties and methods...
+
+    public function getOrderNumber()
+    {
+        return $this->orderNumber;
+    }
+
+    public function setOrderNumber($orderNumber)
+    {
+        $this->orderNumber = $orderNumber;
+    }
+
 
     public function getTypeMud(): ?string
     {

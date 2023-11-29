@@ -35,6 +35,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -83,11 +84,11 @@ class MudancasSoftwareController extends AbstractController
         }
     }
 
-    /*-
+    /*
         Hethi 9balha order Display 
     ********/
-    #[Route('/order/mud/{id}', name:'orderMudancas')]
-    public function orderMudanc(ManagerRegistry $doctrine, Request $request, $id)
+    #[Route('/order/mud/', name:'orderMudancas')]
+    public function orderMudanc(ManagerRegistry $doctrine, Request $request)
     {
         $session = new Session();
         $session = $request->getSession();
@@ -105,6 +106,24 @@ class MudancasSoftwareController extends AbstractController
         }else{
             return $this->redirectToRoute('log_employer');
         }
+    }
+
+    
+    #[Route('/updateorder', name: 'updateorder', methods:["POST"])]
+    public function updateOrder(ManagerRegistry $doctrine, Request $request)
+    {
+        $orderData = json_decode($request->request->get('orderData'), true);
+
+        $em = $doctrine->getManager();
+
+        foreach ($orderData as $data) {
+            $mud = $em->getRepository(Mudancas::class)->find($data['id']);
+            $mud->setOrderNumber($data['order']);
+            $em->flush();
+        }
+
+
+        return new JsonResponse(['status' => 'success']);
     }
 
     #[Route('/mudancas/software/solfirst/Aprocao/{id}', name: 'solfirst_software')]
@@ -1142,20 +1161,24 @@ class MudancasSoftwareController extends AbstractController
                     'demand'    =>  $demand
                 ]));
             } else {
-                $mail->AddAddress($sendTo->getEmail(), $sendTo->getName());
-                $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
-                $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
-                $mail->Subject  = $config->getSubject();
-                $mail->msgHTML($this->renderView('emails/myemail.html.twig', [
-                    'name'      =>  'Controle de Mudanças',
-                    'mud'       =>  $mud,
-                    'sendTo'    => $sendTo,
-                    'per'       =>  $per,
-                    'ip'        => $ipAdress->getIpAdress(),
-                    'name'      => $sendTo->getName(),
-                    'gestor'    => $gestor,
-                    'demand'    =>  $demand
-                ]));
+                try {
+                    $mail->AddAddress($sendTo->getEmail(), $sendTo->getName());
+                    $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
+                    $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
+                    $mail->Subject  = $config->getSubject();
+                    $mail->msgHTML($this->renderView('emails/myemail.html.twig', [
+                        'name'      =>  'Controle de Mudanças',
+                        'mud'       =>  $mud,
+                        'sendTo'    => $sendTo,
+                        'per'       =>  $per,
+                        'ip'        => $ipAdress->getIpAdress(),
+                        'name'      => $sendTo->getName(),
+                        'gestor'    => $gestor,
+                        'demand'    =>  $demand
+                    ]));
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
             }
 
 

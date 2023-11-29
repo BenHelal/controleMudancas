@@ -32,111 +32,109 @@
       margin-left: 10px;
     }
   </style>
-  <title>Draggable Item List with Order Selection</title>
 </head>
 <body>
 
-  <ul id="item-list">
-    <li class="draggable" data-id="1">
-      <span>Item 1</span>
-      <select class="order-select" onchange="changeOrder(this)">
-        <option value="1" selected>1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-      </select>
-    </li>
-    <li class="draggable" data-id="2">
-      <span>Item 2</span>
-      <select class="order-select" onchange="changeOrder(this)">
-        <option value="1">1</option>
-        <option value="2" selected>2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-      </select>
-    </li>
-    <li class="draggable" data-id="3">
-      <span>Item 3</span>
-      <select class="order-select" onchange="changeOrder(this)">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3" selected>3</option>
-        <option value="4">4</option>
-      </select>
-    </li>
-    <li class="draggable" data-id="4">
-      <span>Item 4</span>
-      <select class="order-select" onchange="changeOrder(this)">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4" selected>4</option>
-      </select>
-    </li>
-  </ul>
 
-  <script>
+<div class="container mt-3">
+    <button class="btn btn-success" onclick="voltar()">Voltar</button>
+</div>
+
+  <ul id="item-list">
+  {% set sortedItems = m|sort((a, b) => a.orderNumber <=> b.orderNumber) %}
+
+{% for item in sortedItems %}
+        <li class="draggable" data-id="{{ item.id }}">
+            <span>{{ item.id }} <br>
+                Nome da mudança: {{ item.nomeMudanca }}<br>
+            </span>
+            <select class="order-select" onchange="changeOrder(this, {{ item.id }})">
+                {% for i in 1..m|length %}
+                    <option value="{{ i }}" {% if i == item.orderNumber %}selected{% endif %}>{{ i }}</option>
+                {% endfor %}
+            </select>
+        </li>
+    {% endfor %}
+</ul>
+
+<script>
     const itemList = document.getElementById('item-list');
 
     new Sortable(itemList, {
-      animation: 150,
-      handle: '.draggable',
-      onUpdate: function (evt) {
-        updateOrder(evt.from.children);
-        const orderData = getOrderData(itemList);
-        updateOrderOnServer(orderData);
-      }
+        animation: 150,
+        handle: '.draggable',
+        onUpdate: function (evt) {
+            updateOrder(evt.from.children);
+            const orderData = getOrderData(itemList);
+            updateOrderOnServer(orderData);
+        }
     });
 
     function updateOrder(items) {
-      Array.from(items).forEach((item, index) => {
-        const orderSelect = item.querySelector('.order-select');
-        orderSelect.selectedIndex = index;
-      });
+        Array.from(items).forEach((item, index) => {
+            const orderSelect = item.querySelector('.order-select');
+            orderSelect.selectedIndex = index;
+        });
     }
 
-    function changeOrder(select) {
-      const listItem = select.closest('.draggable');
-      const newIndex = parseInt(select.value) - 1;
+function changeOrder(select, itemId) {
+    const listItem = select.closest('.draggable');
+    const newIndex = parseInt(select.value) - 1;
 
-      itemList.insertBefore(listItem, itemList.children[newIndex]);
-      updateOrder(itemList.children);
+    itemList.insertBefore(listItem, itemList.children[newIndex]);
+    updateOrder(itemList.children);
 
-      const orderData = getOrderData(itemList);
-      updateOrderOnServer(orderData);
+    const orderData = getOrderData(itemList);
+
+    // Find the orderData entry for the item being changed
+    const changedItem = orderData.find(item => item.id === itemId);
+    if (changedItem) {
+        changedItem.order = select.value;
     }
+
+    updateOrderOnServer(orderData);
+}
 
     function getOrderData(itemList) {
-      const orderData = [];
-      Array.from(itemList.children).forEach(item => {
-        orderData.push({
-          id: item.getAttribute('data-id'),
-          order: item.querySelector('.order-select').value
+        const orderData = [];
+        Array.from(itemList.children).forEach(item => {
+            orderData.push({
+                id: item.getAttribute('data-id'),
+                order: item.querySelector('.order-select').value
+            });
         });
-      });
-      return orderData;
+        return orderData;
     }
 
     function updateOrderOnServer(orderData) {
-      // Send AJAX request to update order on the server
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'update_order.php', true);
-      xhr.setRequestHeader('Content-Type', 'application/json');
+        // Send AJAX request to update order on the server
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', "{{ path('updateorder') }}", true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          if (xhr.status === 200) {
-            console.log('Order updated on the server');
-          } else {
-            console.error('Error updating order on the server');
-          }
-        }
-      };
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    console.log('Order updated on the server');
+                } else {
+                    console.error('Error updating order on the server');
+                }
+            }
+        };
 
-      xhr.send(JSON.stringify(orderData));
+        xhr.send('orderData=' + encodeURIComponent(JSON.stringify(orderData)));
     }
-  </script>
+</script>
+<!-- Bootstrap JS (opcional, mas necessário para recursos específicos como tooltips) -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
+<script>
+    function voltar() {
+        window.history.back();
+    }
+</script>
 </body>
 
 {% endblock %}
