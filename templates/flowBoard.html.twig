@@ -1,138 +1,339 @@
-<div class="card">
-	<div class="row d-flex justify-content-between px-3 top">
-		<div class="d-flex">
-			<a style="color: black;text-decoration: none;" href="{{path('Softindex',{'id':m.id} )}}">
-				<h5>
-					Mudanças <span class="text-primary font-weight-bold">#{{m.id}}</span>
-				</h5>
-			</a>
-		</div>
-		<div class="row d-flex justify-content-between px-3 top">
-			
+<style>
+	.flex-container {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		border: 2px dashed black;
+		border-radius: 25px;
+		display: flex;
+		justify-content: center;
+	}
 
-			<div class="d-flex flex-column text-sm-right">
-				<a style="color: black;text-decoration: none;" href="{{path('flow',{'id':m.id} )}}">
-					<p class="mb-0">Mudanças criadas:
-						<span>{{m.datacreation}}</span>
-					</p>
-					<p>Fluxos de processo</p>
-				</a>
-			</div>
-		</div>
-	</div>
+	.nowrap {
+		flex-wrap: nowrap;
+	}
+
+	.wrap {
+		flex-wrap: wrap;
+	}
+
+	.wrap li {
+		background: transparent;
+	}
+
+	.wrap-reverse {
+		flex-wrap: wrap-reverse;
+	}
+
+	.wrap-reverse li {
+		background: transparent;
+	}
+
+	.flex-item {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.pic {
+		width: 100px;
+		border-radius: 50%;
+		border: double 6px white;
+		background-image: linear-gradient(white, white), radial-gradient(circle at top right);
+		background-origin: border-box;
+		background-clip: content-box, border-box;
+	}
+
+	.card {
+		z-index: 0;
+		background-color: #ECEFF1;
+		padding-bottom: 20px;
+		margin-top: 0;
+		margin-bottom: 10px;
+		border-radius: 10px;
+	}
+
+	.top {
+		padding-top: 10px;
+		padding-left: 13% !important;
+		padding-right: 13% !important;
+	}
+
+	/* Icon progress bar */
+	#progressbar {
+		margin-bottom: 30px;
+		overflow: hidden;
+		color: #455A64;
+		padding-left: 0;
+		margin-top: 30px;
+	}
+
+	#progressbar li {
+		list-style-type: none;
+		font-size: 13px;
+		width: 20%;
+		float: left;
+		position: relative;
+		font-weight: 400;
+	}
+
+	#progressbar .step0:before {
+		font-family: FontAwesome;
+		content: "\f10c";
+		color: #fff;
+	}
+
+	#progressbar li:before {
+		width: 40px;
+		height: 40px;
+		line-height: 45px;
+		display: block;
+		font-size: 20px;
+		background: #C5CAE9;
+		border-radius: 50%;
+		margin: auto;
+		padding: 0;
+	}
+
+	/* ProgressBar connectors */
+	#progressbar li:after {
+		content: '';
+		width: 100%;
+		height: 12px;
+		background: #C5CAE9;
+		position: absolute;
+		left: 0;
+		top: 16px;
+		z-index: -1;
+	}
+
+	#progressbar li:last-child:after {
+		border-top-right-radius: 10px;
+		border-bottom-right-radius: 10px;
+		position: absolute;
+		left: -50%;
+	}
+
+	#progressbar li:nth-child(2):after,
+	#progressbar li:nth-child(3):after {
+		left: 0;
+	}
+
+	#progressbar li:first-child:after {
+		border-top-left-radius: 10px;
+		border-bottom-left-radius: 10px;
+		position: absolute;
+		left: 50%;
+	}
+
+	#progressbar li:last-child:after {
+		border-top-right-radius: 50px;
+		border-bottom-right-radius: 50px;
+	}
+
+	#progressbar li:first-child:after {
+		border-top-left-radius: 10px;
+		border-bottom-left-radius: 10px;
+	}
+
+	/* Color number of the step and the connector before it */
+	#progressbar li.active:before,
+	#progressbar li.active:after {
+		background: #00C9A7;
+	}
+
+	#progressbar li.active:before {
+		font-family: FontAwesome;
+		content: "\f00c";
+	}
+
+	.icon {
+		width: 60px;
+		height: 60px;
+		margin-right: 10px;
+	}
+
+	.icon-content {
+		padding-bottom: 20px;
+	}
+
+	@media screen and(max-width: 992px) {
+		.icon-content {
+			width: 50%;
+		}
+	}
+
+	.drop-title {
+		color: #444;
+		font-size: 20px;
+		font-weight: bold;
+		text-align: center;
+		transition: color 0.2s ease-in-out;
+	}
+
+	input[type=file] {
+		width: 350px;
+		max-width: 100%;
+		color: #444;
+		padding: 5px;
+		background: #fff;
+		border-radius: 10px;
+		border: 1px solid #555;
+	}
+
+	input[type=file]::file-selector-button {
+		margin-right: 20px;
+		border: none;
+		background-color: #0c2c01;
+		padding: 10px 20px;
+		border-radius: 10px;
+		color: #fff;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+	}
+
+	input[type=file]::file-selector-button:hover {
+		background: #0d45a5;
+	}
+
+	.modal {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.5);
+		align-items: center;
+		justify-content: center;
+	}
+
+	.modal-content {
+		background-color: #fff;
+		padding: 20px;
+		border-radius: 10px;
+		max-width: 600px;
+		text-align: center;
+		position: relative; /* Added relative positioning */
+	}
+
+	.close-modal {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		cursor: pointer;
+	}
+</style>
+
+<div
+	class="card">
+	<!-- Icons and links -->
+	{% set icons = [
+        {	
+			'path': 'mudancas', 'image': asset('analysing.png'), 'text': 'Relatório de Mudanças', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
+        	'btn': 
+				[
+					{'name':'Fluxos de processo', 'path':path('flow',{'id':m.id} ) },
+					{'name':'Mudanças de informação', 'path':path('Softindex', {'id': m.id})}
+				]
+        },
+        {
+            'path': 'Solicitante_software', 'image': 'https://i.imgur.com/9nnc9Et.png', 
+			'text': 'Gerente de Aprovação', 'progress': 2, 
+			'desc': 'Gerente Ti 
+"Priorização de
+mudanças" e "Aprovação da exigência de mudança".', 
+            'btn': 
+			 	[
+					{'name':'Priorização das mudanças', 'path':path('orderMudancas',{'id':m.id} )},
+					{'name':'Aprovação', 'path':''}
+				]
+        },
+        {
+            'path': 'test_solicitante_software', 'image': asset('approve.png'), 
+			'text': 'Solicitante', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
+            'btn': 
+				[
+					{'name':'Requisitos', 'path':''},
+					{'name':'Testes', 'path':''},
+					{'name':'Implantação', 'path':''},
+				]
+        },
+        {
+            'path': 'test_ti_software', 'image': asset('testing.png'), 'text': 'Gestor da Mudança', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
+            'btn': 
+			 	[
+					{'name':'Iniciando mudanças', 'path':''},
+					{'name':'Requisitos', 'path':''},
+					{'name':'Fases', 'path':''}
+				]
+        },
+        {
+            'path': 'dev_software', 'image': asset('software-development.png'), 'text': 'Desenvolvedor', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
+            'btn': 
+				[
+					{'name':'Fases', 'path':''},
+				]
+        },
+    ] %}
+
 	<!-- Add class 'active' to progress -->
 	<div class="row d-flex justify-content-center">
 		<div class="col-12">
 			<ul id="progressbar" class="text-center">
-				{% if m.mudS.ref == null %}
-					<li class="step0"></li>
-					<li class="step0"></li>
-					<li class="step0"></li>
-					<li class="step0"></li>
-					<li class="step0"></li>
-				{% else %}
-					{% if m.mudS.gestor == null %}
-						<li class="active step0"></li>
-						<li class="step0"></li>
-						<li class="step0"></li>
-						<li class="step0"></li>
-						<li class="step0"></li>
-					{% else %}
-						<li class="active step0"></li>
-						<li class="active step0"></li>
-						{% if m.mudS.stepDev|length == 0 or  m.mudS.stepDev == null %}
-							<li class="step0"></li>
-							<li class="step0"></li>
-							<li class="step0"></li>
-						{% else %}
-							<li class="active step0"></li>
-							{% if m.mudS.stepsTest|length == 0 or m.mudS.stepsTest == null %}
-								<li class="step0"></li>
-								<li class="step0"></li>
-							{% else %}
-								<li class="active step0"></li>
-								{% if m.mudS.stepsTestSol|length == 0 or m.mudS.stepsTestSol  == null %}
-									<li class="step0"></li>
-								{% else %}
-									<li class="active step0"></li>
-								{% endif %}
-							{% endif %}
-						{% endif %}
-					{% endif %}
-				{% endif %}
+				<li class="active step0"></li>
+				<li class="active step0"></li>
+				<li class="active step0"></li>
+				<li class="active step0"></li>
+				<li class="active step0"></li>
 			</ul>
 		</div>
 	</div>
+
 	<div class="row justify-content-between top">
-
-		<div class="row d-flex icon-content">
-
-			<a style="text-decoration: none;" href="{{path('gerente_software',{'id':m.id} )}}">
-				<img class="icon" src="{{ asset('analysing.png') }}"/>
-			</a>
-			<div class="d-flex flex-column">
-				<a style="color: black;text-decoration: none;" href="{{path('gerente_software',{'id':m.id} )}}">
-					<p class="font-weight-bold">
-						Demanda<br/>e<br/>verificação
-					</p>
+		{% for icon in icons %}
+			<div class="row d-flex icon-content">
+				<a style="text-decoration: none;" data-toggle="modal" data-target="#{{ icon['path'] }}Modal">
+					<img class="icon" src="{{ icon['image'] }}" alt="{{ icon['text'] }}"/>
 				</a>
+				<div class="d-flex flex-column">
+					<a style="color: black; text-decoration: none;" data-toggle="modal" data-target="#{{ icon['path'] }}Modal">
+						<p class="font-weight-bold">{{ icon['text'] }}</p>
+					</a>
+				</div>
 			</div>
-		</div>
-		<div class="row d-flex icon-content">
-
-			<a style="text-decoration: none;" href="{{path('Solicitante_software',{'id':m.id} )}}">
-				<img class="icon" src="https://i.imgur.com/9nnc9Et.png"/>
-			</a>
-			<div class="d-flex flex-column">
-
-				<a style="color: black;text-decoration: none;" href="{{path('Solicitante_software',{'id':m.id} )}}">
-					<p class="font-weight-bold">
-						Documentação<br/>e<br/>análise
-					</p>
-				</a>
-			</div>
-		</div>
-		<div class="row d-flex icon-content">
-
-			<a style="text-decoration: none;" href="{{path('dev_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('software-development.png') }}"/>
-
-			</a>
-			<div class="d-flex flex-column">
-
-				<a style="color: black;text-decoration: none;" href="{{path('dev_software',{'id':m.id} )}}">
-					<p class="font-weight-bold">
-						Desenvolvimento<br/>e<br/>concepção
-					</p>
-				</a>
-			</div>
-		</div>
-		<div class="row d-flex icon-content">
-
-			<a style="text-decoration: none;" href="{{path('test_ti_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('testing.png') }}"/>
-
-			</a>
-			<div class="d-flex flex-column">
-
-				<a style="color: black;text-decoration: none;" href="{{path('test_ti_software',{'id':m.id} )}}">
-					<p class="font-weight-bold">
-						Verificação<br/>e<br/>teste de TI
-					</p>
-				</a>
-			</div>
-		</div>
-		<div class="row d-flex icon-content">
-
-			<a style="text-decoration: none;" href="{{path('test_solicitante_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('approve.png') }}"/>
-
-			</a>
-			<div class="d-flex flex-column">
-
-				<a style="color: black;text-decoration: none;" href="{{path('test_solicitante_software',{'id':m.id} )}}">
-					<p class="font-weight-bold">
-						Verificação<br/>e<br/>teste do solicitante
-					</p>
-				</a>
+		{% endfor %}
+	</div>
+</div>
+{% for icon in icons %}
+	<div class="modal" id="{{ icon['path'] }}Modal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div
+				class="modal-content">
+				<!-- Replace the following with your specific modal content -->
+				<div class="modal-header">
+					<h4 class="modal-title">{{ icon['text'] }}</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div
+					class="modal-body">
+					<!-- Your modal body content -->
+					{% if  icon['desc'] != null %}
+						<div class="row">
+							<p>{{ icon['desc']}}</p>
+						</div>
+					{% endif %}
+				</div>
+				<div class="modal-footer d-flex justify-content-between">
+					{% for item in icon.btn %}
+					 	<a href="{{ item.path }}"class="btn btn-info mt-2 text-white">{{ item.name }}</a>
+					{% endfor %}
+				</div>
+				<!-- End of specific modal content -->
 			</div>
 		</div>
 	</div>
-</div>
+{% endfor %}

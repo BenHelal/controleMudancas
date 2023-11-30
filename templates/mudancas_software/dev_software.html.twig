@@ -214,7 +214,15 @@
 		}
 	</style>
 	<div class="card">
-		
+		    <!-- Icons and links -->
+    {% set icons = [
+        {'path': 'gerente_software', 'image': asset('analysing.png'), 'text': 'Relatório de Mudanças', 'progress': 2},
+        {'path': 'Solicitante_software', 'image': 'https://i.imgur.com/9nnc9Et.png', 'text': 'Gerente de Aprovação', 'progress': 2},
+        {'path': 'test_ti_software', 'image': asset('testing.png'), 'text': 'Gestor da Mudança', 'progress': 2},
+        {'path': 'dev_software', 'image': asset('software-development.png'), 'text': 'Desenvolvedor', 'progress': 2},
+        {'path': 'test_solicitante_software', 'image': asset('approve.png'), 'text': 'Solicitante', 'progress': 2},
+    ] %}
+
 		<div class="row d-flex justify-content-between px-3 top">
 			<div class="d-flex">
 			    <a style="color: black;text-decoration: none;" 
@@ -246,77 +254,23 @@
 				</ul>
 			</div>
 		</div>
-		<div class="row justify-content-between top">
-			<div class="row d-flex icon-content">
-
-				<a style="text-decoration: none;" href="{{path('gerente_software',{'id':m.id} )}}">
-					<img class="icon" src="{{ asset('analysing.png') }}"/>
-				</a>
-				<div class="d-flex flex-column">
-					<a style="color: black;text-decoration: none;" href="{{path('gerente_software',{'id':m.id} )}}">
-						<p class="font-weight-bold">
-							Demanda<br/>e<br/>verificação
-						</p>
-					</a>
-				</div>
-			</div>
-			<div class="row d-flex icon-content">
-
-				<a style="text-decoration: none;" href="{{path('Solicitante_software',{'id':m.id} )}}">
-					<img class="icon" src="https://i.imgur.com/9nnc9Et.png"/>
-				</a>
-				<div class="d-flex flex-column">
-
-					<a style="color: black;text-decoration: none;" href="{{path('Solicitante_software',{'id':m.id} )}}">
-						<p class="font-weight-bold">
-							Documentação<br/>e<br/>análise
-						</p>
-					</a>
-				</div>
-			</div>
-			<div class="row d-flex icon-content">
-
-				<a style="text-decoration: none;" href="{{path('dev_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('software-development.png') }}"/>
-
-				</a>
-				<div class="d-flex flex-column">
-
-					<a style="color: black;text-decoration: none;" href="{{path('dev_software',{'id':m.id} )}}">
-						<p class="font-weight-bold">
-							Desenvolvimento<br/>e<br/>concepção
-						</p>
-					</a>
-				</div>
-			</div>
-			<div class="row d-flex icon-content">
-
-				<a style="text-decoration: none;" href="{{path('test_ti_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('testing.png') }}"/>
-
-				</a>
-				<div class="d-flex flex-column">
-
-					<a style="color: black;text-decoration: none;" href="{{path('test_ti_software',{'id':m.id} )}}">
-						<p class="font-weight-bold">
-							Verificação<br/>e<br/>teste de TI
-						</p>
-					</a>
-				</div>
-			</div>
-			<div class="row d-flex icon-content">
-
-				<a style="text-decoration: none;" href="{{path('test_solicitante_software',{'id':m.id} )}}"><img class="icon" src="{{ asset('approve.png') }}"/>
-
-				</a>
-				<div class="d-flex flex-column">
-
-					<a style="color: black;text-decoration: none;" href="{{path('test_solicitante_software',{'id':m.id} )}}">
-						<p class="font-weight-bold">
-							Verificação<br/>e<br/>teste do solicitante
-						</p>
-					</a>
-				</div>
-			</div>
-		</div>
+    <div class="row justify-content-between top">
+        {% for icon in icons %}
+            <div class="row d-flex icon-content">
+                <a href="{{ path(icon['path'], {'id': m.id}) }}" style="text-decoration: none;">
+                    <img class="icon" src="{{ icon['image'] }}" alt="{{ icon['text'] }}"/>
+                </a>
+                <div class="d-flex flex-column">
+                    <a href="{{ path(icon['path'], {'id': m.id}) }}" style="color: black; text-decoration: none;">
+                        <p class="font-weight-bold">{{ icon['text'] }}</p>
+                    </a>
+                </div>
+				 <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: {{ icon['progress'] * 25 }}%;" aria-valuenow="{{ icon['progress'] }}" aria-valuemin="0" aria-valuemax="4"></div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 	</div>
 
 	
