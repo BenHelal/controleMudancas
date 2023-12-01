@@ -69,14 +69,16 @@
 		margin-top: 30px;
 	}
 
+
+
 	#progressbar li {
-		list-style-type: none;
-		font-size: 13px;
-		width: 20%;
-		float: left;
-		position: relative;
-		font-weight: 400;
-	}
+    list-style-type: none;
+    font-size: 13px;
+    width: 16%; /* Adjusted width to accommodate six items in a row */
+    float: left;
+    position: relative;
+    font-weight: 400;
+}
 
 	#progressbar .step0:before {
 		font-family: FontAwesome;
@@ -229,64 +231,67 @@
 <div
 	class="card">
 	<!-- Icons and links -->
-	{% set icons = [
-        {	
-			'path': 'mudancas', 'image': asset('analysing.png'), 'text': 'Relatório de Mudanças', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
-        	'btn': 
-				[
-					{'name':'Fluxos de processo', 'path':path('flow',{'id':m.id} ) },
-					{'name':'Mudanças de informação', 'path':path('Softindex', {'id': m.id})}
-				]
-        },
-        {
-            'path': 'Solicitante_software', 'image': 'https://i.imgur.com/9nnc9Et.png', 
-			'text': 'Gerente de Aprovação', 'progress': 2, 
-			'desc': 'Gerente Ti 
-"Priorização de
-mudanças" e "Aprovação da exigência de mudança".', 
-            'btn': 
-			 	[
-					{'name':'Priorização das mudanças', 'path':path('orderMudancas',{'id':m.id} )},
-					{'name':'Aprovação', 'path':''}
-				]
-        },
-        {
-            'path': 'test_solicitante_software', 'image': asset('approve.png'), 
-			'text': 'Solicitante', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
-            'btn': 
-				[
-					{'name':'Requisitos', 'path':''},
-					{'name':'Testes', 'path':''},
-					{'name':'Implantação', 'path':''},
-				]
-        },
-        {
-            'path': 'test_ti_software', 'image': asset('testing.png'), 'text': 'Gestor da Mudança', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
-            'btn': 
-			 	[
-					{'name':'Iniciando mudanças', 'path':''},
-					{'name':'Requisitos', 'path':''},
-					{'name':'Fases', 'path':''}
-				]
-        },
-        {
-            'path': 'dev_software', 'image': asset('software-development.png'), 'text': 'Desenvolvedor', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
-            'btn': 
-				[
-					{'name':'Fases', 'path':''},
-				]
-        },
-    ] %}
+{% set icons = [
+    {   
+        'path': 'mudancas', 'image': asset('analysing.png'), 'text': 'Relatório de Mudanças', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
+        'btn': 
+            [
+                {'name':'Fluxos de processo', 'path':path('flow',{'id':m.id} ) },
+                {'name':'Mudanças de informação', 'path':path('Softindex', {'id': m.id})}
+            ]
+    },
+    
+    {
+        'path': 'Solicitante_software', 'image': 'https://i.imgur.com/9nnc9Et.png', 
+        'text': 'Gerente de Aprovação', 'progress': 2, 
+        'desc': 'Gerente Ti "Priorização de mudanças" e "Aprovação da exigência de mudança".', 
+        'btn': 
+            [
+                {'name':'Priorização das mudanças', 'path':path('orderMudancas',{'id':m.id} )},
+                {'name':'Aprovação', 'path':''}
+            ]
+    },
+    {
+        'path': 'test_solicitante_software', 'image': asset('approve.png'), 
+        'text': 'Solicitante', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
+        'btn': 
+            [
+                {'name':'Requisitos', 'path':''},
+                {'name':'Testes', 'path':''},
+                {'name':'Implantação', 'path':''},
+            ]
+    },
+    {
+        'path': 'Gestor', 'image': asset('testing.png'), 'text': 'Gestor da Mudança', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
+        'btn': 
+            [
+                {'name':'Requisitos', 'path':path('app_software_gestor_documentation',{'id':m.id} )},
+                {'name':'Fases', 'path':path('app_software_gestor_steps',{'id':m.id} )},
+                {'name':'Teste', 'path':path('app_software_gestor_test',{'id':m.id} )}
+            ]
+    },
+    {
+        'path': 'dev_software', 'image': asset('software-development.png'), 'text': 'Desenvolvedor', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
+        'btn': 
+            [
+                {'name':'Fases', 'path':''},
+            ]
+    },
+]%}
+
+
+
 
 	<!-- Add class 'active' to progress -->
 	<div class="row d-flex justify-content-center">
 		<div class="col-12">
 			<ul id="progressbar" class="text-center">
-				<li class="active step0"></li>
-				<li class="active step0"></li>
-				<li class="active step0"></li>
-				<li class="active step0"></li>
-				<li class="active step0"></li>
+				<li class="active step0">Inicialização</li>
+				<li class="active step0">Documentação</li>
+				<li class="active step0">Desenvolvimentos</li>
+				<li class="active step0">Teste de TI</li>
+				<li class=" step0">Teste de candidato</li>
+				<li class=" step0">Implementado</li>
 			</ul>
 		</div>
 	</div>

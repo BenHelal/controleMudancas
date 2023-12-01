@@ -16,6 +16,10 @@ class MudancasSoftware
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $steps = null;
+ 
     /*********************
      * Solicitante
      ********************/
@@ -131,6 +135,18 @@ class MudancasSoftware
     {
         return $this->id;
     }
+
+    public function getSteps(): ?string
+    {
+        return $this->steps;
+    }
+
+    public function setSteps(string $steps): self
+    {
+        $this->steps = $steps;
+        return $this;
+    }
+
 
     public function getCommentGestor(): ?string
     {
