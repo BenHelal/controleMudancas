@@ -4,6 +4,7 @@ namespace App\Controller\Software;
 
 use App\Entity\Mudancas;
 use App\Entity\Person;
+use App\Form\GestorSoftware\iniciarType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +37,7 @@ class GestorController extends AbstractController
                 'person' => $person,
                 'controller_name' => 'GestorController',
             ]);
-        }else{
+        } else {
             return $this->redirectToRoute('app_login');
         }
     }
@@ -55,25 +56,34 @@ class GestorController extends AbstractController
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $mud = $em->getRepository(Mudancas::class)->find($id);
             $muds = $mud->getMudS();
+            $formInit = $this->createForm(iniciarType::class, $muds);
+            $formInit->handleRequest($request);
+            if (
+                $formInit->isSubmitted() && 
+                $formInit->isValid()) { 
+                    $em->persist($mud);
+                    $em->flush();
+            }
             return $this->render('software/gestor/documentation.html.twig', [
                 'login' => 'null',
                 'person' => $person,
                 'm' => $mud,
+                'muds' => $muds,
+                'formInit'=> $formInit,
                 'controller_name' => 'GestorController',
             ]);
-        }else{
+        } else {
             return $this->redirectToRoute('app_login');
         }
-
     }
-    
+
     /**
      * Renders the steps page for the software gestor.
      *
      * @Route("/software/gestor/steps", name="app_software_gestor_steps")
      * @return Response
      */
-    public function steps():Response
+    public function steps(): Response
     {
         return $this->render('software/gestor/steps.html.twig', [
             'login' => 'null',
@@ -85,15 +95,40 @@ class GestorController extends AbstractController
     /**
      * Renders the Test TI page for the GestorController.
      *
-     * @Route("/software/gestor/test", name="app_software_gestor_test")
+     * @Route("/software/gestor/test/{id}", name="app_software_gestor_test")
      * @return Response
      */
-    public function test(): Response
+    public function test(ManagerRegistry $doctrine, Request $request, $id): Response
     {
-        return $this->render('software/gestor/test.html.twig', [
-            'login' => 'null',
-            'controller_name' => 'GestorController',
-        ]);
-    }    
-    
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_jwt') != '') {
+            $em = $doctrine->getManager();
+            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+            $mud = $em->getRepository(Mudancas::class)->find($id);
+            $mudSoft = $mud->getMudS();
+            //iniciarType
+            $formInit = $this->createForm(iniciarType::class, $mud);
+            $formInit->handleRequest($request);
+            if (
+                $formInit->isSubmitted() && 
+                $formInit->isValid()) { 
+                    $em->persist($mud);
+                    $em->flush();
+            }
+
+
+
+            return $this->render('software/gestor/test.html.twig', [
+                'login' => 'null',
+                'person' => $person,
+                'm' => $mud,
+                'mudS' => $mudSoft,
+                'formInit'=> $formInit,
+                'controller_name' => 'GestorController',
+            ]);
+        } else {
+            return $this->redirectToRoute('app_login');
+        }
+    }
 }
