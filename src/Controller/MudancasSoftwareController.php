@@ -74,6 +74,7 @@ class MudancasSoftwareController extends AbstractController
                     'creation' => 'false',
                     'form' => $form->createView(),
                     'm' => $mud,
+                    'muds' => $mudSoft,
                     'person' => $person,
                 ]);
             } else {

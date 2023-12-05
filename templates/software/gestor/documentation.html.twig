@@ -4,6 +4,7 @@
 {% endblock %}
 
 {% block body %}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
 	<style>
 		@import url('https://unpkg.com/open-props/open-props.min.css');
@@ -11,125 +12,284 @@
 
 		#main {
 			box-sizing: border-box;
-		}
-
-		#ul {
-			padding: 0;
-			display: inline-grid;
-			grid-auto-flow: column;
-			list-style-type: none;
-			grid-template-columns: auto repeat(3, calc((var(--active, 0) * 200px) + 10px));
-			transition: grid-template-columns 0.35s var(--ease-elastic-1);
-		}
-
-		#main {
 			width: 66ch;
 		}
 
-		#li {
-			display: grid;
-			justify-content: end;
-			z-index: calc(var(--count) - var(--index));
-		}
 
-		#nav {
-			position: relative;
-		}
-
-		#nav > #button {
-			position: absolute;
-			left: 0;
-			background: red;
-			z-index: var(--count);
-		}
-
-		#a {
-			background: hsl(0 0% 20% / 0.18);
-			display: inline-block;
-			padding: var(--size-2) var(--size-4);
-			border-radius: var(--radius-5);
-			margin: 0;
-			color: var(--blue-0);
-			font-size: var(--font-size-1);
-			font-weight: var(--font-weight-0);
-			backdrop-filter: blur(40px);
-			transition: color 0.2s, background 0.2s;
-		}
-
-		#a:visited {
-			color: var(--green-0);
-		}
-
-		#svg {
-			height: 24px;
-			aspect-ratio: 1;
-			fill: currentColor;
-		}
-
-		#span {
-			display: grid;
-			align-items: center;
-			grid-auto-flow: column;
-			grid-template-columns: 16px 1fr;
-			gap: 0.25rem;
-		}
-
-		#li:is(:nth-of-type(2), :nth-of-type(3),:nth-of-type(4)) span {
-			opacity: var(--active, 0);
-			color: var(--blue-12);
-		}
-
-		#li:is(:nth-of-type(2), :nth-of-type(1), :nth-of-type(3), :nth-of-type(4)) #a:is(:hover, :focus) {
-			background: var(--blue-0);
-			color: var(--blue-12);
-		}
-
-		#a:focus-visible {
-			outline-color: transparent;
-		}
-
-		#ul:is(:focus-within, :hover) {
-			--active: 1;
-		}
-
-		.chosen-container-multi .chosen-choices {
-			/*blah blah*/
-			width: 400px;
-		}
-
-
-		.chosen-drop {
-			/* less specificity, this style might not work  */
-			width: 400px;
+		.custom-card {
+			width: 50%; /* Set the width of your card */
+			margin: 50px auto; /* Adjust the margin as needed */
+			background-color: #fff; /* Set the background color */
+			padding: 20px; /* Adjust the padding as needed */
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a box shadow for a card-like appearance */
+			border-radius: 10px; /* Set the border radius as needed */
+			z-index: 999999; /* Set a high z-index for the card */
 		}
 	</style>
 
 	{{ include('flowBoard.html.twig') }}
 
-
 	{% if muds.iniciar is null %}
-		<dialog
-			id="dialog">
-			<!-- Dialog content goes here -->
-
+		<div
+			class="custom-card">
+			<!-- Your card content goes here -->
 			{{ form_start(formInit, { 'attr': {'class':'form-group', 'id':'test'}}) }}
-			<!-- Form fields go here -->
-			<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">
+
+			<div class="col-md-12 mb-3">
+				{{ form_label(formInit.iniciar) }}
+				{{ form_widget(formInit.iniciar,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
+			</div>
+			<div class="col-md-12 mb-3">
+				{{ form_label(formInit.dateInicio) }}
+				{{ form_widget(formInit.dateInicio,{'attr':{'class':'date form-control','rows': '4','id':'testnomeMudanca'}}) }}
+			</div>
+
+			<button class="btn btn-info mt-2 text-white">
 				Enviar
 			</button>
-			<a id="cancelButton">Cancel</a>
+			<a style="margin-top:1px ;margin-left:10px" class="btn btn-info mt-2 text-white" id="cancelButton">Cancel</a>
+
 			{{ form_end(formInit) }}
-		</dialog>
+		</div>
 	{% endif %}
 
+	<div class="row">
+
+		{% if sd is null %}
+			{% else %}
+				{% for s in sd %}
+                    <div id="{{s.id}}" class="row col-md-12 mb-3 d-flex justify-content-between">
+                        <div id="div" class="col-md-3 mb-3">
+                            <label for="1">Fase</label>
+                            <input class="form-control" id="{{s.id}}" name="{{s.id}}" value="{{s.step}}" type="text" readonly/>
+                        </div>
+                        <div id="div3" class="col-md-3 mb-3">
+                            <label for="{{s.id}}desc">Comentário</label>
+	                    		<input id="{{s.id}}desc" class="form-control" name="{{s.id}}desc" value="{{s.comment}}" type="text" readonly/>
+                        </div>
+                        <div id="div2" class="col-md-6 mb-3">
+                            <label for="{{s.id}}date">Data de Levantamento</label><br>
+	                    		<input id="{{s.id}}date" name="{{s.id}}date" value="{{s.date|date('d-m-Y')}}" style="width: 100%" type="text" readonly/>
+                        </div>
+                        <div id="div4" class="col-md-6 mb-3" >
+	                    		<label for="{{s.id}}file">Anexo</label>
+	                    		<input id="{{s.id}}file" name="{{s.id}}file" value="{{s.doc}}"style="width: 100%"type="text" readonly/>
+                        </div>
+                        <div id="div5" class="col-md-6 mb-3" >
+	                    		<label for="{{s.id}}files">Anexo</label>
+	                    		<input id="{{s.id}}files" name="{{s.id}}files" value="{{s.docTest}}"style="width: 100%" type="text" readonly/>
+                        </div>
+                    </div>
+				{% endfor %}
+		{% endif %}
+	</div>
+
+	<form class="form-group" action="{{path('app_software_gestor_add_documentation',{'id':m.id} )}}" enctype="multipart/form-data" method="post">
+		<div class="row" name="test2" id="test2"></div>
+		<div class="col-md-12 mb-3">
+			<input id="btnSubsq" style="
+												min-width: 86px;
+												height: 32px;
+												display: -ms-flexbox;
+												display: flex;
+												-ms-flex-align: center;
+												align-items: center;
+												-ms-flex-pack: center;
+												justify-content: center;
+												background: #afbace;
+												color: #fff;
+												box-shadow: none;
+												border-radius: 4px;
+												padding: 0 5px;
+												border: none;" type="submit" value="Adicionar"/>
+		</div>
+	</form>
+	<div class="col-md-3 mb-3">
+		<a class="btn" style="
+											min-width: 86px;
+											height: 32px;
+											display: -ms-flexbox;
+											display: flex;
+											-ms-flex-align: center;
+											align-items: center;
+											-ms-flex-pack: center;
+											justify-content: center;
+											background: #afbace;
+											color: #fff;
+											box-shadow: none;
+											border-radius: 4px;
+											padding: 0 5px;
+											border: none;" onclick="myFunction()">+ Adicionar Fase</a>
+	</div>
+	<script type="text/babel">
+		const dropContainer = document.getElementById("dropcontainer")
+										  const fileInput = document.getElementById("mudancas_gestor_software_docs")
+										
+										  dropContainer.addEventListener("dragover", (e) => {
+										    // prevent default to allow drop
+										    e.preventDefault()
+										  }, false)
+										
+										  dropContainer.addEventListener("dragenter", () => {
+										    dropContainer.classList.add("drag-active")
+										  })
+										
+										  dropContainer.addEventListener("dragleave", () => {
+										    dropContainer.classList.remove("drag-active")
+										  })
+										
+										  dropContainer.addEventListener("drop", (e) => {
+										    e.preventDefault()
+										    dropContainer.classList.remove("drag-active")
+										    fileInput.files = e.dataTransfer.files
+										  })
+
+	</script>
 	<script>
-		document.addEventListener("DOMContentLoaded", function () { // Check if the dialog should be opened (replace 'm.iniciar' with the appropriate condition)
-{% if muds.iniciar is null %}
-// Open the dialog
-openDialog();{% endif %}
+
+		$(document).ready(function () {
+$('#mudancas_software_devs_developers').chosen({});
+$('#mudancas_software_testers_testers').chosen({});
+$('#mudancas_software_testers_ti_testersti').chosen({});
+
+document.getElementById("mudancas_software_devs_developers_chosen").style.width = "400px";
+document.getElementById("mudancas_software_testers_testers_chosen").style.width = "400px";
+document.getElementById("mudancas_software_testers_ti_testersti_chosen").style.width = "400px";
 });
 
-function openDialog() { // Get a reference to the dialog element
+
+var i = 0;
+var array = ["OK", "FALHA"];
+var i = 0;
+
+
+if (i === 0) {
+document.getElementById("btnSubsq").style.display = 'none';
+}
+
+
+function myFunction() {
+i++;
+
+const test = document.createElement("div");
+test.setAttribute('id', i + 'test');
+test.setAttribute('class', 'row col-md-12 mb-3 d-flex justify-content-between');
+document.getElementById('test2').appendChild(test);
+
+
+const div = document.createElement("div");
+div.setAttribute('id', i + 'div');
+div.setAttribute('class', 'col-md-3 mb-3');
+document.getElementById(i + 'test').appendChild(div);
+
+const label = document.createElement('label');
+label.setAttribute('for', i);
+label.innerHTML = "Fase";
+document.getElementById(i + 'div').appendChild(label);
+// 'class':'form-control'
+const node = document.createElement("input");
+node.setAttribute('class', 'form-control');
+node.setAttribute('id', i);
+node.setAttribute('name', i);
+document.getElementById(i + 'div').appendChild(node);
+
+
+const div3 = document.createElement("div");
+div3.setAttribute('id', i + 'div3');
+div3.setAttribute('class', 'col-md-3 mb-3');
+document.getElementById(i + 'test').appendChild(div3);
+
+const label3 = document.createElement('label');
+label3.setAttribute('for', i + 'desc');
+label3.innerHTML = "Comentário";
+document.getElementById(i + 'div3').appendChild(label3);
+
+const br = document.createElement('br');
+document.getElementById(i + 'div3').appendChild(br);
+
+const node3 = document.createElement("input");
+node3.setAttribute('id', i + 'desc');
+node3.setAttribute('name', i + 'desc');
+node3.setAttribute('class', 'form-control');
+document.getElementById(i + 'div3').appendChild(node3);
+
+
+const div2 = document.createElement("div");
+div2.setAttribute('id', i + 'div2');
+div2.setAttribute('class', 'col-md-6 mb-3');
+document.getElementById(i + 'test').appendChild(div2);
+
+const label2 = document.createElement('label');
+label2.setAttribute('for', i + 'test');
+label2.innerHTML = "Data de Levantamento";
+document.getElementById(i + 'div2').appendChild(label2);
+
+const node2 = document.createElement("input");
+node2.setAttribute('id', i + 'date');
+node2.setAttribute('name', i + 'date');
+node2.setAttribute('type', 'date');
+node2.setAttribute('lang', 'pt-BR');
+node2.setAttribute('class', 'date form-control');
+document.getElementById(i + 'div2').appendChild(node2);
+
+
+const div4 = document.createElement("div");
+div4.setAttribute('id', i + 'div4');
+div4.setAttribute('class', 'col-md-6 mb-3');
+document.getElementById(i + 'test').appendChild(div4);
+
+const label4 = document.createElement('label');
+label4.setAttribute('for', i + 'file');
+label4.innerHTML = "Anexo";
+document.getElementById(i + 'div4').appendChild(label4);
+
+
+const node4 = document.createElement("input");
+node4.setAttribute('id', i + 'file');
+node4.setAttribute('name', i + 'file');
+node4.setAttribute('type', 'file');
+node4.setAttribute('style', 'width:100%');
+document.getElementById(i + 'div4').appendChild(node4);
+
+const div5 = document.createElement("div");
+div5.setAttribute('id', i + 'div5');
+div5.setAttribute('class', 'col-md-6 mb-3');
+document.getElementById(i + 'test').appendChild(div5);
+
+const label5 = document.createElement('label');
+label5.setAttribute('for', i + 'files');
+label5.innerHTML = "Anexo";
+document.getElementById(i + 'div5').appendChild(label5);
+
+const node5 = document.createElement("input");
+node5.setAttribute('id', i + 'files');
+node5.setAttribute('name', i + 'files');
+node5.setAttribute('type', 'file');
+node5.setAttribute('style', 'width:100%');
+document.getElementById(i + 'div5').appendChild(node5);
+
+if (i === 1) {
+document.getElementById("btnSubsq").style.display = 'inline';
+}
+
+}
+	</script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+	<script>
+		$(".date").datepicker({format: "dd-mm-yyyy", language: "pt-BR", zIndexOffset: 999999});
+	</script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function (){
+          
+            {% if muds.iniciar is null %}
+openCard(); // Open the card
+{% endif %}
+});
+
+function openCard() { // Get a reference to the dialog element
 var dialog = document.getElementById("dialog");
 
 // Check if the dialog exists before attempting to open it
@@ -159,5 +319,4 @@ dialogOpen: true
 }
 }
 	</script>
-
 {% endblock %}

@@ -70,15 +70,14 @@
 	}
 
 
-
 	#progressbar li {
-    list-style-type: none;
-    font-size: 13px;
-    width: 16%; /* Adjusted width to accommodate six items in a row */
-    float: left;
-    position: relative;
-    font-weight: 400;
-}
+		list-style-type: none;
+		font-size: 13px;
+		width: 16%; /* Adjusted width to accommodate six items in a row */
+		float: left;
+		position: relative;
+		font-weight: 400;
+	}
 
 	#progressbar .step0:before {
 		font-family: FontAwesome;
@@ -231,7 +230,7 @@
 <div
 	class="card">
 	<!-- Icons and links -->
-{% set icons = [
+	{% set icons = [
     {   
         'path': 'mudancas', 'image': asset('analysing.png'), 'text': 'Relatório de Mudanças', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
         'btn': 
@@ -256,7 +255,7 @@
         'text': 'Solicitante', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
         'btn': 
             [
-                {'name':'Requisitos', 'path':''},
+                {'name':'Requisitos', 'path': path('app_software_sol_documentation',{'id':m.id} )},
                 {'name':'Testes', 'path':''},
                 {'name':'Implantação', 'path':''},
             ]
@@ -278,8 +277,6 @@
             ]
     },
 ]%}
-
-
 
 
 	<!-- Add class 'active' to progress -->
@@ -333,9 +330,30 @@
 					{% endif %}
 				</div>
 				<div class="modal-footer d-flex justify-content-between">
-					{% for item in icon.btn %}
-					 	<a href="{{ item.path }}"class="btn btn-info mt-2 text-white">{{ item.name }}</a>
-					{% endfor %}
+					{% if muds.iniciar == null %}
+						{% if  icon['path'] == 'Gestor' %}
+							{% for item in icon.btn %}
+								{% if item.name == 'Requisitos' %}
+									<a href="{{ item.path }}" class="btn btn-info mt-2 text-white">{{ item.name }}</a>
+								{% endif %}
+							{% endfor %}
+						{% elseif icon['path'] == 'mudancas'  %}
+							{% for item in icon.btn %}
+								<a href="{{ item.path }}" class="btn btn-info mt-2 text-white">{{ item.name }}</a>
+							{% endfor %}
+						{% elseif icon['path'] == 'Solicitante_software' %}
+
+							{% for item in icon.btn %}
+								{% if item.name == 'Priorização das mudanças' %}
+									<a href="{{ item.path }}" class="btn btn-info mt-2 text-white">{{ item.name }}</a>
+								{% endif %}
+							{% endfor %}
+						{% endif %}
+					{% else %}
+						{% for item in icon.btn %}
+							<a href="{{ item.path }}" class="btn btn-info mt-2 text-white">{{ item.name }}</a>
+						{% endfor %}
+					{% endif %}
 				</div>
 				<!-- End of specific modal content -->
 			</div>

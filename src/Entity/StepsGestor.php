@@ -28,6 +28,41 @@ class StepsGestor
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $doc = null;
 
+    
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $docTest = null;
+
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $dateSol = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $approveSol = null;
+
+    public function getDateSol(): ?string
+    {
+        return $this->dateSol;
+    }
+
+    public function setDateSol(string $dateSol): self
+    {
+        $this->dateSol = $dateSol;
+
+        return $this;
+    }
+
+    public function getApproveSol(): ?string
+    {
+        return $this->approveSol;
+    }
+
+    public function setApproveSol(string $approveSol): self
+    {
+        $this->approveSol = $approveSol;
+
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -89,6 +124,18 @@ class StepsGestor
     public function setDoc(string $doc): self
     {
         $this->doc = $doc;
+
+        return $this;
+    }
+
+    public function getDocTest(): ?string
+    {
+        return $this->docTest;
+    }
+
+    public function setDocTest(string $docTest): self
+    {
+        $this->docTest = $docTest;
 
         return $this;
     }
