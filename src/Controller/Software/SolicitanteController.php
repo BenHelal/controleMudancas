@@ -4,6 +4,7 @@ namespace App\Controller\Software;
 
 use App\Entity\Mudancas;
 use App\Entity\Person;
+use App\Entity\StepsGestor;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,6 +50,45 @@ class SolicitanteController extends AbstractController
                 'controller_name' => 'GestorController',
                 'sd' => $SD,
             ]);
+        } else {
+            return $this->redirectToRoute('app_login');
+        }
+    }
+
+
+    
+
+    /**
+     * Renders the documentation page for the solicitanteController.
+     *
+     * @Route("/software/solicitante/app/documentation/{id}", name="app_software_sol_approve_documentation")
+     * @return Response
+     */
+    public function approve(ManagerRegistry $doctrine, Request $request, $id): Response
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_jwt') != '') {
+            $em = $doctrine->getManager();
+            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+            $mud = $em->getRepository(Mudancas::class)->find($id);
+            $muds = $mud->getMudS();
+            $data = $request->request;
+            $SD =  $muds->getStepsGestor();
+       
+            // You can loop through all the parameters in the InputBag:
+            foreach ($data->all() as $key => $value) {
+                for ($i=0; $i < sizeof($SD); $i++) {
+                    if($key == $SD[$i]->getId().'stat'){
+                        if(($value == 'Aprovar' || $value == 'Reprovar' )){
+                            $sd = $em->getRepository(StepsGestor::class)->find($SD[$i]->getId());
+                            $sd->setApproveSol($value);
+                            $em->flush();
+                            return $this->redirectToRoute('app_software_sol_documentation', ['id' => $id]);
+                        }
+                    }
+                }
+            }
         } else {
             return $this->redirectToRoute('app_login');
         }

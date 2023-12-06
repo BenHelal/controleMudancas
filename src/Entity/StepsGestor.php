@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\StepsGestorRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StepsGestorRepository::class)]
@@ -33,11 +35,21 @@ class StepsGestor
     private ?string $docTest = null;
 
 
+    /** Client approvement  */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $dateSol = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $approveSol = null;
+
+    #[ORM\OneToMany(mappedBy: 'ariquivo', targetEntity: Steps::class)]
+    private Collection $steps;
+
+    public function __construct()
+    {
+        $this->steps = new ArrayCollection();
+    }
+    /********************************/
 
     public function getDateSol(): ?string
     {
@@ -136,6 +148,36 @@ class StepsGestor
     public function setDocTest(string $docTest): self
     {
         $this->docTest = $docTest;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Steps>
+     */
+    public function getSteps(): Collection
+    {
+        return $this->steps;
+    }
+
+    public function addStep(Steps $step): static
+    {
+        if (!$this->steps->contains($step)) {
+            $this->steps->add($step);
+            $step->setAriquivo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStep(Steps $step): static
+    {
+        if ($this->steps->removeElement($step)) {
+            // set the owning side to null (unless already changed)
+            if ($step->getAriquivo() === $this) {
+                $step->setAriquivo(null);
+            }
+        }
 
         return $this;
     }

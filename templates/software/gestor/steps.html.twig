@@ -1,20 +1,363 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello GestorController!{% endblock %}
+{% block title %}Hello Gestor Controller!
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+	<style>
+		@import url('https://unpkg.com/open-props/open-props.min.css');
+		@import url('https://unpkg.com/open-props/normalize.min.css');
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/xampp/htdocs/controleMudancas/src/Controller/Software/GestorController.php'|file_link(0) }}">src/Controller/Software/GestorController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/xampp/htdocs/controleMudancas/templates/software/gestor/index.html.twig'|file_link(0) }}">templates/software/gestor/index.html.twig</a></code></li>
-    </ul>
-</div>
+		#main {
+			box-sizing: border-box;
+			width: 66ch;
+		}
+
+
+		.custom-card {
+			width: 50%; /* Set the width of your card */
+			margin: 50px auto; /* Adjust the margin as needed */
+			background-color: #fff; /* Set the background color */
+			padding: 20px; /* Adjust the padding as needed */
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a box shadow for a card-like appearance */
+			border-radius: 10px; /* Set the border radius as needed */
+			z-index: 999999; /* Set a high z-index for the card */
+		}
+	</style>
+
+	{{ include('flowBoard.html.twig') }}
+<h3>
+					Lista de arquivos rejeitados ou aceitos:
+					<button style="
+										border: none;
+										background-color: green-light;
+										padding: 10px 20px;
+										border-radius: 10px;
+										color: #fff;
+										cursor: pointer;
+										transition: background .2s ease-in-out;" onclick="visArq()"><img style="width: 10px" src="{{ asset('visible.png') }}"/></button>
+				</h3>
+	<div class="row" id="arq">
+
+		{% if step is null %}
+			{% else %}
+				{% for s in step %}
+                    <div id="{{s.id}}" class="row col-md-12 mb-3 d-flex justify-content-between">
+                        <div id="div" class="col-md-3 mb-3">
+                            <label for="1">Arquivos</label>
+                            <input class="form-control" id="{{s.id}}ariquivo" name="{{s.id}}ariquivo" value="{{s.ariquivo.step}}" type="text" readonly/>
+                        </div>
+                        <div id="div3" class="col-md-3 mb-3">
+                            <label for="{{s.id}}desc">Comentário</label>
+	                    		<input id="{{s.id}}desc" class="form-control" name="{{s.id}}desc" value="{{s.comments}}" type="text" readonly/>
+                        </div>
+                        <div id="div2" class="col-md-4 mb-3">
+                            <label for="{{s.id}}date">Data de criação</label><br>
+	                    		<input id="{{s.id}}date" name="{{s.id}}date" value="{{s.dateCreation|date('d-m-Y')}}" style="width: 100%" type="text" readonly/>
+                        </div>
+
+						<div id="div6" class="col-md-2 mb-3">
+							<label for="{{s.id}}file">Aprovação</label>
+							<input id="{{s.id}}stat" name="{{s.id}}stat" value="{{s.approve}}" {% if s.approve == "Reprovar" %}
+								style="width: 100%; background-color: red;"
+								{% elseif s.approve == "Aprovar" %}style="width: 100%; background-color: #20c997;"
+							{% endif %} type="text" readonly/>
+
+						</div>
+						{% if s.doc != null %}
+							<div class="col-md-3 mb-3">
+								<label>Anexo</label><br>
+      							<a href="{{ asset('assets/') }}{{m.id}}/{{s.doc}}" style="
+												  						border: none;
+												  						background-color: #0c2c01;
+												  						padding: 10px 20px;
+												  						border-radius: 10px;
+												  						color: #fff;
+												  						cursor: pointer;
+												  						transition: background .2s ease-in-out;">
+									⇬ Baixar arquivos 
+								</a>
+							</div>
+						{% endif %}
+
+						{% if s.docTest != null %}
+							<div class="col-md-3 mb-3">
+								<label>Anexo Teste</label><br>
+      							<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
+												  						border: none;
+												  						background-color: #0c2c01;
+												  						padding: 10px 20px;
+												  						border-radius: 10px;
+												  						color: #fff;
+												  						cursor: pointer;
+												  						transition: background .2s ease-in-out;">
+									⇬ Baixar arquivos teste
+								</a>
+							</div>
+						{% endif %}
+                    </div>
+						<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
+				{% endfor %}
+		{% endif %}
+	</div>
+
+	<form class="form-group" action="{{path('app_software_gestor_add_steps',{'id':m.id} )}}" enctype="multipart/form-data" method="post">
+		<div class="row" name="test2" id="test2"></div>
+		<div class="col-md-12 mb-3">
+			<input id="btnSubsq" style="
+												min-width: 86px;
+												height: 32px;
+												display: -ms-flexbox;
+												display: flex;
+												-ms-flex-align: center;
+												align-items: center;
+												-ms-flex-pack: center;
+												justify-content: center;
+												background: #afbace;
+												color: #fff;
+												box-shadow: none;
+												border-radius: 4px;
+												padding: 0 5px;
+												border: none;" type="submit" value="Adicionar"/>
+		</div>
+	</form>
+	<div class="col-md-3 mb-3">
+		<a class="btn" style="
+											min-width: 86px;
+											height: 32px;
+											display: -ms-flexbox;
+											display: flex;
+											-ms-flex-align: center;
+											align-items: center;
+											-ms-flex-pack: center;
+											justify-content: center;
+											background: #afbace;
+											color: #fff;
+											box-shadow: none;
+											border-radius: 4px;
+											padding: 0 5px;
+											border: none;" onclick="myFunction()">+ Adicionar Fase</a>
+	</div>
+	<script type="text/babel">
+		const dropContainer = document.getElementById("dropcontainer")
+		const fileInput = document.getElementById("mudancas_gestor_software_docs")
+		
+		dropContainer.addEventListener("dragover", (e) => {
+		  // prevent default to allow drop
+		  e.preventDefault()
+		}, false)
+		
+		dropContainer.addEventListener("dragenter", () => {
+		  dropContainer.classList.add("drag-active")
+		})
+		
+		dropContainer.addEventListener("dragleave", () => {
+		  dropContainer.classList.remove("drag-active")
+		})
+		
+		dropContainer.addEventListener("drop", (e) => {
+		  e.preventDefault()
+		  dropContainer.classList.remove("drag-active")
+		  fileInput.files = e.dataTransfer.files
+		})
+
+	</script>
+	<script>
+
+		$(document).ready(function () {
+$('#mudancas_software_devs_developers').chosen({});
+$('#mudancas_software_testers_testers').chosen({});
+$('#mudancas_software_testers_ti_testersti').chosen({});
+
+document.getElementById("mudancas_software_devs_developers_chosen").style.width = "400px";
+document.getElementById("mudancas_software_testers_testers_chosen").style.width = "400px";
+document.getElementById("mudancas_software_testers_ti_testersti_chosen").style.width = "400px";
+});
+
+
+var i = 0;
+var array = ["OK", "FALHA"];
+var i = 0;
+
+
+if (i === 0) {
+document.getElementById("btnSubsq").style.display = 'none';
+}
+
+function func2(id, id2) {
+    var e = document.getElementById(id);
+    var value = e.options[e.selectedIndex].value;
+    var text = e.options[e.selectedIndex].text;
+    {% for item in sd %}
+        if ("{{ item.id }}" === value) {
+        	document.getElementById(id2).value = "{{ item.id }}";
+        }
+    {% endfor %}
+}
+
+
+function myFunction() {
+i++;
+
+
+const test = document.createElement("div");
+test.setAttribute('id', i + 'test');
+test.setAttribute('class', 'row col-md-12 mb-3 d-flex justify-content-between');
+document.getElementById('test2').appendChild(test);
+
+
+
+
+
+const selectArquivo = document.createElement("div");
+selectArquivo.setAttribute('id', i + 'selectArquivo');
+selectArquivo.setAttribute('class', 'form-control');
+selectArquivo.setAttribute('class', 'col-md-3 mb-3');
+document.getElementById(i + 'test').appendChild(selectArquivo);
+
+
+
+
+const labelselectArquivo = document.createElement('label');
+labelselectArquivo.setAttribute('for', i + 'a');
+labelselectArquivo.innerHTML = "Arquivo";
+document.getElementById(i + 'selectArquivo').appendChild(labelselectArquivo);
+
+const select = document.createElement("select");
+select.setAttribute('id', i + 'a');
+select.setAttribute('onchange', 'func2("' + i + 'a","' + i + 'b")');
+select.setAttribute('name', i + 'a');
+select.setAttribute('class', 'form-control');
+document.getElementById(i + 'selectArquivo').appendChild(select);
+
+{% for items in sd %}
+
+var node4Op1 = document.createElement("option");
+node4Op1.setAttribute('selected', 'selected');
+node4Op1.setAttribute('value', "{{ items.id }}");
+node4Op1.innerHTML = "{{ items.step }}";
+document.getElementById(i + 'a').appendChild(node4Op1);
+
+{% endfor %}
+
+
+
+const div = document.createElement("div");
+div.setAttribute('id', i + 'div');
+div.setAttribute('class', 'col-md-3 mb-3');
+document.getElementById(i + 'test').appendChild(div);
+const label = document.createElement('label');
+label.setAttribute('for', i);
+label.innerHTML = "Fase";
+document.getElementById(i + 'div').appendChild(label);
+// 'class':'form-control'
+const node = document.createElement("input");
+node.setAttribute('class', 'form-control');
+node.setAttribute('id', i);
+node.setAttribute('name', i);
+document.getElementById(i + 'div').appendChild(node);
+
+
+const div2 = document.createElement("div");
+div2.setAttribute('id', i + 'div2');
+div2.setAttribute('class', 'col-md-6 mb-3');
+document.getElementById(i + 'test').appendChild(div2);
+
+const label2 = document.createElement('label');
+label2.setAttribute('for', i + 'test');
+label2.innerHTML = "Data de criação";
+document.getElementById(i + 'div2').appendChild(label2);
+
+const node2 = document.createElement("input");
+node2.setAttribute('id', i + 'date');
+node2.setAttribute('name', i + 'date');
+node2.setAttribute('type', 'date');
+node2.setAttribute('lang', 'pt-BR');
+node2.setAttribute('class', 'date form-control');
+document.getElementById(i + 'div2').appendChild(node2);
+
+const div3 = document.createElement("div");
+div3.setAttribute('id', i + 'div3');
+div3.setAttribute('class', 'col-md-12 mb-3');
+document.getElementById(i + 'test').appendChild(div3);
+
+const label3 = document.createElement('label');
+label3.setAttribute('for', i + 'desc');
+label3.innerHTML = "Comentário";
+document.getElementById(i + 'div3').appendChild(label3);
+
+const br = document.createElement('br');
+document.getElementById(i + 'div3').appendChild(br);
+
+const node3 = document.createElement("input");
+node3.setAttribute('id', i + 'desc');
+node3.setAttribute('name', i + 'desc');
+node3.setAttribute('class', 'form-control');
+document.getElementById(i + 'div3').appendChild(node3);
+
+const div4 = document.createElement("div");
+div4.setAttribute('id', i + 'div4');
+div4.setAttribute('class', 'col-md-6 mb-3');
+document.getElementById(i + 'test').appendChild(div4);
+
+const label4 = document.createElement('label');
+label4.setAttribute('for', i + 'file');
+label4.innerHTML = "Anexo";
+document.getElementById(i + 'div4').appendChild(label4);
+
+
+const node4 = document.createElement("input");
+node4.setAttribute('id', i + 'file');
+node4.setAttribute('name', i + 'file');
+node4.setAttribute('type', 'file');
+node4.setAttribute('style', 'width:100%');
+document.getElementById(i + 'div4').appendChild(node4);
+
+const div5 = document.createElement("div");
+div5.setAttribute('id', i + 'div5');
+div5.setAttribute('class', 'col-md-6 mb-3');
+document.getElementById(i + 'test').appendChild(div5);
+
+const label5 = document.createElement('label');
+label5.setAttribute('for', i + 'files');
+label5.innerHTML = "Anexo Teste";
+document.getElementById(i + 'div5').appendChild(label5);
+
+const node5 = document.createElement("input");
+node5.setAttribute('id', i + 'files');
+node5.setAttribute('name', i + 'files');
+node5.setAttribute('type', 'file');
+node5.setAttribute('style', 'width:100%');
+document.getElementById(i + 'div5').appendChild(node5);
+
+if (i === 1) {
+document.getElementById("btnSubsq").style.display = 'inline';
+}
+
+}
+	</script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+	<script>
+		$(".date").datepicker({format: "dd-mm-yyyy", language: "pt-BR", zIndexOffset: 999999});
+	</script>
+
+    
+
+	<script>
+		var x = document.getElementById("arq");
+		x.style.display = "none";
+
+		function visArq() {
+			if (x.style.display === "none") {
+				x.style.display = "block";
+			} else {
+				x.style.display = "none";
+			}
+		}
+	</script>
 {% endblock %}
