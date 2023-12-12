@@ -168,33 +168,102 @@ class GestorController extends AbstractController
             $em = $doctrine->getManager();
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $mud = $em->getRepository(Mudancas::class)->find($id);
-            $mudSoft = $mud->getMudS();
-            //iniciarType
-            $formInit = $this->createForm(iniciarType::class, $mud);
-            $formInit->handleRequest($request);
-            if (
-                $formInit->isSubmitted() &&
-                $formInit->isValid()
-            ) {
-                $em->persist($mud);
-                $em->flush();
+            $muds = $mud->getMudS();
+
+            //steps Gestor 
+            $sd = [];
+            $s = [];
+            $SD =  $muds->getStepsGestor();
+
+            foreach ($SD as $key => $value) {
+                # code...
+                if($value->getApproveSol() =='Aprovar'){
+                    array_push($sd, $value);
+                }
+
             }
 
+            foreach ($SD as $keys=> $val) {
+                foreach ($val->getSteps() as $keys=> $values) {
+                    # code...
+                    if($values->getStatus() == "análise ti"){
+                        array_push($s, $values);
+                    }
+                }
+            }
 
-
+            
             return $this->render('software/gestor/test.html.twig', [
                 'login' => 'null',
                 'person' => $person,
                 'm' => $mud,
-                'mudS' => $mudSoft,
-                'formInit' => $formInit,
+                'muds' => $muds,
                 'controller_name' => 'GestorController',
+                'sd' => $sd,
+                'step' => $s,
             ]);
+
+
         } else {
             return $this->redirectToRoute('app_login');
         }
     }
 
+    /**
+     * Renders the Test TI page for the GestorController.
+     *
+     * @Route("/software/gestor/test/approve/{id}", name="app_software_gestor_test_approve")
+     * @return Response
+     */
+    public function testApprove(ManagerRegistry $doctrine, Request $request, $id): Response
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_jwt') != '') {
+            
+
+            $em = $doctrine->getManager();
+            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+            $mud = $em->getRepository(Mudancas::class)->find($id);
+            $muds = $mud->getMudS();
+            
+            //steps Gestor 
+            $sd = [];
+            $s = [];
+            $SD =  $muds->getStepsGestor();
+
+            foreach ($SD as $key => $value) {
+                # code...
+                if($value->getApproveSol() =='Aprovar'){
+                    array_push($sd, $value);
+                }
+
+            }
+
+            foreach ($SD as $keys=> $val) {
+                foreach ($val->getSteps() as $keys=> $values) {
+                    # code...
+                    if($values->getStatus() == "análise ti"){
+                        array_push($s, $values);
+                    }
+                }
+            }
+
+
+            
+            $data = $request->request;
+            for ($i = 1; $i <= sizeof($data)/4 ; $i++) {
+                foreach ($s as $key => $value) {
+                    # code...
+                    if($data->get($value->getId().'stat') == 'Aprovar' ){
+                        $value->setStatus();
+                    }
+                }    
+            }
+        } else {
+            return $this->redirectToRoute('app_login');
+        }
+    }
 
     function compareSteps($step1, $step2) {
         return $step1->getId() == $step2->getId();
@@ -235,6 +304,7 @@ class GestorController extends AbstractController
                     array_push($s, $values);
                 }
             }
+            
             
             return $this->render('software/gestor/steps.html.twig', [
                 'login' => 'null',

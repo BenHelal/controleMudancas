@@ -29,7 +29,7 @@
 
 	{{ include('flowBoard.html.twig') }}
 <h3>
-					Lista de arquivos rejeitados ou aceitos:
+					Lista da fases:
 					<button style="
 										border: none;
 										background-color: green-light;
@@ -49,25 +49,21 @@
                             <label for="1">Arquivos</label>
                             <input class="form-control" id="{{s.id}}ariquivo" name="{{s.id}}ariquivo" value="{{s.ariquivo.step}}" type="text" readonly/>
                         </div>
-                        <div id="div3" class="col-md-3 mb-3">
-                            <label for="{{s.id}}desc">Comentário</label>
-	                    		<input id="{{s.id}}desc" class="form-control" name="{{s.id}}desc" value="{{s.comments}}" type="text" readonly/>
+                        <div id="div3" class="col-md-6 mb-3">
+                            <label for="{{s.id}}desc">Título</label>
+	                    		<input id="{{s.id}}title" class="form-control" name="{{s.id}}title" value="{{s.title}}" type="text" readonly/>
                         </div>
-                        <div id="div2" class="col-md-4 mb-3">
+						
+                        <div id="div2" class="col-md-3 mb-3">
                             <label for="{{s.id}}date">Data de criação</label><br>
 	                    		<input id="{{s.id}}date" name="{{s.id}}date" value="{{s.dateCreation|date('d-m-Y')}}" style="width: 100%" type="text" readonly/>
                         </div>
-
-						<div id="div6" class="col-md-2 mb-3">
-							<label for="{{s.id}}file">Aprovação</label>
-							<input id="{{s.id}}stat" name="{{s.id}}stat" value="{{s.approve}}" {% if s.approve == "Reprovar" %}
-								style="width: 100%; background-color: red;"
-								{% elseif s.approve == "Aprovar" %}style="width: 100%; background-color: #20c997;"
-							{% endif %} type="text" readonly/>
-
-						</div>
+                        <div id="div3" class="col-md-12 mb-3">
+                            <label for="{{s.id}}desc">Comentário</label>
+	                    		<input id="{{s.id}}desc" class="form-control" name="{{s.id}}desc" value="{{s.comments}}" type="text" readonly/>
+                        </div>
 						{% if s.doc != null %}
-							<div class="col-md-3 mb-3">
+							<div class="col-md-6 mb-3">
 								<label>Anexo</label><br>
       							<a href="{{ asset('assets/') }}{{m.id}}/{{s.doc}}" style="
 												  						border: none;
@@ -83,7 +79,7 @@
 						{% endif %}
 
 						{% if s.docTest != null %}
-							<div class="col-md-3 mb-3">
+							<div class="col-md-6 mb-3">
 								<label>Anexo Teste</label><br>
       							<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
 												  						border: none;
@@ -123,6 +119,9 @@
 												border: none;" type="submit" value="Adicionar"/>
 		</div>
 	</form>
+
+	{% if sd|length != 0 %}
+
 	<div class="col-md-3 mb-3">
 		<a class="btn" style="
 											min-width: 86px;
@@ -140,6 +139,7 @@
 											padding: 0 5px;
 											border: none;" onclick="myFunction()">+ Adicionar Fase</a>
 	</div>
+	{% endif %}
 	<script type="text/babel">
 		const dropContainer = document.getElementById("dropcontainer")
 		const fileInput = document.getElementById("mudancas_gestor_software_docs")

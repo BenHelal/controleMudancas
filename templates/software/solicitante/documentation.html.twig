@@ -113,8 +113,12 @@
 						<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
 				</div>
 				<form action="{{path('app_software_sol_approve_documentation',{'id':m.id} )}}" style="width: 100% " enctype="multipart/form-data" method="post">
+					
+					{% set empty = "true" %}
 					{% for s in sd %}
 						{% if s.approveSol != 'Reprovar' and s.approveSol != 'Aprovar' %}
+						
+							{% set empty = "false" %}
 							<div id="{{s.id}}" class="row col-md-12 mb-3 justify-content-between">
 								<div id="div" class="col-md-3 mb-3">
 									<label for="1">Fase</label>
@@ -162,6 +166,12 @@
 						<!-- Add a horizontal line as a separator -->
 
 					{% endfor %}
+					{% if empty == "true" %}
+					<div class="col-md-12 mb-3">
+						Nenhum Arquivo disponível
+					</div>
+						{% else %}
+
 					<div class="col-md-12 mb-3">
 						<input id="btnSubsq" style="
 																			min-width: 86px;
@@ -179,6 +189,7 @@
 																			padding: 0 5px;
 																			border: none;" type="submit" value="Atualizar"/>
 					</div>
+					{% endif %}
 				</form>
 		{% endif %}
 	</div>

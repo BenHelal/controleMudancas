@@ -77,7 +77,7 @@
         <div class="column-header">Pendência</div>
         <ul class="task-list" id="todo-list" ondrop="drop(event)" ondragover="allowDrop(event)">
             {% for s in step %}
-                {% if s.status != 'análise' and  s.status != 'feito' and s.status != 'em andamento' and s.status != 'fechar' %}
+                {% if s.status != 'análise' and s.status != 'análise ti' and s.status != 'feito' and s.status != 'em andamento' and s.status != 'fechar' %}
                     <li class="task" id="{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}}</li>
                 {% endif %}
             {% endfor %}
@@ -90,11 +90,27 @@
     <ul class="task-list" id="done-list" ondrop="drop(event)" ondragover="allowDrop(event)"> {% for s in step %}
                
                 {% if s.status == 'em andamento'  %}
-                    <li class="task" id="{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}}</li>
+                    <a class="w3-btn w3-white w3-border w3-round-large" data-toggle="modal" data-target="#Contato" id="{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">
+                      <li class="task" >{{s.title}}</li>
+                    </a>
                 {% endif %}
             {% endfor %}
         </ul>
   </div>
+
+  <div class="column col-md-3 mb-3">
+    <div class="column-header">Análise TI</div>
+    <ul class="task-list" id="done-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+    
+         {% for s in step %}
+                {% if s.status == 'análise ti'  %}
+                    <li class="task" id="{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}}</li>
+                {% endif %}
+            {% endfor %}
+    </ul>
+  </div>
+
+
 
   <div class="column col-md-3 mb-3">
     <div class="column-header">Análise</div>
@@ -102,13 +118,13 @@
     
          {% for s in step %}
                 {% if s.status == 'análise'  %}
-                    <li class="task" id="{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}}</li>
+                    <li class="task" id="{{s.id}}" data-status="todo" >{{s.title}}</li>
                 {% endif %}
             {% endfor %}
     </ul>
   </div>
 
-  <div class="column col-md-3 mb-3">
+  <div class="column col-md-6 mb-3">
     <div class="column-header">Feito</div>
     <ul class="task-list" id="done-list">
     
@@ -121,7 +137,7 @@
     </ul>
   </div>
 
-  <div style="width : 100%" class="column  col-md-12 mb-3 ">
+  <div style="width : 100%" class="column  col-md-6 mb-3 ">
     <div style="width : 100%" class="column-header">Fechar</div>
     <ul style="width : 100%" class="task-list" id="done-lists">
         

@@ -54,6 +54,8 @@
 	{% endif %}
 
 	<div class="row">
+	
+	{% set yourVariable = "false" %}
 
 		{% if sd is null %}
 			{% else %}
@@ -76,9 +78,15 @@
 						<div id="div6" class="col-md-2 mb-3">
 							<label for="{{s.id}}file">Aprovação</label>
 							<input id="{{s.id}}stat" name="{{s.id}}stat" value="{{s.approveSol}}" {% if s.approveSol == "Reprovar" %}
+							
+									{% set yourVariable = "false" %}
 								style="width: 100%; background-color: red;"
-								{% elseif s.approveSol == "Aprovar" %}style="width: 100%; background-color: #20c997;"
-							{% endif %} type="text" readonly/>
+								{% elseif s.approveSol == "Aprovar" %}
+									{% set yourVariable = "true" %}
+								style="width: 100%; background-color: #20c997;"
+								{% else %}
+									{% set yourVariable = "true" %}
+								{% endif %} type="text" readonly/>
 
 						</div>
 						{% if s.doc != null %}
@@ -138,6 +146,8 @@
 												border: none;" type="submit" value="Adicionar"/>
 		</div>
 	</form>
+
+	{% if yourVariable == "false"  and muds.iniciar != null %}
 	<div class="col-md-3 mb-3">
 		<a class="btn" style="
 											min-width: 86px;
@@ -155,6 +165,8 @@
 											padding: 0 5px;
 											border: none;" onclick="myFunction()">+ Adicionar Arquivos</a>
 	</div>
+		
+	{% endif %}
 	<script type="text/babel">
 		const dropContainer = document.getElementById("dropcontainer")
 										  const fileInput = document.getElementById("mudancas_gestor_software_docs")
