@@ -948,11 +948,11 @@ class MudancasController extends AbstractController
                         if ($sec != null) {
                             // check the manager of the area Responsibla 
                             foreach ($sec as $key => $value) {
-                                if ($value === $mud->getAreaResp()) {
+                                if ($value === $mud->getAreaResp() && $mud->getManagerUserApp() != null) {
                                     $manager = true;
                                 }
                             }
-                        } elseif ($sec == null) {
+                        } elseif ($sec == null ) {
                             $manager = false;
                         }
 
@@ -1003,19 +1003,19 @@ class MudancasController extends AbstractController
 
                         // check which Form need 
                         $form = null;
-                        if ($manager == true && $gestor == false && $mangerOfAreaDidntApp == false) {
+                        if ($manager == true && $gestor == false && $mangerOfAreaDidntApp == false ) {
                            $form = $this->createForm(MudancasManagerType::class, $mud);
-                        } elseif ($gestor == true && $mangerOfAreaDidntApp == false) {
+                        } elseif ($gestor == true && $mangerOfAreaDidntApp == false && $mud->getManagerUserApp() != null) {
                             $form = $this->createForm(MudancasgestorToAppType::class, $mud);
                             $formImp = $this->createForm(MudancasgestorImpType::class, $mud);
-                        } elseif ($gestor == true && $mangerOfAreaDidntApp == false) {
+                        } elseif ($gestor == true && $mangerOfAreaDidntApp == false && $mud->getManagerUserApp() != null) {
                             $form = $this->createForm(MudancasgestorToAppType::class, $mud);
                             $formImp = $this->createForm(MudancasgestorImpType::class, $mud);
-                        } elseif ($manager == true && $gestor != true) {
+                        } elseif ($manager == true && $gestor != true && $mud->getManagerUserApp() != null ) {
                             $form = $this->createForm(MudancasManagerType::class, $mud);
-                        } elseif ($gestor == true && $mangerOfAreaDidntApp == true && $date1 != null) {
+                        } elseif ($gestor == true && $mangerOfAreaDidntApp == true && $date1 != null && $mud->getManagerUserApp() != null ) {
                             $form = $this->createForm(MudancasgestorType::class, $mud);
-                        } elseif ($gestor == true && $mangerOfAreaDidntApp == true && $date1 == null) {
+                        } elseif ($gestor == true && $mangerOfAreaDidntApp == true && $date1 == null && $mud->getManagerUserApp() != null ) {
                             $form = $this->createForm(MudancasgestorType::class, $mud);
                         }else{
                             $form = $this->createForm(MudancasType::class, $mud);

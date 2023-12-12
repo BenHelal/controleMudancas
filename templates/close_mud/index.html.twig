@@ -31,7 +31,7 @@
 					<th scope="row">Solicitante</th>
 					<td>
 						{% if mud.addBy.name != null %}
-							{{mud.addBy.departemant}}
+							{{mud.addBy.function.name}}
 						{% endif %}
 					</td>
 					<td>
@@ -53,7 +53,7 @@
 					<th scope="row">Gerente Solicitante</th>
 					<td>
 						{% if mud.managerUserAdd != null and mud.nansenNumber == null %}
-							{{mud.managerUserAdd.departemant}}
+							{{mud.managerUserAdd.function.name}}
 							{% else %}
 
 						{% endif %}
@@ -141,7 +141,7 @@
 						<td>Não verificado</td>
 						<td>Não verificado</td>
 					{% else %}
-						<td>{{mud.mangerMudancas.departemant}}</td>
+						<td>{{mud.mangerMudancas.function.name}}</td>
 						<td>{{mud.mangerMudancas.name}}</td>
 					{% endif %}
 							<td>{% if mud.dateAG != null  %}	
@@ -248,7 +248,7 @@
 				{% if mud.implemented != 2  or  mud.implemented != 1 %}
 					<tr>
 						<th scope="row">Dados de implementação</th>
-						<td>{{mud.mangerMudancas.departemant}}</td>
+						<td>{{mud.mangerMudancas.function.name}}</td>
 						<td>{{mud.mangerMudancas.name}}</td>
 							<td>
 							
@@ -280,7 +280,7 @@
 						<th scope="row">Dados de implementação</th>
 
 						{% if mud.managerUserAdd != null %}
-							<td>{{mud.managerUserAdd.departemant}}</td>
+							<td>{{mud.managerUserAdd.function.name}}</td>
 							<td>{{mud.managerUserAdd.name}}</td>
 							
 						{% endif %}
@@ -306,3 +306,5 @@
 		</td>
 	</tbody>
 </tr></tbody></table></div>{% endblock %}
+
+				
