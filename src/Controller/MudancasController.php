@@ -513,15 +513,6 @@ class MudancasController extends AbstractController
                         $em->persist($email);
 
 
-                        /** Check If Mudancas is software or not **/
-                        if ($mud->getTypeMud() == "1") {
-                            //create new Mudancas software 
-                            $ms = new MudancasSoftware();
-                            $em->persist($ms);
-                            $areaResp = $em->getRepository(Sector::class)->findOneBy(['name' => '021 – TI MATRIZ (INFRAESTRUTURA E REDE)']);
-                            $mud->setAreaResp($areaResp);
-                            $mud->setMudS($ms);
-                        }
                         /************************SOFTWARE********************************************/
 
                         if ($mud->getNansenNumber() == null) {
@@ -793,6 +784,320 @@ class MudancasController extends AbstractController
             return $this->redirectToRoute('log_employer');
         }
     }
+
+    #[Route('/createMudancas/soft', name: 'cmSoft')]
+    public function createSoft(ManagerRegistry $doctrine, Request $request): Response
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        //$request->header_remove();
+        if ($session->get('token_jwt') != '') {
+            $em = $doctrine->getManager();
+            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+            $req =  $em->getRepository(Requestper::class)->findOneBy(['person' => $person]);
+            $manager = false;
+            if ($req->getApproves() == 'yes') {
+                if ($person->getPermission() != 'ler') {
+                    $mud = new Mudancas();
+                    $process = new Process();
+                    date_default_timezone_set("America/Sao_Paulo");
+                    $time = new \DateTime();
+                    $time->format('Y-m-d H:i:s');
+                    $mud->setDataCreation($time);
+                    $mud->setAddBy($person);
+                    $mud->setTypeMud("1");
+                    //create new Mudancas software 
+                    $ms = new MudancasSoftware();
+                    $em->persist($ms);
+                    $areaResp = $em->getRepository(Sector::class)->findOneBy(['name' => '021 – TI MATRIZ (INFRAESTRUTURA E REDE)']);
+                    $mud->setAreaResp($areaResp);
+                    $mud->setMudS($ms);
+                    
+                    $form = $this->createForm(MudancasType::class, $mud);
+                    $form->handleRequest($request);
+
+                    if ($form->isSubmitted() && $form->isValid()) {
+                        $email = new  Email();
+                        $email->setMudancas($mud);
+                        $email->setSendTo($person);
+                        $email->setSendBy($person);
+                        $email->setTitle('Novo mudancas');
+                        $email->setBody('create');
+                        $em->persist($email);
+
+
+                        /************************SOFTWARE********************************************/
+
+                        if ($mud->getNansenNumber() == null) {
+                            if ($mud->getAddBy() == $person && $mud->getAddBy()->getFunction()->getManager() == $person) {
+                                date_default_timezone_set("America/Sao_Paulo");
+                                $time = new \DateTime();
+                                $time->format('Y-m-d H:i:s');
+                                $mud->setDateMUA($time);
+                                //nansen
+                                $email = new  Email();
+                                $email->setMudancas($mud);
+                                $email->setSendTo($person);
+                                $email->setSendBy($person);
+                                $email->setTitle('Aprovação automática da solicitação');
+                                $email->setBody('nansenAddBy');
+                                $em->persist($email);
+
+                                /*
+                                $email = new  Email();
+                                $email->setMudancas($mud);
+                                $email->setSendTo($mud->getAddBy());
+                                $email->setSendBy($person);
+                                $email->setTitle('Aprovação gerente do solicitante');
+                                $email->setBody('manager1APP');
+                                $em->persist($email);
+                                $em->flush();*/
+                                //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                $email = new  Email();
+                                $email->setMudancas($mud);
+                                $email->setSendTo($mud->getAreaResp()->getManager());
+                                $email->setSendBy($person);
+                                $email->setTitle('ÁREA Resp gerente');
+                                $email->setBody('managerAreaResp');
+                                $em->persist($email);
+
+                                //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                foreach ($mud->getAreaImpact() as $key => $value) {
+                                    $email = new  Email();
+                                    $email->setMudancas($mud);
+                                    $email->setSendTo($value->getCoordinator());
+                                    $email->setSendBy($person);
+                                    $email->setTitle('ÁREA IMPACTADA');
+                                    $email->setBody('managerArea');
+                                    $em->persist($email);
+                                    //    $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                }
+                            } else {
+                                $email = new  Email();
+                                $email->setMudancas($mud);
+                                $email->setSendTo($person->getFunction()->getManager());
+                                $email->setSendBy($person);
+                                $email->setTitle('Aprovação Gerente do solicitante');
+                                $email->setBody('manager1');
+                                $em->persist($email);
+                            }
+
+                            $em->flush();
+                        } else {
+                            if ($mud->getAddBy() == $person && $mud->getAddBy()->getFunction()->getManager() == $person) {
+                                date_default_timezone_set("America/Sao_Paulo");
+                                $time = new \DateTime();
+                                $time->format('Y-m-d H:i:s');
+                                $mud->setDateMUA($time);
+                                //nansen
+                                $email = new  Email();
+                                $email->setMudancas($mud);
+                                $email->setSendTo($person);
+                                $email->setSendBy($person);
+                                $email->setTitle('Aprovação automática da solicitação');
+                                $email->setBody('nansenAddBy');
+                                $em->persist($email);
+
+                                $email = new  Email();
+                                $email->setMudancas($mud);
+                                $email->setSendTo($mud->getAddBy());
+                                $email->setSendBy($person);
+                                $email->setTitle('Aprovação gerente do solicitante');
+                                $email->setBody('manager1APP');
+                                $em->persist($email);
+                                //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                $email = new  Email();
+                                $email->setMudancas($mud);
+                                $email->setSendTo($mud->getAreaResp()->getManager());
+                                $email->setSendBy($person);
+                                $email->setTitle('ÁREA Resp gerente');
+                                $email->setBody('managerAreaResp');
+                                $em->persist($email);
+
+                                //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                foreach ($mud->getAreaImpact() as $key => $value) {
+                                    $email = new  Email();
+                                    $email->setMudancas($mud);
+                                    $email->setSendTo($value->getCoordinator());
+                                    $email->setSendBy($person);
+                                    $email->setTitle('ÁREA IMPACTADA');
+                                    $email->setBody('managerArea');
+                                    $em->persist($email);
+                                    //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                }
+                            } else {
+                                date_default_timezone_set("America/Sao_Paulo");
+                                $time = new \DateTime();
+                                $time->format('Y-m-d H:i:s');
+                                $mud->setDateMUA($time);
+                                //nansen
+                                $email = new  Email();
+                                $email->setMudancas($mud);
+                                $email->setSendTo($person->getFunction()->getManager());
+                                $email->setSendBy($person);
+                                $email->setTitle('Aprovação automática da solicitação');
+                                $email->setBody('nansen');
+                                $em->persist($email);
+
+                                //nansen
+                                $email = new  Email();
+                                $email->setMudancas($mud);
+                                $email->setSendTo($person);
+                                $email->setSendBy($person);
+                                $email->setTitle('Aprovação automática da solicitação');
+                                $email->setBody('nansenAddBy');
+                                $em->persist($email);
+
+                                //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                $email = new  Email();
+                                $email->setMudancas($mud);
+                                $email->setSendTo($mud->getAreaResp()->getManager());
+                                $email->setSendBy($person);
+                                $email->setTitle('ÁREA Resp gerente');
+                                $email->setBody('managerAreaResp');
+                                $em->persist($email);
+
+                                //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                foreach ($mud->getAreaImpact() as $key => $value) {
+                                    $email = new  Email();
+                                    $email->setMudancas($mud);
+                                    $email->setSendTo($value->getCoordinator());
+                                    $email->setSendBy($person);
+                                    $email->setTitle('ÁREA IMPACTADA');
+                                    $email->setBody('managerArea');
+                                    $em->persist($email);
+                                    //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                }
+                            }
+
+                            $em->flush();
+                        }
+                        $sec = $em->getRepository(Sector::class)->findBy(['manager' => $person]);
+                        foreach ($sec as $key => $value) {
+                            if ($value === $mud->getAreaResp()) {
+                                $mud->setApproved('approved');
+                                $manager = true;
+                            }
+                        }
+                        $em->persist($mud);
+                        /**
+                         * Send Email
+                         * -------------------------------------------------------
+                         **/
+                        $emails = $em->getRepository(Email::class)->findBy(['mudancas' => $mud]);
+                        $ems = [];
+                        foreach ($emails as $key => $value) {
+                            if ($value->getClient() == null) {
+                                $this->sendEmail($doctrine, $request, $value->getSendTo(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false);
+                            } else {
+                                $this->sendEmail($doctrine, $request, $value->getClient(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false, $value->getClient());
+                            }
+                        }
+                        /**
+                         * ------------------------------------------------------------
+                         **/
+                        $nansenName =  $form["nansenName"]->getData();
+                        if ($nansenName != "") {
+                            $mud->setApproved('approved');
+                            $process->setMudancas($mud);
+                            $process->setStatus('created');
+                            $em->persist($process);
+                            $em->flush();
+                            $areaImpact = $mud->getAreaImpact();
+                            $areaResp = $mud->getAreaResp();
+                            $theyAreTheSame = false;
+                            $mud->setManagerUserComment('Projeto Nansen');
+                            $mud->setManagerUserApp(1);
+                            foreach ($areaImpact as $key => $value) {
+                                if ($value == $areaResp) {
+                                    $theyAreTheSame = true;
+                                }
+                                $SectorProcess = new SectorProcess();
+                                $SectorProcess->setProcess($process);
+                                $SectorProcess->setSector($value);
+                                $SectorProcess->setPerson($value->getCoordinator());
+                                $em->persist($SectorProcess);
+                            }
+                            if ($theyAreTheSame == false) {
+                                $SectorProcess = new SectorProcess();
+                                $SectorProcess->setProcess($process);
+                                $SectorProcess->setSector($areaResp);
+                                $SectorProcess->setComment("validar pelo Código Nansen");
+                                $em->persist($SectorProcess);
+                            }
+                        } elseif ($mud->getAddBy() == $mud->getAddBy()->getFunction()->getManager()) {
+                            $mud->setManagerUserAdd($person->getFunction()->getManager());
+                            $process->setMudancas($mud);
+                            $process->setStatus('created');
+                            $em->persist($process);
+                            $em->flush();
+                            $areaImpact = $mud->getAreaImpact();
+                            $areaResp = $mud->getAreaResp();
+                            $mud->setManagerUserComment('como gerente de ' . $mud->getAddBy()->getFunction()->getName());
+                            $mud->setManagerUserApp(1);
+                            $theyAreTheSame = false;
+                            foreach ($areaImpact as $key => $value) {
+                                if ($value == $areaResp) {
+                                    $theyAreTheSame = true;
+                                }
+                                $SectorProcess = new SectorProcess();
+                                $SectorProcess->setProcess($process);
+                                $SectorProcess->setSector($value);
+                                $SectorProcess->setPerson($value->getCoordinator());
+                                $em->persist($SectorProcess);
+                            }
+
+                            $em->flush();
+                            if ($manager) {
+                                return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
+                            }
+                        } else {
+                            $mud->setManagerUserAdd($person->getFunction()->getManager());
+                            $process->setMudancas($mud);
+                            $process->setStatus('created');
+                            $em->persist($process);
+                            $em->flush();
+                            $areaImpact = $mud->getAreaImpact();
+                            $areaResp = $mud->getAreaResp();
+                            $theyAreTheSame = false;
+                            foreach ($areaImpact as $key => $value) {
+                                if ($value == $areaResp) {
+                                    $theyAreTheSame = true;
+                                }
+                                $SectorProcess = new SectorProcess();
+                                $SectorProcess->setProcess($process);
+                                $SectorProcess->setSector($value);
+                                $SectorProcess->setPerson($value->getCoordinator());
+                                $em->persist($SectorProcess);
+                            }
+                            $em->flush();
+                            if ($manager) {
+                                return $this->redirectToRoute('approve', ['id' => $mud->getId()]);
+                            }
+                        }
+                        $em->flush();
+                        return $this->redirectToRoute('app_mudancas');
+                    }
+                    return $this->render('mudancas/update.html.twig', [
+                        'controller_name' => 'Atualizar Mudancas',
+                        'login' => 'null',
+                        'creation' => 'true',
+                        'gestor' => false,
+                        'form' => $form->createView(),
+                        'person' => $person,
+                        'manager' => false
+                    ]);
+                } else {
+                    return $this->redirectToRoute('app_mudancas');
+                }
+            } else {
+                return $this->redirectToRoute('app_request');
+            }
+        } else {
+            return $this->redirectToRoute('log_employer');
+        }
+    }
+
 
     #[Route('/updateMudancas/{id}', name: 'upm')]
     public function update(ManagerRegistry $doctrine, Request $request, $id)
