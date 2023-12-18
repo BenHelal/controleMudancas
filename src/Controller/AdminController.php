@@ -614,7 +614,7 @@ class AdminController extends AbstractController
         $session = $session->checkSessionAdmin($request->getSession());
         if ($session == false) {
             $user = new Person();
-            $form = $this->createForm(LoginFormType::class, $user);
+            $form = $this->createForm(PersonType::class, $user);
             $form->handleRequest($request);
 
             $theme = new ThemeFn();
