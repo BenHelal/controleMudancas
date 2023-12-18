@@ -230,7 +230,17 @@
 <div
 	class="card">
 	<!-- Icons and links -->
-	{% set icons = [
+
+	{% set dev = false %}
+	{% for item in m.mudS.developers %}
+		{% if item == person %}
+			{% set dev = true %}
+		{% endif %}
+	{% endfor %}
+
+
+    {% if dev %}
+{% set icons = [
     {   
         'path': 'mudancas', 'image': asset('analysing.png'), 'text': 'Relatório de Mudanças', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
         'btn': 
@@ -247,7 +257,7 @@
         'btn': 
             [
                 {'name':'Priorização das mudanças', 'path':path('orderMudancas',{'id':m.id} )},
-                {'name':'Aprovação', 'path':''}
+              	{'name':'Change Request', 'path':path('app_software_gestor_changeRequest',{'id':m.id} )},
             ]
     },
     {
@@ -256,8 +266,8 @@
         'btn': 
             [
                 {'name':'Requisitos', 'path': path('app_software_sol_documentation',{'id':m.id} )},
-                {'name':'Testes', 'path':''},
-                {'name':'Implantação', 'path':''},
+                {'name':'Testes', 'path':path('app_software_solicitante_test',{'id':m.id} )},
+                {'name':'Implantação', 'path':path('app_software_solicitante_imp',{'id':m.id} )}
             ]
     },
     {
@@ -266,7 +276,7 @@
             [
                 {'name':'Requisitos', 'path':path('app_software_gestor_documentation',{'id':m.id} )},
                 {'name':'Fases', 'path':path('app_software_gestor_steps',{'id':m.id} )},
-                {'name':'Teste', 'path':path('app_software_gestor_test',{'id':m.id} )}
+                {'name':'Teste', 'path':path('app_software_gestor_test',{'id':m.id} )},
             ]
     },
     {
@@ -277,6 +287,52 @@
             ]
     },
 ]%}
+{% else %}
+
+
+{% set icons = [
+    {   
+        'path': 'mudancas', 'image': asset('analysing.png'), 'text': 'Relatório de Mudanças', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
+        'btn': 
+            [
+                {'name':'Fluxos de processo', 'path':path('flow',{'id':m.id} ) },
+                {'name':'Mudanças de informação', 'path':path('Softindex', {'id': m.id})}
+            ]
+    },
+    
+    {
+        'path': 'Solicitante_software', 'image': 'https://i.imgur.com/9nnc9Et.png', 
+        'text': 'Gerente de Aprovação', 'progress': 2, 
+        'desc': 'Gerente Ti "Priorização de mudanças" e "Aprovação da exigência de mudança".', 
+        'btn': 
+            [
+                {'name':'Priorização das mudanças', 'path':path('orderMudancas',{'id':m.id} )},
+              	{'name':'Change Request', 'path':path('app_software_gestor_changeRequest',{'id':m.id} )},
+            
+            ]
+    },
+    {
+        'path': 'test_solicitante_software', 'image': asset('approve.png'), 
+        'text': 'Solicitante', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
+        'btn': 
+            [
+                {'name':'Requisitos', 'path': path('app_software_sol_documentation',{'id':m.id} )},
+                {'name':'Testes', 'path':path('app_software_solicitante_test',{'id':m.id} )},
+                {'name':'Implantação', 'path':path('app_software_solicitante_imp',{'id':m.id} )}
+            ]
+    },
+    {
+        'path': 'Gestor', 'image': asset('testing.png'), 'text': 'Gestor da Mudança', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
+        'btn': 
+            [
+                {'name':'Requisitos', 'path':path('app_software_gestor_documentation',{'id':m.id} )},
+                {'name':'Fases', 'path':path('app_software_gestor_steps',{'id':m.id} )},
+                {'name':'Teste', 'path':path('app_software_gestor_test',{'id':m.id} )},
+          ]
+    },
+]%}
+{% endif %}
+
 
 
 	<!-- Add class 'active' to progress -->

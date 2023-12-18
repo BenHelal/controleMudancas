@@ -493,6 +493,83 @@ próximas etapas desta mudança.<br>
 							<a href="http://{{ip}}/controleMudancas/public/mudancas/software/Dev/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
 							</a>
 						</p>
+					{% elseif demand == 'StepsTodeveloper' %}
+						<h1 class="text-center">
+							Olá
+							{{ sendTo.name }},
+							<br>
+						</h1>
+							Há uma nova notificação para você
+						<br>
+						Mudança:
+							{{mud.id }}
+							{{mud.nomeMudanca}}<br>
+							Fase: Gestor adiciona novas etapas para desenvolver 
+						<br>
+						
+						Por gentileza acessar, verifique e defina a Tarefa para esta mudança.
+						<p class="block text-center">
+							<a href="http://{{ip}}/controleMudancas/public/mudancas/software/Dev/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							</a>
+						</p>
+					{% elseif demand == 'AddArquivos' %}
+						<h1 class="text-center">
+							Olá
+							{{ sendTo.name }},
+							<br>
+						</h1>
+							Há uma nova notificação para você
+						<br>
+						Mudança:
+							{{mud.id }}
+							{{mud.nomeMudanca}}<br>
+							Fase: Gestor adiciona novas Arquivos
+						<br>
+						
+						Por gentileza acessar, verifique e defina a Tarefa para esta mudança.
+						<p class="block text-center">
+							<a href="http://{{ip}}/controleMudancas/public/software/solicitante/approve/documentation/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							</a>
+						</p>
+					{% elseif demand == 'AppArquivos' %}
+						<h1 class="text-center">
+							Olá
+							{{ sendTo.name }},
+							<br>
+						</h1>
+							Há uma nova notificação para você
+						<br>
+						Mudança:
+							{{mud.id }}
+							{{mud.nomeMudanca}}<br>
+							Fase: Solicitante, aprovar arquivos
+						<br>
+						
+						Por gentileza acessar, verifique e defina a Tarefa para esta mudança.
+						<p class="block text-center">
+							<a href="http://{{ip}}/controleMudancas/public/software/gestor/documentation/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							</a>
+						</p>
+
+					{% elseif demand == 'RepArquivos' %}
+						<h1 class="text-center">
+							Olá
+							{{ sendTo.name }},
+							<br>
+						</h1>
+							Há uma nova notificação para você
+						<br>
+						Mudança:
+							{{mud.id }}
+							{{mud.nomeMudanca}}<br>
+							Fase: Solicitante, Reprovar arquivos
+						<br>
+						
+						Por gentileza acessar, verifique e defina a Tarefa para esta mudança.
+						<p class="block text-center">
+							<a href="http://{{ip}}/controleMudancas/public/software/gestor/documentation/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							</a>
+						</p>
 
 					{% elseif demand == 'testTi' %}
 						<h1 class="text-center">

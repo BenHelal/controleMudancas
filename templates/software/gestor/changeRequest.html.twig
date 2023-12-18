@@ -7,7 +7,7 @@
 
 
     <div class="row" id="arq">
-<form action="{{path('app_software_gestor_test_approve',{'id':m.id} )}}" style="width: 100% " enctype="multipart/form-data" method="post">
+<form action="{{path('app_software_gestor_changeRequest_approve',{'id':m.id} )}}" style="width: 100% " enctype="multipart/form-data" method="post">
 		{% if step is null %}
 			{% else %}
 				{% for s in step %}
@@ -36,7 +36,6 @@
 									<option selected value="">Selecione a opção</option>
 									<option value="Aprovar">Aprovar</option>
 									<option value="Reprovar">Reprovar</option>
-									<option value="Pedido de mudança">Pedido de mudança</option>
 							</select>
 						</div>
 						{% if s.doc != null %}
