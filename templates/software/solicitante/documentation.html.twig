@@ -91,13 +91,30 @@
 									
 									{% if s.docTest != null %}
 										<div class="col-md-3 mb-3">
-											<label>Anexo</label><br>
+											<label>Anexo Teste</label><br>
       										<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
 															  						border: none;
 															  						background-color: #0c2c01;
 															  						padding: 10px 20px;
 															  						border-radius: 10px;
 															  						color: #fff;
+															  						cursor: pointer;
+															  						transition: background .2s ease-in-out;">
+												⇬ Baixar arquivos teste
+											</a>
+										</div>
+									{% endif %}
+									
+									{% if s.docClient != null %}
+										<div class="col-md-3 mb-3">
+											<label>Anexo Cliente</label><br>
+      										<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
+															  						border: none;
+															  						background-color: #0c2c01;
+															  						padding: 10px 20px;
+															  						border-radius: 10px;
+															  						color: #fff;
+																					width: 100%
 															  						cursor: pointer;
 															  						transition: background .2s ease-in-out;">
 												⇬ Baixar arquivos teste
@@ -112,7 +129,7 @@
 					{% endfor %}
 						<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
 				</div>
-				<form action="{{path('app_software_sol_approve_documentation',{'id':m.id} )}}" style="width: 100% " enctype="multipart/form-data" method="post">
+				<form action="{{path('app_software_sol_approve_documentation',{'id':m.id} )}}" id="formm" style="width: 100% " enctype="multipart/form-data" method="post">
 					
 					{% set empty = "true" %}
 					{% for s in sd %}
@@ -128,49 +145,132 @@
 									<label for="{{s.id}}desc">Comentário</label>
 									<input id="{{s.id}}desc" class="form-control" name="{{s.id}}desc" value="{{s.comment}}" type="text" readonly/>
 								</div>
-								<div id="div2" class="col-md-4 mb-3">
+								<div id="div2" class="col-md-6 mb-3">
 									<label for="{{s.id}}date">Data de Levantamento</label><br>
 									<input id="{{s.id}}date" name="{{s.id}}date" value="{{s.date|date('d-m-Y')}}" style="width: 100%" type="text" readonly/>
 								</div>
 
 
-								<div id="div6" class="col-md-2 mb-3">
-									<label for="{{s.id}}file">Aprovação</label>
-									<select id="{{s.id}}stat" name="{{s.id}}stat" class="form-control" value="{{s.approveSol}}">
-										{% if s.approveSol == 'Aprovar' %}
-											<option value="">Selecione a opção</option>
-											<option selected value="Aprovar">Aprovar</option>
-											<option value="Reprovar">Reprovar</option>
-										{% elseif s.approveSol == 'Reprovar' %}
-											<option value="">Selecione a opção</option>
-											<option value="Aprovar">Aprovar</option>
-											<option selected value="Reprovar">Reprovar</option>
-										{% else %}
-											<option selected value="">Selecione a opção</option>
-											<option value="Aprovar">Aprovar</option>
-											<option value="Reprovar">Reprovar</option>
-										{% endif %}
-									</select>
-								</div>
-								<div id="div4" class="col-md-6 mb-3">
-									<label for="{{s.id}}file">Anexo</label>
-									<input id="{{s.id}}file" name="{{s.id}}file" value="{{s.doc}}" style="width: 100%" type="text" readonly/>
-								</div>
-								<div id="div5" class="col-md-6 mb-3">
-									<label for="{{s.id}}files">Anexo</label>
-									<input id="{{s.id}}files" name="{{s.id}}files" value="{{s.docTest}}" style="width: 100%" type="text" readonly/>
-								</div>
+
+						{% if s.doc != null %}
+							<div class="col-md-6 mb-3">
+								<label>Anexo</label><br>
+															<ul>
+    {% for file in files %}
+        <li><a href="{{ asset('assets/') }}{{m.id}}/documentation/{{file}}" >
+									    ⇬ Baixar {{file}} 
+								  </a></li>
+    {% endfor %}
+</ul>
+      							<a href="{{path('download_zip',{'id':m.id} )}}" style="
+												  						border: none;
+												  						background-color: #0c2c01;
+												  						padding: 10px 20px;
+												  						border-radius: 10px;
+												  						color: #fff;
+												  						cursor: pointer;
+												  						transition: background .2s ease-in-out;">
+									⇬ Baixar arquivos 
+								</a>
+							</div>
+						{% endif %}
+
+						{% if s.docTest != null %}
+							<div class="col-md-6 mb-3">
+								<label>Anexo Teste</label><br>
+      							<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
+												  						border: none;
+												  						background-color: #0c2c01;
+												  						padding: 10px 20px;
+												  						border-radius: 10px;
+												  						color: #fff;
+																		width: 100%
+												  						cursor: pointer;
+												  						transition: background .2s ease-in-out;">
+									⇬ Baixar arquivos teste
+								</a>
+							</div>
+						{% endif %}
+
+
+							<div id="div6" class="col-md-6 mb-3">
+								<label for="{{s.id}}file">Aprovação</label>
+								<select id="{{s.id}}stat" name="{{s.id}}stat" class="form-control" style="width:100% ;    height: 30%;"  value="{{s.approveSol}}">
+									{% if s.approveSol == 'Aprovar' %}
+										<option value="">Selecione a opção</option>
+										<option selected value="Aprovar">Aprovar</option>
+										<option value="Reprovar">Reprovar</option>
+									{% elseif s.approveSol == 'Reprovar' %}
+										<option value="">Selecione a opção</option>
+										<option value="Aprovar">Aprovar</option>
+										<option selected value="Reprovar">Reprovar</option>
+									{% else %}
+										<option selected value="">Selecione a opção</option>
+										<option value="Aprovar">Aprovar</option>
+										<option value="Reprovar">Reprovar</option>
+									{% endif %}
+								</select>
+							</div>
+							<div id="1div5" class="col-md-6 mb-3" bis_skin_checked="1"><label for="1files">Anexo Solicitante</label><input id="1files" name="1files" type="file" style="width:100%"></div>
 							</div>
 						<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
+
+						<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Flag to track whether validation has been performed
+    var validationPerformed = false;
+
+    // Function to show/hide div based on selected option
+    function toggleFileInputVisibility() {
+      var selectedOption = document.getElementById("{{s.id}}stat").value;
+      var fileInputDiv = document.getElementById("1div5");
+
+      if (selectedOption === "Reprovar") {
+        fileInputDiv.style.display = "block";
+      } else {
+        fileInputDiv.style.display = "none";
+        // Clear the file input when not needed
+        document.getElementById("1files").value = "";
+      }
+    }
+
+    // Attach the function to the change event of the dropdown
+    document.getElementById("{{s.id}}stat").addEventListener("change", toggleFileInputVisibility);
+
+    function validateForm(event) {
+      if (validationPerformed) {
+        return; // Validation already performed, exit the function
+      }
+
+      var selectedOption = document.getElementById("{{s.id}}stat").value;
+      var fileInputValue = document.getElementById("1files").value;
+
+      console.log("Selected Option:", selectedOption);
+      console.log("File Input Value:", fileInputValue);
+
+      if (selectedOption === "Reprovar" && fileInputValue === "") {
+        alert("Por favor, faça o upload do arquivo ao reprovar a solicitação.");
+        event.preventDefault(); // Prevent form submission
+      }
+
+      // Set the flag to true to indicate that validation has been performed
+      validationPerformed = true;
+
+      // Add any additional conditions if needed
+    }
+
+    // Attach the validation function to the form submission
+    document.getElementById("formm").addEventListener("submit", validateForm);
+  });
+</script>
 						{% endif %}
 						<!-- Add a horizontal line as a separator -->
-
-					{% endfor %}
-					{% if empty == "true" %}
-					<div class="col-md-12 mb-3">
+						{% else %}
+	<div class="col-md-12 mb-3">
 						Nenhum Arquivo disponível
 					</div>
-						{% else %}
+					{% endfor %}
+					{% if empty != "true" and m.addBy == person  %}
 
 					<div class="col-md-12 mb-3">
 						<input id="btnSubsq" style="
@@ -194,7 +294,8 @@
 		{% endif %}
 	</div>
 
-	<script>
+	<script>      var fileInputDiv = document.getElementById("1div5");
+ 		fileInputDiv.style.display = "none";
 		var x = document.getElementById("arq");
 		x.style.display = "none";
 

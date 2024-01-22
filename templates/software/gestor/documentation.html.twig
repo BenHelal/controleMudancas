@@ -30,6 +30,8 @@
 	{{ include('flowBoard.html.twig') }}
 
 	{% if muds.iniciar is null %}
+	{% if m.mangerMudancas == person %}
+		
 		<div
 			class="custom-card">
 			<!-- Your card content goes here -->
@@ -51,12 +53,14 @@
 
 			{{ form_end(formInit) }}
 		</div>
+		{% else %}
+		Ainda não começou
+	{% endif %}
 	{% endif %}
 
 	<div class="row">
 	
 	{% set yourVariable = "false" %}
-
 		{% if sd is null %}
 			{% else %}
 				{% for s in sd %}
@@ -91,8 +95,15 @@
 						</div>
 						{% if s.doc != null %}
 							<div class="col-md-3 mb-3">
-								<label>Anexo</label><br>
-      							<a href="{{ asset('assets/') }}{{m.id}}/{{s.doc}}" style="
+								<label>Arquivos</label><br>
+								<ul>
+    {% for file in files %}
+        <li><a href="{{ asset('assets/') }}{{m.id}}/documentation/{{file}}" >
+									    ⇬ Baixar {{file}} 
+								  </a></li>
+    {% endfor %}
+</ul>
+      							<a href="{{path('download_zip',{'id':m.id} )}}" style="
 												  						border: none;
 												  						background-color: #0c2c01;
 												  						padding: 10px 20px;
@@ -107,7 +118,7 @@
 
 						{% if s.docTest != null %}
 							<div class="col-md-3 mb-3">
-								<label>Anexo Teste</label><br>
+								<label>Arquivos Teste</label><br>
       							<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
 												  						border: none;
 												  						background-color: #0c2c01;
@@ -117,6 +128,23 @@
 												  						cursor: pointer;
 												  						transition: background .2s ease-in-out;">
 									⇬ Baixar arquivos teste
+								</a>
+							</div>
+						{% endif %}
+						
+						{% if s.docClient != null %}
+							<div class="col-md-3 mb-3">
+								<label>Arquivos Cliente</label><br>
+      							<a href="{{ asset('assets/') }}{{m.id}}/{{s.docClient}}" style="
+												  						border: none;
+												  						background-color: #0c2c01;
+												  						padding: 10px 20px;
+												  						border-radius: 10px;
+												  						color: #fff;
+																		width: 100%
+												  						cursor: pointer;
+												  						transition: background .2s ease-in-out;">
+									⇬ Baixar arquivos Cliente
 								</a>
 							</div>
 						{% endif %}
@@ -148,7 +176,9 @@
 	</form>
 
 	{% if yourVariable == "false"  and muds.iniciar != null %}
-	<div class="col-md-3 mb-3">
+	{% set doc = '0' %}
+	{% if m.mangerMudancas  == person %}
+	<div id ="btnnnnn"class="col-md-3 mb-3">
 		<a class="btn" style="
 											min-width: 86px;
 											height: 32px;
@@ -166,6 +196,7 @@
 											border: none;" onclick="myFunction()">+ Adicionar Arquivos</a>
 	</div>
 		
+	{% endif %}
 	{% endif %}
 	<script type="text/babel">
 		const dropContainer = document.getElementById("dropcontainer")
@@ -192,7 +223,6 @@
 
 	</script>
 	<script>
-
 		$(document).ready(function () {
 $('#mudancas_software_devs_developers').chosen({});
 $('#mudancas_software_testers_testers').chosen({});
@@ -217,6 +247,7 @@ document.getElementById("btnSubsq").style.display = 'none';
 function myFunction() {
 i++;
 
+	{% set doc = '1' %}
 const test = document.createElement("div");
 test.setAttribute('id', i + 'test');
 test.setAttribute('class', 'row col-md-12 mb-3 d-flex justify-content-between');
@@ -230,7 +261,7 @@ document.getElementById(i + 'test').appendChild(div);
 
 const label = document.createElement('label');
 label.setAttribute('for', i);
-label.innerHTML = "Fase";
+label.innerHTML = "Requisitos";
 document.getElementById(i + 'div').appendChild(label);
 // 'class':'form-control'
 const node = document.createElement("input");
@@ -292,9 +323,10 @@ document.getElementById(i + 'div4').appendChild(label4);
 
 const node4 = document.createElement("input");
 node4.setAttribute('id', i + 'file');
-node4.setAttribute('name', i + 'file');
+node4.setAttribute('name', i + 'file[]');
 node4.setAttribute('type', 'file');
 node4.setAttribute('style', 'width:100%');
+node4.setAttribute('multiple', 'multiple');
 document.getElementById(i + 'div4').appendChild(node4);
 
 const div5 = document.createElement("div");
@@ -317,7 +349,8 @@ document.getElementById(i + 'div5').appendChild(node5);
 if (i === 1) {
 document.getElementById("btnSubsq").style.display = 'inline';
 }
-
+var addButtonElement = document.getElementById('btnnnnn');
+            addButtonElement.style.display = 'none';
 }
 	</script>
 

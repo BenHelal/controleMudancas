@@ -1166,6 +1166,14 @@ class MudancasController extends AbstractController
             if ($mud == null) {
                 return $this->redirectToRoute('app_mudancas');
             } else {
+
+                if($mud->getMangerMudancas() != null){
+                    
+                if($mud->getMudS()!= null){
+                    return $this->redirectToRoute('Softindex', ['id' => $mud->getId()]);
+                }
+            }
+
                 /**
                  * get the Process with mudancas 
                  * to can get The Sector 

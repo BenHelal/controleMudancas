@@ -40,13 +40,36 @@ class Steps
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $doc = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $docClient = null;
+
     
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $docGestor = null;
+
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $docTest = null;
 
     #[ORM\ManyToOne(inversedBy: 'steps')]
     private ?StepsGestor $ariquivo = null;
 
+
+
+
+
+    /******************Document Add by developer *************************/
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $startdevdate = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $enddevdatet = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $screendevend = null;
+
+
+    /***  */
     public function getStatus(): ?string
     {
         return $this->status;
@@ -55,6 +78,30 @@ class Steps
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getDocClient(): ?string
+    {
+        return $this->docClient;
+    }
+
+    public function setDocClient(string $docClient): self
+    {
+        $this->docClient = $docClient;
+
+        return $this;
+    }
+
+    public function getDocGestor(): ?string
+    {
+        return $this->docGestor;
+    }
+
+    public function setDocGestor(string $docGestor): self
+    {
+        $this->docGestor = $docGestor;
 
         return $this;
     }
@@ -170,6 +217,42 @@ class Steps
     public function setAriquivo(?StepsGestor $ariquivo): static
     {
         $this->ariquivo = $ariquivo;
+
+        return $this;
+    }
+
+    public function getStartdevdate(): ?string
+    {
+        return $this->startdevdate;
+    }
+
+    public function setStartdevdate(?string $startdevdate): static
+    {
+        $this->startdevdate = $startdevdate;
+
+        return $this;
+    }
+
+    public function getEnddevdatet(): ?string
+    {
+        return $this->enddevdatet;
+    }
+
+    public function setEnddevdatet(?string $enddevdatet): static
+    {
+        $this->enddevdatet = $enddevdatet;
+
+        return $this;
+    }
+
+    public function getScreendevend(): ?string
+    {
+        return $this->screendevend;
+    }
+
+    public function setScreendevend(?string $screendevend): static
+    {
+        $this->screendevend = $screendevend;
 
         return $this;
     }

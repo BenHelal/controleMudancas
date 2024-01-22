@@ -60,7 +60,6 @@ class MudancasSoftwareController extends AbstractController
 
             $mudSoft = $mud->getMudS();
 
-            if (($mud->getAddBy() == $person & $mudSoft->getRef() != null) || $mud->getAddBy() != $person) {
                 # code...
                 $form = $this->createForm(MudancasType::class, $mud);
                 $form->handleRequest($request);
@@ -77,9 +76,7 @@ class MudancasSoftwareController extends AbstractController
                     'muds' => $mudSoft,
                     'person' => $person,
                 ]);
-            } else {
-                return $this->redirectToRoute('Softindex', ['id' => $mud->getId()]);
-            }
+            
         } else {
             return $this->redirectToRoute('log_employer');
         }
@@ -142,7 +139,7 @@ class MudancasSoftwareController extends AbstractController
             $mud = $em->getRepository(Mudancas::class)->find($id);
 
             $mudSoft = $mud->getMudS();
-            $mudSoft->setGestor($mud->getMangerMudancas());
+           $mudSoft->setGestor($mud->getMangerMudancas());
             if (($mud->getAddBy() == $person & $mudSoft->getRef() != null) || $mud->getAddBy() != $person) {
                 # code...
                 return $this->redirectToRoute('Softindex', ['id' => $mud->getId()]);

@@ -25,19 +25,11 @@
                             <label for="{{s.id}}date">Data de criação</label><br>
 	                    		<input id="{{s.id}}date" name="{{s.id}}date" value="{{s.dateCreation|date('d-m-Y')}}"  class="form-control" style="width: 100%" type="text" readonly/>
                         </div>
-                        <div id="div3" class="col-md-9 mb-3">
+                        <div id="div3" class="col-md-12 mb-3">
                             <label for="{{s.id}}desc">Comentário</label>
 	                    		<input id="{{s.id}}desc" class="form-control" name="{{s.id}}desc" value="{{s.comments}}" type="text" readonly/>
                         </div>
-
-						<div id="div6" class="col-md-3 mb-3">
-							<label for="{{s.id}}file">Aprovação</label>
-							<select id="{{s.id}}stat" name="{{s.id}}stat" class="form-control" >
-									<option selected value="">Selecione a opção</option>
-									<option value="Aprovar">Aprovar</option>
-									<option value="Reprovar">Reprovar</option>
-							</select>
-						</div>
+            {% if m.addBy == person %}
 						{% if s.doc != null %}
 							<div class="col-md-6 mb-3">
 								<label>Anexo</label><br>
@@ -55,7 +47,7 @@
 						{% endif %}
 
 						{% if s.docTest != null %}
-							<div class="col-md-6 mb-3">
+							<div class="col-md-3 mb-3">
 								<label>Anexo Teste</label><br>
       							<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
 												  						border: none;
@@ -69,11 +61,67 @@
 								</a>
 							</div>
 						{% endif %}
+
+						
+						{% if s.docClient != null %}
+							<div class="col-md-3 mb-3">
+								<label>O último anexo que Gestor adicionou :</label><br>
+      							<a href="{{ asset('assets/') }}{{m.id}}/{{s.docGestor}}" style="
+												  						border: none;
+												  						background-color: #0c2c01;
+												  						padding: 10px 20px;
+												  						border-radius: 10px;
+												  						color: #fff;
+																		width: 100%
+												  						cursor: pointer;
+												  						transition: background .2s ease-in-out;">
+									⇬ Baixar arquivos que Gestor adicionou
+								</a>
+							</div>
+						{% endif %}
+						{% endif %}
+
+						{% if s.docGestor != null %}
+							<div class="col-md-3 mb-3">
+								<label>O último anexo que você adicionou :</label><br>
+      							<a href="{{ asset('assets/') }}{{m.id}}/{{s.docGestor}}" style="
+												  						border: none;
+												  						background-color: #0c2c01;
+												  						padding: 10px 20px;
+												  						border-radius: 10px;
+												  						color: #fff;
+																		width: 100%
+												  						cursor: pointer;
+												  						transition: background .2s ease-in-out;">
+									⇬ Baixar arquivos que você adicionou
+								</a>
+							</div>
+						{% endif %}
+
+						
+
+						<div id="div6" class="col-md-12 mb-3">
+							<label for="{{s.id}}file">Aprovação</label>
+							<select id="{{s.id}}stat" name="{{s.id}}stat" class="form-control" >
+									<option selected value="">Selecione a opção</option>
+									<option value="Aprovar">Aprovar</option>
+									<option value="Reprovar">Reprovar</option>
+							</select>
+						</div>
+						
+							<div id="1div5" class="col-md-6 mb-3" bis_skin_checked="1">
+								<label for="{{s.id}}files">Anexo Cliente</label>
+								<input id="{{s.id}}files" name="{{s.id}}files" type="file" style="width:100%"></div>
+							</div>
                     </div>
 						<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
+						{% else %}
+						
+					NÃO há dados disponíveis
 				{% endfor %}
 		{% endif %}
         
+            {% if m.addBy == person %}
 					<div class="col-md-12 mb-3">
 						<input id="btnSubsq" style="
 																			min-width: 86px;
@@ -91,6 +139,7 @@
 																			padding: 0 5px;
 																			border: none;" type="submit" value="Atualizar"/>
 					</div>
+					{% endif %}
 				</form>
 	</div>
 {% endblock %}

@@ -7,196 +7,381 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
 	<style>
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-    }
+		body {
+			font-family: 'Arial', sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f4f4f4;
+		}
 
-    .kanban-board {
-      display: flex;
-      overflow-x: auto;
-      padding: 20px;
-    }
+		.kanban-board {
+			display: flex;
+			overflow-x: auto;
+			padding: 20px;
+		}
 
-    .column {
-      background-color: #fff;
-      border-radius: 5px;
-      padding-bottom: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+		.column {
+			background-color: #fff;
+			border-radius: 5px;
+			padding-bottom: 10px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
 
-    .column-header {
-      background-color: #545f5d;
-      color: #fff;
-      padding: 10px;
-      text-align: center;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-    }
+		.column-header {
+			background-color: #545f5d;
+			color: #fff;
+			padding: 10px;
+			text-align: center;
+			border-top-left-radius: 5px;
+			border-top-right-radius: 5px;
+		}
 
-    .task-list {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-    }
+		.task-list {
+			list-style-type: none;
+			padding: 0;
+			margin: 0;
+		}
 
-    .task {
-      background-color: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      padding: 10px;
-      margin: 10px;
-      cursor: pointer;
-    }
+		.task {
+			background-color: #f9f9f9;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			padding: 10px;
+			margin: 10px;
+			cursor: pointer;
+		}
 
-    .task:hover {
-      background-color: #e6e6e6;
-    }
-    .task-list {
-      min-height: 100px;
-    }
+		.task:hover {
+			background-color: #e6e6e6;
+		}
+		.task-list {
+			min-height: 100px;
+		}
 
-    .task-list::before {
-      content: "Arraste e solte tarefas aqui";
-      display: block;
-      text-align: center;
-      color: #888;
-      padding: 10px;
-    }
-  </style>
+		.task-list::before {
+			content: "Arraste e solte tarefas aqui";
+			display: block;
+			text-align: center;
+			color: #888;
+			padding: 10px;
+		}
+	</style>
 
 	{{ include('flowBoard.html.twig') }}
- 
+
 </head>
 <body>
+	<div class="kanban-board row col-md-12 mb-3  justify-content-between">
+		<p>N.B: se o teste estiver sem captura de tela você não poderá passar para o teste TI</p>
+		<a  href="{{path('DiagramGantt',{'id':m.id} )}}" >diagrama Gantt</a>
+	<div class="kanban-board row col-md-12 mb-3  justify-content-between">
+		<div class="column col-md-3 mb-3">
+			<div class="column-header">Pendência</div>
+			<ul class="task-list" id="todo-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+				{% for s in step %}
+					{% if  s.status != 'pedido de mudança' and s.status != 'teste usario' and s.status != 'change request man'  and s.status != 'change request' and s.status != 'teste ti' and s.status != 'aguardando implantação' and s.status != 'em andamento' and s.status != 'implantado' %}
+						<li class="task" id="{{s.id}}" data-toggle="modal" data-target="#Contato{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}}</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
 
-<div class="kanban-board row col-md-12 mb-3  justify-content-between">
-    <div class="column col-md-3 mb-3">
-        <div class="column-header">Pendência</div>
-        <ul class="task-list" id="todo-list" ondrop="drop(event)" ondragover="allowDrop(event)">
-            {% for s in step %}
-                {% if  s.status != 'pedido de mudança' and s.status != 'teste usario' and s.status != 'change request man'  and s.status != 'change request' and s.status != 'teste ti' and s.status != 'feito' and s.status != 'em andamento' and s.status != 'fechar' %}
-                    <li class="task" id="{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}}</li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
+		<div class="column col-md-3 mb-3">
+			<div class="column-header">Em andamento</div>
 
-  <div class="column col-md-3 mb-3">
-    <div class="column-header">Em andamento</div>
-    
-    <ul class="task-list" id="done-list" ondrop="drop(event)" ondragover="allowDrop(event)"> 
-    {% for s in step %}
-               
-                {% if s.status == 'em andamento'  %}
-                    <a class="w3-btn w3-white w3-border w3-round-large" data-toggle="modal" data-target="#Contato" id="{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">
-                      <li class="task" >{{s.title}}</li>
-                    </a>
-                {% endif %}
-            {% endfor %}
-        </ul>
-  </div>
+			<ul class="task-list" id="done-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+				{% for s in step %}
+					{% if s.status == 'em andamento'  %}
+						<a class="w3-btn w3-white w3-border w3-round-large" data-toggle="modal" data-target="#Contato{{s.id}}" id="{{s.id}}" data-status="todo" {% if s.screendevend != null  %}  draggable="true" ondragstart="drag(event)" {% endif %}>
+							<li class="task">{{s.title}}</li>
+						</a>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
 
-  <div class="column col-md-3 mb-3">
-    <div class="column-header">Teste TI</div>
-    <ul class="task-list" id="done-list" ondrop="drop(event)" ondragover="allowDrop(event)">
-    
-         {% for s in step %}
-                {% if s.status == 'teste ti'  %}
-                    <li class="task" id="{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}}</li>
-                {% endif %}
-            {% endfor %}
-    </ul>
-  </div>
+		<div class="column col-md-3 mb-3">
+			<div class="column-header">Teste TI</div>
+			<ul class="task-list" id="done-list" ondrop="drop(event)" ondragover="allowDrop(event)">
 
-
-
-  <div class="column col-md-3 mb-3">
-    <div class="column-header">Teste usario</div>
-    <ul class="task-list" id="done-list" >
-    
-         {% for s in step %}
-                {% if s.status == 'teste usario'  %}
-                    <li class="task" id="{{s.id}}" data-status="todo" >{{s.title}}</li>
-                {% endif %}
-            {% endfor %}
-    </ul>
-  </div>
-
-  <div class="column col-md-6 mb-3">
-    <div class="column-header">Feito</div>
-    <ul class="task-list" id="done-list">
-    
-    
-         {% for s in step %}
-                {% if s.status == 'feito'  %}
-                    <li class="task" id="{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}} </li>
-                {% endif %}
-            {% endfor %}
-    </ul>
-  </div>
-
-  <div style="width : 100%" class="column  col-md-6 mb-3 ">
-    <div style="width : 100%" class="column-header">Fechar</div>
-    <ul style="width : 100%" class="task-list" id="done-lists">
-        
-         {% for s in step %}
-                {% if s.status == 'fechar'  %}
-                    <li class="task" id="{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}}</li>
-                {% endif %}
-            {% endfor %}
-    </ul>
-  </div>
-</div>
+				{% for s in step %}
+					{% if s.status == 'teste ti'  %}
+						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo" draggable="true"  ondragstart="drag(event)" >{{s.title}}</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
 
 
+		<div class="column col-md-3 mb-3">
+			<div class="column-header">Teste usario</div>
+			<ul class="task-list" id="done-list">
 
-    <script>
-        function allowDrop(ev) {
-            ev.preventDefault();
-        }
+				{% for s in step %}
+					{% if s.status == 'teste usario'  %}
+						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
 
-        function drag(ev) {
-            ev.dataTransfer.setData("text", ev.target.id);
-        }
+		<div class="column col-md-6 mb-3">
+			<div class="column-header">Aguardando implantação</div>
+			<ul class="task-list" id="done-list">
 
-        function drop(ev) {
-            ev.preventDefault();
-            var data = ev.dataTransfer.getData("text");
-            var draggedElement = document.getElementById(data);
 
-            // Find the target column by looking at the parent element of the drop target
-            var targetColumn = ev.target.closest('.column');
+				{% for s in step %}
+					{% if s.status == 'aguardando implantação'  %}
+						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
 
-            // Append the dragged element to the task list of the target column
-            targetColumn.querySelector('.task-list').appendChild(draggedElement);
+		<div style="width : 100%" class="column  col-md-6 mb-3 ">
+			<div style="width : 100%" class="column-header">Implantado</div>
+			<ul style="width : 100%" class="task-list" id="done-lists">
 
-            // Get the status of the new column
-            var newStatus = targetColumn.querySelector('.column-header').innerText.toLowerCase();
+				{% for s in step %}
+					{% if s.status == 'implantado'  %}
+						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
 
-            // Get the task ID
-            var taskId = draggedElement.id;
 
-            // Perform AJAX update
-            updateTaskStatus(taskId, newStatus);
-        }
+	{% for s in step %}
+		<form action="{{path('upadatTask',{'id':s.id, 'idm': m.id} )}}" style="width: 100% " enctype="multipart/form-data" method="post">
+			<div class="modal fade" id="Contato{{s.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h2>Número da fase:
+								{{s.id}}</h2>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<ul style="width: 100%;">
+									<li style="width: 100%;">
 
-        function updateTaskStatus(taskId, newStatus) {
-            // Perform AJAX request to update task status
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', "{{ path('update_task_status') }}", true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log('Task status updated successfully');
-                }
-            };
-            xhr.send('taskId=' + taskId + '&newStatus=' + newStatus);
-        }
-    </script>
+										<h5>Titulo :</h5>
+										<h5>
+											<input value="{{s.title}}" class="form-control" style="width: 100%" type="text" readonly="">
+										</h5>
+									</li>
+									<li style="width: 100%;">
+										<h5>Arquivos :</h5>
 
-</body>
+										<ul>
+											{% for file in files %}
+												<li>
+													<a href="{{ asset('assets/') }}{{m.id}}/documentation/{{file}}">
+														⇬ Baixar
+														{{file}}
+													</a>
+												</li>
+											{% endfor %}
+										</ul>
+										<br>
+										<br>
+										<a href="{{path('download_zip',{'id':m.id} )}}" style="
+																																																												  						border: none;
+																																																												  						background-color: #0c2c01;
+																																																												  						padding: 10px 20px;
+																																																												  						border-radius: 10px;
+																																																												  						color: #fff;
+																																																												  						cursor: pointer;
+																																																												  						transition: background .2s ease-in-out;">
+											⇬ Baixar arquivos
+										</a>
+										<br>
+									</li>
+									<br>
+									<li style="width: 100%;">
 
-{% endblock %}
+										<h5>Data de criação :</h5>
+										<h5>
+											<input value="{{s.dateCreation}}" class="form-control" style="width: 100%" type="text" readonly="">
+										</h5>
+									</li>
+									<li style="width: 100%;">
+										<h5>Comentário :</h5>
+										<h5>
+											<input class="form-control" value="{{s.comments}} " type="text" readonly="">
+										</h5>
+									</li>
+
+
+									{% if s.doc != null %}
+										<li style="width: 100%;">
+											<h5>Anexo :</h5><br>
+											<a href="{{ asset('assets/') }}{{m.id}}/{{s.doc}}" style="
+																																																																  						border: none;
+																																																																  						background-color: #0c2c01;
+																																																																  						padding: 10px 20px;
+																																																																  						border-radius: 10px;
+																																																																  						color: #fff;
+																																																																  						cursor: pointer;
+																																																																  						transition: background .2s ease-in-out;">
+												⇬ Baixar arquivos
+											</a>
+										</li>
+									{% endif %}<br>
+
+									{% if s.docTest != null %}
+										<li style="width: 100%;">
+											<h5>Anexo Teste :</h5><br>
+											<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
+																																																																  						border: none;
+																																																																  						background-color: #0c2c01;
+																																																																  						padding: 10px 20px;
+																																																																  						border-radius: 10px;
+																																																																  						color: #fff;
+																																																																  						cursor: pointer;
+																																																																  						transition: background .2s ease-in-out;">
+												⇬ Baixar arquivos
+											</a>
+										</li>
+									{% endif %}
+									<br>
+									{% if s.docClient != null %}
+										<li style="width: 100%;">
+											<h5>O último anexo que Cliente adicionou :</h5><br>
+											<a href="{{ asset('assets/') }}{{m.id}}/{{s.docClient}}" style="
+																																																																  						border: none;
+																																																																  						background-color: #0c2c01;
+																																																																  						padding: 10px 20px;
+																																																																  						border-radius: 10px;
+																																																																  						color: #fff;
+																																																																  						cursor: pointer;
+																																																																  						transition: background .2s ease-in-out;">
+												⇬ Baixar arquivos que Cliente adicionou
+											</a>
+										</li>
+									{% endif %}<br>
+									{% if s.docGestor != null %}
+										<li style="width: 100%;">
+											<h5>O último anexo que Gestor adicionou :</h5><br>
+											<a href="{{ asset('assets/') }}{{m.id}}/{{s.docGestor}}" style="
+																																																																  						border: none;
+																																																																  						background-color: #0c2c01;
+																																																																  						padding: 10px 20px;
+																																																																  						border-radius: 10px;
+																																																																  						color: #fff;
+																																																																						width: 100%
+																																																																  						cursor: pointer;
+																																																																  						transition: background .2s ease-in-out;">
+												⇬ Baixar arquivos que Gestor adicionou
+											</a>
+										</li>
+									{% endif %}
+
+								</ul>
+
+
+								<li style="width: 100%;">
+									<label for="{{s.id}}date">Data de início do desenvolvimento</label><br>
+									<input id="{{s.id}}InitDate" name="{{s.id}}InitDate" value="{{s.startdevdate|date('d-m-Y')}}" class="date form-control" style="width: 100%" type="text"/>
+								</li>
+
+
+								<li style="width: 100%;">
+									<label for="{{s.id}}date">Data final do desenvolvimento</label><br>
+									<input id="{{s.id}}EndDate" name="{{s.id}}EndDate" value="{{s.enddevdatet|date('d-m-Y')}}" class="date form-control" style="width: 100%" type="text"/>
+								</li>
+
+								<li style="width: 100%;">
+									<label for="1files">Anexo Desenvolvidor</label>
+									{% if s.screendevend != null  %}
+										<br>
+										<a href="{{ asset('assets/') }}{{m.id}}/dev/{{s.id}}/{{s.screendevend}}" style="
+																																																												  						border: none;
+																																																												  						background-color: #0c2c01;
+																																																												  						padding: 10px 20px;
+																																																												  						border-radius: 10px;
+																																																												  						color: #fff;
+																																																												  						cursor: pointer;
+																																																												  						transition: background .2s ease-in-out;">
+											⇬ Baixar arquivos
+										</a>
+										<br>
+										<br>
+										<br>
+									{% endif %}	
+									
+									{% if person in muds.developers and s.status != 'pedido de mudança' and s.status != 'pendência'   and s.status == 'em andamento' %}
+										<input id="1files" style="width: 100%" name="1files" type="file" style="width:100%">
+									{% endif %}
+								</li>
+
+							</div>
+
+							<div class="modal-footer">
+								{% if person in muds.developers and s.status != 'pedido de mudança' and s.status != 'pendência'   and s.status == 'em andamento' %}
+									<button type="Submit" class="btn btn-info mt-2 text-white btn-secondary">Enviar</button>
+								{% endif %}
+								<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	{% endfor %}
+
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+	<script>
+
+		$(".date").datepicker({format: "dd-mm-yyyy", language: "pt-BR", zIndexOffset: 999999});
+function allowDrop(ev) {
+ev.preventDefault();
+}
+{% if person in m.muds.developers %}
+	
+function drag(ev) {
+ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+ev.preventDefault();
+var data = ev.dataTransfer.getData("text");
+var draggedElement = document.getElementById(data);
+
+// Find the target column by looking at the parent element of the drop target
+var targetColumn = ev.target.closest('.column');
+
+// Append the dragged element to the task list of the target column
+targetColumn.querySelector('.task-list').appendChild(draggedElement);
+
+// Get the status of the new column
+var newStatus = targetColumn.querySelector('.column-header').innerText.toLowerCase();
+
+// Get the task ID
+var taskId = draggedElement.id;
+
+// Perform AJAX update
+updateTaskStatus(taskId, newStatus);
+}
+
+function updateTaskStatus(taskId, newStatus) { // Perform AJAX request to update task status
+var xhr = new XMLHttpRequest();
+xhr.open('POST', "{{ path('update_task_status') }}", true);
+xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+xhr.onreadystatechange = function () {
+if (xhr.readyState === 4 && xhr.status === 200) {
+console.log('Task status updated successfully');
+}
+};
+xhr.send('taskId=' + taskId + '&newStatus=' + newStatus);
+}
+{% endif %}
+	</script>
+</body>{% endblock %}

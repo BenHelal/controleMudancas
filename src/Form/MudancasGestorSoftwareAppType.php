@@ -17,19 +17,6 @@ class MudancasGestorSoftwareAppType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('priorityGestor',null,[
-                'label'    => 'Posição na fila de prioridades',
-            ])
-            ->add('iniciar', ChoiceType::class, [
-                'choices'  => [
-                    'Sim' => 1,
-                    'Nao' => 2,
-                ],
-                'label'    => 'Iniciar',
-            ])
-            ->add('dateInicio',null,[
-                'label'    => 'Data de início',
-            ])
             ->add('appGestor', ChoiceType::class, [
                 'choices'  => [
                     'Sim' => 1,

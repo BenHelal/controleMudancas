@@ -10,16 +10,22 @@ use App\Entity\Person;
 use App\Entity\Steps;
 use App\Entity\StepsGestor;
 use App\Form\GestorSoftware\iniciarType;
+use App\Form\MudancasgestorImpType;
+use App\Form\MudancasGestorSoftwareAppType;
 use App\Form\MudancasSoftwareDevsType;
 use App\Model\Class\IpAdress;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
+use ZipArchive;
 
 class GestorController extends AbstractController
 {
@@ -73,9 +79,24 @@ class GestorController extends AbstractController
                 $em->persist($mud);
                 $em->flush();
             }
-
             //steps Gestor 
-            $SD =  $muds->getStepsGestor();
+            $SD =  $muds->getStepsGestor(); 
+            
+            if($SD != null){
+                $publicDirectory = $this->getParameter('kernel.project_dir');
+                $excelFilepath2 =  $publicDirectory . '/public/assets/' . $mud->getId().'/documentation';
+                try {
+                    //code...
+                $files = scandir($excelFilepath2);
+                $files = array_diff($files, ['.', '..']);
+                } catch (\Throwable $th) {
+                    //throw $th;
+                $files="";
+                }
+
+            }else{
+                $files="";
+            }
             return $this->render('software/gestor/documentation.html.twig', [
                 'login' => 'null',
                 'person' => $person,
@@ -84,6 +105,7 @@ class GestorController extends AbstractController
                 'formInit' => $formInit,
                 'controller_name' => 'GestorController',
                 'sd' => $SD,
+                'files' => $files,
             ]);
         } else {
             return $this->redirectToRoute('app_login');
@@ -129,9 +151,20 @@ class GestorController extends AbstractController
 
             // Repeated logic for handling both 'file' and 'files'
             $fileKey = strval($i) . 'file';
-            if ($request->files->get($fileKey) !== null) {
-                $this->handleFileUpload($request, $steps, $mud, $fileKey);
-            }
+            //
+             /*foreach ($_FILES[strval($fileKey)]['name']) as $key => $value) {
+                # code...
+            }*/
+            if ($request->files->get($fileKey) !== null) {  
+                foreach ($request->files->get($fileKey) as $key => $value) {
+                    $fileName = $value->getClientOriginalName();
+                    $publicDirectory = $this->getParameter('kernel.project_dir');
+                    $excelFilepath = $publicDirectory . '/public/assets/' . $mud->getId().'/documentation';
+                    $value->move($excelFilepath, $fileName); 
+                    
+                    $steps->setDoc('documentation');    
+                }
+            } 
     
             $filesKey = strval($i) . 'files';
             if ($request->files->get($filesKey) !== null) {
@@ -157,6 +190,57 @@ class GestorController extends AbstractController
     
         return $this->redirectToRoute('app_software_gestor_documentation', ['id' => $id]);
     }
+
+    /**
+     * @Route("/download-zip/{id}", name="download_zip")
+     */
+    public function downloadZipAction($id)
+    {
+        $publicDirectory = $this->getParameter('kernel.project_dir');                    
+        $excelFilepath = $publicDirectory . '/public/assets/' . $id.'/documentation';
+        $zipFilename = $publicDirectory . '/public/assets/' . $id.'/documentation.zip';
+                    
+
+        $this->zipFolder($excelFilepath, $zipFilename);
+
+        $response = new BinaryFileResponse($zipFilename);
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'folder.zip'
+        );
+
+        return $response;
+    }
+
+    
+    private function zipFolder(string $sourceFolder, string $zipFilename)
+{
+    $filesystem = new Filesystem();
+    $filesystem->mkdir(dirname($zipFilename));
+
+    $zip = new ZipArchive();
+    $zip->open($zipFilename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+    $iterator = new \RecursiveIteratorIterator(
+        new \RecursiveDirectoryIterator($sourceFolder),
+        \RecursiveIteratorIterator::SELF_FIRST
+    );
+
+    foreach ($iterator as $item) {
+        $filePath = $item->getRealPath();
+        $relativePath = substr($filePath, strlen($sourceFolder) + 1);
+
+        if ($item->isDir()) {
+            $zip->addEmptyDir($relativePath);
+        } else {
+            $zip->addFile($filePath, $relativePath);
+        }
+    }
+
+    $zip->close();
+}
+
 
     private function handleFileUpload(Request $request, $steps, Mudancas $mud, $fileKey)
     {
@@ -272,6 +356,15 @@ class GestorController extends AbstractController
             $data = $request->request;
             for ($i = 1; $i <= sizeof($data)/4 ; $i++) {
                 foreach ($s as $key => $value) {
+                    if ($request->files->get(strval( $value->getId()).'files') != null) {
+                        $fileName = $value->getId() . '_TEST_Gestor_' . $muds->getId() . '.' . $request->files->get(strval( $value->getId()).'files')->guessExtension();
+                        $publicDirectory = $this->getParameter('kernel.project_dir');
+                        $excelFilepath =  $publicDirectory . '/public/assets/' . $mud->getId();
+                        $request->files->get(strval( $value->getId()).'files')->move($excelFilepath, $fileName);
+                        $value->setDocGestor($fileName);
+
+                      
+                    }
                     if($data->get($value->getId().'stat') == 'Aprovar' ){
                         $value->setStatus("teste usario");
                         $em->flush();
@@ -349,7 +442,65 @@ class GestorController extends AbstractController
                 }
                 return $this->redirectToRoute('app_software_gestor_steps', ['id' => $id]);
             }
+
+            $imp = true;
+            foreach ($s as $key => $value) {
+                if($value->getStatus() != 'implantado'){
+                    $imp=false;
+                }
+            }
+
+            $formApp = $this->createForm(MudancasGestorSoftwareAppType::class, $muds);
+            $formApp->handleRequest($request);
+            if ($formApp->isSubmitted() && $formApp->isValid()) {
+                $mud->setComGest($muds->getCommentGestor());
+                $mud->setAppGest($muds->getAppGestor());
+                
+                date_default_timezone_set("America/Sao_Paulo");
+                $time = new \DateTime();
+                $mud->setDateAG($time);
+                $em->flush();
+            }
             
+            $formImp = $this->createForm(MudancasgestorImpType::class, $mud);
+            $formImp->handleRequest($request);
+            if ($formImp->isSubmitted() && $formImp->isValid()) {
+                $desImp = $mud->getImpDesc();
+                $file2 = $mud->getPdf();
+                $filePDF = $mud->getPdf();
+                if ($file2 != null) {
+                    $pdfname = $file2->getClientOriginalName();
+                    $mud->setNamePdf($pdfname);
+                    $ex = strval($file2->guessExtension());
+                    date_default_timezone_set("America/Sao_Paulo");
+                    $time = new \DateTime();
+                    //$fileName2 = md5(uniqid()).'.'.$file2->guessExtension();
+                    $fileName2 = $mud->getId() . '.' . $ex;
+                    $publicDirectory = $this->getParameter('kernel.project_dir');
+                    $excelFilepath2 =  $publicDirectory . '/public/assets/' . $mud->getId();
+                    $file2->move($excelFilepath2, $fileName2);
+                    $mud->setPdf($fileName2);
+                }
+                $file = $mud->getPhoto();
+                if ($file != null) {
+                    date_default_timezone_set("America/Sao_Paulo");
+                    $time = new \DateTime();
+                    $fileName = $mud->getId() . '.' . $file->guessExtension();
+                    $publicDirectory = $this->getParameter('kernel.project_dir');
+                    $excelFilepath =  $publicDirectory . '/public/assets/' . $mud->getId();
+                    $file->move($excelFilepath, $fileName);
+                    $mud->setPhoto($fileName);
+                }
+
+                date_default_timezone_set("America/Sao_Paulo");
+                $time = new \DateTime();
+                $time->format('Y-m-d H:i:s');
+                $mud->setDateOfImp($time);
+
+                $em->flush();
+            }
+
+
             return $this->render('software/gestor/steps.html.twig', [
                 'login' => 'null',
                 'person' => $person,
@@ -358,6 +509,9 @@ class GestorController extends AbstractController
                 'controller_name' => 'GestorController',
                 'sd' => $sd,
                 'formDevs' => $formDevs,
+                'formApp' => $formApp,
+                'formImp' => $formImp,
+                'imp' => $imp,
                 'step' => $s,
             ]);
         } else {
@@ -444,7 +598,7 @@ class GestorController extends AbstractController
     /**
      * Renders the changeRequest TI page for the GestorController.
      *
-     * @Route("/software/gestor/changeRequest/{id}", name="app_software_gestor_changeRequest")
+     * @Route("/software/gerente/changeRequest/{id}", name="app_software_gestor_changeRequest")
      * @return Response
      */
     public function changeRequest(ManagerRegistry $doctrine, Request $request, $id): Response
@@ -497,9 +651,9 @@ class GestorController extends AbstractController
     }
 
     /**
-     * Renders the changeRequest TI page for the GestorController.
+     * Renders the changeRequest TI page for the Gerente .
      *
-     * @Route("/software/gestor/changeRequest/approve/{id}", name="app_software_gestor_changeRequest_approve")
+     * @Route("/software/gerente/changeRequest/approve/{id}", name="app_software_gestor_changeRequest_approve")
      * @return Response
      */
     public function changeRequestApprove(ManagerRegistry $doctrine, Request $request, $id): Response
@@ -520,7 +674,6 @@ class GestorController extends AbstractController
             $s = [];
             $SD =  $muds->getStepsGestor();
 
-
             $doc = null;
             foreach ($SD as $key => $value) {
                 # code...
@@ -528,7 +681,6 @@ class GestorController extends AbstractController
                     array_push($sd, $value);
                     $doc = $value;
                 }
-
             }
             
             foreach ($SD as $keys=> $val) {
@@ -536,7 +688,6 @@ class GestorController extends AbstractController
                     # code...
                     if($values->getStatus() == "pedido de mudança"){
                         array_push($s, $values);
-                        
                     }
                 }
             }
@@ -544,15 +695,13 @@ class GestorController extends AbstractController
             $data = $request->request;
             for ($i = 1; $i <= sizeof($data)/4 ; $i++) {
                 foreach ($s as $key => $value) {
-                    if($data->get($value->getId().'stat') == 'Aprovar' ){
-                        
+                    if($data->get($value->getId().'stat') == 'Aprovar' ){                        
                         foreach ($SD as $key => $values) {
                             # code...
                             if($values->getApproveSol() =='Aprovar'){
                                 $values->setApproveSol('Reprovar');
                                 $em->flush();
                             }
-            
                         }
                         $value->setStatus("fechar");
                         $em->flush();

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\ApiToken;
 use App\Entity\ConfigEmail;
 use App\Entity\Email;
 use App\Entity\Mudancas;

@@ -27,11 +27,14 @@ class StepsGestor
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $date = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $doc = null;
+
 
     
     #[ORM\Column(length: 255, nullable: true)]
+    private $doc;
+
+
+    
     private ?string $docTest = null;
 
 
@@ -41,6 +44,9 @@ class StepsGestor
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $approveSol = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $docClient = null;
 
     #[ORM\OneToMany(mappedBy: 'ariquivo', targetEntity: Steps::class)]
     private Collection $steps;
@@ -71,6 +77,21 @@ class StepsGestor
     public function setApproveSol(string $approveSol): self
     {
         $this->approveSol = $approveSol;
+
+        return $this;
+    }
+
+        // Constructor and other methods...
+
+
+    public function getDoc(): ?string
+    {
+        return $this->doc;
+    }
+
+    public function setDoc(string $doc)
+    {
+        $this->doc = $doc;
 
         return $this;
     }
@@ -128,14 +149,14 @@ class StepsGestor
         return $this;
     }
 
-    public function getDoc(): ?string
+    public function getDocClient(): ?string
     {
-        return $this->doc;
+        return $this->docClient;
     }
 
-    public function setDoc(string $doc): self
+    public function setDocClient(string $docClient): self
     {
-        $this->doc = $doc;
+        $this->docClient = $docClient;
 
         return $this;
     }

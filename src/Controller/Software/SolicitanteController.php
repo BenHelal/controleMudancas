@@ -40,7 +40,22 @@ class SolicitanteController extends AbstractController
             $muds = $mud->getMudS();
 
             //steps Gestor 
-            $SD =  $muds->getStepsGestor();
+            $SD =  $muds->getStepsGestor();  
+            if($SD != null){
+                $publicDirectory = $this->getParameter('kernel.project_dir');
+                $excelFilepath2 =  $publicDirectory . '/public/assets/' . $mud->getId().'/documentation';
+                try {
+                    //code...
+                $files = scandir($excelFilepath2);
+                $files = array_diff($files, ['.', '..']);
+                } catch (\Throwable $th) {
+                    //throw $th;
+                $files="";
+                }
+
+            }else{
+                $files="";
+            }
             return $this->render('software/solicitante/documentation.html.twig', [
                 'login' => 'null',
                 'person' => $person,
@@ -48,6 +63,7 @@ class SolicitanteController extends AbstractController
                 'muds' => $muds,
                 'controller_name' => 'GestorController',
                 'sd' => $SD,
+                'files' => $files
             ]);
         } else {
             return $this->redirectToRoute('app_login');
@@ -73,7 +89,6 @@ class SolicitanteController extends AbstractController
             $muds = $mud->getMudS();
             $data = $request->request;
             $SD =  $muds->getStepsGestor();
-       
             // You can loop through all the parameters in the InputBag:
             foreach ($data->all() as $key => $value) {
                 for ($i=0; $i < sizeof($SD); $i++) {
@@ -81,6 +96,14 @@ class SolicitanteController extends AbstractController
                         if(($value == 'Aprovar' || $value == 'Reprovar' )){
                             $sd = $em->getRepository(StepsGestor::class)->find($SD[$i]->getId());
                             $sd->setApproveSol($value);
+                                   // Repeated logic for handling both 'file' and 'files'
+                            if ($request->files->get('1files') != null) {
+                                    $fileName = $sd->getId() . '_' . $muds->getId() . '.' . $request->files->get('1files')->guessExtension();
+                                    $publicDirectory = $this->getParameter('kernel.project_dir');
+                                    $excelFilepath =  $publicDirectory . '/public/assets/' . $mud->getId();
+                                    $request->files->get('1files')->move($excelFilepath, $fileName);
+                                    $sd->setDocClient($fileName);
+                            }
                             $em->flush();
                             if ($value == 'Aprovar') {
                                 $email = new  Email();
@@ -91,7 +114,7 @@ class SolicitanteController extends AbstractController
                                 $email->setBody('AppArquivos');
                                 $em->persist($email);
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                        
+                                
                             }else{
                                 $email = new  Email();
                                 $email->setMudancas($mud);
@@ -102,7 +125,7 @@ class SolicitanteController extends AbstractController
                                 $em->persist($email);
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                         
-                            }
+                            }     
                             return $this->redirectToRoute('app_software_sol_documentation', ['id' => $id]);
                         }
                     }
@@ -112,6 +135,7 @@ class SolicitanteController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
     }
+
 
     public function sendEmail(ManagerRegistry $doctrine, Request $request, $sendTo, $mud, $per, $demand,  $gestor, $client = null)
     {
@@ -304,8 +328,16 @@ class SolicitanteController extends AbstractController
             $data = $request->request;
             for ($i = 1; $i <= sizeof($data)/4 ; $i++) {
                 foreach ($s as $key => $value) {
+                    
+                    if ($request->files->get(strval( $value->getId()).'files') != null) {
+                        $fileName = $value->getId() . '_TEST_Cliente_' . $muds->getId() . '.' . $request->files->get(strval( $value->getId()).'files')->guessExtension();
+                        $publicDirectory = $this->getParameter('kernel.project_dir');
+                        $excelFilepath =  $publicDirectory . '/public/assets/' . $mud->getId();
+                        $request->files->get(strval( $value->getId()).'files')->move($excelFilepath, $fileName);
+                        $value->setDocClient($fileName); 
+                    }
                     if($data->get($value->getId().'stat') == 'Aprovar' ){
-                        $value->setStatus("feito");
+                        $value->setStatus("aguardando implantação");
                         $em->flush();
                     }elseif($data->get($value->getId().'stat') == 'Reprovar'){
                         $value->setStatus("teste ti");
@@ -353,7 +385,7 @@ class SolicitanteController extends AbstractController
             foreach ($SD as $keys=> $val) {
                 foreach ($val->getSteps() as $keys=> $values) {
                     # code...
-                    if($values->getStatus() == "feito"){
+                    if($values->getStatus() == "aguardando implantação"){
                         array_push($s, $values);
                     }
                 }
@@ -411,7 +443,7 @@ class SolicitanteController extends AbstractController
             foreach ($SD as $keys=> $val) {
                 foreach ($val->getSteps() as $keys=> $values) {
                     # code...
-                    if($values->getStatus() == "feito"){
+                    if($values->getStatus() == "aguardando implantação"){
                         array_push($s, $values);
                     }
                 }
@@ -421,10 +453,10 @@ class SolicitanteController extends AbstractController
             for ($i = 1; $i <= sizeof($data)/4 ; $i++) {
                 foreach ($s as $key => $value) {
                     if($data->get($value->getId().'stat') == 'Aprovar' ){
-                        $value->setStatus("fechar");
+                        $value->setStatus("implantado");
                         $em->flush();
                     }elseif($data->get($value->getId().'stat') == 'Reprovar'){
-                        $value->setStatus("change request");
+                        $value->setStatus("pedido de mudança");
                         $em->flush();
                     }
                 }    

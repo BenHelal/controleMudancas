@@ -113,20 +113,20 @@
 			--active: 1;
 		}
 
-		 .chosen-container-multi .chosen-choices {
-    /*blah blah*/
-	    width: 400px;
-}
+		.chosen-container-multi .chosen-choices {
+			/*blah blah*/
+			width: 400px;
+		}
 
 
-.chosen-drop {
-    /* less specificity, this style might not work  */
-	    width: 400px;
-}
+		.chosen-drop {
+			/* less specificity, this style might not work  */
+			width: 400px;
+		}
 	</style>
 	{{ include('flowBoard.html.twig') }}
 
-		<main id='main'>
+	<main id='main'>
 		<nav id="nav" style="--count: 4;">
 			<ul id="ul">
 				<li id="li" style="--index: 1;">
@@ -156,14 +156,13 @@
 							Configurações</span>
 					</a>
 				</li>
-				
+
 				<li id="li" style="--index: 2;">
 					<a onclick="window.dialog.showModal();" id="a" target="_blank" rel="noreferrer noopener">
 						<span id="span">
 							<svg id="svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-								<path stroke-linecap="round" stroke-linejoin="round" 
-								d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 
-								0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+								<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0
+																0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
 							</svg>
 							Desenvolvedores
 						</span>
@@ -171,7 +170,7 @@
 				</li>
 			</ul>
 		</nav>
-		</main>
+	</main>
 	<dialog id="dialog">
 		<button onclick="window.dialog.close();" aria-label="close" class="x">X</button>
 		<br>
@@ -179,68 +178,68 @@
 		<br>
 		<h2>Lista de Desenvolvedores</h2>
 		{{ form_start(formDevs, { 'attr': {'class':'form-group', 'id':'test'}}) }}
-				<div class="row">
-					<div class="col-md-12 mb-3">
-						{{ form_label(formDevs.developers) }}
-						{{ form_widget(formDevs.developers,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
-					</div>
-				</div>
+		<div class="row">
+			<div class="col-md-12 mb-3">
+				{{ form_label(formDevs.developers) }}
+				{{ form_widget(formDevs.developers,{'attr':{'class':'form-control','rows': '4','id':'testnomeMudanca'}}) }}
+			</div>
+		</div>
+		{% if m.mangerMudancas == person %}
 
-				<button 
-					class="btn btn-info mt-2 text-white" 
-					style="background-color: #0c2c01;border-color: #0c2c01;">
-					Enviar
-				</button>
+			<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">
+				Enviar
+			</button>
+		{% endif %}
 
 		{{ form_end(formDevs) }}
 
 	</dialog>
-<h3>
-					Lista da fases:
-					<button style="
-										border: none;
-										background-color: green-light;
-										padding: 10px 20px;
-										border-radius: 10px;
-										color: #fff;
-										cursor: pointer;
-										transition: background .2s ease-in-out;" onclick="visArq()"><img style="width: 10px" src="{{ asset('visible.png') }}"/></button>
-				</h3>
+	<h3>
+		Lista da fases:
+		<button style="
+													border: none;
+													background-color: green-light;
+													padding: 10px 20px;
+													border-radius: 10px;
+													color: #fff;
+													cursor: pointer;
+													transition: background .2s ease-in-out;" onclick="visArq()"><img style="width: 10px" src="{{ asset('visible.png') }}"/></button>
+	</h3>
 	<div class="row" id="arq">
 
 		{% if step is null %}
 			{% else %}
 				{% for s in step %}
-                    <div id="{{s.id}}" class="row col-md-12 mb-3 d-flex justify-content-between">
-                        <div id="div" class="col-md-3 mb-3">
-                            <label for="1">Arquivos</label>
-                            <input class="form-control" id="{{s.id}}ariquivo" name="{{s.id}}ariquivo" value="{{s.ariquivo.step}}" type="text" readonly/>
-                        </div>
-                        <div id="div3" class="col-md-6 mb-3">
-                            <label for="{{s.id}}desc">Título</label>
-	                    		<input id="{{s.id}}title" class="form-control" name="{{s.id}}title" value="{{s.title}}" type="text" readonly/>
-                        </div>
-						
-                        <div id="div2" class="col-md-3 mb-3">
-                            <label for="{{s.id}}date">Data de criação</label><br>
-	                    		<input id="{{s.id}}date" name="{{s.id}}date" value="{{s.dateCreation|date('d-m-Y')}}" style="width: 100%" type="text" readonly/>
-                        </div>
-                        <div id="div3" class="col-md-12 mb-3">
-                            <label for="{{s.id}}desc">Comentário</label>
-	                    		<input id="{{s.id}}desc" class="form-control" name="{{s.id}}desc" value="{{s.comments}}" type="text" readonly/>
-                        </div>
+					<div id="{{s.id}}" class="row col-md-12 mb-3 d-flex justify-content-between">
+						<div id="div" class="col-md-3 mb-3">
+							<label for="1">Arquivos</label>
+							<input class="form-control" id="{{s.id}}ariquivo" name="{{s.id}}ariquivo" value="{{s.ariquivo.step}}" type="text" readonly/>
+						</div>
+						<div id="div3" class="col-md-6 mb-3">
+							<label for="{{s.id}}desc">Título</label>
+							<input id="{{s.id}}title" class="form-control" name="{{s.id}}title" value="{{s.title}}" type="text" readonly/>
+						</div>
+
+						<div id="div2" class="col-md-3 mb-3">
+							<label for="{{s.id}}date">Data de entrega do teste de TI</label><br>
+							<input id="{{s.id}}date" name="{{s.id}}date" value="{{s.dateCreation|date('d-m-Y')}}" style="width: 100%" type="text" readonly/>
+						</div>
+						<div id="div3" class="col-md-12 mb-3">
+							<label for="{{s.id}}desc">Comentário</label>
+							<input id="{{s.id}}desc" class="form-control" name="{{s.id}}desc" value="{{s.comments}}" type="text" readonly/>
+						</div>
 						{% if s.doc != null %}
 							<div class="col-md-6 mb-3">
 								<label>Anexo</label><br>
-      							<a href="{{ asset('assets/') }}{{m.id}}/{{s.doc}}" style="
-												  						border: none;
-												  						background-color: #0c2c01;
-												  						padding: 10px 20px;
-												  						border-radius: 10px;
-												  						color: #fff;
-												  						cursor: pointer;
-												  						transition: background .2s ease-in-out;">
-									⇬ Baixar arquivos 
+								<a href="{{ asset('assets/') }}{{m.id}}/{{s.doc}}" style="
+																						  						border: none;
+																						  						background-color: #0c2c01;
+																						  						padding: 10px 20px;
+																						  						border-radius: 10px;
+																						  						color: #fff;
+																						  						cursor: pointer;
+																						  						transition: background .2s ease-in-out;">
+									⇬ Baixar arquivos
 								</a>
 							</div>
 						{% endif %}
@@ -248,20 +247,20 @@
 						{% if s.docTest != null %}
 							<div class="col-md-6 mb-3">
 								<label>Anexo Teste</label><br>
-      							<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
-												  						border: none;
-												  						background-color: #0c2c01;
-												  						padding: 10px 20px;
-												  						border-radius: 10px;
-												  						color: #fff;
-												  						cursor: pointer;
-												  						transition: background .2s ease-in-out;">
+								<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
+																						  						border: none;
+																						  						background-color: #0c2c01;
+																						  						padding: 10px 20px;
+																						  						border-radius: 10px;
+																						  						color: #fff;
+																						  						cursor: pointer;
+																						  						transition: background .2s ease-in-out;">
 									⇬ Baixar arquivos teste
 								</a>
 							</div>
 						{% endif %}
-                    </div>
-						<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
+					</div>
+					<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
 				{% endfor %}
 		{% endif %}
 	</div>
@@ -270,70 +269,237 @@
 		<div class="row" name="test2" id="test2"></div>
 		<div class="col-md-12 mb-3">
 			<input id="btnSubsq" style="
-												min-width: 86px;
-												height: 32px;
-												display: -ms-flexbox;
-												display: flex;
-												-ms-flex-align: center;
-												align-items: center;
-												-ms-flex-pack: center;
-												justify-content: center;
-												background: #afbace;
-												color: #fff;
-												box-shadow: none;
-												border-radius: 4px;
-												padding: 0 5px;
-												border: none;" type="submit" value="Adicionar"/>
+																min-width: 86px;
+																height: 32px;
+																display: -ms-flexbox;
+																display: flex;
+																-ms-flex-align: center;
+																align-items: center;
+																-ms-flex-pack: center;
+																justify-content: center;
+																background: #afbace;
+																color: #fff;
+																box-shadow: none;
+																border-radius: 4px;
+																padding: 0 5px;
+																border: none;" type="submit" value="Adicionar"/>
 		</div>
 	</form>
 
-	{% if sd|length != 0 %}
+	{% if m.mangerMudancas  == person %}
+		
+		<div class="col-md-3 mb-3">
+			<a class="btn" style="
+				min-width: 86px;
+				height: 32px;
+				display: -ms-flexbox;
+				display: flex;
+				-ms-flex-align: center;
+				align-items: center;
+				-ms-flex-pack: center;
+				justify-content: center;
+				background: #afbace;
+				color: #fff;
+				box-shadow: none;
+				border-radius: 4px;
+				padding: 0 5px;
+				border: none;" onclick="myFunction()">+ Adicionar Fase</a>
+		</div>
 
-	<div class="col-md-3 mb-3">
-		<a class="btn" style="
-											min-width: 86px;
-											height: 32px;
-											display: -ms-flexbox;
-											display: flex;
-											-ms-flex-align: center;
-											align-items: center;
-											-ms-flex-pack: center;
-											justify-content: center;
-											background: #afbace;
-											color: #fff;
-											box-shadow: none;
-											border-radius: 4px;
-											padding: 0 5px;
-											border: none;" onclick="myFunction()">+ Adicionar Fase</a>
-	</div>
 	{% endif %}
-	<script type="text/babel">
-		const dropContainer = document.getElementById("dropcontainer")
-		const fileInput = document.getElementById("mudancas_gestor_software_docs")
-		
-		dropContainer.addEventListener("dragover", (e) => {
-		  // prevent default to allow drop
-		  e.preventDefault()
-		}, false)
-		
-		dropContainer.addEventListener("dragenter", () => {
-		  dropContainer.classList.add("drag-active")
-		})
-		
-		dropContainer.addEventListener("dragleave", () => {
-		  dropContainer.classList.remove("drag-active")
-		})
-		
-		dropContainer.addEventListener("drop", (e) => {
-		  e.preventDefault()
-		  dropContainer.classList.remove("drag-active")
-		  fileInput.files = e.dataTransfer.files
-		})
+{% if step|length != 0   and imp == true %}
+	
+	{{ form_start(formApp, {'attr':{'class':'form-group'}}) }}
+	<div class="row">
+		<div class="col-md-12 mb-3">
+			{{ form_label(formApp.appGestor) }}
+			{{ form_widget(formApp.appGestor,{'attr':{'class':'form-control'}}) }}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 mb-3">
+			{{ form_label(formApp.commentGestor) }}
+			{{ form_widget(formApp.commentGestor,{'attr':{'class':'form-control'}}) }}
+		</div>
+	</div>
 
-	</script>
-	<script>
+	{% if m.appGest == null  and imp == true %}
 
-		$(document).ready(function () {
+		{% if m.mangerMudancas == person %}
+			<input id="btnSubsq" style="
+																	min-width: 86px;
+																	height: 32px;
+																	display: -ms-flexbox;
+																	display: flex;
+																	-ms-flex-align: center;
+																	align-items: center;
+																	-ms-flex-pack: center;
+																	justify-content: center;
+																	background: #afbace;
+																	color: #fff;
+																	box-shadow: none;
+																	border-radius: 4px;
+																	padding: 0 5px;
+																	border: none;" type="submit" value="Approvar"/>
+		{% endif %}
+	{% endif %}
+	{{ form_end(formApp) }}
+
+
+{% endif %}
+	{% if m.implemented !=  null %}
+		{% if m.implemented == 1 or m.implemented == 2 and m.dateOfImp != null %}
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					<label for="mudancasgestor_to_app_effictiveStartDate">Data implementada</label>
+					<input type="text" class="form-control" value="{{m.dateOfImp}}">
+				</div>
+			</div>
+		{% endif %}
+		{% if m.implemented == 1 or m.implemented == 2  and m.impDesc != null %}
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					<label for="mudancasgestor_to_app_effictiveStartDate">Evidencia da implementação</label>
+					<textarea type="text" class="form-control">{{m.impDesc}}</textarea>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					<img class="center card-img-top" src="{{ asset('assets/')}}{{m.id}}/{{m.photo}}" alt="" style="padding-top: 15px; width : 500px">
+				</div>
+				{% if m.pdf != null %}
+					<div class="col-md-12 mb-3">
+						<a class="btn btn-info mt-2 text-white" href="{{path('filed',{'id':m.id} )}}">
+							⇬ Fazer download do arquivo
+							{{m.namePdf}}
+						</a>
+					</div>
+				{% endif %}
+			</div>
+		{% endif %}
+	{% else %}
+		{% if m.mangerMudancas == person and m.appGest != null   %}
+			<p class="btn btn-info mt-2 text-white" data-toggle="modal" data-target="#imp">Implementação</p>
+
+		{% endif %}
+
+		<div class="modal fade" id="imp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h2>Implementação</h2<buttontype="button"class="close"data-dismiss="modal"aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+
+				</div>
+				<div class="modal-body">
+					{{ form_start(formImp, {'attr':{'class':'form-group'}}) }}
+					<div class="row" style="margin-right: 12px; margin-left: 5px;">
+						<div class="col-md-12 mb-3">
+							{{ form_label(formImp.implemented) }}
+							{{ form_widget(formImp.implemented,{'attr':{'class':'form-control'}}) }}</div>
+						<div class="col-md-12 mb-3">
+							{{ form_label(formImp.impDesc) }}
+							{{ form_widget(formImp.impDesc,{'attr':{'class':'form-control'}}) }}
+						</div>
+						<div class="col-md-12 mb-3">
+							{{ form_label(formImp.photo) }}
+							{{ form_widget(formImp.photo,{'attr':{'class':'', 'rows': '4'}}) }}
+						</div>
+						<div class="col-md-12 mb-3">
+							{{ form_label(formImp.pdf) }}
+							{{ form_widget(formImp.pdf,{'attr':{'class':'', 'rows': '4'}}) }}
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
+
+							<input class="btn btn-info mt-2 text-white" value="Validar" type="submit"/>
+
+
+						</div>
+						{{ form_end(formImp) }}
+					</div>
+				</div>
+
+				<script>
+					const textarea = document.getElementById("textarea");
+const hiddenInput = document.getElementById("hiddenInput");
+const hiddenInput2 = document.getElementById("hiddenInput2");
+
+textarea.addEventListener("input", function () {
+hiddenInput.value = textarea.value;
+hiddenInput2.value = textarea.value;
+});
+				</script>
+
+			</div>
+		</div>
+	{% endif %}
+	{% if m.implemented != null %}
+		{% if m.implemented == 1 and  m.done == 'Feito' %}
+			<p class="btn btn-info mt-2 text-white">Mudança Implementada</p>
+			<p>
+			{% elseif  m.implemented == 2 and m.done == 'Feito' %}
+				<p class="btn btn-info mt-2 text-white" data-toggle="modal" data-target="#imp2">Mudança não implementada</p>
+				<p>
+					<div class="modal fade" id="imp2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<div class="row" style="margin-right: 12px; margin-left: 5px;">
+										<div class="col-md-12 mb-3">
+											<h6 class="mb-1">Número da mudança:
+												{{m.id}}
+											</h6>
+										</div>
+										<div class="col-md-12 mb-3">
+											<h6 class="mb-1">Nome da mudança:
+												{{m.nomeMudanca}}</h5>
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+						</div>
+						{% elseif m.implemented != 1 and  m.implemented != 2 and m.done != 'Feito' %}
+
+					{% endif %}
+
+				{% endif %}
+				<script type="text/babel">
+					const dropContainer = document.getElementById("dropcontainer")
+							const fileInput = document.getElementById("mudancas_gestor_software_docs")
+							
+							dropContainer.addEventListener("dragover", (e) => {
+							  // prevent default to allow drop
+							  e.preventDefault()
+							}, false)
+							
+							dropContainer.addEventListener("dragenter", () => {
+							  dropContainer.classList.add("drag-active")
+							})
+							
+							dropContainer.addEventListener("dragleave", () => {
+							  dropContainer.classList.remove("drag-active")
+							})
+							
+							dropContainer.addEventListener("drop", (e) => {
+							  e.preventDefault()
+							  dropContainer.classList.remove("drag-active")
+							  fileInput.files = e.dataTransfer.files
+							})
+
+				</script>
+				<script>
+
+					$(document).ready(function () {
 $('#mudancas_software_devs_developers').chosen({});
 $('#mudancas_software_testers_testers').chosen({});
 $('#mudancas_software_testers_ti_testersti').chosen({});
@@ -354,14 +520,13 @@ document.getElementById("btnSubsq").style.display = 'none';
 }
 
 function func2(id, id2) {
-    var e = document.getElementById(id);
-    var value = e.options[e.selectedIndex].value;
-    var text = e.options[e.selectedIndex].text;
-    {% for item in sd %}
-        if ("{{ item.id }}" === value) {
-        	document.getElementById(id2).value = "{{ item.id }}";
-        }
-    {% endfor %}
+var e = document.getElementById(id);
+var value = e.options[e.selectedIndex].value;
+var text = e.options[e.selectedIndex].text;{% for item in sd %}
+if ("{{ item.id }}" === value) {
+document.getElementById(id2).value = "{{ item.id }}";
+}
+{% endfor %}
 }
 
 
@@ -375,16 +540,11 @@ test.setAttribute('class', 'row col-md-12 mb-3 d-flex justify-content-between');
 document.getElementById('test2').appendChild(test);
 
 
-
-
-
 const selectArquivo = document.createElement("div");
 selectArquivo.setAttribute('id', i + 'selectArquivo');
 selectArquivo.setAttribute('class', 'form-control');
 selectArquivo.setAttribute('class', 'col-md-3 mb-3');
 document.getElementById(i + 'test').appendChild(selectArquivo);
-
-
 
 
 const labelselectArquivo = document.createElement('label');
@@ -397,18 +557,13 @@ select.setAttribute('id', i + 'a');
 select.setAttribute('onchange', 'func2("' + i + 'a","' + i + 'b")');
 select.setAttribute('name', i + 'a');
 select.setAttribute('class', 'form-control');
-document.getElementById(i + 'selectArquivo').appendChild(select);
-
-{% for items in sd %}
+document.getElementById(i + 'selectArquivo').appendChild(select);{% for items in sd %}
 
 var node4Op1 = document.createElement("option");
 node4Op1.setAttribute('selected', 'selected');
 node4Op1.setAttribute('value', "{{ items.id }}");
 node4Op1.innerHTML = "{{ items.step }}";
-document.getElementById(i + 'a').appendChild(node4Op1);
-
-{% endfor %}
-
+document.getElementById(i + 'a').appendChild(node4Op1);{% endfor %}
 
 
 const div = document.createElement("div");
@@ -434,7 +589,7 @@ document.getElementById(i + 'test').appendChild(div2);
 
 const label2 = document.createElement('label');
 label2.setAttribute('for', i + 'test');
-label2.innerHTML = "Data de criação";
+label2.innerHTML = "Data de entrega do teste de TI";
 document.getElementById(i + 'div2').appendChild(label2);
 
 const node2 = document.createElement("input");
@@ -504,27 +659,26 @@ document.getElementById("btnSubsq").style.display = 'inline';
 }
 
 }
-	</script>
+				</script>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
 
-	<script>
-		$(".date").datepicker({format: "dd-mm-yyyy", language: "pt-BR", zIndexOffset: 999999});
-	</script>
+				<script>
+					$(".date").datepicker({format: "dd-mm-yyyy", language: "pt-BR", zIndexOffset: 999999});
+				</script>
 
-    
 
-	<script>
-		var x = document.getElementById("arq");
-		x.style.display = "none";
+				<script>
+					var x = document.getElementById("arq");
+x.style.display = "none";
 
-		function visArq() {
-			if (x.style.display === "none") {
-				x.style.display = "block";
-			} else {
-				x.style.display = "none";
-			}
-		}
-	</script>
-{% endblock %}
+function visArq() {
+if (x.style.display === "none") {
+x.style.display = "block";
+} else {
+x.style.display = "none";
+}
+}
+				</script>
+			{% endblock %}

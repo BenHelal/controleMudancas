@@ -129,7 +129,53 @@ class CloseMudController extends AbstractController
                 $pe = $em->getRepository(Person::class)->find($ln[0]['person_id']);
             }
            // dd($cl['mud']['id']);
+            if($mud->getMudS()!= null){            $muds = $mud->getMudS();
 
+                //steps Gestor 
+                $sd = [];
+                $s = [];
+                $SD =  $muds->getStepsGestor();
+                
+    
+    
+                foreach ($SD as $key => $value) {
+                    # code...
+                    if($value->getApproveSol() =='Aprovar'){
+                        array_push($sd, $value);
+                    }
+    
+                }
+                foreach ($SD as $keys=> $val) {
+                    
+                    foreach ($val->getSteps() as $keys=> $values) {
+                        # code...
+                        array_push($s, $values);
+                    }
+                }
+
+                if($sd != null){
+                $publicDirectory = $this->getParameter('kernel.project_dir');
+                $excelFilepath2 =  $publicDirectory . '/public/assets/' . $mud->getId().'/documentation';
+    
+                $files = scandir($excelFilepath2);
+                $files = array_diff($files, ['.', '..']);
+
+            }else{
+                $files="";
+            }
+                return $this->render('close_mud/index.html.twig', [
+                    'controller_name' => 'CloseMudController',
+                    'login' => 'false',
+                    'person' => $person,
+                    'mud' => $mud,
+                    'p' => $pe,
+                    'client' => $cl,
+                    'data' => $ln,
+                    'files' => $files,
+                    'step' => $s,
+                    'data2' => $ln2
+                ]);
+            }
             return $this->render('close_mud/index.html.twig', [
                 'controller_name' => 'CloseMudController',
                 'login' => 'false',
