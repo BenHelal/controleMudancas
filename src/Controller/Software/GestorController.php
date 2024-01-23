@@ -445,7 +445,7 @@ class GestorController extends AbstractController
 
             $imp = true;
             foreach ($s as $key => $value) {
-                if($value->getStatus() != 'implantado'){
+                if($value->getStatus() != 'implantado' && $value->getStatus()  != 'reprovado'){
                     $imp=false;
                 }
             }
@@ -706,7 +706,7 @@ class GestorController extends AbstractController
                         $value->setStatus("fechar");
                         $em->flush();
                     }elseif($data->get($value->getId().'stat') == 'Reprovar'){
-                        $value->setStatus("em andamento");
+                        $value->setStatus("reprovado");
                         $em->flush();
                     }
                 }    

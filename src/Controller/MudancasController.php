@@ -202,7 +202,19 @@ class MudancasController extends AbstractController
                     }
                 }
             }
-            
+            $array2 = [];
+            foreach ($array as $key => $value) {
+                $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
+                $oneOfSp = null;
+                $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+                
+                foreach ($sps as $sp) {
+                    if($sp->getAppSectorMan() == null && $sp->getPerson() == $person ){
+                        array_push($array2, $value);
+                    }
+                }
+            }
+
             if ($req->getApproves() == 'yes') {
                 if ($manager != true && $gestor == false) {
                    return $this->render('mudancas/index.html.twig', [
@@ -238,6 +250,7 @@ class MudancasController extends AbstractController
                         'size' => $size,
                         'gestor' => false,
                         'ln' => $array,
+                        'ln2' => $array2,
                         'person' => $person
                     ]);
                 }

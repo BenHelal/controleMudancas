@@ -44,6 +44,8 @@
   {% set sortedItems = m|sort((a, b) => a.orderNumber <=> b.orderNumber) %}
 
 {% for item in sortedItems %}
+        {% if item.implemented == null %}
+    
         <li class="draggable" data-id="{{ item.id }}">
             <span>Codigo da mudança: {{ item.id }} <br>
                 Nome da mudança: {{ item.nomeMudanca }}<br>
@@ -58,6 +60,9 @@
             </select>
             {% endif %}
         </li>
+        {% else %}
+        
+        {% endif %}
     {% endfor %}
 </ul>
 

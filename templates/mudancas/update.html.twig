@@ -640,23 +640,23 @@
                															 'data-placeholder':'Escolha o setor.....', 'rows': '12'}}) }}
 							</div>
 						</div>	
-	{% if 'soft' in  app.request.uri  %}
-			
-			<div class="row" id="selectAreaResp" style="display: none;">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.areaResp) }}
-					{{ form_widget(form.areaResp,{'attr':{'class':'form-control','readonly':'readonly','id':'test' ,'rows': '12'}}) }}
-				</div>
-			</div>
-		{% else %}
-		
-			<div class="row" id="selectAreaResp">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.areaResp) }}
-					{{ form_widget(form.areaResp,{'attr':{'class':'form-control','readonly':'readonly','id':'test' ,'rows': '12'}}) }}
-				</div>
-			</div>
-	{% endif %}
+						{% if 'soft' in  app.request.uri  %}
+								
+								<div class="row" id="selectAreaResp" style="display: none;">
+									<div class="col-md-12 mb-3">
+										{{ form_label(form.areaResp) }}
+										{{ form_widget(form.areaResp,{'attr':{'class':'form-control','readonly':'readonly','id':'test' ,'rows': '12'}}) }}
+									</div>
+								</div>
+							{% else %}
+							
+								<div class="row" id="selectAreaResp">
+									<div class="col-md-12 mb-3">
+										{{ form_label(form.areaResp) }}
+										{{ form_widget(form.areaResp,{'attr':{'class':'form-control','readonly':'readonly','id':'test' ,'rows': '12'}}) }}
+									</div>
+								</div>
+						{% endif %}
 						<div class="row">
 							<div class="col-md-12 mb-3">
 								<div class="form-check">

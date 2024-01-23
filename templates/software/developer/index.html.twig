@@ -79,7 +79,7 @@
 			<div class="column-header">Pendência</div>
 			<ul class="task-list" id="todo-list" ondrop="drop(event)" ondragover="allowDrop(event)">
 				{% for s in step %}
-					{% if  s.status != 'pedido de mudança' and s.status != 'teste usario' and s.status != 'change request man'  and s.status != 'change request' and s.status != 'teste ti' and s.status != 'aguardando implantação' and s.status != 'em andamento' and s.status != 'implantado' %}
+					{% if  s.status != 'reprovado' and  s.status != 'pedido de mudança' and s.status != 'teste usario' and s.status != 'change request man'  and s.status != 'change request' and s.status != 'teste ti' and s.status != 'aguardando implantação' and s.status != 'em andamento' and s.status != 'implantado' %}
 						<li class="task" id="{{s.id}}" data-toggle="modal" data-target="#Contato{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}}</li>
 					{% endif %}
 				{% endfor %}
@@ -152,6 +152,19 @@
 		</div>
 	</div>
 
+		<div class="column col-md-6 mb-3">
+			<div class="column-header">Reprovado</div>
+			<ul class="task-list" id="done-list">
+
+
+				{% for s in step %}
+					{% if s.status == 'reprovado'  %}
+						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
 
 	{% for s in step %}
 		<form action="{{path('upadatTask',{'id':s.id, 'idm': m.id} )}}" style="width: 100% " enctype="multipart/form-data" method="post">

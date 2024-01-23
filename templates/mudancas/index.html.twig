@@ -124,10 +124,10 @@
 							<span class="badge badge-secondary badge-pill"></span>
 						</h4>
 						<ul class="list-group mb-3 sticky-top">
-							{% if ln == null %}
+							{% if ln2 == null %}
 								você não tem Pendências
 							{% else %}
-								{% for row in ln %}
+								{% for row in ln2 %}
 									{% if row.done != 'Feito'%}
 										{% set foo = false %}
 											{% for item in row.areaImpact %}
