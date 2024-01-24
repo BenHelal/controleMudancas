@@ -199,6 +199,20 @@ class MudancasController extends AbstractController
                 }
             }
             
+            $array2 = [];
+            foreach ($array as $key => $value) {
+                $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
+                $oneOfSp = null;
+                $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+                
+                foreach ($sps as $sp) {
+                    if($sp->getAppSectorMan() == null && $sp->getPerson() == $person ){
+                        array_push($array2, $value);
+                    }
+                }
+            }
+
+
             if ($req->getApproves() == 'yes') {
                 if ($manager != true && $gestor == false) {
                    return $this->render('mudancas/index.html.twig', [
@@ -234,6 +248,7 @@ class MudancasController extends AbstractController
                         'size' => $size,
                         'gestor' => false,
                         'ln' => $array,
+                        'ln2' => $array2,
                         'person' => $person
                     ]);
                 }
@@ -371,19 +386,7 @@ class MudancasController extends AbstractController
                     if ($mud->getAddBy()->getFunction()->getManager()->getId() != $person->getId()) {
                         return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
                     } else {
-                        /*foreach ($mud->getAreaImpact() as $key => $value) {
-                           if($mud->getManagerUserAdd() != $person){
-                            $notManager = false;
-                           }elseif($value->getManager() == $person){
-                                $notManager = false;
-                            }
-                        }
-                        if($notManager == false){
-                            return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
-                        }
-                        if ($mud->getManagerUserComment() != null) {
-                            return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
-                        } else {*/
+                        
                         $area = [];
                         foreach ($mud->getAreaImpact() as $key => $value) {
                             if ($value->getCoordinator() == $person & $value->getManager() == $person ) {
@@ -524,16 +527,6 @@ class MudancasController extends AbstractController
                                 $em->persist($email);
                                 $em->flush();
                                 
-                                /*
-                                $email = new  Email();
-                                $email->setMudancas($mud);
-                                $email->setSendTo($mud->getAddBy());
-                                $email->setSendBy($person);
-                                $email->setTitle('Aprovação gerente do solicitante');
-                                $email->setBody('manager1APP');
-                                $em->persist($email);
-                                $em->flush();*/
-                                //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                                 $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($mud->getAreaResp()->getManager());
