@@ -906,23 +906,27 @@ class AdminController extends AbstractController
             
             if ($form->isSubmitted() && $form->isValid()) {
 
-                if($oldCoordinator != $sector->getCoordinator()){
+                if($oldCoordinator != $sector->getCoordinator() ){
                     $SectorProcess = $em->getRepository(SectorProcess::class)->findBy(['person' => $oldCoordinator]);
                     foreach ($SectorProcess as $key => $value) {
+                        if($value->getSector()->getId() == $id){
+                            
                         $value->setPerson($sector->getCoordinator()); 
                         $em->persist($value);
                         $em->flush();
                     }
                 }
-
+                }
                 
                 if($oldManager != $sector->getManager()){
                     $SectorProcess = $em->getRepository(SectorProcess::class)->findBy(['person' => $oldManager]);
                     foreach ($SectorProcess as $key => $value) {
+                        if($value->getSector()->getId() == $id){
                         $value->setPerson($sector->getManager());
                         $em->persist($value);
                         $em->flush();
                     }
+                }
                 }
 
                 $em->persist($sector);
