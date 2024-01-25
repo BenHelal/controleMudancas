@@ -91,25 +91,7 @@ class LoginController extends AbstractController
                 }
             }
 
-            /**
-             * Check Sector
-             * 
-             */
-            $sectors = file_get_contents('sector.json');
-            $sectors = json_decode($sectors);
-            foreach ($sectors as $key => $sector) {
-                $sec = $entityManager->getRepository(Sector::class)->findOneBy(['name' => $sector[0]]);
-                if ($sec == null) {
-                    $sec = new Sector();
-                    $manager =  $entityManager->getRepository(Person::class)->findOneBy(['email' => $sector[2]]);
-                    $coordinator =  $entityManager->getRepository(Person::class)->findOneBy(['email' => $sector[1]]);
-                    $sec->setName($sector[0]);
-                    $sec->setManager($manager);
-                    $sec->setCoordinator($coordinator);
-                    $entityManager->persist($sec);
-                    $entityManager->flush();
-                }
-            }
+  
 
             $entityManager = $doctrine->getManager();
             $person =  $entityManager->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);

@@ -769,7 +769,28 @@ class AdminController extends AbstractController
         $session = $request->getSession();
 
         if ($session->get('token_admin') != '') {
+
+            
             $em = $doctrine->getManager();
+                      /**
+             * Check Sector
+             * 
+             */
+            $sectors = file_get_contents('sector.json');
+            $sectors = json_decode($sectors);
+            foreach ($sectors as $key => $sector) {
+                $sec = $em->getRepository(Sector::class)->findOneBy(['name' => $sector[0]]);
+                if ($sec == null) {
+                    $sec = new Sector();
+                    $manager =  $em->getRepository(Person::class)->findOneBy(['email' => $sector[2]]);
+                    $coordinator =  $em->getRepository(Person::class)->findOneBy(['email' => $sector[1]]);
+                    $sec->setName($sector[0]);
+                    $sec->setManager($manager);
+                    $sec->setCoordinator($coordinator);
+                    $em->persist($sec);
+                    $em->flush();
+                }
+            }
             $sector = new Sector();
             $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
 
