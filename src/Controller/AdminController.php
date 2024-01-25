@@ -909,7 +909,6 @@ class AdminController extends AbstractController
                 if($oldCoordinator != $sector->getCoordinator()){
                     $SectorProcess = $em->getRepository(SectorProcess::class)->findBy(['person' => $oldCoordinator]);
                     foreach ($SectorProcess as $key => $value) {
-                    
                         $value->setPerson($sector->getCoordinator()); 
                         $em->persist($value);
                         $em->flush();
