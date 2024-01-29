@@ -393,7 +393,7 @@ if (xhr.readyState === 4 && xhr.status === 200) {
 console.log('Task status updated successfully');
 }
 };
-xhr.send('taskId=' + taskId + '&newStatus=' + newStatus);
+xhr.send('taskId=' + taskId + '&newStatus=' + newStatus+ '&id='+{{m.id}});
 }
 {% endif %}
 	</script>

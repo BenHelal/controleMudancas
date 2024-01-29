@@ -27,7 +27,8 @@ class StepsGestor
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $date = null;
 
-
+    #[ORM\Column(length: 500000000, nullable: true)]
+    private ?string $commentSol = null;
 
     
     #[ORM\Column(length: 255, nullable: true)]
@@ -35,6 +36,7 @@ class StepsGestor
 
 
     
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $docTest = null;
 
 
@@ -122,6 +124,16 @@ class StepsGestor
     {
         $this->step = $step;
 
+        return $this;
+    }
+    public function getCommentSol(): ?string
+    {
+        return $this->commentSol;
+    }
+
+    public function setCommentSol(?string $commentSol): self
+    {
+        $this->commentSol = $commentSol;
         return $this;
     }
 

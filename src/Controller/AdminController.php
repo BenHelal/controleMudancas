@@ -8,6 +8,7 @@ use App\Entity\ConfigEmail;
 use App\Entity\Departemant;
 use App\Entity\DepartemantMudancass;
 use App\Entity\Email;
+use App\Entity\EmailToSendConfig;
 use App\Entity\Manager;
 use App\Entity\Mudancas;
 use App\Entity\MudancasSoftware;
@@ -21,6 +22,7 @@ use App\Form\AddPersonType;
 use App\Form\ClientType;
 use App\Form\ConfigemailType;
 use App\Form\EditPersonType;
+use App\Form\EmailToSendConfigType;
 use App\Form\EmailType;
 use App\Form\ManagerType;
 use App\Form\PermissionType;
@@ -814,6 +816,8 @@ class AdminController extends AbstractController
         }
     }
 
+    
+
     #[Route('/delete/sector/{id}', name: 'delete_sector')]
     public  function deletesectorById($id, ManagerRegistry $doctrine, Request $request)
     {
@@ -964,6 +968,109 @@ class AdminController extends AbstractController
         } else {
             return $this->redirectToRoute('app_mudancas');
         }
+    }
+
+    #[Route('/emails', name: 'emails')]
+    public function emails(ManagerRegistry $doctrine, Request $request)
+    {
+        try {
+            //code...
+        $session = new Session();
+        $session = $request->getSession();
+
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            $emails = $doctrine->getManager()->getRepository(EmailToSendConfig::class)->findAll();
+
+            /*$form = $this->createForm(emailType::class, $emails);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em->flush();
+                return $this->redirectToRoute('email');
+            }*/
+            return $this->render('admin/emailsList.html.twig', [
+                'controller_name' => 'Atualizar Mudancas',
+                'p' => $person,
+                'emails' => $emails,
+                'type' => 'list'
+            ]);
+        } else {
+            return $this->redirectToRoute('app_mudancas');
+        }
+    } catch (\Throwable $th) {
+        //throw $th;
+    }
+    }
+
+    #[Route('/AddEmails', name: 'AddEmails')]
+    public function AddEmails(ManagerRegistry $doctrine, Request $request)
+    {
+        try {
+            //code...
+        $session = new Session();
+        $session = $request->getSession();
+
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            //$emails = $doctrine->getManager()->getRepository(EmailToSendConfig::class)->findAll();
+            $email = new EmailToSendConfig();
+            $form = $this->createForm(EmailToSendConfigType::class, $email);
+            $form->handleRequest($request);
+            
+            if ($form->isSubmitted() && $form->isValid()) { 
+                $em->persist($email);
+                $em->flush();
+                return $this->redirectToRoute('emails');
+            }
+            return $this->render('admin/emailsList.html.twig', [
+                'controller_name' => 'Atualizar Mudancas',
+                'p' => $person,
+                'email' => $email,
+                'form' => $form,
+                'type' => 'create'
+            ]);
+        } else {
+            return $this->redirectToRoute('app_mudancas');
+        }
+    } catch (\Throwable $th) {
+    }
+    }
+
+
+    #[Route('/UpdateEmails/{id}', name: 'UpdateEmails')]
+    public function UpdateEmails(ManagerRegistry $doctrine,$id, Request $request)
+    {
+        try {
+            //code...
+        $session = new Session();
+        $session = $request->getSession();
+
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            $email = $doctrine->getManager()->getRepository(EmailToSendConfig::class)->find($id);
+            $form = $this->createForm(EmailToSendConfigType::class, $email);
+            $form->handleRequest($request);
+            
+            if ($form->isSubmitted() && $form->isValid()) { 
+                $em->persist($email);
+                $em->flush();
+                return $this->redirectToRoute('emails');
+            }
+            return $this->render('admin/emailsList.html.twig', [
+                'controller_name' => 'Atualizar Mudancas',
+                'p' => $person,
+                'email' => $email,
+                'form' => $form,
+                'type' => 'create'
+            ]);
+        } else {
+            return $this->redirectToRoute('app_mudancas');
+        }
+    } catch (\Throwable $th) {
+    }
     }
 
     #[Route('/email/{id}', name: 'emailAdmin')]

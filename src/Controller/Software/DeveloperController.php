@@ -2,10 +2,17 @@
 
 namespace App\Controller\Software;
 
+use App\Entity\ApiToken;
+use App\Entity\ConfigEmail;
+use App\Entity\Email;
+use App\Entity\EmailToSendConfig;
 use App\Entity\Mudancas;
 use App\Entity\Person;
 use App\Entity\Steps;
+use App\Model\Class\IpAdress;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,17 +84,15 @@ class DeveloperController extends AbstractController
      */
     public function upadatTask(ManagerRegistry $doctrine,Request $request)
     {
-
-
+       
         $id=$request->query->get('id') ;
         $idM=$request->query->get('idm') ;
         $data = $request->request;
         $entityManager = $doctrine->getManager();
         $task = $entityManager->getRepository(Steps::class)->find($id);
-
         $task->setStartdevdate($data->get(strval($id) . 'InitDate'));
-        $task->setEnddevdatet($data->get(strval($id) . 'EndDate'));
-
+        $task->setEnddevdatet($data->get(strval($id) . 'EndDate')); 
+   
 
         if($request->files->get('1files') != null ){
             
@@ -105,13 +110,32 @@ class DeveloperController extends AbstractController
      */
     public function updateTaskStatus(ManagerRegistry $doctrine,Request $request)
     {
+        $session = new Session();
+        $session = $request->getSession();
+        
+
         // Retrieve the task ID and new status from the AJAX request
         $taskId = $request->request->get('taskId');
         $newStatus = $request->request->get('newStatus');
-
+        $id=$request->request->get('id') ;
         // Fetch the task entity from the database
         $entityManager = $doctrine->getManager();
         $task = $entityManager->getRepository(Steps::class)->find($taskId);
+        $person =  $entityManager->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+           
+        $mud = $entityManager->getRepository(Mudancas::class)->find($id);
+     
+        
+            $emailConfigSoftware = $entityManager->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '7']);
+            $email = new  Email();
+            $email->setMudancas($mud);
+            $email->setSendTo($mud->getMangerMudancas());
+            $email->setSendBy($person);
+            $email->setTitle($emailConfigSoftware->getSubjectMessage());
+            $email->setBody($emailConfigSoftware->getTitleOfMessage());
+            $entityManager->persist($email);
+            $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false,);
+        
 
         if (!$task) {
             return new JsonResponse(['message' => 'Task not found'], 404);
@@ -182,5 +206,105 @@ class DeveloperController extends AbstractController
         } else {
             return $this->redirectToRoute('app_login');
         }
+    }
+
+
+
+
+    public function sendEmail(ManagerRegistry $doctrine, Request $request, $sendTo, $mud, $per, $demand,  $gestor, $client = null, $com = null)
+    {
+
+        $em = $doctrine->getManager();
+        $config = $em->getRepository(ConfigEmail::class)->find(1);
+        if ($config == null) {
+            $config = new ConfigEmail();
+            $config->setHost('smtp.office365.com');
+            $config->setSmtpAuth(true);
+            $config->setPort(587);
+            $config->setUsername('noreply@serdia.com.br');
+            $config->setPassword('9BhAsZw8a8ZrnQzX');
+            $config->setEmailSystem('noreply@serdia.com.br');
+            $config->setTitleObj('Serdia Control Mudanças');
+            $config->setSubject('Controle de Mudanças');
+            $config->setChartSet('UTF-8');
+            $em->persist($config);
+            $em->flush();
+        }
+
+        $mail = new PHPMailer(true);
+
+        if($com == null){
+            $com = " ";
+        }
+        // check the manager of the Mudancas 
+        try {
+
+            $ipAdress = new IpAdress();
+            //$mail->SMTPDebug = SMTP::DEBUG_SERVER;   
+            $mail->IsSMTP(); // Define que a mensagem será SMTP
+            $mail->Host = $config->getHost(); // Endereço do servidor SMTP
+            $mail->SMTPAuth = $config->isSmtpAuth(); // Usa autenticação SMTP? (opcional)
+            $mail->Port = $config->getPort();
+            $mail->Username = $config->getUsername(); // Usuário do servidor SMTP
+            $mail->Password = $config->getPassword(); // Senha do servidor SMTP                           
+            //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+            //Recipients
+            $mail->setFrom($config->getEmailSystem(), $config->getTitleObj());
+            if ($client != null) {
+
+                $ApiToken = $em->getRepository(ApiToken::class)->findOneBy(['mud' => $mud->getId()]);
+                //dd($ApiToken);
+                $mail->AddAddress($client->getRespEmail(), $client->getResp());
+                $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
+                $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
+                $mail->Subject  = $config->getSubject();
+                $mail->msgHTML($this->renderView('emails/myemail.html.twig', [
+                    'name'      =>  'Controle de Mudanças',
+                    'mud'       =>  $mud,
+                    'sendTo'    => $config->getEmailSystem(),
+                    'per'       =>  $per,
+                    'c'         => $client,
+                    'token' => $ApiToken,
+                    'ip'        => $ipAdress->getIpAdress(),
+                    'name'      => $client->getResp(),
+                    'gestor'    => $gestor,
+                    'demand'    =>  $demand
+                ]));
+            } else {
+                
+                $mail->AddAddress($sendTo->getEmail(), $sendTo->getName());
+                $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
+                $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
+                $mail->Subject  = $config->getSubject();
+                $mail->msgHTML($this->renderView('emails/myemail.html.twig', [
+                    'name'      =>  'Controle de Mudanças',
+                    'mud'       =>  $mud,
+                    'sendTo'    => $sendTo,
+                    'per'       =>  $per,
+                    'ip'        => $ipAdress->getIpAdress(),
+                    'name'      => $sendTo->getName(),
+                    'gestor'    => $gestor,
+                    'com' => $com,
+                    'demand'    =>  $demand
+                ]));
+            }
+
+
+            //$mail->Subject  = "ASSUNTO"; // Assunto da mensagem
+            //$mail->Body = "HTML FORMAT";
+
+            // Envia o e-mail
+            $mail->Send();
+            return $mail;
+            // Limpa os destinatários e os anexos
+            // $mail->ClearAllRecipients();
+            //$mail->ClearAttachments();
+
+            return $this->redirectToRoute('app_mudancas');
+        } catch (Exception $e) {
+            //   echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+
+        return;
     }
 }

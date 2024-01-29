@@ -192,10 +192,14 @@
 							</div>
 						{% endif %}
 
+							<div id="div3" class="col-md-6 mb-3">
+								<label for="{{s.id}}de">Comentário</label>
+								<input id="{{s.id}}de" class="form-control" name="{{s.id}}de" value="" type="text" />
+							</div>
 
 							<div id="div6" class="col-md-6 mb-3">
 								<label for="{{s.id}}file">Aprovação</label>
-								<select id="{{s.id}}stat" name="{{s.id}}stat" class="form-control" style="width:100% ;    height: 30%;"  value="{{s.approveSol}}">
+								<select id="{{s.id}}stat" name="{{s.id}}stat" class="form-control" style="width:100% ;    height: 100%;"  value="{{s.approveSol}}">
 									{% if s.approveSol == 'Aprovar' %}
 										<option value="">Selecione a opção</option>
 										<option selected value="Aprovar">Aprovar</option>

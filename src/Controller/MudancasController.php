@@ -6,6 +6,7 @@ use App\Entity\ApiToken;
 use App\Entity\ConfigEmail;
 use App\Entity\Departemant;
 use App\Entity\Email;
+use App\Entity\EmailToSendConfig;
 use App\Entity\Manager;
 use App\Entity\Mudancas;
 use App\Entity\MudancasSoftware;
@@ -446,6 +447,18 @@ class MudancasController extends AbstractController
                                 $em->flush();
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
 
+
+                                
+                                $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '1']);
+                                $email = new  Email();
+                                $email->setMudancas($mud);
+                                $email->setSendTo($mud->getAreaResp()->getManager());
+                                $email->setSendBy($person);
+                                $email->setTitle($emailConfigSoftware->getSubjectMessage());
+                                $email->setBody($emailConfigSoftware->getTitleOfMessage());
+                                $em->persist($email);
+                                $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+
                                 $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($mud->getAreaResp()->getManager());
@@ -825,7 +838,7 @@ class MudancasController extends AbstractController
                     $areaResp = $em->getRepository(Sector::class)->findOneBy(['name' => '021 – TI MATRIZ (INFRAESTRUTURA E REDE)']);
                     $mud->setAreaResp($areaResp);
                     $mud->setMudS($ms);
-                    
+                   // dd($emailConfigSoftware);
                     $form = $this->createForm(MudancasType::class, $mud);
                     $form->handleRequest($request);
 
@@ -855,17 +868,19 @@ class MudancasController extends AbstractController
                                 $email->setTitle('Aprovação automática da solicitação');
                                 $email->setBody('nansenAddBy');
                                 $em->persist($email);
+                                
 
-                                /*
+                                
+                                $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '1']);
                                 $email = new  Email();
                                 $email->setMudancas($mud);
-                                $email->setSendTo($mud->getAddBy());
+                                $email->setSendTo($mud->getAreaResp()->getManager());
                                 $email->setSendBy($person);
-                                $email->setTitle('Aprovação gerente do solicitante');
-                                $email->setBody('manager1APP');
+                                $email->setTitle($emailConfigSoftware->getSubjectMessage());
+                                $email->setBody($emailConfigSoftware->getTitleOfMessage());
                                 $em->persist($email);
-                                $em->flush();*/
-                                //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+
                                 $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($mud->getAreaResp()->getManager());
@@ -910,6 +925,19 @@ class MudancasController extends AbstractController
                                 $email->setTitle('Aprovação automática da solicitação');
                                 $email->setBody('nansenAddBy');
                                 $em->persist($email);
+
+
+                                
+                                $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '1']);
+                                $email = new  Email();
+                                $email->setMudancas($mud);
+                                $email->setSendTo($mud->getAreaResp()->getManager());
+                                $email->setSendBy($person);
+                                $email->setTitle($emailConfigSoftware->getSubjectMessage());
+                                $email->setBody($emailConfigSoftware->getTitleOfMessage());
+                                $em->persist($email);
+                                $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+
 
                                 $email = new  Email();
                                 $email->setMudancas($mud);
@@ -1089,6 +1117,7 @@ class MudancasController extends AbstractController
                             }
                         }
                         $em->flush();
+
                         return $this->redirectToRoute('app_mudancas');
                     }
                     return $this->render('mudancas/update.html.twig', [
@@ -1299,6 +1328,11 @@ class MudancasController extends AbstractController
                             }
                         }
                         // check which Form need 
+
+                        if($mud->getManagerUserApp() == null){
+                            $manager = false;
+                        }
+
                         $form = null;
                         if ($manager == true && $gestor == false && $mangerOfAreaDidntApp == false) {
                             $form = $this->createForm(MudancasManagerType::class, $mud);
@@ -1521,6 +1555,22 @@ class MudancasController extends AbstractController
                                         $em->persist($email);
                                         $em->flush();
                                         $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                   
+                                        if($mud->getTypeMud() == '1'){
+                                          if($mud->getMudS()->getIniciar() == null && $mud->getMangerMudancas() != null ){
+                                            $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '2']);
+                                            $email = new  Email();
+                                            $email->setMudancas($mud);
+                                            $email->setSendTo($mud->getMangerMudancas());
+                                            $email->setSendBy($person);
+                                            $email->setTitle($emailConfigSoftware->getSubjectMessage());
+                                            $email->setBody($emailConfigSoftware->getTitleOfMessage());
+                                            $em->persist($email);
+                                            $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false,);
+                                        
+                                            }
+                                        }
+
                                     }
                                 } elseif ($mud->getAppMan() == 2) {
                                     $mud->setImplemented(2);

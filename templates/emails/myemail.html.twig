@@ -629,7 +629,169 @@ próximas etapas desta mudança.<br>
 							<a href="http://{{ip}}/controleMudancas/public/mudancas/software/Gestor/Mudança/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
 							</a>
 						</p>
-					{% endif %}
+
+					{% elseif demand == '1' %}
+					<h1 class="text-center">Olá  {{ sendTo.name }},	<br>
+					</h1>
+						Há uma nova mudança a ser priorizada
+						Mudança: {{mud.id }} <br>				
+						Nome da mudança:{{mud.nomeMudanca}} <br>
+						Fase: Priorização da mudança <br>
+						Por gentileza verifique a tarefa para 	
+						<p class="block text-center">
+							<a href="http://{{ip}}/controlemudancas/public/order/mud/?id={{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							</a>
+						</p>
+						
+					{% elseif demand == '2' %}
+					<h1 class="text-center">Olá  {{ sendTo.name }},	<br>
+					</h1>Há uma nova mudança a ser priorizada
+						Mudança: {{mud.id }} <br>				
+						Nome da mudança:{{mud.nomeMudanca}} <br>
+						Fase: Levantamento de requisitos <br>
+						Por gentileza verifique a tarefa para 	
+						<p class="block text-center">
+							<a href="http://{{ip}}/controlemudancas/public/software/gestor/documentation/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							</a>
+						</p>
+
+						{% elseif demand == '3' %}
+							 Olá {{ sendTo.name }}
+								Há uma nova mudança pendente de aceite dos requisitos
+								Mudança:  {{mud.id }} <br>				
+								Nome da mudança:{{mud.nomeMudanca}} <br>
+								Fase: Aceite do solicitante <br>				
+								Comentário: {{com}} <br>
+								Por gentileza verifique a tarefa para esta mudança.
+						<p class="block text-center">
+							<a href="http://{{ip}}/controlemudancas/public/flow/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+							</a>
+						</p>
+
+						{% elseif demand == '4' %}
+							 Olá {{ sendTo.name }}
+								Há uma nova mudança com requisitos aceito </br>
+								Mudança:  {{mud.id }} <br>				
+								Nome da mudança:{{mud.nomeMudanca}} <br>
+								Fase: Casos de testes e controle de fases <br>				
+								Comentário: {{com}} <br>
+								Por gentileza verifique a tarefa para esta mudança.
+								<p class="block text-center">
+									<a href="http://{{ip}}/controlemudancas/public/software/gestor/steps/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+									</a>
+								</p>
+
+						{% elseif demand == '5' %}
+							 Olá {{ sendTo.name }}
+								Há uma nova mudança com requisitos rejeitado </br>
+								Mudança:  {{mud.id }} <br>				
+								Nome da mudança:{{mud.nomeMudanca}} <br>
+								Fase: Levantamento de requisitos <br>				
+								Comentário: {{com}} <br>
+								Por gentileza verifique a tarefa para esta mudança.
+								<p class="block text-center">
+									<a href="http://{{ip}}/controlemudancas/public/software/gestor/documentation/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+									</a>
+								</p>
+						{% elseif demand == '6' %}
+								Olá {{ sendTo.name }}
+								Há uma nova fase da mudança criada</br>
+								Mudança:  {{mud.id }} <br>				
+								Nome da mudança:{{mud.nomeMudanca}} <br>
+								Fase: Desenvolvimento<br>				
+								Comentário: {{com}} <br>
+								Por gentileza verifique a tarefa para esta mudança.
+								<p class="block text-center">
+									<a href="http://{{ip}}/controlemudancas/public/software/dev/steps/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+									</a>
+								</p>
+						{% elseif demand == '7' %}
+								Olá {{ sendTo.name }}
+								Há uma nova fase da mudança criada</br>
+								Mudança:  {{mud.id }} <br>				
+								Nome da mudança:{{mud.nomeMudanca}} <br>
+								Fase: Teste da mudança<br>				
+								Por gentileza verifique a tarefa para esta mudança.
+								<p class="block text-center">
+									<a href="http://{{ip}}/controlemudancas/public/software/gestor/test/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+									</a>
+								</p>
+
+						{% elseif demand == '8' %}
+								Olá {{ sendTo.name }}
+								Foram encontrados problemas nos testes da fase</br>
+								Mudança:  {{mud.id }} <br>				
+								Nome da mudança:{{mud.nomeMudanca}} <br>
+								Fase: Retorno teste TI<br>				
+								Comentário: {{com}} <br>
+								Por gentileza verifique a tarefa para esta mudança.
+								<p class="block text-center">
+									<a href="http://{{ip}}/controlemudancas/public/software/gestor/steps/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+									</a>
+								</p>
+						{% elseif demand == '9' %}
+								Olá {{ sendTo.name }}
+								Há uma nova fase da mudança a ser testada</br>
+								Mudança:  {{mud.id }} <br>				
+								Nome da mudança:{{mud.nomeMudanca}} <br>
+								Fase: Teste do Solicitante<br>				
+								Comentário: {{com}} <br>
+								Por gentileza verifique a tarefa para esta mudança.
+								<p class="block text-center">
+									<a href="http://{{ip}}/controlemudancas/public/software/solicitante/test/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+									</a>
+								</p>
+						{% elseif demand == '10' %}
+								Olá {{ sendTo.name }}
+								Há um change request que precisa aprovação</br>
+								Mudança:  {{mud.id }} <br>				
+								Nome da mudança:{{mud.nomeMudanca}} <br>
+								Fase: Teste da TI<br>				
+								Comentário: {{com}} <br>
+								Por gentileza verifique a tarefa para esta mudança.
+								<p class="block text-center">
+									<a href="http://{{ip}}/controlemudancas/public/software/gerente/changeRequest/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+									</a>
+								</p>
+
+								
+						{% elseif demand == '11' %}
+								Olá {{ sendTo.name }}
+								Há um change request aprovado</br>
+								Mudança:  {{mud.id }} <br>				
+								Nome da mudança:{{mud.nomeMudanca}} <br>
+								Fase: Change Request<br>				
+								Comentário: {{com}} <br>
+								Por gentileza verifique a tarefa para esta mudança.
+								<p class="block text-center">
+									<a href="http://{{ip}}/controlemudancas/public/software/gerente/changeRequest/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+									</a>
+								</p>
+						
+						{% elseif demand == '12' %}
+								Olá {{ sendTo.name }}
+								Há um change request reprovado</br>
+								Mudança:  {{mud.id }} <br>				
+								Nome da mudança:{{mud.nomeMudanca}} <br>
+								Fase: Change Request<br>				
+								Comentário: {{com}} <br>
+								Por gentileza verifique a tarefa para esta mudança e favor abrir uma nova mudança referenciando a essa, caso necessite dessa alteração
+								<p class="block text-center">
+									<a href="http://{{ip}}/controlemudancas/public/software/gerente/changeRequest/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+									</a>
+								</p>
+						{% elseif demand == '13' %}
+								Olá {{ sendTo.name }}
+								Há uma nova fase da mudança a ser implementada</br>
+								Mudança:  {{mud.id }} <br>				
+								Nome da mudança:{{mud.nomeMudanca}} <br>
+								Fase: Teste da Solicitante<br>				
+								Comentário: {{com}} <br>
+								Por gentileza verifique a tarefa para esta mudança.<p class="block text-center">
+									<a href="http://{{ip}}/controlemudancas/public/software/gerente/changeRequest/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
+									</a>
+								</p>
+						{% endif %}
 				</body>
 			</html>
 		</div>

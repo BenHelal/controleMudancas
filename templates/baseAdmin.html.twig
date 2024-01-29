@@ -101,6 +101,20 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEmail"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Emails</span>
+                </a>
+                <div id="collapseEmail" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Emails:</h6>
+                        <a class="collapse-item" href="{{ path('email') }}">e-mail de configuração</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
 
                 <a class="nav-link collapsed"  data-toggle="modal" data-target="#logoutModal">
                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -300,7 +314,7 @@
     <!-- Page level custom scripts -->
     <script src="{{ asset('admin/js/demo/chart-area-demo.js')}}"></script>
     <script src="{{ asset('admin/js/demo/chart-pie-demo.js')}}"></script>
-
+    
 </body>
 
 </html>

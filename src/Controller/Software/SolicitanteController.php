@@ -5,6 +5,7 @@ namespace App\Controller\Software;
 use App\Entity\ApiToken;
 use App\Entity\ConfigEmail;
 use App\Entity\Email;
+use App\Entity\EmailToSendConfig;
 use App\Entity\Mudancas;
 use App\Entity\Person;
 use App\Entity\StepsGestor;
@@ -40,21 +41,20 @@ class SolicitanteController extends AbstractController
             $muds = $mud->getMudS();
 
             //steps Gestor 
-            $SD =  $muds->getStepsGestor();  
-            if($SD != null){
+            $SD =  $muds->getStepsGestor();
+            if ($SD != null) {
                 $publicDirectory = $this->getParameter('kernel.project_dir');
-                $excelFilepath2 =  $publicDirectory . '/public/assets/' . $mud->getId().'/documentation';
+                $excelFilepath2 =  $publicDirectory . '/public/assets/' . $mud->getId() . '/documentation';
                 try {
                     //code...
-                $files = scandir($excelFilepath2);
-                $files = array_diff($files, ['.', '..']);
+                    $files = scandir($excelFilepath2);
+                    $files = array_diff($files, ['.', '..']);
                 } catch (\Throwable $th) {
                     //throw $th;
-                $files="";
+                    $files = "";
                 }
-
-            }else{
-                $files="";
+            } else {
+                $files = "";
             }
             return $this->render('software/solicitante/documentation.html.twig', [
                 'login' => 'null',
@@ -70,7 +70,7 @@ class SolicitanteController extends AbstractController
         }
     }
 
-    
+
 
     /**
      * Renders the documentation page for the solicitanteController.
@@ -91,41 +91,42 @@ class SolicitanteController extends AbstractController
             $SD =  $muds->getStepsGestor();
             // You can loop through all the parameters in the InputBag:
             foreach ($data->all() as $key => $value) {
-                for ($i=0; $i < sizeof($SD); $i++) {
-                    if($key == $SD[$i]->getId().'stat'){
-                        if(($value == 'Aprovar' || $value == 'Reprovar' )){
+                for ($i = 0; $i < sizeof($SD); $i++) {
+                    if ($key == $SD[$i]->getId() . 'stat') {
+                        if (($value == 'Aprovar' || $value == 'Reprovar')) {
                             $sd = $em->getRepository(StepsGestor::class)->find($SD[$i]->getId());
                             $sd->setApproveSol($value);
-                                   // Repeated logic for handling both 'file' and 'files'
+                            // Repeated logic for handling both 'file' and 'files'
                             if ($request->files->get('1files') != null) {
-                                    $fileName = $sd->getId() . '_' . $muds->getId() . '.' . $request->files->get('1files')->guessExtension();
-                                    $publicDirectory = $this->getParameter('kernel.project_dir');
-                                    $excelFilepath =  $publicDirectory . '/public/assets/' . $mud->getId();
-                                    $request->files->get('1files')->move($excelFilepath, $fileName);
-                                    $sd->setDocClient($fileName);
+                                $fileName = $sd->getId() . '_' . $muds->getId() . '.' . $request->files->get('1files')->guessExtension();
+                                $publicDirectory = $this->getParameter('kernel.project_dir');
+                                $excelFilepath =  $publicDirectory . '/public/assets/' . $mud->getId();
+                                $request->files->get('1files')->move($excelFilepath, $fileName);
+                                $sd->setDocClient($fileName);
                             }
                             $em->flush();
                             if ($value == 'Aprovar') {
+
+                                $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '4']);
                                 $email = new  Email();
                                 $email->setMudancas($mud);
-                                $email->setSendTo($mud->getMangerMudancas());
+                                $email->setSendTo($mud->getAddBy());
                                 $email->setSendBy($person);
-                                $email->setTitle('approve Arquivos ');
-                                $email->setBody('AppArquivos');
+                                $email->setTitle($emailConfigSoftware->getSubjectMessage());
+                                $email->setBody($emailConfigSoftware->getTitleOfMessage());
                                 $em->persist($email);
-                                $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                
-                            }else{
+                                $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, com: $SD[$i]->getId() . 'de');
+                            } else {
+                                $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '5']);
                                 $email = new  Email();
                                 $email->setMudancas($mud);
-                                $email->setSendTo($mud->getMangerMudancas());
+                                $email->setSendTo($mud->getAddBy());
                                 $email->setSendBy($person);
-                                $email->setTitle('approve Arquivos ');
-                                $email->setBody('RepArquivos');
+                                $email->setTitle($emailConfigSoftware->getSubjectMessage());
+                                $email->setBody($emailConfigSoftware->getTitleOfMessage());
                                 $em->persist($email);
-                                $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                        
-                            }     
+                                $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, com: $SD[$i]->getId() . 'de');
+                            }
                             return $this->redirectToRoute('app_software_sol_documentation', ['id' => $id]);
                         }
                     }
@@ -137,7 +138,7 @@ class SolicitanteController extends AbstractController
     }
 
 
-    public function sendEmail(ManagerRegistry $doctrine, Request $request, $sendTo, $mud, $per, $demand,  $gestor, $client = null)
+    public function sendEmail(ManagerRegistry $doctrine, Request $request, $sendTo, $mud, $per, $demand,  $gestor, $client = null, $com = null)
     {
 
         $em = $doctrine->getManager();
@@ -158,6 +159,10 @@ class SolicitanteController extends AbstractController
         }
 
         $mail = new PHPMailer(true);
+
+        if ($com == null) {
+            $com = " ";
+        }
         // check the manager of the Mudancas 
         try {
 
@@ -193,7 +198,7 @@ class SolicitanteController extends AbstractController
                     'demand'    =>  $demand
                 ]));
             } else {
-                
+
                 $mail->AddAddress($sendTo->getEmail(), $sendTo->getName());
                 $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
                 $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
@@ -206,6 +211,7 @@ class SolicitanteController extends AbstractController
                     'ip'        => $ipAdress->getIpAdress(),
                     'name'      => $sendTo->getName(),
                     'gestor'    => $gestor,
+                    'com' => $com,
                     'demand'    =>  $demand
                 ]));
             }
@@ -228,7 +234,7 @@ class SolicitanteController extends AbstractController
 
         return;
     }
-    
+
     /**
      * Renders the Test TI page for the GestorController.
      *
@@ -252,22 +258,21 @@ class SolicitanteController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if($value->getApproveSol() =='Aprovar'){
+                if ($value->getApproveSol() == 'Aprovar') {
                     array_push($sd, $value);
                 }
-
             }
 
-            foreach ($SD as $keys=> $val) {
-                foreach ($val->getSteps() as $keys=> $values) {
+            foreach ($SD as $keys => $val) {
+                foreach ($val->getSteps() as $keys => $values) {
                     # code...
-                    if($values->getStatus() == "teste usario"){
+                    if ($values->getStatus() == "teste usario") {
                         array_push($s, $values);
                     }
                 }
             }
 
-            
+
             return $this->render('software/solicitante/test.html.twig', [
                 'login' => 'null',
                 'person' => $person,
@@ -277,8 +282,6 @@ class SolicitanteController extends AbstractController
                 'sd' => $sd,
                 'step' => $s,
             ]);
-
-
         } else {
             return $this->redirectToRoute('app_login');
         }
@@ -295,13 +298,13 @@ class SolicitanteController extends AbstractController
         $session = new Session();
         $session = $request->getSession();
         if ($session->get('token_jwt') != '') {
-            
+
 
             $em = $doctrine->getManager();
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $mud = $em->getRepository(Mudancas::class)->find($id);
             $muds = $mud->getMudS();
-            
+
             //steps solicitante 
             $sd = [];
             $s = [];
@@ -310,41 +313,52 @@ class SolicitanteController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if($value->getApproveSol() =='Aprovar'){
+                if ($value->getApproveSol() == 'Aprovar') {
                     array_push($sd, $value);
                 }
-
             }
 
-            foreach ($SD as $keys=> $val) {
-                foreach ($val->getSteps() as $keys=> $values) {
+            foreach ($SD as $keys => $val) {
+                foreach ($val->getSteps() as $keys => $values) {
                     # code...
-                    if($values->getStatus() == "teste usario"){
+                    if ($values->getStatus() == "teste usario") {
                         array_push($s, $values);
                     }
                 }
             }
-            
+
             $data = $request->request;
-            for ($i = 1; $i <= sizeof($data)/4 ; $i++) {
+            for ($i = 1; $i <= sizeof($data) / 4; $i++) {
                 foreach ($s as $key => $value) {
-                    
-                    if ($request->files->get(strval( $value->getId()).'files') != null) {
-                        $fileName = $value->getId() . '_TEST_Cliente_' . $muds->getId() . '.' . $request->files->get(strval( $value->getId()).'files')->guessExtension();
+
+                    if ($request->files->get(strval($value->getId()) . 'files') != null) {
+                        $fileName = $value->getId() . '_TEST_Cliente_' . $muds->getId() . '.' . $request->files->get(strval($value->getId()) . 'files')->guessExtension();
                         $publicDirectory = $this->getParameter('kernel.project_dir');
                         $excelFilepath =  $publicDirectory . '/public/assets/' . $mud->getId();
-                        $request->files->get(strval( $value->getId()).'files')->move($excelFilepath, $fileName);
-                        $value->setDocClient($fileName); 
+                        $request->files->get(strval($value->getId()) . 'files')->move($excelFilepath, $fileName);
+                        $value->setDocClient($fileName);
                     }
-                    if($data->get($value->getId().'stat') == 'Aprovar' ){
+                    if ($data->get($value->getId() . 'stat') == 'Aprovar') {
                         $value->setStatus("aguardando implantação");
                         $em->flush();
-                    }elseif($data->get($value->getId().'stat') == 'Reprovar'){
+                        
+                    } elseif ($data->get($value->getId() . 'stat') == 'Reprovar') {
                         $value->setStatus("teste ti");
                         $em->flush();
+
+                        $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '7']);
+                        $email = new  Email();
+                        $email->setMudancas($mud);
+                        $email->setSendTo($mud->getMangerMudancas());
+                        $email->setSendBy($person);
+                        $email->setTitle($emailConfigSoftware->getSubjectMessage());
+                        $email->setBody($emailConfigSoftware->getTitleOfMessage());
+                        $em->persist($email);
+                        $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false,);
+                       
                     }
-                }    
-            }   
+                }
+            }
             return $this->redirectToRoute('app_software_solicitante_test', ['id' => $id]);
         } else {
             return $this->redirectToRoute('app_login');
@@ -353,7 +367,7 @@ class SolicitanteController extends AbstractController
 
 
 
-        /**
+    /**
      * Renders the Test TI page for the GestorController.
      *
      * @Route("/software/solicitante/imp/{id}", name="app_software_solicitante_imp")
@@ -376,21 +390,20 @@ class SolicitanteController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if($value->getApproveSol() =='Aprovar'){
+                if ($value->getApproveSol() == 'Aprovar') {
                     array_push($sd, $value);
                 }
-
             }
 
-            foreach ($SD as $keys=> $val) {
-                foreach ($val->getSteps() as $keys=> $values) {
+            foreach ($SD as $keys => $val) {
+                foreach ($val->getSteps() as $keys => $values) {
                     # code...
-                    if($values->getStatus() == "aguardando implantação"){
+                    if ($values->getStatus() == "aguardando implantação") {
                         array_push($s, $values);
                     }
                 }
             }
-            
+
             return $this->render('software/solicitante/imp.html.twig', [
                 'login' => 'null',
                 'person' => $person,
@@ -400,15 +413,13 @@ class SolicitanteController extends AbstractController
                 'sd' => $sd,
                 'step' => $s,
             ]);
-
-
         } else {
             return $this->redirectToRoute('app_login');
         }
     }
 
 
-        /**
+    /**
      * Renders the Test TI page for the GestorController.
      *
      * @Route("/software/solicitante/imp/approve/{id}", name="app_software_solicitante_imp_approve")
@@ -419,13 +430,13 @@ class SolicitanteController extends AbstractController
         $session = new Session();
         $session = $request->getSession();
         if ($session->get('token_jwt') != '') {
-            
+
 
             $em = $doctrine->getManager();
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $mud = $em->getRepository(Mudancas::class)->find($id);
             $muds = $mud->getMudS();
-            
+
             //steps solicitante 
             $sd = [];
             $s = [];
@@ -434,33 +445,43 @@ class SolicitanteController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if($value->getApproveSol() =='Aprovar'){
+                if ($value->getApproveSol() == 'Aprovar') {
                     array_push($sd, $value);
                 }
-
             }
 
-            foreach ($SD as $keys=> $val) {
-                foreach ($val->getSteps() as $keys=> $values) {
+            foreach ($SD as $keys => $val) {
+                foreach ($val->getSteps() as $keys => $values) {
                     # code...
-                    if($values->getStatus() == "aguardando implantação"){
+                    if ($values->getStatus() == "aguardando implantação") {
                         array_push($s, $values);
                     }
                 }
             }
-            
+
             $data = $request->request;
-            for ($i = 1; $i <= sizeof($data)/4 ; $i++) {
+            for ($i = 1; $i <= sizeof($data) / 4; $i++) {
                 foreach ($s as $key => $value) {
-                    if($data->get($value->getId().'stat') == 'Aprovar' ){
+                    if ($data->get($value->getId() . 'stat') == 'Aprovar') {
                         $value->setStatus("implantado");
                         $em->flush();
-                    }elseif($data->get($value->getId().'stat') == 'Reprovar'){
+
+                        $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '13']);
+                        $email = new  Email();
+                        $email->setMudancas($mud);
+                        $email->setSendTo($mud->getMangerMudancas());
+                        $email->setSendBy($person);
+                        $email->setTitle($emailConfigSoftware->getSubjectMessage());
+                        $email->setBody($emailConfigSoftware->getTitleOfMessage());
+                        $em->persist($email);
+                        $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false,);
+                      
+                    } elseif ($data->get($value->getId() . 'stat') == 'Reprovar') {
                         $value->setStatus("pedido de mudança");
                         $em->flush();
                     }
-                }    
-            }   
+                }
+            }
             return $this->redirectToRoute('app_software_solicitante_test', ['id' => $id]);
         } else {
             return $this->redirectToRoute('app_login');

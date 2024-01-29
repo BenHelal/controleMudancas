@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\ApiToken;
 use App\Entity\ConfigEmail;
 use App\Entity\Email;
+use App\Entity\EmailToSendConfig;
 use App\Entity\Mudancas;
 use App\Entity\MudancasSoftware;
 use App\Entity\Person;
@@ -94,6 +95,8 @@ class MudancasSoftwareController extends AbstractController
             $em = $doctrine->getManager();
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $allMudancas = $em->getRepository(Mudancas::class)->findByType("1");
+        
+
             return $this->render('mudancas_software/changeOrderView.html.twig', [
                 'controller_name' => 'MudancasSoftwareController',
                 'login' => 'null',
@@ -109,7 +112,15 @@ class MudancasSoftwareController extends AbstractController
     
     #[Route('/updateorder', name: 'updateorder', methods:["POST"])]
     public function updateOrder(ManagerRegistry $doctrine, Request $request)
-    {
+    { 
+        
+        $session = new Session();
+        $session = $request->getSession();
+        //$request->header_remove();
+        if ($session->get('token_jwt') != '') {
+            $em = $doctrine->getManager();
+            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+            
         $orderData = json_decode($request->request->get('orderData'), true);
 
         $em = $doctrine->getManager();
@@ -117,11 +128,16 @@ class MudancasSoftwareController extends AbstractController
         foreach ($orderData as $data) {
             $mud = $em->getRepository(Mudancas::class)->find($data['id']);
             $mud->setOrderNumber($data['order']);
+
+
+
             $em->flush();
         }
 
 
-        return new JsonResponse(['status' => 'success']);
+        return new JsonResponse(['status' => 'success']); }else{
+            return $this->redirectToRoute('log_employer');
+        }
     }
 
     #[Route('/mudancas/software/solfirst/Aprocao/{id}', name: 'solfirst_software')]

@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 
-
 {% block body %}
-<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
@@ -11,14 +9,14 @@
       font-family: Arial, sans-serif;
     }
 
-    #item-list {
+    #item-lists {
       list-style-type: none;
       padding: 0;
       margin: 20px;
       border: 1px solid #ccc;
     }
 
-    .draggable {
+    .draggabled {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -32,21 +30,19 @@
       margin-left: 10px;
     }
   </style>
-</head>
-<body>
 
 
 <div class="container mt-3">
     <button class="btn btn-success" style="background-color : #17a2b8" onclick="voltar()">Voltar</button>
 </div>
 
-  <ul id="item-list">
+  <ul id="item-lists">
   {% set sortedItems = m|sort((a, b) => a.orderNumber <=> b.orderNumber) %}
 
 {% for item in sortedItems %}
         {% if item.implemented == null %}
     
-        <li class="draggable" data-id="{{ item.id }}">
+        <li class="draggabled" data-id="{{ item.id }}">
             <span>Codigo da mudança: {{ item.id }} <br>
                 Nome da mudança: {{ item.nomeMudanca }}<br>
             </span>
@@ -67,11 +63,11 @@
 </ul>
 
 <script>
-    const itemList = document.getElementById('item-list');
+    const itemList = document.getElementById('item-lists');
 
     new Sortable(itemList, {
         animation: 150,
-        handle: '.draggable',
+        handle: '.draggabled',
         onUpdate: function (evt) {
             updateOrder(evt.from.children);
             const orderData = getOrderData(itemList);
@@ -87,7 +83,7 @@
     }
 
 function changeOrder(select, itemId) {
-    const listItem = select.closest('.draggable');
+    const listItem = select.closest('.draggabled');
     const newIndex = parseInt(select.value) - 1;
 
     itemList.insertBefore(listItem, itemList.children[newIndex]);
@@ -144,6 +140,5 @@ function changeOrder(select, itemId) {
         window.history.back();
     }
 </script>
-</body>
 
 {% endblock %}
