@@ -83,9 +83,6 @@ class MudancasSoftwareController extends AbstractController
         }
     }
 
-    /*
-        Hethi 9balha order Display 
-    ********/
     #[Route('/order/mud/', name:'orderMudancas')]
     public function orderMudanc(ManagerRegistry $doctrine, Request $request)
     {

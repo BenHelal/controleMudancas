@@ -5,18 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
 
-    #item-lists {
+    #item-listss {
       list-style-type: none;
       padding: 0;
       margin: 20px;
       border: 1px solid #ccc;
     }
 
-    .draggabled {
+    .draggabledsss {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -26,9 +23,6 @@
       cursor: grab;
     }
 
-    select {
-      margin-left: 10px;
-    }
   </style>
 
 
@@ -36,20 +30,20 @@
     <button class="btn btn-success" style="background-color : #17a2b8" onclick="voltar()">Voltar</button>
 </div>
 
-  <ul id="item-lists">
+  <ul id="item-listss">
   {% set sortedItems = m|sort((a, b) => a.orderNumber <=> b.orderNumber) %}
 
 {% for item in sortedItems %}
         {% if item.implemented == null %}
     
-        <li class="draggabled" data-id="{{ item.id }}">
+        <li class="draggabledsss" data-id="{{ item.id }}">
             <span>Codigo da mudança: {{ item.id }} <br>
                 Nome da mudança: {{ item.nomeMudanca }}<br>
             </span>
             {% if item.areaResp.manager != person %}
                 {{ item.orderNumber }} <br>
             {% else %}
-            <select class="order-select" onchange="changeOrder(this, {{ item.id }})">
+            <select class="order-selectss" onchange="changeOrder(this, {{ item.id }})">
                 {% for i in 1..m|length %}
                     <option value="{{ i }}" {% if i == item.orderNumber %}selected{% endif %}>{{ i }}</option>
                 {% endfor %}
@@ -63,11 +57,11 @@
 </ul>
 
 <script>
-    const itemList = document.getElementById('item-lists');
+    const itemList = document.getElementById('item-listss');
 
     new Sortable(itemList, {
         animation: 150,
-        handle: '.draggabled',
+        handle: '.draggabledsss',
         onUpdate: function (evt) {
             updateOrder(evt.from.children);
             const orderData = getOrderData(itemList);
@@ -77,13 +71,13 @@
 
     function updateOrder(items) {
         Array.from(items).forEach((item, index) => {
-            const orderSelect = item.querySelector('.order-select');
+            const orderSelect = item.querySelector('.order-selectss');
             orderSelect.selectedIndex = index;
         });
     }
 
 function changeOrder(select, itemId) {
-    const listItem = select.closest('.draggabled');
+    const listItem = select.closest('.draggabledsss');
     const newIndex = parseInt(select.value) - 1;
 
     itemList.insertBefore(listItem, itemList.children[newIndex]);
@@ -105,7 +99,7 @@ function changeOrder(select, itemId) {
         Array.from(itemList.children).forEach(item => {
             orderData.push({
                 id: item.getAttribute('data-id'),
-                order: item.querySelector('.order-select').value
+                order: item.querySelector('.order-selectss').value
             });
         });
         return orderData;
@@ -130,10 +124,6 @@ function changeOrder(select, itemId) {
         xhr.send('orderData=' + encodeURIComponent(JSON.stringify(orderData)));
     }
 </script>
-<!-- Bootstrap JS (opcional, mas necessário para recursos específicos como tooltips) -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 <script>
     function voltar() {

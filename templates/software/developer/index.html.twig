@@ -79,16 +79,14 @@
 			<div class="column-header">Pendência</div>
 			<ul class="task-list" id="todo-list" ondrop="drop(event)" ondragover="allowDrop(event)">
 				{% for s in step %}
-					{% if  s.status != 'reprovado' and  s.status != 'pedido de mudança' and s.status != 'teste usario' and s.status != 'change request man'  and s.status != 'change request' and s.status != 'teste ti' and s.status != 'aguardando implantação' and s.status != 'em andamento' and s.status != 'implantado' %}
+					{% if s.status != 'não implementado' and   s.status != 'reprovado' and  s.status != 'pedido de mudança' and s.status != 'teste usario' and s.status != 'change request man'  and s.status != 'change request' and s.status != 'teste ti' and s.status != 'aguardando implantação' and s.status != 'em andamento' and s.status != 'implantado' %}
 						<li class="task" id="{{s.id}}" data-toggle="modal" data-target="#Contato{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}}</li>
 					{% endif %}
 				{% endfor %}
 			</ul>
 		</div>
-
 		<div class="column col-md-3 mb-3">
 			<div class="column-header">Em andamento</div>
-
 			<ul class="task-list" id="done-list" ondrop="drop(event)" ondragover="allowDrop(event)">
 				{% for s in step %}
 					{% if s.status == 'em andamento'  %}
@@ -99,7 +97,6 @@
 				{% endfor %}
 			</ul>
 		</div>
-
 		<div class="column col-md-3 mb-3">
 			<div class="column-header">Teste TI</div>
 			<ul class="task-list" id="done-list" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -111,12 +108,9 @@
 				{% endfor %}
 			</ul>
 		</div>
-
-
 		<div class="column col-md-3 mb-3">
 			<div class="column-header">Teste usario</div>
 			<ul class="task-list" id="done-list">
-
 				{% for s in step %}
 					{% if s.status == 'teste usario'  %}
 						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}</li>
@@ -124,12 +118,9 @@
 				{% endfor %}
 			</ul>
 		</div>
-
 		<div class="column col-md-6 mb-3">
 			<div class="column-header">Aguardando implantação</div>
 			<ul class="task-list" id="done-list">
-
-
 				{% for s in step %}
 					{% if s.status == 'aguardando implantação'  %}
 						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}
@@ -155,10 +146,19 @@
 		<div class="column col-md-6 mb-3">
 			<div class="column-header">Reprovado</div>
 			<ul class="task-list" id="done-list">
-
-
 				{% for s in step %}
 					{% if s.status == 'reprovado'  %}
+						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>		
+		<div class="column col-md-6 mb-3">
+			<div class="column-header">Não implementado</div>
+			<ul class="task-list" id="done-list">
+				{% for s in step %}
+					{% if s.status == 'não implementado'  %}
 						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}
 						</li>
 					{% endif %}
@@ -203,7 +203,7 @@
 										</ul>
 										<br>
 										<br>
-										<a href="{{path('download_zip',{'id':m.id} )}}" style="
+										<a href="{{path('download_zip',{'id':m.id,'sId': s.ariquivo.id} )}}" style="
 																																																												  						border: none;
 																																																												  						background-color: #0c2c01;
 																																																												  						padding: 10px 20px;
@@ -328,16 +328,21 @@
 										<br>
 									{% endif %}	
 									
-									{% if person in muds.developers and s.status != 'pedido de mudança' and s.status != 'pendência'   and s.status == 'em andamento' %}
+									{% if person in muds.developers  %}
+									{% if  s.status != 'pendência'   or s.status == 'em andamento' %}
+										
 										<input id="1files" style="width: 100%" name="1files" type="file" style="width:100%">
+									{% endif %}
 									{% endif %}
 								</li>
 
 							</div>
 
 							<div class="modal-footer">
-								{% if person in muds.developers and s.status != 'pedido de mudança' and s.status != 'pendência'   and s.status == 'em andamento' %}
+								{% if person in muds.developers  %}
+									{% if  s.status != 'pendência'   or s.status == 'em andamento' %}
 									<button type="Submit" class="btn btn-info mt-2 text-white btn-secondary">Enviar</button>
+								{% endif %}
 								{% endif %}
 								<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
 							</div>

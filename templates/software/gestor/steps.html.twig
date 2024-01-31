@@ -65,9 +65,8 @@
 		}
 
 		#a {
-			background: hsl(0 0% 20% / 0.18);
+			background: #17a2b8;
 			display: inline-block;
-			padding: var(--size-2) var(--size-4);
 			border-radius: var(--radius-5);
 			margin: 0;
 			color: var(--blue-0);
@@ -123,6 +122,78 @@
 			/* less specificity, this style might not work  */
 			width: 400px;
 		}
+
+
+				.download-button {
+			position: relative;
+			border-width: 0;
+			color: white;
+			font-size: 15px;
+			font-weight: 600;
+			border-radius: 4px;
+			z-index: 1;
+		}
+
+		.download-button .docs {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+			min-height: 40px;
+			padding: 0 10px;
+			border-radius: 4px;
+			z-index: 1;
+			background-color: #242a35;
+			border: solid 1px #e8e8e82d;
+			transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+		}
+
+		.download-button:hover {
+			box-shadow: rgba(0, 0, 0, 0.25) 0 54px 55px, rgba(0, 0, 0, 0.12) 0 -12px 30px, rgba(0, 0, 0, 0.12) 0 4px 6px, rgba(0, 0, 0, 0.17) 0 12px 13px, rgba(0, 0, 0, 0.09) 0 -3px 5px;
+		}
+
+		.download {
+		position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 20%;
+    /* margin: revert; */
+    margin-left: 80%;
+    z-index: -1;
+    border-radius: 4px;
+    transform: translateX(0%);
+    background-color: #01e056;
+    border: solid -7px #01e0572d;
+    transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+		}
+
+
+		.download-button:hover .download {
+			transform: translateX(100%)
+		}
+
+		.download svg polyline,
+		.download svg line {
+			animation: docs 1s infinite;
+		}
+
+		@keyframes docs {
+			0% {
+				transform: translateY(0%);
+			}
+
+			50% {
+				transform: translateY(-15%);
+			}
+
+			100% {
+				transform: translateY(0%);
+			}
+		}
+
+		
 	</style>
 	{{ include('flowBoard.html.twig') }}
 
@@ -162,7 +233,7 @@
 						<span id="span">
 							<svg id="svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
 								<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0
-																0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+																								0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
 							</svg>
 							Desenvolvedores
 						</span>
@@ -197,13 +268,13 @@
 	<h3>
 		Lista da fases:
 		<button style="
-													border: none;
-													background-color: green-light;
-													padding: 10px 20px;
-													border-radius: 10px;
-													color: #fff;
-													cursor: pointer;
-													transition: background .2s ease-in-out;" onclick="visArq()"><img style="width: 10px" src="{{ asset('visible.png') }}"/></button>
+																border: none;
+																background-color: green-light;
+																padding: 10px 20px;
+																border-radius: 10px;
+																color: #fff;
+																cursor: pointer;
+																transition: background .2s ease-in-out;" onclick="visArq()"><img style="width: 10px" src="{{ asset('visible.png') }}"/></button>
 	</h3>
 	<div class="row" id="arq">
 
@@ -231,32 +302,47 @@
 						{% if s.doc != null %}
 							<div class="col-md-6 mb-3">
 								<label>Anexo</label><br>
-								<a href="{{ asset('assets/') }}{{m.id}}/{{s.doc}}" style="
-																						  						border: none;
-																						  						background-color: #0c2c01;
-																						  						padding: 10px 20px;
-																						  						border-radius: 10px;
-																						  						color: #fff;
-																						  						cursor: pointer;
-																						  						transition: background .2s ease-in-out;">
-									⇬ Baixar arquivos
-								</a>
+								<button onclick="location.href='{{ asset('assets/') }}{{m.id}}/{{s.doc}}'" class="download-button">
+											<div class="docs">
+												<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="20" width="20" viewbox="0 0 24 24">
+													<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+													<polyline points="14 2 14 8 20 8"></polyline>
+													<line y2="13" x2="8" y1="13" x1="16"></line>
+													<line y2="17" x2="8" y1="17" x1="16"></line>
+													<polyline points="10 9 9 9 8 9"></polyline>
+												</svg>Anexo</div>
+											<div class="download">
+												<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="24" width="24" viewbox="0 0 24 24">
+													<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+													<polyline points="7 10 12 15 17 10"></polyline>
+													<line y2="3" x2="12" y1="15" x1="12"></line>
+												</svg>
+											</div>
+										</button>
 							</div>
 						{% endif %}
 
 						{% if s.docTest != null %}
 							<div class="col-md-6 mb-3">
-								<label>Anexo Teste</label><br>
-								<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
-																						  						border: none;
-																						  						background-color: #0c2c01;
-																						  						padding: 10px 20px;
-																						  						border-radius: 10px;
-																						  						color: #fff;
-																						  						cursor: pointer;
-																						  						transition: background .2s ease-in-out;">
-									⇬ Baixar arquivos teste
-								</a>
+								<label>Anexo De Teste</label><br>
+
+								<button onclick="location.href='{{ asset('assets/') }}{{m.id}}/{{s.docTest}}'" class="download-button">
+											<div class="docs">
+												<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="20" width="20" viewbox="0 0 24 24">
+													<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+													<polyline points="14 2 14 8 20 8"></polyline>
+													<line y2="13" x2="8" y1="13" x1="16"></line>
+													<line y2="17" x2="8" y1="17" x1="16"></line>
+													<polyline points="10 9 9 9 8 9"></polyline>
+												</svg>Anexo de Teste</div>
+											<div class="download">
+												<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="24" width="24" viewbox="0 0 24 24">
+													<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+													<polyline points="7 10 12 15 17 10"></polyline>
+													<line y2="3" x2="12" y1="15" x1="12"></line>
+												</svg>
+											</div>
+										</button>
 							</div>
 						{% endif %}
 					</div>
@@ -268,85 +354,56 @@
 	<form class="form-group" action="{{path('app_software_gestor_add_steps',{'id':m.id} )}}" enctype="multipart/form-data" method="post">
 		<div class="row" name="test2" id="test2"></div>
 		<div class="col-md-12 mb-3">
-			<input id="btnSubsq" style="
-																min-width: 86px;
-																height: 32px;
-																display: -ms-flexbox;
-																display: flex;
-																-ms-flex-align: center;
-																align-items: center;
-																-ms-flex-pack: center;
-																justify-content: center;
-																background: #afbace;
-																color: #fff;
-																box-shadow: none;
-																border-radius: 4px;
-																padding: 0 5px;
-																border: none;" type="submit" value="Adicionar"/>
+			<input id="btnSubsq" class="btn btn-info mt-2 text-white"  role="button"type="submit" value="Adicionar"/>
 		</div>
 	</form>
 
-	{% if m.mangerMudancas  == person and muds.appGestor == null  %}
-		
-		<div class="col-md-3 mb-3">
-			<a class="btn" style="
-				min-width: 86px;
-				height: 32px;
-				display: -ms-flexbox;
-				display: flex;
-				-ms-flex-align: center;
-				align-items: center;
-				-ms-flex-pack: center;
-				justify-content: center;
-				background: #afbace;
-				color: #fff;
-				box-shadow: none;
-				border-radius: 4px;
-				padding: 0 5px;
-				border: none;" onclick="myFunction()">+ Adicionar Fase</a>
-		</div>
+	{% if m.mangerMudancas  == person and muds.appGestor == null and sd|length > 0 %}
 
-	{% endif %}
-{% if step|length != 0   and imp == true %}
 	
-	{{ form_start(formApp, {'attr':{'class':'form-group'}}) }}
-	<div class="row">
-		<div class="col-md-12 mb-3">
-			{{ form_label(formApp.appGestor) }}
-			{{ form_widget(formApp.appGestor,{'attr':{'class':'form-control'}}) }}
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-12 mb-3">
-			{{ form_label(formApp.commentGestor) }}
-			{{ form_widget(formApp.commentGestor,{'attr':{'class':'form-control'}}) }}
-		</div>
-	</div>
+<a id="btn" class="btn btn-info mt-2 text-white" onclick="myFunction()" role="button">Adicionar novo Fase</a>
 
-	{% if m.appGest == null  and imp == true %}
-
-		{% if m.mangerMudancas == person %}
-			<input id="btnSubsq" style="
-																	min-width: 86px;
-																	height: 32px;
-																	display: -ms-flexbox;
-																	display: flex;
-																	-ms-flex-align: center;
-																	align-items: center;
-																	-ms-flex-pack: center;
-																	justify-content: center;
-																	background: #afbace;
-																	color: #fff;
-																	box-shadow: none;
-																	border-radius: 4px;
-																	padding: 0 5px;
-																	border: none;" type="submit" value="Approvar"/>
-		{% endif %}
 	{% endif %}
-	{{ form_end(formApp) }}
+	{% if step|length != 0   and imp == true %}
+
+		{{ form_start(formApp, {'attr':{'class':'form-group'}}) }}
+		<div class="row">
+			<div class="col-md-12 mb-3">
+				{{ form_label(formApp.appGestor) }}
+				{{ form_widget(formApp.appGestor,{'attr':{'class':'form-control'}}) }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 mb-3">
+				{{ form_label(formApp.commentGestor) }}
+				{{ form_widget(formApp.commentGestor,{'attr':{'class':'form-control'}}) }}
+			</div>
+		</div>
+
+		{% if m.appGest == null  and imp == true %}
+
+			{% if m.mangerMudancas == person %}
+				<input id="btnSubsq" style="
+																						min-width: 86px;
+																						height: 32px;
+																						display: -ms-flexbox;
+																						display: flex;
+																						-ms-flex-align: center;
+																						align-items: center;
+																						-ms-flex-pack: center;
+																						justify-content: center;
+																						background: #afbace;
+																						color: #fff;
+																						box-shadow: none;
+																						border-radius: 4px;
+																						padding: 0 5px;
+																						border: none;" type="submit" value="Approvar"/>
+			{% endif %}
+		{% endif %}
+		{{ form_end(formApp) }}
 
 
-{% endif %}
+	{% endif %}
 	{% if m.implemented !=  null %}
 		{% if m.implemented == 1 or m.implemented == 2 and m.dateOfImp != null %}
 			<div class="row">
@@ -475,26 +532,26 @@ hiddenInput2.value = textarea.value;
 				{% endif %}
 				<script type="text/babel">
 					const dropContainer = document.getElementById("dropcontainer")
-							const fileInput = document.getElementById("mudancas_gestor_software_docs")
-							
-							dropContainer.addEventListener("dragover", (e) => {
-							  // prevent default to allow drop
-							  e.preventDefault()
-							}, false)
-							
-							dropContainer.addEventListener("dragenter", () => {
-							  dropContainer.classList.add("drag-active")
-							})
-							
-							dropContainer.addEventListener("dragleave", () => {
-							  dropContainer.classList.remove("drag-active")
-							})
-							
-							dropContainer.addEventListener("drop", (e) => {
-							  e.preventDefault()
-							  dropContainer.classList.remove("drag-active")
-							  fileInput.files = e.dataTransfer.files
-							})
+												const fileInput = document.getElementById("mudancas_gestor_software_docs")
+												
+												dropContainer.addEventListener("dragover", (e) => {
+												  // prevent default to allow drop
+												  e.preventDefault()
+												}, false)
+												
+												dropContainer.addEventListener("dragenter", () => {
+												  dropContainer.classList.add("drag-active")
+												})
+												
+												dropContainer.addEventListener("dragleave", () => {
+												  dropContainer.classList.remove("drag-active")
+												})
+												
+												dropContainer.addEventListener("drop", (e) => {
+												  e.preventDefault()
+												  dropContainer.classList.remove("drag-active")
+												  fileInput.files = e.dataTransfer.files
+												})
 
 				</script>
 				<script>
@@ -522,8 +579,7 @@ document.getElementById("btnSubsq").style.display = 'none';
 function func2(id, id2) {
 var e = document.getElementById(id);
 var value = e.options[e.selectedIndex].value;
-var text = e.options[e.selectedIndex].text;{% for item in sd %}
-if ("{{ item.id }}" === value) {
+var text = e.options[e.selectedIndex].text;{% for item in sd %}if ("{{ item.id }}" === value) {
 document.getElementById(id2).value = "{{ item.id }}";
 }
 {% endfor %}
@@ -557,16 +613,11 @@ select.setAttribute('id', i + 'a');
 select.setAttribute('onchange', 'func2("' + i + 'a","' + i + 'b")');
 select.setAttribute('name', i + 'a');
 select.setAttribute('class', 'form-control');
-document.getElementById(i + 'selectArquivo').appendChild(select);{% for items in sd %}
-
-var node4Op1 = document.createElement("option");
+document.getElementById(i + 'selectArquivo').appendChild(select);{% for items in sd %}var node4Op1 = document.createElement("option");
 node4Op1.setAttribute('selected', 'selected');
 node4Op1.setAttribute('value', "{{ items.id }}");
 node4Op1.innerHTML = "{{ items.step }}";
-document.getElementById(i + 'a').appendChild(node4Op1);{% endfor %}
-
-
-const div = document.createElement("div");
+document.getElementById(i + 'a').appendChild(node4Op1);{% endfor %}const div = document.createElement("div");
 div.setAttribute('id', i + 'div');
 div.setAttribute('class', 'col-md-3 mb-3');
 document.getElementById(i + 'test').appendChild(div);

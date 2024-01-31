@@ -227,8 +227,7 @@
 	}
 </style>
 
-<div
-	class="card">
+<div class="card">
 	<!-- Icons and links -->
 
 	{% set dev = false %}
@@ -238,8 +237,7 @@
 		{% endif %}
 	{% endfor %}
 
-
-{% set icons = [
+	{% set icons = [
     {   
         'path': 'mudancas', 'image': asset('analysing.png'), 'text': 'Relatório de Mudanças', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
         'btn': 
@@ -247,9 +245,10 @@
                 {'name':'Fluxos de processo', 'path':path('flow',{'id':m.id} ) },
                 {'name':'Mudanças de informação', 'path':path('Softindex', {'id': m.id})}
             ]
-    },
-    
-    {
+    },] %}
+
+	{% if m.areaResp.manager == person %}
+		{% set iconItem = {
         'path': 'Solicitante_software', 'image': 'https://i.imgur.com/9nnc9Et.png', 
         'text': 'Gerente de Aprovação', 'progress': 2, 
         'desc': 'Gerente Ti "Priorização de mudanças" e "Aprovação da exigência de mudança".', 
@@ -258,96 +257,128 @@
                 {'name':'Priorização das mudanças', 'path':path('orderMudancas',{'id':m.id} )},
               	{'name':'Change Request', 'path':path('app_software_gestor_changeRequest',{'id':m.id} )},
             ]
-    },
-    {
-        'path': 'test_solicitante_software', 'image': asset('approve.png'), 
-        'text': 'Solicitante', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
-        'btn': 
-            [
-                {'name':'Requisitos', 'path': path('app_software_sol_documentation',{'id':m.id} )},
-                {'name':'Testes', 'path':path('app_software_solicitante_test',{'id':m.id} )},
-                {'name':'Implantação', 'path':path('app_software_solicitante_imp',{'id':m.id} )}
-            ]
-    },
-    {
-        'path': 'Gestor', 'image': asset('testing.png'), 'text': 'Gestor da Mudança', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
-        'btn': 
-            [
-                {'name':'Requisitos', 'path':path('app_software_gestor_documentation',{'id':m.id} )},
-                {'name':'Fases', 'path':path('app_software_gestor_steps',{'id':m.id} )},
-                {'name':'Teste', 'path':path('app_software_gestor_test',{'id':m.id} )},
-            ]
-    },
-    {
+    } %}
+
+		{% set icons = icons|merge([iconItem]) %}
+	{% endif %}
+
+
+	{% if m.addBy == person %}
+		{% set iconItem = {
+         'path': 'test_solicitante_software', 'image': asset('approve.png'), 
+	        'text': 'Solicitante', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
+	        'btn': 
+	            [
+	                {'name':'Requisitos', 'path': path('app_software_sol_documentation',{'id':m.id} )},
+	                {'name':'Testes', 'path':path('app_software_solicitante_test',{'id':m.id} )},
+	                {'name':'Implantação', 'path':path('app_software_solicitante_imp',{'id':m.id} )}
+	            ]
+	  
+    } %}
+
+		{% set icons = icons|merge([iconItem]) %}
+	{% endif %}
+
+
+	{% if m.mangerMudancas == person %}
+		{% set iconItem = {
+         'path': 'Gestor', 'image': asset('testing.png'), 'text': 'Gestor da Mudança', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
+		        'btn': 
+		            [
+		                {'name':'Requisitos', 'path':path('app_software_gestor_documentation',{'id':m.id} )},
+		                {'name':'Fases', 'path':path('app_software_gestor_steps',{'id':m.id} )},
+		                {'name':'Teste', 'path':path('app_software_gestor_test',{'id':m.id} )},
+		            ]
+    } %}
+
+		{% set icons = icons|merge([iconItem]) %}
+	{% endif %}
+
+
+	{% set dev = false %}
+	{% for item in m.mudS.developers %}
+		{% if item == person %}
+			{% set dev = true %}
+		{% endif %}
+	{% endfor %}
+
+
+	{% if dev %}
+		{% set iconItem = {
+
         'path': 'dev_software', 'image': asset('software-development.png'), 'text': 'Desenvolvedor', 'progress': 2, 'desc': 'Relatório de Mudanças: Aqui você terá acesso a todas as informações essenciais sobre as mudanças.', 
         'btn': 
             [
                 {'name':'Fases', 'path':path('app_software_devs_steps',{'id':m.id} )},
             ]
-    },
-]%}
+    } %}
 
-{% if m.mudS.stepsGestor != null %}
-    {% set docs = 2 %}
-    {% set docsmin = 7 %}
-    {% set muds = m.mudS  %}
-    {% for sg  in muds.stepsGestor %}
-		 {% for step in sg.steps %}
-            {% if step.status == 'implantado' or step.status == 'aguardando implantação' %}
-                {% set docs = 6 %}
-            {% elseif step.status == 'teste usario' %}
-                {% set docs = 5 %}
-			{% elseif step.status == 'teste ti' %}
-				{% set docs = 4 %}
-            {% elseif step.status == 'em andamento' or step.status == 'pendência' %}
-                {% set docs = 3 %}
-			{% else %}
-				{% set docs = 2 %}
-			{% endif %}
+		{% set icons = icons|merge([iconItem]) %}
+	{% endif %}
 
-			
 
-			{% if docs <= docsmin %}
-    			{% set docsmin = docs %}
-			{% endif %}
-			
-        {% endfor %}
-        
+	{% if m.mudS.stepsGestor != null %}
+		{% set docs = 2 %}
+		{% set docsmin = 7 %}
+		{% set muds = m.mudS  %}
+		{% for sg  in muds.stepsGestor %}
+			{% for step in sg.steps %}
+				{% if step.status == 'implantado' or step.status == 'aguardando implantação' %}
+					{% set docs = 6 %}
+				{% elseif step.status == 'teste usario' %}
+					{% set docs = 5 %}
+				{% elseif step.status == 'teste ti' %}
+					{% set docs = 4 %}
+				{% elseif step.status == 'em andamento' or step.status == 'pendência' %}
+					{% set docs = 3 %}
+				{% else %}
+					{% set docs = 2 %}
+				{% endif %}
+
+
+				{% if docs <= docsmin %}
+					{% set docsmin = docs %}
+				{% endif %}
+
+			{% endfor %}
+
+		{% else %}
+			{% set docs = 1 %}
+
+		{% endfor %}
 	{% else %}
-				{% set docs = 1 %}
+		{% set docs = 1 %}
+	{% endif %}
 
-    {% endfor %}
-{% else %}
-    {% set docs = 1 %}
-{% endif %}
+	{% if docs <= docsmin %}
+		{% set docsmin = docs %}
+	{% endif %}
+	{% set docs = docsmin %}
+	<!-- Add class 'active' to progress -->
+	<div class="row d-flex justify-content-center">
+		<div class="col-12">
+			<ul id="progressbar" class="text-center">
+				<li class="step0 {% if docs >= 1 %}active{% endif %}">Inicialização</li>
+				<li class="step0 {% if docs >= 2 %}active{% endif %}">Documentação</li>
+				<li class="step0 {% if docs >= 3 %}active{% endif %}">Desenvolvimentos</li>
+				<li class="step0 {% if docs >= 4 %}active{% endif %}">Teste de TI</li>
+				<li class="step0 {% if docs >= 5 %}active{% endif %}">Teste do Solicitante
+				</li>
+				<li class="step0 {% if docs >= 6 %}active{% endif %}">Implantação</li>
+			</ul>
+		</div>
+	</div>
 
-			{% if docs <= docsmin %}
-    			{% set docsmin = docs %}
-			{% endif %}
-    			{% set docs = docsmin %}
-<!-- Add class 'active' to progress -->
-<div class="row d-flex justify-content-center">
-    <div class="col-12">
-        <ul id="progressbar" class="text-center">
-			<li class="step0 {% if docs >= 1 %}active{% endif %}">Inicialização</li>
-			<li class="step0 {% if docs >= 2 %}active{% endif %}">Documentação</li>
-			<li class="step0 {% if docs >= 3 %}active{% endif %}">Desenvolvimentos</li>
-			<li class="step0 {% if docs >= 4 %}active{% endif %}">Teste de TI</li>
-			<li class="step0 {% if docs >= 5 %}active{% endif %}">Teste do Solicitante </li>
-			<li class="step0 {% if docs >= 6 %}active{% endif %}">Implantação</li>
-        </ul>
-    </div>
-</div>
-
-	<div class="row justify-content-between top">
+	<div class="row justify-content-space-around top">
 
 		{% for icon in icons %}
-			<div class="row d-flex icon-content">
+			<div style="padding-left: 25px; padding-right: 10px " class="row d-flex icon-content">
 				<a style="text-decoration: none;" data-toggle="modal" data-target="#{{ icon['path'] }}Modal">
 					<img class="icon" src="{{ icon['image'] }}" alt="{{ icon['text'] }}"/>
 				</a>
-				<div class="d-flex flex-column">
-				{# Check if 'gestor' parameter is present in the URL #}
+				<div
+					class="d-flex flex-column">
+					{# Check if 'gestor' parameter is present in the URL #}
 					{% if icon['text'] == 'Gestor da Mudança' and 'gestor' in app.request.uri %}
 						<a style="color: #00C9A7; text-decoration: none;" data-toggle="modal" data-target="#{{ icon['path'] }}Modal">
 							<p class="font-weight-bold">{{ icon['text'] }}</p>
@@ -364,7 +395,7 @@
 						<a style="color: #00C9A7; text-decoration: none;" data-toggle="modal" data-target="#{{ icon['path'] }}Modal">
 							<p class="font-weight-bold">{{ icon['text'] }}</p>
 						</a>
-					
+
 					{% elseif icon['text'] == 'Relatório de Mudanças' and '/mudancas/software/' in app.request.uri  %}
 						<a style="color: #00C9A7; text-decoration: none;" data-toggle="modal" data-target="#{{ icon['path'] }}Modal">
 							<p class="font-weight-bold">{{ icon['text'] }}</p>

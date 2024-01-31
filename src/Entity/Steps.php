@@ -68,6 +68,9 @@ class Steps
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $screendevend = null;
 
+    #[ORM\OneToOne(targetEntity: self::class, cascade: ['persist', 'remove'])]
+    private ?self $Step = null;
+
 
     /***  */
     public function getStatus(): ?string
@@ -253,6 +256,18 @@ class Steps
     public function setScreendevend(?string $screendevend): static
     {
         $this->screendevend = $screendevend;
+
+        return $this;
+    }
+
+    public function getStep(): ?self
+    {
+        return $this->Step;
+    }
+
+    public function setStep(?self $Step): static
+    {
+        $this->Step = $Step;
 
         return $this;
     }

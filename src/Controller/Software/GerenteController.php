@@ -25,13 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class GerenteController extends AbstractController
 {
 
-    #[Route('/software/gerente', name: 'app_software_gerente')]
-    public function index(): Response
-    {
-        return $this->render('software/gerente/index.html.twig', [
-            'controller_name' => 'GerenteController',
-        ]);
-    }
+
 
     
     #[Route('/mudancas/software/Gerente/Aprocao/{id}', name: 'gerente_software')]

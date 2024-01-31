@@ -25,33 +25,100 @@
 			border-radius: 10px; /* Set the border radius as needed */
 			z-index: 999999; /* Set a high z-index for the card */
 		}
+
+
+		.download-button {
+			position: relative;
+			border-width: 0;
+			color: white;
+			font-size: 15px;
+			font-weight: 600;
+			border-radius: 4px;
+			z-index: 1;
+		}
+
+		.download-button .docs {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+			min-height: 40px;
+			padding: 0 10px;
+			border-radius: 4px;
+			z-index: 1;
+			background-color: #242a35;
+			border: solid 1px #e8e8e82d;
+			transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+		}
+
+		.download-button:hover {
+			box-shadow: rgba(0, 0, 0, 0.25) 0 54px 55px, rgba(0, 0, 0, 0.12) 0 -12px 30px, rgba(0, 0, 0, 0.12) 0 4px 6px, rgba(0, 0, 0, 0.17) 0 12px 13px, rgba(0, 0, 0, 0.09) 0 -3px 5px;
+		}
+
+		.download {
+			position: absolute;
+			inset: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			max-width: 20%;
+			/* margin: revert; */
+			margin-left: 80%;
+			z-index: -1;
+			border-radius: 4px;
+			transform: translateX(0%);
+			background-color: #01e056;
+			border: solid -7px #01e0572d;
+			transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+		}
+
+
+		.download-button:hover .download {
+			transform: translateX(100%)
+		}
+
+		.download svg polyline,
+		.download svg line {
+			animation: docs 1s infinite;
+		}
+
+		@keyframes docs {
+			0% {
+				transform: translateY(0%);
+			}
+
+			50% {
+				transform: translateY(-15%);
+			}
+
+			100% {
+				transform: translateY(0%);
+			}
+		}
+
+		#liD {
+			margin-bottom: -35px;
+		}
 	</style>
 
 	{{ include('flowBoard.html.twig') }}
+	<h1 style="text-align: center;">Requisitos</h1>
+	<br>
 
+
+	<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
 	<div class="row">
 
 		{% if sd is null %}
 
 			{% else %}
-				<h3>
-					Lista de arquivos rejeitados ou aceitos:
-					<button style="
-										border: none;
-										background-color: green-light;
-										padding: 10px 20px;
-										border-radius: 10px;
-										color: #fff;
-										cursor: pointer;
-										transition: background .2s ease-in-out;" onclick="visArq()"><img style="width: 10px" src="{{ asset('visible.png') }}"/></button>
-				</h3>
 				<div id="arq">
 					{% for s in sd %}
 						<div class="row">
 							{% if s.approveSol != '' %}
 								<div id="{{s.id}}" class="row col-md-12 mb-3 justify-content-between">
 									<div id="div" class="col-md-3 mb-3">
-										<label for="1">Fase</label>
+										<label for="1">Requisito</label>
 										<input class="form-control" id="{{s.id}}" name="{{s.id}}" value="{{s.step}}" type="text" readonly/>
 									</div>
 									<div id="div3" class="col-md-3 mb-3">
@@ -66,250 +133,343 @@
 
 									<div id="div6" class="col-md-2 mb-3">
 										<label for="{{s.id}}file">Aprovação</label>
-										<input id="{{s.id}}stat" name="{{s.id}}stat" value="{{s.approveSol}}" {% if s.approveSol == "Reprovar" %}
-											style="width: 100%; background-color: red;"
-											{% elseif s.approveSol == "Aprovar" %}style="width: 100%; background-color: #20c997;"
-										{% endif %} type="text" readonly/>
-			
+										<input id="{{s.id}}stat" name="{{s.id}}stat" value="{{s.approveSol}}" {% if s.approveSol == "Reprovar" %} style="width: 100%; background-color: red;" {% elseif s.approveSol == "Aprovar" %} style="width: 100%; background-color: #20c997;" {% endif %} type="text" readonly/>
+
 									</div>
+
 									{% if s.doc != null %}
-										<div class="col-md-3 mb-3">
-											<label>Anexo</label><br>
-      										<a href="{{ asset('assets/') }}{{m.id}}/{{s.doc}}" style="
-															  						border: none;
-															  						background-color: #0c2c01;
-															  						padding: 10px 20px;
-															  						border-radius: 10px;
-															  						color: #fff;
-															  						cursor: pointer;
-															  						transition: background .2s ease-in-out;">
-												⇬ Baixar arquivos 
-											</a>
+										<div class="col-md-6 mb-3">
+											<label>Anexo de Especificação</label><br>
+											<ul>
+												{% for key, f in files %}
+													{% if key == s.id %}
+														{% for file in f %}
+															<li id="liD">
+																<button onclick="location.href='{{ asset('assets/') }}{{ m.id }}/documentation/{{ s.id }}/{{ file }}'" class="download-button">
+																	<div class="docs">
+																		<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="20" width="20" viewbox="0 0 24 24">
+																			<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+																			<polyline points="14 2 14 8 20 8"></polyline>
+																			<line y2="13" x2="8" y1="13" x1="16"></line>
+																			<line y2="17" x2="8" y1="17" x1="16"></line>
+																			<polyline points="10 9 9 9 8 9"></polyline>
+																		</svg>
+																		{{ file }}
+																	</div>
+																	<div class="download">
+																		<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="24" width="24" viewbox="0 0 24 24">
+																			<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+																			<polyline points="7 10 12 15 17 10"></polyline>
+																			<line y2="3" x2="12" y1="15" x1="12"></line>
+																		</svg>
+																	</div>
+																</button>
+															</li>
+															<br>
+															<br>
+
+														{% endfor %}
+													{% endif %}
+												{% endfor %}
+
+
+												<li id="liD">
+													<button onclick="location.href='{{path('download_zip',{'id':m.id,'sId': s.id} )}}'" class="download-button">
+														<div class="docs">
+															<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="20" width="20" viewbox="0 0 24 24">
+																<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+																<polyline points="14 2 14 8 20 8"></polyline>
+																<line y2="13" x2="8" y1="13" x1="16"></line>
+																<line y2="17" x2="8" y1="17" x1="16"></line>
+																<polyline points="10 9 9 9 8 9"></polyline>
+															</svg>Anexo de Especificação (ZIP)</div>
+														<div class="download">
+															<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="24" width="24" viewbox="0 0 24 24">
+																<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+																<polyline points="7 10 12 15 17 10"></polyline>
+																<line y2="3" x2="12" y1="15" x1="12"></line>
+															</svg>
+														</div>
+													</button>
+												</li>
+
+											</ul>
+
 										</div>
 									{% endif %}
 
-									
-									{% if s.docTest != null %}
-										<div class="col-md-3 mb-3">
-											<label>Anexo Teste</label><br>
-      										<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
-															  						border: none;
-															  						background-color: #0c2c01;
-															  						padding: 10px 20px;
-															  						border-radius: 10px;
-															  						color: #fff;
-															  						cursor: pointer;
-															  						transition: background .2s ease-in-out;">
-												⇬ Baixar arquivos teste
-											</a>
-										</div>
-									{% endif %}
-									
-									{% if s.docClient != null %}
-										<div class="col-md-3 mb-3">
-											<label>Anexo Cliente</label><br>
-      										<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
-															  						border: none;
-															  						background-color: #0c2c01;
-															  						padding: 10px 20px;
-															  						border-radius: 10px;
-															  						color: #fff;
-																					width: 100%
-															  						cursor: pointer;
-															  						transition: background .2s ease-in-out;">
-												⇬ Baixar arquivos teste
-											</a>
-										</div>
-									{% endif %}
+									<div class="col-md-3 mb-3">
+										{% if s.docTest != null %}
+											<label>Anexo do teste</label><br>
+											<button onclick="location.href='{{ asset('assets/') }}{{m.id}}/{{s.docTest}}'" class="download-button">
+												<div class="docs">
+													<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="20" width="20" viewbox="0 0 24 24">
+														<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+														<polyline points="14 2 14 8 20 8"></polyline>
+														<line y2="13" x2="8" y1="13" x1="16"></line>
+														<line y2="17" x2="8" y1="17" x1="16"></line>
+														<polyline points="10 9 9 9 8 9"></polyline>
+													</svg>Anexo do teste</div>
+												<div class="download">
+													<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="24" width="24" viewbox="0 0 24 24">
+														<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+														<polyline points="7 10 12 15 17 10"></polyline>
+														<line y2="3" x2="12" y1="15" x1="12"></line>
+													</svg>
+												</div>
+											</button>
+										{% endif %}
+										<br>
+										<br>
+										{% if s.docClient != null %}
+											<label>Anexo do Cliente</label><br>
+											<button onclick="location.href='{{ asset('assets/') }}{{m.id}}/{{s.docClient}}'" class="download-button">
+												<div class="docs">
+													<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="20" width="20" viewbox="0 0 24 24">
+														<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+														<polyline points="14 2 14 8 20 8"></polyline>
+														<line y2="13" x2="8" y1="13" x1="16"></line>
+														<line y2="17" x2="8" y1="17" x1="16"></line>
+														<polyline points="10 9 9 9 8 9"></polyline>
+													</svg>Anexo do Cliente</div>
+												<div class="download">
+													<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="24" width="24" viewbox="0 0 24 24">
+														<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+														<polyline points="7 10 12 15 17 10"></polyline>
+														<line y2="3" x2="12" y1="15" x1="12"></line>
+													</svg>
+												</div>
+											</button>
+										{% endif %}
+									</div>
+
+									<div class="col-md-3 mb-3">
+										{% if s.dateClientApp != null %}
+											<label>Data e hora de aprovação do cliente:<br> {{s.dateClientApp}}</label> <br>
+										{% endif %}
+										<br>
+										{% if s.dateClientRep != null %}
+											<label>Data e hora da aprovação do Change Request: {{s.dateClientRep}}</label> <br>
+										{% endif %}
+									</div>
 								</div>
 							{% endif %}
 						</div>
 						{% else %}
 
 					{% endfor %}
-						<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
+					<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
 				</div>
-				<form action="{{path('app_software_sol_approve_documentation',{'id':m.id} )}}" id="formm" style="width: 100% " enctype="multipart/form-data" method="post">
-					
+				<form action="{{path('app_software_sol_approve_documentation',{'id':m.id} )}}" onsubmit="return validateForm(this);" id="formm" style="width: 100% " enctype="multipart/form-data" method="post">
+
 					{% set empty = "true" %}
 					{% for s in sd %}
 						{% if s.approveSol != 'Reprovar' and s.approveSol != 'Aprovar' %}
-						
+
 							{% set empty = "false" %}
-							<div id="{{s.id}}" class="row col-md-12 mb-3 justify-content-between">
+							<div id="{{s.id}}" class="row col-md-12 mb-3 d-flex justify-content-between">
 								<div id="div" class="col-md-3 mb-3">
-									<label for="1">Fase</label>
+									<label for="1">Requisito</label>
 									<input class="form-control" id="{{s.id}}" name="{{s.id}}" value="{{s.step}}" type="text" readonly/>
 								</div>
 								<div id="div3" class="col-md-3 mb-3">
 									<label for="{{s.id}}desc">Comentário</label>
 									<input id="{{s.id}}desc" class="form-control" name="{{s.id}}desc" value="{{s.comment}}" type="text" readonly/>
 								</div>
-								<div id="div2" class="col-md-6 mb-3">
+								<div id="div2" class="col-md-4 mb-3">
 									<label for="{{s.id}}date">Data de Levantamento</label><br>
 									<input id="{{s.id}}date" name="{{s.id}}date" value="{{s.date|date('d-m-Y')}}" style="width: 100%" type="text" readonly/>
 								</div>
 
 
+								<div id="div6" class="col-md-2 mb-3">
+									<label for="{{s.id}}file">Aprovação</label>
+									<input id="{{s.id}}stat" name="{{s.id}}stat" value="{{s.approveSol}}" {% if s.approveSol == "Reprovar" %} {% set yourVariable = "false" %} style="width: 100%; background-color: red;" {% elseif s.approveSol == "Aprovar" %} {% set yourVariable = "true" %} style="width: 100%; background-color: #20c997;" {% else %} {% set yourVariable = "true" %} {% endif %} type="text" readonly/>
 
-						{% if s.doc != null %}
-							<div class="col-md-6 mb-3">
-								<label>Anexo</label><br>
-															<ul>
-    {% for file in files %}
-        <li><a href="{{ asset('assets/') }}{{m.id}}/documentation/{{file}}" >
-									    ⇬ Baixar {{file}} 
-								  </a></li>
-    {% endfor %}
-</ul>
-      							<a href="{{path('download_zip',{'id':m.id} )}}" style="
-												  						border: none;
-												  						background-color: #0c2c01;
-												  						padding: 10px 20px;
-												  						border-radius: 10px;
-												  						color: #fff;
-												  						cursor: pointer;
-												  						transition: background .2s ease-in-out;">
-									⇬ Baixar arquivos 
-								</a>
-							</div>
-						{% endif %}
+								</div>
+								{% if s.doc != null %}
+									<div class="col-md-3 mb-3">
+										<label>Anexo espicification</label><br>
+										<ul>
+											{% for key, f in files %}
+												{% if key == s.id %}
+													{% for file in f %}
+														<li id="liD">
+															<button onclick="location.href='{{ asset('assets/') }}{{ m.id }}/documentation/{{ s.id }}/{{ file }}'" class="download-button">
+																<div class="docs">
+																	<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="20" width="20" viewbox="0 0 24 24">
+																		<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+																		<polyline points="14 2 14 8 20 8"></polyline>
+																		<line y2="13" x2="8" y1="13" x1="16"></line>
+																		<line y2="17" x2="8" y1="17" x1="16"></line>
+																		<polyline points="10 9 9 9 8 9"></polyline>
+																	</svg>
 
-						{% if s.docTest != null %}
-							<div class="col-md-6 mb-3">
-								<label>Anexo Teste</label><br>
-      							<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
-												  						border: none;
-												  						background-color: #0c2c01;
-												  						padding: 10px 20px;
-												  						border-radius: 10px;
-												  						color: #fff;
-																		width: 100%
-												  						cursor: pointer;
-												  						transition: background .2s ease-in-out;">
-									⇬ Baixar arquivos teste
-								</a>
-							</div>
-						{% endif %}
+																	{{file}}</div>
+																<div class="download">
+																	<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="24" width="24" viewbox="0 0 24 24">
+																		<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+																		<polyline points="7 10 12 15 17 10"></polyline>
+																		<line y2="3" x2="12" y1="15" x1="12"></line>
+																	</svg>
+																</div>
+															</button>
+														</li>
 
-							<div id="div3" class="col-md-6 mb-3">
-								<label for="{{s.id}}de">Comentário</label>
-								<input id="{{s.id}}de" class="form-control" name="{{s.id}}de" value="" type="text" />
-							</div>
+														<br>
+														<br>
+													{% endfor %}
+												{% endif %}
 
-							<div id="div6" class="col-md-6 mb-3">
-								<label for="{{s.id}}file">Aprovação</label>
-								<select id="{{s.id}}stat" name="{{s.id}}stat" class="form-control" style="width:100% ;    height: 100%;"  value="{{s.approveSol}}">
-									{% if s.approveSol == 'Aprovar' %}
-										<option value="">Selecione a opção</option>
-										<option selected value="Aprovar">Aprovar</option>
-										<option value="Reprovar">Reprovar</option>
-									{% elseif s.approveSol == 'Reprovar' %}
-										<option value="">Selecione a opção</option>
-										<option value="Aprovar">Aprovar</option>
-										<option selected value="Reprovar">Reprovar</option>
-									{% else %}
-										<option selected value="">Selecione a opção</option>
-										<option value="Aprovar">Aprovar</option>
-										<option value="Reprovar">Reprovar</option>
-									{% endif %}
-								</select>
-							</div>
-							<div id="1div5" class="col-md-6 mb-3" bis_skin_checked="1"><label for="1files">Anexo Solicitante</label><input id="1files" name="1files" type="file" style="width:100%"></div>
-							</div>
-						<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
+											{% endfor %}
 
-						<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Flag to track whether validation has been performed
-    var validationPerformed = false;
+											<li id="liD">
+												<button onclick="location.href='{{path('download_zip',{'id':m.id,'sId': s.id} )}}'" class="download-button">
+													<div class="docs">
+														<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="20" width="20" viewbox="0 0 24 24">
+															<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+															<polyline points="14 2 14 8 20 8"></polyline>
+															<line y2="13" x2="8" y1="13" x1="16"></line>
+															<line y2="17" x2="8" y1="17" x1="16"></line>
+															<polyline points="10 9 9 9 8 9"></polyline>
+														</svg>Anexo de Especificação (ZIP)</div>
+													<div class="download">
+														<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="24" width="24" viewbox="0 0 24 24">
+															<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+															<polyline points="7 10 12 15 17 10"></polyline>
+															<line y2="3" x2="12" y1="15" x1="12"></line>
+														</svg>
+													</div>
+												</button>
+											</li>
 
-    // Function to show/hide div based on selected option
-    function toggleFileInputVisibility() {
-      var selectedOption = document.getElementById("{{s.id}}stat").value;
-      var fileInputDiv = document.getElementById("1div5");
+										</ul>
 
-      if (selectedOption === "Reprovar") {
-        fileInputDiv.style.display = "block";
-      } else {
-        fileInputDiv.style.display = "none";
-        // Clear the file input when not needed
-        document.getElementById("1files").value = "";
-      }
-    }
+									</div>
+								{% endif %}
 
-    // Attach the function to the change event of the dropdown
-    document.getElementById("{{s.id}}stat").addEventListener("change", toggleFileInputVisibility);
+								{% if s.docTest != null %}
+									<div class="col-md-2 mb-3">
+										<label>Anexo Teste</label><br>
+										<button onclick="location.href='{{ asset('assets/') }}{{m.id}}/{{s.docTest}}'" class="download-button">
+											<div class="docs">
+												<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="20" width="20" viewbox="0 0 24 24">
+													<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+													<polyline points="14 2 14 8 20 8"></polyline>
+													<line y2="13" x2="8" y1="13" x1="16"></line>
+													<line y2="17" x2="8" y1="17" x1="16"></line>
+													<polyline points="10 9 9 9 8 9"></polyline>
+												</svg>Anexo do teste</div>
+											<div class="download">
+												<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="24" width="24" viewbox="0 0 24 24">
+													<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+													<polyline points="7 10 12 15 17 10"></polyline>
+													<line y2="3" x2="12" y1="15" x1="12"></line>
+												</svg>
+											</div>
+										</button>
+									</div>
 
-    function validateForm(event) {
-      if (validationPerformed) {
-        return; // Validation already performed, exit the function
-      }
 
-      var selectedOption = document.getElementById("{{s.id}}stat").value;
-      var fileInputValue = document.getElementById("1files").value;
+								{% endif %}
 
-      console.log("Selected Option:", selectedOption);
-      console.log("File Input Value:", fileInputValue);
+								<div id="div3" class="col-md-6 mb-3">
+									<label for="{{s.id}}de">Comentário</label>
+									<input id="{{s.id}}de" class="form-control" name="{{s.id}}de" value="" type="text"/>
 
-      if (selectedOption === "Reprovar" && fileInputValue === "") {
-        alert("Por favor, faça o upload do arquivo ao reprovar a solicitação.");
-        event.preventDefault(); // Prevent form submission
-      }
 
-      // Set the flag to true to indicate that validation has been performed
-      validationPerformed = true;
+									<div style="width:100% ;    height: 50px;">
+										<label for="{{s.id}}file">Aprovação</label>
+										<select id="1stat" name="{{s.id}}stat" class="form-control" onchange="yesnoCheck(this);" style="width:100% ;    height: 100%;" value="{{s.approveSol}}">
+											{% if s.approveSol == 'Aprovar' %}
+												<option value="">Selecione a opção</option>
+												<option selected value="Aprovar">Aprovar</option>
+												<option value="Reprovar">Reprovar</option>
+											{% elseif s.approveSol == 'Reprovar' %}
+												<option value="">Selecione a opção</option>
+												<option value="Aprovar">Aprovar</option>
+												<option selected value="Reprovar">Reprovar</option>
+											{% else %}
+												<option selected value="">Selecione a opção</option>
+												<option value="Aprovar">Aprovar</option>
+												<option value="Reprovar">Reprovar</option>
+											{% endif %}
+										</select>
+									</div>
 
-      // Add any additional conditions if needed
-    }
+									<div id="1div5" style="padding-top: 50px;width:100% ;    height: 50px;" class="" bis_skin_checked="1">
+										<label for="1files">Anexo Solicitante</label><input id="1files" name="1files" type="file" style="width:100%"></div><br><br><br><br>
+								</div>
 
-    // Attach the validation function to the form submission
-    document.getElementById("formm").addEventListener("submit", validateForm);
-  });
-</script>
-						{% endif %}
-						<!-- Add a horizontal line as a separator -->
+								<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
+
+
+							{% endif %}
+							<!-- Add a horizontal line as a separator -->
 						{% else %}
-	<div class="col-md-12 mb-3">
-						Nenhum Arquivo disponível
-					</div>
-					{% endfor %}
-					{% if empty != "true" and m.addBy == person  %}
+							<div class="col-md-12 mb-3">
+								Nenhum Arquivo disponível
+							</div>
+						{% endfor %}
+						{% if empty != "true" and m.addBy == person  %}
+							<div class="col-md-12 mb-3">
+								<input id="btnSubsq" style="
+																		min-width: 86px;
+																		height: 32px;
+																		display: -ms-flexbox;
+																		display: flex;
+																		-ms-flex-align: center;
+																		align-items: center;
+																		-ms-flex-pack: center;
+																		justify-content: center;
+																		background: #afbace;
+																		color: #fff;
+																		box-shadow: none;
+																		border-radius: 4px;
+																		padding: 0 5px;
+																		border: none;" type="submit" onclick="yesnoCheck(this);" value="Atualizar"/>
+							</div>
+						{% endif %}
+					</form>
+				{% endif %}
+			</div>
+			<script>
 
-					<div class="col-md-12 mb-3">
-						<input id="btnSubsq" style="
-																			min-width: 86px;
-																			height: 32px;
-																			display: -ms-flexbox;
-																			display: flex;
-																			-ms-flex-align: center;
-																			align-items: center;
-																			-ms-flex-pack: center;
-																			justify-content: center;
-																			background: #afbace;
-																			color: #fff;
-																			box-shadow: none;
-																			border-radius: 4px;
-																			padding: 0 5px;
-																			border: none;" type="submit" value="Atualizar"/>
-					</div>
-					{% endif %}
-				</form>
-		{% endif %}
-	</div>
+				var fileInputDiv = document.getElementById("1div5");
+fileInputDiv.style.display = "none";
+var x = document.getElementById("arq");
+x.style.display = "none";
 
-	<script>      var fileInputDiv = document.getElementById("1div5");
- 		fileInputDiv.style.display = "none";
-		var x = document.getElementById("arq");
-		x.style.display = "none";
+function visArq() {
+if (x.style.display === "none") {
+x.style.display = "block";
+} else {
+x.style.display = "none";
+}
+}
 
-		function visArq() {
-			if (x.style.display === "none") {
-				x.style.display = "block";
-			} else {
-				x.style.display = "none";
-			}
-		}
-	</script>
 
-{% endblock %}
+function yesnoCheck(that) {
+if (that.value == "Reprovar") {
+document.getElementById("1div5").style.display = "block";
+} else {
+document.getElementById("1div5").style.display = "none";
+}
+}
+function validateForm(form) { // Check if the selected option is "Reprovar"
+var approvalStatus = document.getElementById("1stat").value;
+if (approvalStatus === "Reprovar") { // Check if the file input is empty
+var fileInput = document.getElementById("1files");
+if (fileInput.files.length === 0) {
+alert("Please upload a file when selecting 'Reprovar'.");
+return false; // Prevent form submission
+}
+}
+
+// You can add more validation checks as needed
+
+return true; // Allow form submission
+}
+			</script>
+
+		{% endblock %}

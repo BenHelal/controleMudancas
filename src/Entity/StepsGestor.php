@@ -49,6 +49,38 @@ class StepsGestor
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $docClient = null;
+    
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $dateClientApp = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $dateClientRep = null;
+
+    public function getDateClientRep(): ?string
+    {
+        return $this->dateClientRep;
+    }
+
+    public function setDateClientRep(string $dateClientRep): self
+    {
+        $this->dateClientRep = $dateClientRep;
+
+        return $this;
+    }
+    
+
+    public function getDateClientApp(): ?string
+    {
+        return $this->dateClientApp;
+    }
+
+    public function setDateClientApp(string $dateClientApp): self
+    {
+        $this->dateClientApp = $dateClientApp;
+
+        return $this;
+    }
+    
 
     #[ORM\OneToMany(mappedBy: 'ariquivo', targetEntity: Steps::class)]
     private Collection $steps;

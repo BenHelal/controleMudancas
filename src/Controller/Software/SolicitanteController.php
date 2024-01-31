@@ -40,21 +40,27 @@ class SolicitanteController extends AbstractController
             $mud = $em->getRepository(Mudancas::class)->find($id);
             $muds = $mud->getMudS();
 
-            //steps Gestor 
             $SD =  $muds->getStepsGestor();
-            if ($SD != null) {
-                $publicDirectory = $this->getParameter('kernel.project_dir');
-                $excelFilepath2 =  $publicDirectory . '/public/assets/' . $mud->getId() . '/documentation';
-                try {
-                    //code...
-                    $files = scandir($excelFilepath2);
-                    $files = array_diff($files, ['.', '..']);
-                } catch (\Throwable $th) {
-                    //throw $th;
-                    $files = "";
+            $filesAssociative = [];
+            foreach ($SD as $key => $sd) {
+                # code...
+                if ($SD != null) {
+                    $publicDirectory = $this->getParameter('kernel.project_dir');
+                    $excelFilepath2 = $publicDirectory . '/public/assets/' . $mud->getId() . '/documentation/' . $sd->getId();
+                    try {
+                        //code...
+                        $files = scandir($excelFilepath2);
+                        $files = array_diff($files, ['.', '..']);
+
+                        // Create an associative array with key as $sd->getId() and value as $files
+                        $filesAssociative[$sd->getId()] = $files;
+                    } catch (\Throwable $th) {
+                        // Handle the exception, if needed
+                        $filesAssociative[$sd->getId()] = [];
+                    }
+                } else {
+                    $filesAssociative[$sd->getId()] = [];
                 }
-            } else {
-                $files = "";
             }
             return $this->render('software/solicitante/documentation.html.twig', [
                 'login' => 'null',
@@ -63,7 +69,7 @@ class SolicitanteController extends AbstractController
                 'muds' => $muds,
                 'controller_name' => 'GestorController',
                 'sd' => $SD,
-                'files' => $files
+                'files' => $filesAssociative
             ]);
         } else {
             return $this->redirectToRoute('app_login');
@@ -89,12 +95,17 @@ class SolicitanteController extends AbstractController
             $muds = $mud->getMudS();
             $data = $request->request;
             $SD =  $muds->getStepsGestor();
+            
+            date_default_timezone_set("America/Sao_Paulo");
+            $time = new \DateTime();
+            $formattedTime = $time->format('Y-m-d H:i:s');
             // You can loop through all the parameters in the InputBag:
             foreach ($data->all() as $key => $value) {
                 for ($i = 0; $i < sizeof($SD); $i++) {
                     if ($key == $SD[$i]->getId() . 'stat') {
                         if (($value == 'Aprovar' || $value == 'Reprovar')) {
                             $sd = $em->getRepository(StepsGestor::class)->find($SD[$i]->getId());
+
                             $sd->setApproveSol($value);
                             // Repeated logic for handling both 'file' and 'files'
                             if ($request->files->get('1files') != null) {
@@ -104,9 +115,8 @@ class SolicitanteController extends AbstractController
                                 $request->files->get('1files')->move($excelFilepath, $fileName);
                                 $sd->setDocClient($fileName);
                             }
-                            $em->flush();
                             if ($value == 'Aprovar') {
-
+                                $sd->setDateClientApp($formattedTime );
                                 $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '4']);
                                 $email = new  Email();
                                 $email->setMudancas($mud);
@@ -117,6 +127,7 @@ class SolicitanteController extends AbstractController
                                 $em->persist($email);
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, com: $SD[$i]->getId() . 'de');
                             } else {
+                                $sd->setDateClientApp($formattedTime );
                                 $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '5']);
                                 $email = new  Email();
                                 $email->setMudancas($mud);
@@ -127,6 +138,7 @@ class SolicitanteController extends AbstractController
                                 $em->persist($email);
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, com: $SD[$i]->getId() . 'de');
                             }
+                            $em->flush();
                             return $this->redirectToRoute('app_software_sol_documentation', ['id' => $id]);
                         }
                     }

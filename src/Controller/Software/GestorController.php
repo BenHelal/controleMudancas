@@ -82,21 +82,28 @@ class GestorController extends AbstractController
             }
             //steps Gestor 
             $SD =  $muds->getStepsGestor();
+            $filesAssociative = [];
+            foreach ($SD as $key => $sd) {
+                # code...
+                if ($SD != null) {
+                    $publicDirectory = $this->getParameter('kernel.project_dir');
+                    $excelFilepath2 = $publicDirectory . '/public/assets/' . $mud->getId() . '/documentation/' . $sd->getId();
+                    try {
+                        //code...
+                        $files = scandir($excelFilepath2);
+                        $files = array_diff($files, ['.', '..']);
 
-            if ($SD != null) {
-                $publicDirectory = $this->getParameter('kernel.project_dir');
-                $excelFilepath2 =  $publicDirectory . '/public/assets/' . $mud->getId() . '/documentation';
-                try {
-                    //code...
-                    $files = scandir($excelFilepath2);
-                    $files = array_diff($files, ['.', '..']);
-                } catch (\Throwable $th) {
-                    //throw $th;
-                    $files = "";
+                        // Create an associative array with key as $sd->getId() and value as $files
+                        $filesAssociative[$sd->getId()] = $files;
+                    } catch (\Throwable $th) {
+                        // Handle the exception, if needed
+                        $filesAssociative[$sd->getId()] = [];
+                    }
+                } else {
+                    $filesAssociative[$sd->getId()] = [];
                 }
-            } else {
-                $files = "";
             }
+
             return $this->render('software/gestor/documentation.html.twig', [
                 'login' => 'null',
                 'person' => $person,
@@ -105,7 +112,7 @@ class GestorController extends AbstractController
                 'formInit' => $formInit,
                 'controller_name' => 'GestorController',
                 'sd' => $SD,
-                'files' => $files,
+                'files' => $filesAssociative,
             ]);
         } else {
             return $this->redirectToRoute('app_login');
@@ -160,9 +167,8 @@ class GestorController extends AbstractController
                 foreach ($request->files->get($fileKey) as $key => $value) {
                     $fileName = $value->getClientOriginalName();
                     $publicDirectory = $this->getParameter('kernel.project_dir');
-                    $excelFilepath = $publicDirectory . '/public/assets/' . $mud->getId() . '/documentation';
+                    $excelFilepath = $publicDirectory . '/public/assets/' . $mud->getId() . '/documentation/' . $steps->getId();
                     $value->move($excelFilepath, $fileName);
-
                     $steps->setDoc('documentation');
                 }
             }
@@ -201,13 +207,13 @@ class GestorController extends AbstractController
     }
 
     /**
-     * @Route("/download-zip/{id}", name="download_zip")
+     * @Route("/download-zip/{id}/{sId}", name="download_zip")
      */
-    public function downloadZipAction($id)
+    public function downloadZipAction($id, $sId)
     {
         $publicDirectory = $this->getParameter('kernel.project_dir');
-        $excelFilepath = $publicDirectory . '/public/assets/' . $id . '/documentation';
-        $zipFilename = $publicDirectory . '/public/assets/' . $id . '/documentation.zip';
+        $excelFilepath = $publicDirectory . '/public/assets/' . $id . '/documentation/' . $sId;
+        $zipFilename = $publicDirectory . '/public/assets/' . $id . '/documentation/Docs_' . $sId . '.zip';
 
 
         $this->zipFolder($excelFilepath, $zipFilename);
@@ -303,6 +309,16 @@ class GestorController extends AbstractController
                 }
             }
 
+            // To implementad
+            $sImp = [];
+            foreach ($SD as $keys => $val) {
+                foreach ($val->getSteps() as $keys => $values) {
+                    # code...
+                    if ($values->getStatus() == "aguardando implantação") {
+                        array_push($sImp, $values);
+                    }
+                }
+            }
 
             return $this->render('software/gestor/test.html.twig', [
                 'login' => 'null',
@@ -312,6 +328,7 @@ class GestorController extends AbstractController
                 'controller_name' => 'GestorController',
                 'sd' => $sd,
                 'step' => $s,
+                'sImp' => $sImp
             ]);
         } else {
             return $this->redirectToRoute('app_login');
@@ -329,7 +346,6 @@ class GestorController extends AbstractController
         $session = new Session();
         $session = $request->getSession();
         if ($session->get('token_jwt') != '') {
-
 
             $em = $doctrine->getManager();
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
@@ -352,7 +368,7 @@ class GestorController extends AbstractController
             foreach ($SD as $keys => $val) {
                 foreach ($val->getSteps() as $keys => $values) {
                     # code...
-                    if ($values->getStatus() == "teste ti") {
+                    if ($values->getStatus() == "teste ti" || $values->getStatus() == "aguardando implantação") {
                         array_push($s, $values);
                     }
                 }
@@ -360,6 +376,7 @@ class GestorController extends AbstractController
 
             $data = $request->request;
             for ($i = 1; $i <= sizeof($data) / 4; $i++) {
+
                 foreach ($s as $key => $value) {
                     if ($request->files->get(strval($value->getId()) . 'files') != null) {
                         $fileName = $value->getId() . '_TEST_Gestor_' . $muds->getId() . '.' . $request->files->get(strval($value->getId()) . 'files')->guessExtension();
@@ -401,6 +418,12 @@ class GestorController extends AbstractController
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, com: $data->get($value->getId() . 'de'));
                             }
                         }
+                    } elseif ($data->get($value->getId() . 'stat') == 'não implementado') {
+                        $value->setStatus("não implementado");
+                        $em->flush();
+                    } elseif ($data->get($value->getId() . 'stat') == 'implantado') {
+                        $value->setStatus("implantado");
+                        $em->flush();
                     } else {
                         $value->setStatus("pedido de mudança");
                         $em->flush();
@@ -485,7 +508,7 @@ class GestorController extends AbstractController
 
             $imp = true;
             foreach ($s as $key => $value) {
-                if ($value->getStatus() != 'implantado' && $value->getStatus()  != 'reprovado') {
+                if ($value->getStatus() != 'implantado' && $value->getStatus()  != 'reprovado' && $value->getStatus()  != 'não implementado') {
                     $imp = false;
                 }
             }
@@ -738,12 +761,17 @@ class GestorController extends AbstractController
                         foreach ($SD as $key => $values) {
                             # code...
                             if ($values->getApproveSol() == 'Aprovar') {
-                                $values->setApproveSol('Aprovar');
+                                $values->setApproveSol('Reprovar');
+                                date_default_timezone_set("America/Sao_Paulo");
+                                $time = new \DateTime();
+                                $formattedTime = $time->format('Y-m-d H:i:s');
+                                $values->setDateClientRep($formattedTime );
+                                
+                                
                                 $em->flush();
                             }
-
-                       }
-                        $value->setStatus("fechar");
+                        }
+                        $value->setStatus("aguardando implantação");
                         $em->flush();
                         $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '11']);
                         $email = new  Email();
@@ -753,9 +781,7 @@ class GestorController extends AbstractController
                         $email->setTitle($emailConfigSoftware->getSubjectMessage());
                         $email->setBody($emailConfigSoftware->getTitleOfMessage());
                         $em->persist($email);
-                        $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false,com:$data->get($value->getId().'de'));
-                       
-                
+                        $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, com: $data->get($value->getId() . 'de'));
                     } elseif ($data->get($value->getId() . 'stat') == 'Reprovar') {
                         $value->setStatus("reprovado");
                         $em->flush();
@@ -768,8 +794,7 @@ class GestorController extends AbstractController
                         $email->setTitle($emailConfigSoftware->getSubjectMessage());
                         $email->setBody($emailConfigSoftware->getTitleOfMessage());
                         $em->persist($email);
-                        $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false,com:$data->get($value->getId().'de'));
-                       
+                        $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, com: $data->get($value->getId() . 'de'));
                     }
                 }
             }
