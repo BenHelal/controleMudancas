@@ -64,7 +64,27 @@ class DeveloperController extends AbstractController
             $files = scandir($excelFilepath2);
             $files = array_diff($files, ['.', '..']);
             
-            
+            $filesAssociative = [];
+            foreach ($SD as $key => $sd) {
+                # code...
+                if ($SD != null) {
+                    $publicDirectory = $this->getParameter('kernel.project_dir');
+                    $excelFilepath2 = $publicDirectory . '/public/assets/' . $mud->getId() . '/documentation/' . $sd->getId();
+                    try {
+                        //code...
+                        $files = scandir($excelFilepath2);
+                        $files = array_diff($files, ['.', '..']);
+
+                        // Create an associative array with key as $sd->getId() and value as $files
+                        $filesAssociative[$sd->getId()] = $files;
+                    } catch (\Throwable $th) {
+                        // Handle the exception, if needed
+                        $filesAssociative[$sd->getId()] = [];
+                    }
+                } else {
+                    $filesAssociative[$sd->getId()] = [];
+                }
+            }
 
             return $this->render('software/developer/index.html.twig', [
                 'login' => 'null',
@@ -73,7 +93,7 @@ class DeveloperController extends AbstractController
                 'muds' => $muds,
                 'controller_name' => 'GestorController',
                 'sd' => $sd,
-                'step' => $s, 'files' => $files,
+                'step' => $s, 'files' => $filesAssociative,
             ]);
         } else {
             return $this->redirectToRoute('app_login');

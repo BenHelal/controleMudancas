@@ -377,282 +377,320 @@
 			</style>
 
 
-			<div class="kanban-board row col-md-12 mb-3  justify-content-between">
-				<div class="column col-md-3 mb-3">
-					<div class="column-header">Pendência</div>
-					<ul class="task-list" id="todo-list" ondrop="drop(event)" ondragover="allowDrop(event)">
-						{% for s in step %}
-							{% if  s.status != 'pedido de mudança' and s.status != 'teste usario' and s.status != 'change request man'  and s.status != 'change request' and s.status != 'teste ti' and s.status != 'aguardando implantação' and s.status != 'em andamento' and s.status != 'implantado' %}
-								<li class="task" id="{{s.id}}" data-toggle="modal" data-target="#Contato{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}}</li>
-							{% endif %}
-						{% endfor %}
-					</ul>
-				</div>
+<div class="kanban-board row col-md-12 mb-3  justify-content-between">
+		<div class="column col-md-3 mb-3">
+			<div class="column-header">Pendência</div>
+			<ul class="task-list" id="todo-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+				{% for s in step %}
+					{% if s.status != 'não implementado' and   s.status != 'reprovado' and  s.status != 'pedido de mudança' and s.status != 'teste usario' and s.status != 'change request man'  and s.status != 'change request' and s.status != 'teste ti' and s.status != 'aguardando implantação' and s.status != 'em andamento' and s.status != 'implantado' %}
+						<li class="task" id="{{s.id}}" data-toggle="modal" data-target="#Contato{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}}</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="column col-md-3 mb-3">
+			<div class="column-header">Em andamento</div>
+			<ul class="task-list" id="done-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+				{% for s in step %}
+					{% if s.status == 'em andamento'  %}
+						<a class="w3-btn w3-white w3-border w3-round-large" data-toggle="modal" data-target="#Contato{{s.id}}" id="{{s.id}}" data-status="todo" {% if s.screendevend != null  %}  draggable="true" ondragstart="drag(event)" {% endif %}>
+							<li class="task">{{s.title}}</li>
+						</a>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="column col-md-3 mb-3">
+			<div class="column-header">Teste TI</div>
+			<ul class="task-list" id="done-list" ondrop="drop(event)" ondragover="allowDrop(event)">
 
-				<div class="column col-md-3 mb-3">
-					<div class="column-header">Em andamento</div>
+				{% for s in step %}
+					{% if s.status == 'teste ti'  %}
+						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo" draggable="true"  ondragstart="drag(event)" >{{s.title}}</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="column col-md-3 mb-3">
+			<div class="column-header">Teste usario</div>
+			<ul class="task-list" id="done-list">
+				{% for s in step %}
+					{% if s.status == 'teste usario'  %}
+						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="column col-md-6 mb-3">
+			<div class="column-header">Aguardando implantação</div>
+			<ul class="task-list" id="done-list">
+				{% for s in step %}
+					{% if s.status == 'aguardando implantação'  %}
+						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
 
-					<ul class="task-list" id="done-list" ondrop="drop(event)" ondragover="allowDrop(event)">
-						{% for s in step %}
-							{% if s.status == 'em andamento'  %}
-								<a class="w3-btn w3-white w3-border w3-round-large" data-toggle="modal" data-target="#Contato{{s.id}}" id="{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">
-									<li class="task">{{s.title}}</li>
-								</a>
-							{% endif %}
-						{% endfor %}
-					</ul>
-				</div>
+		<div style="width : 100%" class="column  col-md-6 mb-3 ">
+			<div style="width : 100%" class="column-header">Implantado</div>
+			<ul style="width : 100%" class="task-list" id="done-lists">
 
-				<div class="column col-md-3 mb-3">
-					<div class="column-header">Teste TI</div>
-					<ul class="task-list" id="done-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+				{% for s in step %}
+					{% if s.status == 'implantado'  %}
+						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
 
-						{% for s in step %}
-							{% if s.status == 'teste ti'  %}
-								<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo" draggable="true" ondragstart="drag(event)">{{s.title}}</li>
-							{% endif %}
-						{% endfor %}
-					</ul>
-				</div>
+		<div class="column col-md-6 mb-3">
+			<div class="column-header">Reprovado</div>
+			<ul class="task-list" id="done-list">
+				{% for s in step %}
+					{% if s.status == 'reprovado'  %}
+						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>		
+		<div class="column col-md-6 mb-3">
+			<div class="column-header">Não implementado</div>
+			<ul class="task-list" id="done-list">
+				{% for s in step %}
+					{% if s.status == 'não implementado'  %}
+						<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
 
+	{% for s in step %}
+			<div class="modal fade" id="Contato{{s.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+				<div  class="modal-dialog" role="document">
+					<div style="padding: 20px" class="modal-content">
+						<div class="modal-header">
+							<h2>Número da fase:
+								{{s.id}}</h2>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<ul style="width: 100%;">
+									<li style="width: 100%;">
 
-				<div class="column col-md-3 mb-3">
-					<div class="column-header">Teste usario</div>
-					<ul class="task-list" id="done-list">
+										<h5>Titulo :</h5>
+										<h5>
+											<input value="{{s.title}}" class="form-control" style="width: 100%" type="text" readonly="">
+										</h5>
+									</li>
+									<li style="width: 100%;">
+										<h5>Requisitos :</h5>
 
-						{% for s in step %}
-							{% if s.status == 'teste usario'  %}
-								<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}</li>
-							{% endif %}
-						{% endfor %}
-					</ul>
-				</div>
-
-				<div class="column col-md-6 mb-3">
-					<div class="column-header">Aguardando implantação</div>
-					<ul class="task-list" id="done-list">
-
-
-						{% for s in step %}
-							{% if s.status == 'aguardando implantação'  %}
-								<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}
-								</li>
-							{% endif %}
-						{% endfor %}
-					</ul>
-				</div>
-
-				<div style="width : 100%" class="column  col-md-6 mb-3 ">
-					<div style="width : 100%" class="column-header">Implantado</div>
-					<ul style="width : 100%" class="task-list" id="done-lists">
-
-						{% for s in step %}
-							{% if s.status == 'implantado'  %}
-								<li data-toggle="modal" data-target="#Contato{{s.id}}" class="task" id="{{s.id}}" data-status="todo">{{s.title}}</li>
-							{% endif %}
-						{% endfor %}
-					</ul>
-				</div>
-			</div>
-
-
-			{% for s in step %}
-					<div class="modal fade" id="Contato{{s.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-						<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h2>Número da fase:
-										{{s.id}}</h2>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-										<span aria-hidden="true">&times;</span>
-									</button>
-								</div>
-								<div class="modal-body">
-									<div class="row">
-										<ul style="width: 100%;">
-											<li style="width: 100%;">
-
-												<h5>Titulo :</h5>
-												<h5>
-													<input value="{{s.title}}" class="form-control" style="width: 100%" type="text" readonly="">
-												</h5>
-											</li>
-											<li style="width: 100%;">
-												<h5>Arquivos :</h5>
-
-												<ul>
-												{% for key, f in files %}
-													{% if key == s.id %}
-														{% for file in f %}
-															<li id="liD">
-																<button onclick="location.href='{{ asset('assets/') }}{{ m.id }}/documentation/{{ s.id }}/{{ file }}'" class="download-button">
-																	<div class="docs">
-																		<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="20" width="20" viewbox="0 0 24 24">
-																			<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-																			<polyline points="14 2 14 8 20 8"></polyline>
-																			<line y2="13" x2="8" y1="13" x1="16"></line>
-																			<line y2="17" x2="8" y1="17" x1="16"></line>
-																			<polyline points="10 9 9 9 8 9"></polyline>
-																		</svg>
-																		{{ file }}
-																	</div>
-																	<div class="download">
-																		<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="24" width="24" viewbox="0 0 24 24">
-																			<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-																			<polyline points="7 10 12 15 17 10"></polyline>
-																			<line y2="3" x2="12" y1="15" x1="12"></line>
-																		</svg>
-																	</div>
-																</button>
-															</li>
-															<br>
-															<br>
-
-														{% endfor %}
-													{% endif %}
-												{% endfor %}
-
-													
-												</ul>
-												<br>
-												<br>
-												<a href="{{path('download_zip',{'id':mud.id,'sId': s.ariquivo.id} )}}" style="
-																																																																										  						border: none;
-																																																																										  						background-color: #0c2c01;
-																																																																										  						padding: 10px 20px;
-																																																																										  						border-radius: 10px;
-																																																																										  						color: #fff;
-																																																																										  						cursor: pointer;
-																																																																										  						transition: background .2s ease-in-out;">
-													⇬ Baixar arquivos
-												</a>
-												<br>
-											</li>
-											<br>
-											<li style="width: 100%;">
-
-												<h5>Data de criação :</h5>
-												<h5>
-													<input value="{{s.dateCreation}}" class="form-control" style="width: 100%" type="text" readonly="">
-												</h5>
-											</li>
-											<li style="width: 100%;">
-												<h5>Comentário :</h5>
-												<h5>
-													<input class="form-control" value="{{s.comments}} " type="text" readonly="">
-												</h5>
-											</li>
-
-
-											{% if s.doc != null %}
-												<li style="width: 100%;">
-													<h5>Anexo :</h5><br>
-													<a href="{{ asset('assets/') }}{{mud.id}}/{{s.doc}}" style="
-																																																																															  						border: none;
-																																																																															  						background-color: #0c2c01;
-																																																																															  						padding: 10px 20px;
-																																																																															  						border-radius: 10px;
-																																																																															  						color: #fff;
-																																																																															  						cursor: pointer;
-																																																																															  						transition: background .2s ease-in-out;">
-														⇬ Baixar arquivos
-													</a>
+										<ul>
+											{% for key, f in files %}
+										{% if key == s.ariquivo.id %}
+										    {% for file in f %}
+												<li>
+													<a href="{{ asset('assets/') }}{{mud.id}}/documentation/{{file}}">
+														Requisitos : 
+														{{file}}
+													</a> 
 												</li>
-											{% endif %}<br>
-
-											{% if s.docTest != null %}
-												<li style="width: 100%;">
-													<h5>Anexo Teste :</h5><br>
-													<a href="{{ asset('assets/') }}{{mud.id}}/{{s.docTest}}" style="
-																																																																															  						border: none;
-																																																																															  						background-color: #0c2c01;
-																																																																															  						padding: 10px 20px;
-																																																																															  						border-radius: 10px;
-																																																																															  						color: #fff;
-																																																																															  						cursor: pointer;
-																																																																															  						transition: background .2s ease-in-out;">
-														⇬ Baixar arquivos
-													</a>
-												</li>
-											{% endif %}
-											<br>
-											{% if s.docClient != null %}
-												<li style="width: 100%;">
-													<h5>O último anexo que Cliente adicionou :</h5><br>
-													<a href="{{ asset('assets/') }}{{mud.id}}/{{s.docClient}}" style="
-																																																																															  						border: none;
-																																																																															  						background-color: #0c2c01;
-																																																																															  						padding: 10px 20px;
-																																																																															  						border-radius: 10px;
-																																																																															  						color: #fff;
-																																																																															  						cursor: pointer;
-																																																																															  						transition: background .2s ease-in-out;">
-														⇬ Baixar arquivos que Cliente adicionou
-													</a>
-												</li>
-											{% endif %}<br>
-											{% if s.docGestor != null %}
-												<li style="width: 100%;">
-													<h5>O último anexo que Gestor adicionou :</h5><br>
-													<a href="{{ asset('assets/') }}{{mud.id}}/{{s.docGestor}}" style="
-																																																																															  						border: none;
-																																																																															  						background-color: #0c2c01;
-																																																																															  						padding: 10px 20px;
-																																																																															  						border-radius: 10px;
-																																																																															  						color: #fff;
-																																																																																					width: 100%
-																																																																															  						cursor: pointer;
-																																																																															  						transition: background .2s ease-in-out;">
-														⇬ Baixar arquivos que Gestor adicionou
-													</a>
-												</li>
-											{% endif %}
-
+											{% endfor %}
+										{% endif %}
+										{% endfor %}
 										</ul>
+										<br>
+										<br>
+										<a href="{{path('download_zip',{'id':mud.id,'sId': s.ariquivo.id} )}}" style="
+																																																												  						border: none;
+																																																												  						background-color: #0c2c01;
+																																																												  						padding: 10px 20px;
+																																																												  						border-radius: 10px;
+																																																												  						color: #fff;
+																																																												  						cursor: pointer;
+																																																												  						transition: background .2s ease-in-out;">
+											Requisitos (Zip)
+										</a>
+										<br>
+										<br>
+										<br>
+									</li>
+									
+									
+									<li style="width: 100%;">
+										<h5>Requisitos Teste:</h5><br>
+										<a href="{{ asset('assets/') }}{{mud.id}}/{{s.ariquivo.docTest}}" style="
+																																																												  						border: none;
+																																																												  						background-color: #0c2c01;
+																																																												  						padding: 10px 20px;
+																																																												  						border-radius: 10px;
+																																																												  						color: #fff;
+																																																												  						cursor: pointer;
+																																																												  						transition: background .2s ease-in-out;">
+											Requisitos Teste
+										</a>
+										<br>
+										<br>
+										<br>
+									</li>
+
+									<li style="width: 100%;">
+										<h5>Requisitos Cliente:</h5><br>
+										<a href="{{ asset('assets/') }}{{mud.id}}/{{s.ariquivo.docClient}}" style="
+																																																												  						border: none;
+																																																												  						background-color: #0c2c01;
+																																																												  						padding: 10px 20px;
+																																																												  						border-radius: 10px;
+																																																												  						color: #fff;
+																																																												  						cursor: pointer;
+																																																												  						transition: background .2s ease-in-out;">
+											Requisitos Cliente
+										</a>
+										<br>
+										<br>
+										<br>
+									</li>
+									
+									<li style="width: 100%;">
+
+										<h5>Data de aprovação do Cleinte :</h5>
+										<h5>
+											<input value="{{s.ariquivo.dateClientApp}}" class="form-control" style="width: 100%" type="text" readonly="">
+										</h5>
+									</li>
+									<br>
+									<li style="width: 100%;">
+
+										<h5>Data de criação :</h5>
+										<h5>
+											<input value="{{s.ariquivo.date}}" class="form-control" style="width: 100%" type="text" readonly="">
+										</h5>
+									</li>
+									<li style="width: 100%;">
+										<h5>Comentário :</h5>
+										<h5>
+											<input class="form-control" value="{{s.comments}} " type="text" readonly="">
+										</h5>
+									</li>
 
 
+									{% if s.doc != null %}
 										<li style="width: 100%;">
-											<label for="{{s.id}}date">Data de início do desenvolvimento</label><br>
-											<input id="{{s.id}}InitDate" name="{{s.id}}InitDate" value="{{s.startdevdate|date('d-m-Y')}}"  readonly="" class="date form-control" style="width: 100%" type="text"/>
+											<h5>Anexo do Fase :</h5><br>
+											<a href="{{ asset('assets/') }}{{mud.id}}/{{s.doc}}" style="
+																																																																  						border: none;
+																																																																  						background-color: #0c2c01;
+																																																																  						padding: 10px 20px;
+																																																																  						border-radius: 10px;
+																																																																  						color: #fff;
+																																																																  						cursor: pointer;
+																																																																  						transition: background .2s ease-in-out;">
+												Fase
+											</a>
 										</li>
+									{% endif %}<br>
 
-
+									{% if s.docTest != null %}
 										<li style="width: 100%;">
-											<label for="{{s.id}}date">Data final do desenvolvimento</label><br>
-											<input id="{{s.id}}EndDate" name="{{s.id}}EndDate" value="{{s.enddevdatet|date('d-m-Y')}}"  readonly=""  class="date form-control" style="width: 100%" type="text"/>
+											<h5>Anexo do Requisitos do Teste :</h5><br>
+											<a href="{{ asset('assets/') }}{{mud.id}}/{{s.docTest}}" style="
+																																																																  						border: none;
+																																																																  						background-color: #0c2c01;
+																																																																  						padding: 10px 20px;
+																																																																  						border-radius: 10px;
+																																																																  						color: #fff;
+																																																																  						cursor: pointer;
+																																																																  						transition: background .2s ease-in-out;">
+												Anexo dp Fase do Teste
+											</a>
 										</li>
-
-											{% if s.screendevend != null  %}
+									{% endif %}
+									<br>
+									{% if s.docClient != null %}
 										<li style="width: 100%;">
-											<label for="1files">Anexo Desenvolvidor</label>
-												<br>
-												<a href="{{ asset('assets/') }}{{mud.id}}/dev/{{s.id}}/{{s.screendevend}}" style="
-																																																																										  						border: none;
-																																																																										  						background-color: #0c2c01;
-																																																																										  						padding: 10px 20px;
-																																																																										  						border-radius: 10px;
-																																																																										  						color: #fff;
-																																																																										  						cursor: pointer;
-																																																																										  						transition: background .2s ease-in-out;">
-													⇬ Baixar arquivos
-												</a>
-												<br>
-												<br>
-												<br>
+											<h5>Anexo Cliente:</h5><br>
+											<a href="{{ asset('assets/') }}{{mud.id}}/{{s.docClient}}" style="
+																																																																  						border: none;
+																																																																  						background-color: #0c2c01;
+																																																																  						padding: 10px 20px;
+																																																																  						border-radius: 10px;
+																																																																  						color: #fff;
+																																																																  						cursor: pointer;
+																																																																  						transition: background .2s ease-in-out;">
+												Anexo Cliente
+											</a>
 										</li>
+									{% endif %}<br>
+									{% if s.docGestor != null %}
+										<li style="width: 100%;">
+											<h5>O último anexo que Gestor adicionou :</h5><br>
+											<a href="{{ asset('assets/') }}{{mud.id}}/{{s.docGestor}}" style="
+																																																																  						border: none;
+																																																																  						background-color: #0c2c01;
+																																																																  						padding: 10px 20px;
+																																																																  						border-radius: 10px;
+																																																																  						color: #fff;
+																																																																						width: 100%
+																																																																  						cursor: pointer;
+																																																																  						transition: background .2s ease-in-out;">
+												Anexo Gestor
+											</a>
+										</li>
+									{% endif %}
 
-											{% endif %}
-									</div>
+								</ul>
 
-									<div class="modal-footer">
-										<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
-									</div>
-								</div>
+
+								<li style="width: 100%;">
+									<label for="{{s.id}}date">Data de início do desenvolvimento</label><br>
+									<input id="{{s.id}}InitDate" name="{{s.id}}InitDate" value="{{s.startdevdate|date('d-m-Y')}}" class="date form-control" style="width: 100%" type="text"/>
+								</li>
+
+
+								<li style="width: 100%;">
+									<label for="{{s.id}}date">Data final do desenvolvimento</label><br>
+									<input id="{{s.id}}EndDate" name="{{s.id}}EndDate" value="{{s.enddevdatet|date('d-m-Y')}}" class="date form-control" style="width: 100%" type="text"/>
+								</li>
+
+								
+									{% if s.screendevend != null  %}<li style="width: 100%;">
+									<label for="1files">Anexo Desenvolvidor</label>
+										<br>
+										<a href="{{ asset('assets/') }}{{mud.id}}/dev/{{s.id}}/{{s.screendevend}}" style="
+																																																												  						border: none;
+																																																												  						background-color: #0c2c01;
+																																																												  						padding: 10px 20px;
+																																																												  						border-radius: 10px;
+																																																												  						color: #fff;
+																																																												  						cursor: pointer;
+																																																												  						transition: background .2s ease-in-out;">
+											Anexo do Desenvolvidor
+										</a>
+										<br>
+										<br>
+										<br>
+								</li>
+									{% endif %}	
+									
+
+							</div>
+
+							<div class="modal-footer">
+								<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
 							</div>
 						</div>
 					</div>
-				</form>
-			{% endfor %}
+				</div>
+			</div>
+	{% endfor %}
 		{% endif %}
 
 

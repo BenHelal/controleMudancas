@@ -189,17 +189,21 @@
 										</h5>
 									</li>
 									<li style="width: 100%;">
-										<h5>Arquivos :</h5>
+										<h5>Requisitos :</h5>
 
 										<ul>
-											{% for file in files %}
+											{% for key, f in files %}
+										{% if key == s.ariquivo.id %}
+										    {% for file in f %}
 												<li>
 													<a href="{{ asset('assets/') }}{{m.id}}/documentation/{{file}}">
-														⇬ Baixar
+														Requisitos : 
 														{{file}}
-													</a>
+													</a> 
 												</li>
 											{% endfor %}
+										{% endif %}
+										{% endfor %}
 										</ul>
 										<br>
 										<br>
@@ -211,16 +215,61 @@
 																																																												  						color: #fff;
 																																																												  						cursor: pointer;
 																																																												  						transition: background .2s ease-in-out;">
-											⇬ Baixar arquivos
+											Requisitos (Zip)
 										</a>
 										<br>
+										<br>
+										<br>
+									</li>
+									
+									
+									<li style="width: 100%;">
+										<h5>Requisitos Teste:</h5><br>
+										<a href="{{ asset('assets/') }}{{m.id}}/{{s.ariquivo.docTest}}" style="
+																																																												  						border: none;
+																																																												  						background-color: #0c2c01;
+																																																												  						padding: 10px 20px;
+																																																												  						border-radius: 10px;
+																																																												  						color: #fff;
+																																																												  						cursor: pointer;
+																																																												  						transition: background .2s ease-in-out;">
+											Requisitos Teste
+										</a>
+										<br>
+										<br>
+										<br>
+									</li>
+
+									<li style="width: 100%;">
+										<h5>Requisitos Cliente:</h5><br>
+										<a href="{{ asset('assets/') }}{{m.id}}/{{s.ariquivo.docClient}}" style="
+																																																												  						border: none;
+																																																												  						background-color: #0c2c01;
+																																																												  						padding: 10px 20px;
+																																																												  						border-radius: 10px;
+																																																												  						color: #fff;
+																																																												  						cursor: pointer;
+																																																												  						transition: background .2s ease-in-out;">
+											Requisitos Cliente
+										</a>
+										<br>
+										<br>
+										<br>
+									</li>
+									
+									<li style="width: 100%;">
+
+										<h5>Data de aprovação do Cleinte :</h5>
+										<h5>
+											<input value="{{s.ariquivo.dateClientApp}}" class="form-control" style="width: 100%" type="text" readonly="">
+										</h5>
 									</li>
 									<br>
 									<li style="width: 100%;">
 
 										<h5>Data de criação :</h5>
 										<h5>
-											<input value="{{s.dateCreation}}" class="form-control" style="width: 100%" type="text" readonly="">
+											<input value="{{s.ariquivo.date}}" class="form-control" style="width: 100%" type="text" readonly="">
 										</h5>
 									</li>
 									<li style="width: 100%;">
@@ -233,7 +282,7 @@
 
 									{% if s.doc != null %}
 										<li style="width: 100%;">
-											<h5>Anexo :</h5><br>
+											<h5>Anexo do Fase :</h5><br>
 											<a href="{{ asset('assets/') }}{{m.id}}/{{s.doc}}" style="
 																																																																  						border: none;
 																																																																  						background-color: #0c2c01;
@@ -242,14 +291,14 @@
 																																																																  						color: #fff;
 																																																																  						cursor: pointer;
 																																																																  						transition: background .2s ease-in-out;">
-												⇬ Baixar arquivos
+												Fase
 											</a>
 										</li>
 									{% endif %}<br>
 
 									{% if s.docTest != null %}
 										<li style="width: 100%;">
-											<h5>Anexo Teste :</h5><br>
+											<h5>Anexo do Requisitos do Teste :</h5><br>
 											<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
 																																																																  						border: none;
 																																																																  						background-color: #0c2c01;
@@ -258,14 +307,14 @@
 																																																																  						color: #fff;
 																																																																  						cursor: pointer;
 																																																																  						transition: background .2s ease-in-out;">
-												⇬ Baixar arquivos
+												Anexo dp Fase do Teste
 											</a>
 										</li>
 									{% endif %}
 									<br>
 									{% if s.docClient != null %}
 										<li style="width: 100%;">
-											<h5>O último anexo que Cliente adicionou :</h5><br>
+											<h5>Anexo Cliente:</h5><br>
 											<a href="{{ asset('assets/') }}{{m.id}}/{{s.docClient}}" style="
 																																																																  						border: none;
 																																																																  						background-color: #0c2c01;
@@ -274,7 +323,7 @@
 																																																																  						color: #fff;
 																																																																  						cursor: pointer;
 																																																																  						transition: background .2s ease-in-out;">
-												⇬ Baixar arquivos que Cliente adicionou
+												Anexo Cliente
 											</a>
 										</li>
 									{% endif %}<br>
@@ -290,7 +339,7 @@
 																																																																						width: 100%
 																																																																  						cursor: pointer;
 																																																																  						transition: background .2s ease-in-out;">
-												⇬ Baixar arquivos que Gestor adicionou
+												Anexo Gestor
 											</a>
 										</li>
 									{% endif %}
@@ -309,9 +358,9 @@
 									<input id="{{s.id}}EndDate" name="{{s.id}}EndDate" value="{{s.enddevdatet|date('d-m-Y')}}" class="date form-control" style="width: 100%" type="text"/>
 								</li>
 
-								<li style="width: 100%;">
+								
+									{% if s.screendevend != null  %}<li style="width: 100%;">
 									<label for="1files">Anexo Desenvolvidor</label>
-									{% if s.screendevend != null  %}
 										<br>
 										<a href="{{ asset('assets/') }}{{m.id}}/dev/{{s.id}}/{{s.screendevend}}" style="
 																																																												  						border: none;
@@ -321,26 +370,31 @@
 																																																												  						color: #fff;
 																																																												  						cursor: pointer;
 																																																												  						transition: background .2s ease-in-out;">
-											⇬ Baixar arquivos
+											Anexo do Desenvolvidor
 										</a>
 										<br>
 										<br>
 										<br>
+								</li>
 									{% endif %}	
 									
 									{% if person in muds.developers  %}
-									{% if  s.status != 'pendência'   or s.status == 'em andamento' %}
-										
+									{% if  s.status == 'pendência'   or s.status == 'em andamento' %}<li style="width: 100%;">
+										<label for="1files">Anexo Desenvolvidor</label>
+										<br>
+									
 										<input id="1files" style="width: 100%" name="1files" type="file" style="width:100%">
-									{% endif %}
-									{% endif %}
+										{% else %}
+										
 								</li>
+									{% endif %}
+									{% endif %}
 
 							</div>
 
 							<div class="modal-footer">
 								{% if person in muds.developers  %}
-									{% if  s.status != 'pendência'   or s.status == 'em andamento' %}
+									{% if  s.status == 'pendência'   or s.status == 'em andamento' %}
 									<button type="Submit" class="btn btn-info mt-2 text-white btn-secondary">Enviar</button>
 								{% endif %}
 								{% endif %}

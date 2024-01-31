@@ -410,7 +410,7 @@ class SolicitanteController extends AbstractController
             foreach ($SD as $keys => $val) {
                 foreach ($val->getSteps() as $keys => $values) {
                     # code...
-                    if ($values->getStatus() == "aguardando implantação") {
+                    if ($values->getStatus() == "aguardando implantação" ) {
                         array_push($s, $values);
                     }
                 }
