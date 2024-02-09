@@ -8,6 +8,8 @@ use App\Entity\Email;
 use App\Entity\EmailToSendConfig;
 use App\Entity\Mudancas;
 use App\Entity\Person;
+use App\Entity\Process;
+use App\Entity\SectorProcess;
 use App\Entity\Steps;
 use App\Entity\StepsGestor;
 use App\Form\GestorSoftware\iniciarType;
@@ -104,6 +106,20 @@ class GestorController extends AbstractController
                 }
             }
 
+            $isTheLastApprove = true;
+            if($mud->getMudS() == null){
+                $isTheLastApprove = false;
+            } 
+
+            $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
+            $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+            foreach ($sps as $key => $sp) {
+                if($sp->getAppSectorMan() != 1 ){
+                    $isTheLastApprove = false;
+                } 
+            }
+            
+
             return $this->render('software/gestor/documentation.html.twig', [
                 'login' => 'null',
                 'person' => $person,
@@ -113,6 +129,7 @@ class GestorController extends AbstractController
                 'controller_name' => 'GestorController',
                 'sd' => $SD,
                 'files' => $filesAssociative,
+                'iTLA' => $isTheLastApprove,
             ]);
         } else {
             return $this->redirectToRoute('app_login');

@@ -42,28 +42,28 @@ class DeveloperController extends AbstractController
             $sd = [];
             $s = [];
             $SD =  $muds->getStepsGestor();
-            
+
 
 
             foreach ($SD as $key => $value) {
                 # code...
-                if($value->getApproveSol() =='Aprovar'){
+                if ($value->getApproveSol() == 'Aprovar') {
                     array_push($sd, $value);
                 }
-
             }
-            foreach ($SD as $keys=> $val) {
-                
-                foreach ($val->getSteps() as $keys=> $values) {
+            foreach ($SD as $keys => $val) {
+
+                foreach ($val->getSteps() as $keys => $values) {
                     # code...
                     array_push($s, $values);
                 }
-            } $publicDirectory = $this->getParameter('kernel.project_dir');
-            $excelFilepath2 =  $publicDirectory . '/public/assets/' . $mud->getId().'/documentation';
+            }
+            $publicDirectory = $this->getParameter('kernel.project_dir');
+            $excelFilepath2 =  $publicDirectory . '/public/assets/' . $mud->getId() . '/documentation';
 
             $files = scandir($excelFilepath2);
             $files = array_diff($files, ['.', '..']);
-            
+
             $filesAssociative = [];
             foreach ($SD as $key => $sd) {
                 # code...
@@ -102,50 +102,50 @@ class DeveloperController extends AbstractController
     /**
      * @Route("/update-task/", name="upadatTask")
      */
-    public function upadatTask(ManagerRegistry $doctrine,Request $request)
+    public function upadatTask(ManagerRegistry $doctrine, Request $request)
     {
-       
-        $id=$request->query->get('id') ;
-        $idM=$request->query->get('idm') ;
+
+        $id = $request->query->get('id');
+        $idM = $request->query->get('idm');
         $data = $request->request;
         $entityManager = $doctrine->getManager();
         $task = $entityManager->getRepository(Steps::class)->find($id);
         $task->setStartdevdate($data->get(strval($id) . 'InitDate'));
-        $task->setEnddevdatet($data->get(strval($id) . 'EndDate')); 
-   
+        $task->setEnddevdatet($data->get(strval($id) . 'EndDate'));
 
-        if($request->files->get('1files') != null ){
-            
-        $fileName =$task->getTitle().'-'. $id .''. $idM . '.' . $request->files->get('1files')->guessExtension();
-        $publicDirectory = $this->getParameter('kernel.project_dir');
-        $excelFilepath = $publicDirectory . '/public/assets/' . $idM.'/dev/'.$id;
-        $request->files->get('1files')->move($excelFilepath, $fileName); 
-        $task->setScreendevend($fileName);  
-    }  
+
+        if ($request->files->get('1files') != null) {
+
+            $fileName = $task->getTitle() . '-' . $id . '' . $idM . '.' . $request->files->get('1files')->guessExtension();
+            $publicDirectory = $this->getParameter('kernel.project_dir');
+            $excelFilepath = $publicDirectory . '/public/assets/' . $idM . '/dev/' . $id;
+            $request->files->get('1files')->move($excelFilepath, $fileName);
+            $task->setScreendevend($fileName);
+        }
         $entityManager->flush();
         return $this->redirectToRoute('app_software_devs_steps', ['id' => $idM]);
     }
     /**
      * @Route("/update-task-status", name="update_task_status", methods={"POST"})
      */
-    public function updateTaskStatus(ManagerRegistry $doctrine,Request $request)
+    public function updateTaskStatus(ManagerRegistry $doctrine, Request $request)
     {
         $session = new Session();
         $session = $request->getSession();
-        
+
 
         // Retrieve the task ID and new status from the AJAX request
         $taskId = $request->request->get('taskId');
         $newStatus = $request->request->get('newStatus');
-        $id=$request->request->get('id') ;
+        $id = $request->request->get('id');
         // Fetch the task entity from the database
         $entityManager = $doctrine->getManager();
         $task = $entityManager->getRepository(Steps::class)->find($taskId);
         $person =  $entityManager->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
-           
+
         $mud = $entityManager->getRepository(Mudancas::class)->find($id);
-     
-        
+
+        if($task->getStatus() != $newStatus){
             $emailConfigSoftware = $entityManager->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '7']);
             $email = new  Email();
             $email->setMudancas($mud);
@@ -155,7 +155,7 @@ class DeveloperController extends AbstractController
             $email->setBody($emailConfigSoftware->getTitleOfMessage());
             $entityManager->persist($email);
             $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false,);
-        
+        }
 
         if (!$task) {
             return new JsonResponse(['message' => 'Task not found'], 404);
@@ -165,11 +165,11 @@ class DeveloperController extends AbstractController
         $formattedTime = $time->format('Y-m-d H:i:s');
         // Update the task status
         $task->setStatus($newStatus); // Assuming you have a 'status' property in your entity
-        $task->setDateStatue(strval($formattedTime ));
+        $task->setDateStatue(strval($formattedTime));
         // Persist the changes to the database
         $entityManager->persist($task);
         $entityManager->flush();
-        
+
         return new JsonResponse(['message' => 'Task status updated successfully']);
     }
 
@@ -177,7 +177,8 @@ class DeveloperController extends AbstractController
     /**
      * @Route("/DiagramGantt/{id}", name="DiagramGantt")
      */
-    public function DiagramGantt(ManagerRegistry $doctrine,$id,Request $request){
+    public function DiagramGantt(ManagerRegistry $doctrine, $id, Request $request)
+    {
         //
         $session = new Session();
         $session = $request->getSession();
@@ -191,28 +192,28 @@ class DeveloperController extends AbstractController
             $sd = [];
             $s = [];
             $SD =  $muds->getStepsGestor();
-            
+
 
 
             foreach ($SD as $key => $value) {
                 # code...
-                if($value->getApproveSol() =='Aprovar'){
+                if ($value->getApproveSol() == 'Aprovar') {
                     array_push($sd, $value);
                 }
-
             }
-            foreach ($SD as $keys=> $val) {
-                
-                foreach ($val->getSteps() as $keys=> $values) {
+            foreach ($SD as $keys => $val) {
+
+                foreach ($val->getSteps() as $keys => $values) {
                     # code...
                     array_push($s, $values);
                 }
-            } $publicDirectory = $this->getParameter('kernel.project_dir');
-            $excelFilepath2 =  $publicDirectory . '/public/assets/' . $mud->getId().'/documentation';
+            }
+            $publicDirectory = $this->getParameter('kernel.project_dir');
+            $excelFilepath2 =  $publicDirectory . '/public/assets/' . $mud->getId() . '/documentation';
 
             $files = scandir($excelFilepath2);
             $files = array_diff($files, ['.', '..']);
-            
+
 
             return $this->render('software/developer/DiagramGantt.html.twig', [
                 'login' => 'null',
@@ -253,7 +254,7 @@ class DeveloperController extends AbstractController
 
         $mail = new PHPMailer(true);
 
-        if($com == null){
+        if ($com == null) {
             $com = " ";
         }
         // check the manager of the Mudancas 
@@ -291,7 +292,7 @@ class DeveloperController extends AbstractController
                     'demand'    =>  $demand
                 ]));
             } else {
-                
+
                 $mail->AddAddress($sendTo->getEmail(), $sendTo->getName());
                 $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
                 $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)

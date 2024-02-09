@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\ApiToken;
 use App\Entity\ConfigEmail;
 use App\Entity\Email;
+use App\Entity\EmailToSendConfig;
 use App\Entity\Mudancas;
 use App\Entity\Person;
 use App\Entity\Process;
@@ -68,8 +69,7 @@ class NotifController extends AbstractController
                 if ($sp->getSector()->getCoordinator() == $person ) {
                     $oneOfSp = $sp;
                 }
-            
-        }
+            }
             
             if ($oneOfSp  != null) {
                 $form = $this->createForm(SectorProcessType::class, $oneOfSp);
@@ -80,7 +80,13 @@ class NotifController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 $d = $request->get('sector_process');
                 
+                $isTheLastApprove = true;
+                if($mudancas->getMudS() == null){
+                    $isTheLastApprove = false;
+                }  
+
                 foreach ($sps as $key => $sp) {
+                    
                     if ($sp->getSector()->getCoordinator() == $person ) {
                         //if( $mudancas->getManager)
                         if ($oneOfSp != null) {
@@ -91,11 +97,15 @@ class NotifController extends AbstractController
                             $sp->setDataCreation($time);
                         }
                         $em->persist($sp);
-                        $em->flush();
-                        
+                        $em->flush();    
                     }
+
+                    if($sp->getAppSectorMan() != 1 ){
+                        $isTheLastApprove = false;
+                    }
+                }
                 
-            }
+
                 if($oneOfSp->getAppSectorMan() == 1){
                     $email = new  Email();
                     $email->setMudancas($mudancas);
@@ -125,6 +135,20 @@ class NotifController extends AbstractController
                     $em->flush();
                     $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);           
                 }
+
+                if($isTheLastApprove){
+                    $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '1']);
+                                $email = new  Email();
+                                $email->setMudancas($mudancas);
+                                $email->setSendTo($mudancas->getAddBy());
+                                $email->setSendBy($person);
+                                $email->setTitle($emailConfigSoftware->getSubjectMessage());
+                                $email->setBody($emailConfigSoftware->getTitleOfMessage());
+                                $em->persist($email);
+                                $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                            
+                }
+
                 return $this->redirectToRoute('upm', ['id' => $id]);
                 
             }
@@ -151,8 +175,17 @@ class NotifController extends AbstractController
     }
 
 
-    public function sendEmail(ManagerRegistry $doctrine, Request $request, $sendTo, $mud, $per, $demand,  $gestor, $client = null)
-    {
+    public function sendEmail(
+        ManagerRegistry $doctrine,
+        Request $request,
+        $sendTo,
+        $mud,
+        $per,
+        $demand,
+        $gestor,
+        $client = null,
+        $com = null
+    ) {
 
         $em = $doctrine->getManager();
         $config = $em->getRepository(ConfigEmail::class)->find(1);
@@ -176,7 +209,6 @@ class NotifController extends AbstractController
         try {
 
             $ipAdress = new IpAdress();
-
             //$mail->SMTPDebug = SMTP::DEBUG_SERVER;   
             $mail->IsSMTP(); // Define que a mensagem será SMTP
             $mail->Host = $config->getHost(); // Endereço do servidor SMTP
@@ -186,6 +218,9 @@ class NotifController extends AbstractController
             $mail->Password = $config->getPassword(); // Senha do servidor SMTP                           
             //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
             //Recipients
+            if ($com == null) {
+                $com = "null";
+            }
             $mail->setFrom($config->getEmailSystem(), $config->getTitleObj());
             if ($client != null) {
 
@@ -208,6 +243,7 @@ class NotifController extends AbstractController
                     'demand'    =>  $demand
                 ]));
             } else {
+
                 $mail->AddAddress($sendTo->getEmail(), $sendTo->getName());
                 $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
                 $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
@@ -220,7 +256,8 @@ class NotifController extends AbstractController
                     'ip'        => $ipAdress->getIpAdress(),
                     'name'      => $sendTo->getName(),
                     'gestor'    => $gestor,
-                    'demand'    =>  $demand
+                    'demand'    =>  $demand,
+                    'com' => $com
                 ]));
             }
 

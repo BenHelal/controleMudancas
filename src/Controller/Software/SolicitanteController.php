@@ -144,6 +144,7 @@ class SolicitanteController extends AbstractController
                     }
                 }
             }
+            return $this->redirectToRoute('app_software_sol_documentation', ['id' => $id]);
         } else {
             return $this->redirectToRoute('app_login');
         }
