@@ -266,7 +266,7 @@
 
 	</dialog>
 	<h3>
-		Lista da fases:
+		Consulta/fases:
 		<button style="
 																border: none;
 																background-color: green-light;
@@ -358,7 +358,7 @@
 		</div>
 	</form>
 
-	{% if m.mangerMudancas  == person and muds.appGestor == null and sd|length > 0 %}
+	{% if m.mangerMudancas  == person and muds.appGestor == null  %}
 
 	
 <a id="btn" class="btn btn-info mt-2 text-white" onclick="myFunction()" role="button">Adicionar novo Fase</a>
@@ -383,21 +383,7 @@
 		{% if m.appGest == null  and imp == true %}
 
 			{% if m.mangerMudancas == person %}
-				<input id="btnSubsq" style="
-																						min-width: 86px;
-																						height: 32px;
-																						display: -ms-flexbox;
-																						display: flex;
-																						-ms-flex-align: center;
-																						align-items: center;
-																						-ms-flex-pack: center;
-																						justify-content: center;
-																						background: #afbace;
-																						color: #fff;
-																						box-shadow: none;
-																						border-radius: 4px;
-																						padding: 0 5px;
-																						border: none;" type="submit" value="Approvar"/>
+				<input id="btnSubsq" class="btn btn-info mt-2 text-white" type="submit" value="Salvar"/>
 			{% endif %}
 		{% endif %}
 		{{ form_end(formApp) }}
@@ -408,7 +394,7 @@
 		{% if m.implemented == 1 or m.implemented == 2 and m.dateOfImp != null %}
 			<div class="row">
 				<div class="col-md-12 mb-3">
-					<label for="mudancasgestor_to_app_effictiveStartDate">Data implementada</label>
+					<label for="mudancasgestor_to_app_effictiveStartDate">Data da implementação</label>
 					<input type="text" class="form-control" value="{{m.dateOfImp}}">
 				</div>
 			</div>

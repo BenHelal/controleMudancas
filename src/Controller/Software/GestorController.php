@@ -312,7 +312,7 @@ class GestorController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if ($value->getApproveSol() == 'Aprovar') {
+                if ($value->getApproveSol() == 'Approvar') {
                     array_push($sd, $value);
                 }
             }
@@ -331,7 +331,7 @@ class GestorController extends AbstractController
             foreach ($SD as $keys => $val) {
                 foreach ($val->getSteps() as $keys => $values) {
                     # code...
-                    if ($values->getStatus() == "aguardando implantação") {
+                    if ($values->getStatus() == "aguardando implementação") {
                         array_push($sImp, $values);
                     }
                 }
@@ -377,7 +377,7 @@ class GestorController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if ($value->getApproveSol() == 'Aprovar') {
+                if ($value->getApproveSol() == 'Approvar') {
                     array_push($sd, $value);
                 }
             }
@@ -385,7 +385,7 @@ class GestorController extends AbstractController
             foreach ($SD as $keys => $val) {
                 foreach ($val->getSteps() as $keys => $values) {
                     # code...
-                    if ($values->getStatus() == "teste ti" || $values->getStatus() == "aguardando implantação") {
+                    if ($values->getStatus() == "teste ti" || $values->getStatus() == "aguardando implementação") {
                         array_push($s, $values);
                     }
                 }
@@ -402,8 +402,8 @@ class GestorController extends AbstractController
                         $request->files->get(strval($value->getId()) . 'files')->move($excelFilepath, $fileName);
                         $value->setDocGestor($fileName);
                     }
-                    if ($data->get($value->getId() . 'stat') == 'Aprovar') {
-                        $value->setStatus("teste usario");
+                    if ($data->get($value->getId() . 'stat') == 'Approvar') {
+                        $value->setStatus("teste usuário");
                         $em->flush();
                         # code...
 
@@ -438,8 +438,8 @@ class GestorController extends AbstractController
                     } elseif ($data->get($value->getId() . 'stat') == 'não implementado') {
                         $value->setStatus("não implementado");
                         $em->flush();
-                    } elseif ($data->get($value->getId() . 'stat') == 'implantado') {
-                        $value->setStatus("implantado");
+                    } elseif ($data->get($value->getId() . 'stat') == 'implementado') {
+                        $value->setStatus("implementado");
                         $em->flush();
                     } else {
                         $value->setStatus("pedido de mudança");
@@ -490,7 +490,7 @@ class GestorController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if ($value->getApproveSol() == 'Aprovar') {
+                if ($value->getApproveSol() == 'Approvar') {
                     array_push($sd, $value);
                 }
             }
@@ -525,7 +525,7 @@ class GestorController extends AbstractController
 
             $imp = true;
             foreach ($s as $key => $value) {
-                if ($value->getStatus() != 'implantado' && $value->getStatus()  != 'reprovado' && $value->getStatus()  != 'não implementado') {
+                if ($value->getStatus() != 'implementado' && $value->getStatus()  != 'reprovado' && $value->getStatus()  != 'não implementado') {
                     $imp = false;
                 }
             }
@@ -700,7 +700,7 @@ class GestorController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if ($value->getApproveSol() == 'Aprovar') {
+                if ($value->getApproveSol() == 'Approvar') {
                     array_push($sd, $value);
                 }
             }
@@ -756,7 +756,7 @@ class GestorController extends AbstractController
             $doc = null;
             foreach ($SD as $key => $value) {
                 # code...
-                if ($value->getApproveSol() == 'Aprovar') {
+                if ($value->getApproveSol() == 'Approvar') {
                     array_push($sd, $value);
                     $doc = $value;
                 }
@@ -774,10 +774,10 @@ class GestorController extends AbstractController
             $data = $request->request;
             for ($i = 1; $i <= sizeof($data) / 4; $i++) {
                 foreach ($s as $key => $value) {
-                    if ($data->get($value->getId() . 'stat') == 'Aprovar') {
+                    if ($data->get($value->getId() . 'stat') == 'Approvar') {
                         foreach ($SD as $key => $values) {
                             # code...
-                            if ($values->getApproveSol() == 'Aprovar') {
+                            if ($values->getApproveSol() == 'Approvar') {
                                 $values->setApproveSol('Reprovar');
                                 date_default_timezone_set("America/Sao_Paulo");
                                 $time = new \DateTime();
@@ -788,7 +788,7 @@ class GestorController extends AbstractController
                                 $em->flush();
                             }
                         }
-                        $value->setStatus("aguardando implantação");
+                        $value->setStatus("aguardando implementação");
                         $em->flush();
                         $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '11']);
                         $email = new  Email();

@@ -149,7 +149,7 @@
 				{% for s in sd %}
 					{% if s.approveSol == "Reprovar" %} 
 						{% set yourVariable = "false" %}
-					{% elseif s.approveSol == "Aprovar" %} 
+					{% elseif s.approveSol == "Approvar" %} 
 						{% set yourVariable = "true" %} 
 					{% else %} 
 						{% set yourVariable = "true" %} 
@@ -159,7 +159,7 @@
 			<form class="form-group" action="{{path('app_software_gestor_add_documentation',{'id':m.id} )}}" enctype="multipart/form-data" method="post">
 		<div class="row" name="test2" id="test2"></div>
 		<div class="col-md-12 mb-3">
-			<input id="btnSubsq" class="btn btn-info mt-2 text-white" type="submit" value="Adicionar"/>
+			<input id="btnSubsq" class="btn btn-info mt-2 text-white" type="submit" value="Salvar"/>
 		</div>
 	</form>
 
@@ -201,7 +201,7 @@
 						<div id="div6" class="col-md-2 mb-3">
 							<label for="{{s.id}}file">Aprovação</label>
 							<input id="{{s.id}}stat" name="{{s.id}}stat" value="{{s.approveSol}}" {% if s.approveSol == "Reprovar" %} {% set yourVariable = "false" %} style="width: 100%; background-color: red;" 
-							{% elseif s.approveSol == "Aprovar" %} {% set yourVariable = "true" %} style="width: 100%; background-color: #20c997;" {% else %} {% set yourVariable = "true" %} {% endif %} type="text" readonly/>
+							{% elseif s.approveSol == "Approvar" %} {% set yourVariable = "true" %} style="width: 100%; background-color: #20c997;" {% else %} {% set yourVariable = "true" %} {% endif %} type="text" readonly/>
 
 						</div>
 						{% if s.doc != null %}

@@ -103,7 +103,7 @@ class SolicitanteController extends AbstractController
             foreach ($data->all() as $key => $value) {
                 for ($i = 0; $i < sizeof($SD); $i++) {
                     if ($key == $SD[$i]->getId() . 'stat') {
-                        if (($value == 'Aprovar' || $value == 'Reprovar')) {
+                        if (($value == 'Approvar' || $value == 'Reprovar')) {
                             $sd = $em->getRepository(StepsGestor::class)->find($SD[$i]->getId());
 
                             $sd->setApproveSol($value);
@@ -115,7 +115,7 @@ class SolicitanteController extends AbstractController
                                 $request->files->get('1files')->move($excelFilepath, $fileName);
                                 $sd->setDocClient($fileName);
                             }
-                            if ($value == 'Aprovar') {
+                            if ($value == 'Approvar') {
                                 $sd->setDateClientApp($formattedTime );
                                 $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '4']);
                                 $email = new  Email();
@@ -271,7 +271,7 @@ class SolicitanteController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if ($value->getApproveSol() == 'Aprovar') {
+                if ($value->getApproveSol() == 'Approvar') {
                     array_push($sd, $value);
                 }
             }
@@ -279,7 +279,7 @@ class SolicitanteController extends AbstractController
             foreach ($SD as $keys => $val) {
                 foreach ($val->getSteps() as $keys => $values) {
                     # code...
-                    if ($values->getStatus() == "teste usario") {
+                    if ($values->getStatus() == "teste usuário") {
                         array_push($s, $values);
                     }
                 }
@@ -326,7 +326,7 @@ class SolicitanteController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if ($value->getApproveSol() == 'Aprovar') {
+                if ($value->getApproveSol() == 'Approvar') {
                     array_push($sd, $value);
                 }
             }
@@ -334,7 +334,7 @@ class SolicitanteController extends AbstractController
             foreach ($SD as $keys => $val) {
                 foreach ($val->getSteps() as $keys => $values) {
                     # code...
-                    if ($values->getStatus() == "teste usario") {
+                    if ($values->getStatus() == "teste usuário") {
                         array_push($s, $values);
                     }
                 }
@@ -351,8 +351,8 @@ class SolicitanteController extends AbstractController
                         $request->files->get(strval($value->getId()) . 'files')->move($excelFilepath, $fileName);
                         $value->setDocClient($fileName);
                     }
-                    if ($data->get($value->getId() . 'stat') == 'Aprovar') {
-                        $value->setStatus("aguardando implantação");
+                    if ($data->get($value->getId() . 'stat') == 'Approvar') {
+                        $value->setStatus("aguardando implementação");
                         $em->flush();
                         
                     } elseif ($data->get($value->getId() . 'stat') == 'Reprovar') {
@@ -403,7 +403,7 @@ class SolicitanteController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if ($value->getApproveSol() == 'Aprovar') {
+                if ($value->getApproveSol() == 'Approvar') {
                     array_push($sd, $value);
                 }
             }
@@ -411,7 +411,7 @@ class SolicitanteController extends AbstractController
             foreach ($SD as $keys => $val) {
                 foreach ($val->getSteps() as $keys => $values) {
                     # code...
-                    if ($values->getStatus() == "aguardando implantação" ) {
+                    if ($values->getStatus() == "aguardando implementação" ) {
                         array_push($s, $values);
                     }
                 }
@@ -458,7 +458,7 @@ class SolicitanteController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if ($value->getApproveSol() == 'Aprovar') {
+                if ($value->getApproveSol() == 'Approvar') {
                     array_push($sd, $value);
                 }
             }
@@ -466,7 +466,7 @@ class SolicitanteController extends AbstractController
             foreach ($SD as $keys => $val) {
                 foreach ($val->getSteps() as $keys => $values) {
                     # code...
-                    if ($values->getStatus() == "aguardando implantação") {
+                    if ($values->getStatus() == "aguardando implementação") {
                         array_push($s, $values);
                     }
                 }
@@ -475,8 +475,8 @@ class SolicitanteController extends AbstractController
             $data = $request->request;
             for ($i = 1; $i <= sizeof($data) / 4; $i++) {
                 foreach ($s as $key => $value) {
-                    if ($data->get($value->getId() . 'stat') == 'Aprovar') {
-                        $value->setStatus("implantado");
+                    if ($data->get($value->getId() . 'stat') == 'Approvar') {
+                        $value->setStatus("implementado");
                         $em->flush();
 
                         $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '13']);

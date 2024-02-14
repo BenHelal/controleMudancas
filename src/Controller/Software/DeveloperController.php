@@ -47,7 +47,7 @@ class DeveloperController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if ($value->getApproveSol() == 'Aprovar') {
+                if ($value->getApproveSol() == 'Approvar') {
                     array_push($sd, $value);
                 }
             }
@@ -197,7 +197,7 @@ class DeveloperController extends AbstractController
 
             foreach ($SD as $key => $value) {
                 # code...
-                if ($value->getApproveSol() == 'Aprovar') {
+                if ($value->getApproveSol() == 'Approvar') {
                     array_push($sd, $value);
                 }
             }
