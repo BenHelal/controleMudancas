@@ -208,6 +208,9 @@ class MudancasController extends AbstractController
             foreach ($array as $key => $value) {
                 if($value->getManagerUserApp() == null){
                     array_push($array2, $value);
+                }elseif($value->getAppMan() == null and $value->getAreaResp()->getManager() == $person  ){
+
+                    array_push($array2, $value);
                 }else{
                     
                 
