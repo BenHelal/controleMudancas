@@ -248,6 +248,20 @@
 													</div>
 												</a>
 											</li>
+											{% elseif row.appMan == null and row.areaResp.manager == person  and foo == true %}
+											<li class="list-group-item d-flex justify-content-between lh-condensed">
+												<a href="{{path('upm',{id: row.id})}}">
+													<div>
+														<h6 class="my-0">Nome do Mudança:
+															{{row.nomeMudanca}}
+														</h6>
+
+														<small class="text-muted">Número da mudança :
+															{{row.id}}
+														</small>
+													</div>
+												</a>
+											</li>
 											{% else %}
 											
 										você não tem Pendências
