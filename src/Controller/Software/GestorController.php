@@ -182,7 +182,13 @@ class GestorController extends AbstractController
             }*/
             if ($request->files->get($fileKey) !== null) {
                 foreach ($request->files->get($fileKey) as $key => $value) {
-                    $fileName = $value->getClientOriginalName();
+                    
+                    date_default_timezone_set("America/Sao_Paulo");
+                    
+                    $time = new \DateTime();
+                    $formattedTime = $time->format('Y-m-d_H-i-s'); // Use underscore instead of colon for filename
+                    $fileName = $formattedTime . '_' . $value->getClientOriginalName();
+                    
                     $publicDirectory = $this->getParameter('kernel.project_dir');
                     $excelFilepath = $publicDirectory . '/public/assets/' . $mud->getId() . '/documentation/' . $steps->getId();
                     $value->move($excelFilepath, $fileName);

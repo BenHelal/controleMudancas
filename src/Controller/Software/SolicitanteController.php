@@ -476,7 +476,7 @@ class SolicitanteController extends AbstractController
             for ($i = 1; $i <= sizeof($data) / 4; $i++) {
                 foreach ($s as $key => $value) {
                     if ($data->get($value->getId() . 'stat') == 'Approvar') {
-                        $value->setStatus("implementado");
+                        $value->setStatus("aguardando implementação");
                         $em->flush();
 
                         $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '13']);

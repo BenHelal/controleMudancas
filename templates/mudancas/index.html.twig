@@ -220,19 +220,22 @@
 													</div>
 												</a>
 											</li>
-										{% else %}
-											{% set foo = false %}
-										
-											{% for item in row.areaImpact %}
-												{% if item.coordinator == person %}
-													{% set foo = true %}
-												{% endif %}
-											{% endfor %}
-										
-								
-											{% if foo == true %}
+										{% elseif  row.addBy.function.manager == person and row.managerUserApp == null and foo == true %}
 											
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
+												<a href="{{path('approve',{id: row.id})}}">
+													<div>
+														<h6 class="my-0">Nome do Mudança:
+															{{row.nomeMudanca}}
+														</h6>
+														<small class="text-muted">Número da mudança :
+															{{row.id}}
+														</small>
+													</div>
+												</a>
+											</li>
+										{% elseif  row.mangerMudancas != null and row.appGest == null and foo == true %}
+												<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('app_notif',{id: row.id})}}">
 													<div>
 														<h6 class="my-0">Nome do Mudança:
@@ -245,7 +248,9 @@
 													</div>
 												</a>
 											</li>
-											{% endif %}
+											{% else %}
+											
+										você não tem Pendências
 										{% endif %}
 									{% endif %}
 								{% endfor %}

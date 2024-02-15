@@ -141,7 +141,7 @@ class MudancasController extends AbstractController
             foreach ($mudanca as $key => $muda) {
                 if ($muda->getAddBy() == $person && $muda->getImplemented() == null) {
                     array_push($array, $muda);
-                } 
+                }
                 elseif ($muda->getAreaResp()->getManager() == $person  && $muda->getImplemented() == null) {
                     array_push($array, $muda);
                 }
@@ -203,8 +203,14 @@ class MudancasController extends AbstractController
                     }
                 }
             }
+
             $array2 = [];
             foreach ($array as $key => $value) {
+                if($value->getManagerUserApp() == null){
+                    array_push($array2, $value);
+                }else{
+                    
+                
                 $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
                 $oneOfSp = null;
                 $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
@@ -214,6 +220,7 @@ class MudancasController extends AbstractController
                         array_push($array2, $value);
                     }
                 }
+            }
             }
 
             if ($req->getApproves() == 'yes') {
@@ -869,18 +876,6 @@ class MudancasController extends AbstractController
                                 $email->setBody('nansenAddBy');
                                 $em->persist($email);
                                 
-
-                                
-                                $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '1']);
-                                $email = new  Email();
-                                $email->setMudancas($mud);
-                                $email->setSendTo($mud->getAreaResp()->getManager());
-                                $email->setSendBy($person);
-                                $email->setTitle($emailConfigSoftware->getSubjectMessage());
-                                $email->setBody($emailConfigSoftware->getTitleOfMessage());
-                                $em->persist($email);
-                                $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-
                                 $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($mud->getAreaResp()->getManager());
@@ -926,17 +921,6 @@ class MudancasController extends AbstractController
                                 $email->setBody('nansenAddBy');
                                 $em->persist($email);
 
-
-                                
-                                $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '1']);
-                                $email = new  Email();
-                                $email->setMudancas($mud);
-                                $email->setSendTo($mud->getAreaResp()->getManager());
-                                $email->setSendBy($person);
-                                $email->setTitle($emailConfigSoftware->getSubjectMessage());
-                                $email->setBody($emailConfigSoftware->getTitleOfMessage());
-                                $em->persist($email);
-                                $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
 
 
                                 $email = new  Email();
