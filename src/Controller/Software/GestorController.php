@@ -369,7 +369,7 @@ class GestorController extends AbstractController
         $session = new Session();
         $session = $request->getSession();
         if ($session->get('token_jwt') != '') {
-
+            
             $em = $doctrine->getManager();
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $mud = $em->getRepository(Mudancas::class)->find($id);
@@ -398,7 +398,7 @@ class GestorController extends AbstractController
             }
 
             $data = $request->request;
-            for ($i = 1; $i <= sizeof($data) / 4; $i++) {
+            for ($i = 1; $i <= sizeof($data) / 6; $i++) {
 
                 foreach ($s as $key => $value) {
                     if ($request->files->get(strval($value->getId()) . 'files') != null) {
@@ -447,7 +447,7 @@ class GestorController extends AbstractController
                     } elseif ($data->get($value->getId() . 'stat') == 'implementado') {
                         $value->setStatus("implementado");
                         $em->flush();
-                    } else {
+                    } elseif ($data->get($value->getId() . 'stat') == 'Pedido de mudança') {
                         $value->setStatus("pedido de mudança");
                         $em->flush();
 

@@ -85,7 +85,7 @@ class MudancasController extends AbstractController
 
 
             foreach ($gestorArray as $key => $value) {
-                if ($value->getDone() != 'Feito') {
+                if ($value->getDone() != 'Feito'  && $value->getImplemented() == null ) {
                     array_push($notifGestor, $value);
                     $gestor = true;
                 } elseif ($value->getDone() == 'Feito' && $value->getImplemented() == null) {
@@ -232,7 +232,7 @@ class MudancasController extends AbstractController
                         'controller_name' => 'Mudancas',
                         'login' => 'null',
                         'creation' => 'null',
-                        'mud' => array_reverse($mudancas),
+                        'mud' => array_reverse($array),
                         'manager' => false,
                         'person' => $person,
                         'gestor' => false
@@ -242,7 +242,7 @@ class MudancasController extends AbstractController
                         'controller_name' => 'Mudancas',
                         'login' => 'null',
                         'creation' => 'null',
-                        'mud' => array_reverse($mudancas),
+                        'mud' => array_reverse($array),
                         'manager' => false,
                         'percent' => $val,
                         'size' => $size,

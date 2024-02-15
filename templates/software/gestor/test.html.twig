@@ -75,8 +75,8 @@
 		}
 
 	</style>
-    <div class="row" id="arq">
 <form action="{{path('app_software_gestor_test_approve',{'id':m.id} )}}" style="width: 100% " enctype="multipart/form-data" method="post">
+    <div class="row" id="arq">
 		{% if sImp is null %}
 			{% else %}
 				{% for s in sImp %}
@@ -217,10 +217,9 @@
 						<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
 				{% endfor %}
 		{% endif %}
-
+</div>
 
     <div class="row" id="arq">
-<form action="{{path('app_software_gestor_test_approve',{'id':m.id} )}}" style="width: 100% " enctype="multipart/form-data" method="post">
 		{% if step is null %}
 			{% else %}
 				{% for s in step %}
