@@ -131,11 +131,16 @@
 									</div>
 
 
-									<div id="div6" class="col-md-2 mb-3">
-										<label for="{{s.id}}file">Aprovação</label>
-										<input id="{{s.id}}stat" name="{{s.id}}stat" value="{{s.approveSol}}" {% if s.approveSol == "Reprovar" %} style="width: 100%; background-color: red;" {% elseif s.approveSol == "Approvar" %} style="width: 100%; background-color: #20c997;" {% endif %} type="text" readonly/>
+									
+								<div id="div6" class="col-md-2 mb-3">
+									<label for="{{s.id}}file">Aprovação</label>
+									<input id="{{s.id}}stat" name="{{s.id}}stat" 
+										 {% if s.dateClientApp == null %}  value="{{s.approveSol}}" style="width: 100%; background-color: red;" 
+											{% set yourVariable = "false" %}
+											{% elseif s.dateClientApp != null %} 
+											{% set yourVariable = "true" %} value="Approvar" style="width: 100%; background-color: #20c997;" {% else %} {% set yourVariable = "true" %} {% endif %} type="text" readonly/>
 
-									</div>
+								</div>
 
 									{% if s.doc != null %}
 										<div class="col-md-6 mb-3">
@@ -284,7 +289,11 @@
 
 								<div id="div6" class="col-md-2 mb-3">
 									<label for="{{s.id}}file">Aprovação</label>
-									<input id="{{s.id}}stat" name="{{s.id}}stat" value="{{s.approveSol}}" {% if s.approveSol == "Reprovar" %} {% set yourVariable = "false" %} style="width: 100%; background-color: red;" {% elseif s.approveSol == "Approvar" %} {% set yourVariable = "true" %} style="width: 100%; background-color: #20c997;" {% else %} {% set yourVariable = "true" %} {% endif %} type="text" readonly/>
+									<input id="{{s.id}}stat" name="{{s.id}}stat" value="{{s.approveSol}}"
+										 {% if s.dateClientApp == null %}  style="width: 100%; background-color: red;" 
+											
+											{% elseif s.dateClientApp != null %} 
+											{% set yourVariable = "true" %} style="width: 100%; background-color: #20c997;" {% else %} {% set yourVariable = "true" %} {% endif %} type="text" readonly/>
 
 								</div>
 								{% if s.doc != null %}
