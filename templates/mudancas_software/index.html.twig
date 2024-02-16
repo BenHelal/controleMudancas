@@ -127,46 +127,16 @@
 	</style>
 	
 	{% include 'flowBoard.html.twig' %}
-<div class="d-flex text-sm-left">
-				<a style="color: black;text-decoration: none;" href="{{path('orderMudancas',{'id':m.id} )}}">
-					<h5>
-						Priorização das mudanças 
-					</h5>
-				</a>
-			</div>
-			<div style="width: 20px">
-			</div>
+				{% if m.mudS != null %}
+					{% if m.mudS.reference != null %}
+					<a href="{{path('upm',{id: m.mudS.reference.id})}}" >
+						Referência Mudança : {{m.mudS.reference.id}}  - {{m.mudS.reference.nomeMudanca}}.</br>
+					</a>
+					{% endif %}
+				{% endif %}
 			<br>
 
 	{{ form_start(form, {'attr':{'class':'form-group', 'id':'test'}}) }}
-	{% if m.mudS.numberRef != null %}
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				<label for="mudancas_typeMud" class="required">Mudança referenciada</label>
-				<select id="mudancas_typeMud" name="mudancas[typeMud]" class="form-control" rows="4">
-					<option value="2">Não</option>
-					<option value="1" selected="selected">Sim</option>
-				</select>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				<label for="mudancas_numberRef" class="required">Nº Mudança anterior</label>
-				<textarea id="mudancas_numberRef" name="mudancas[numberRef]" required="required" class="form-control" rows="4">{{ m.mudS.numberRef }}</textarea>
-			</div>
-		</div>
-	{% else %}
-
-		<div class="row">
-			<div class="col-md-12 mb-3">
-				<label for="mudancas_typeMud" class="required">Mudança referenciada</label>
-				<select id="mudancas_typeMud" name="mudancas[typeMud]" class="form-control" rows="4">
-					<option value="2" selected="selected">Não</option>
-					<option value="1">Sim</option>
-				</select>
-			</div>
-		</div>
-	{% endif %}
 	<div class="row">
 		<div class="col-md-12 mb-3">
 			{{ form_label(form.nomeMudanca) }}

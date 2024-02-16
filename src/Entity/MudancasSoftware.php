@@ -20,15 +20,6 @@ class MudancasSoftware
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $steps = null;
  
-    /*********************
-     * Solicitante
-     ********************/
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $numberRef = null;
- 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $ref = null;
 
     /*******************
      * Gerente de aprovação
@@ -119,6 +110,9 @@ class MudancasSoftware
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[JoinTable(name: 'testers_mud')]
     private Collection $testers;
+
+    #[ORM\ManyToOne(targetEntity: Mudancas::class)]
+    private ?Mudancas $reference = null;
      
     public function __construct()
     {
@@ -181,30 +175,6 @@ class MudancasSoftware
     public function setPriority(string $priority): self
     {
         $this->priority = $priority;
-
-        return $this;
-    }
-
-    public function getRef(): ?string
-    {
-        return $this->ref;
-    }
-
-    public function setRef(string $ref): self
-    {
-        $this->ref = $ref;
-
-        return $this;
-    }
-
-    public function getNumberRef(): ?string
-    {
-        return $this->numberRef;
-    }
-
-    public function setNumberRef(string $numberRef): self
-    {
-        $this->numberRef = $numberRef;
 
         return $this;
     }
@@ -505,6 +475,18 @@ class MudancasSoftware
     public function removeTester(Person $tester): self
     {
         $this->testers->removeElement($tester);
+
+        return $this;
+    }
+
+    public function getReference(): ?Mudancas
+    {
+        return $this->reference;
+    }
+
+    public function setReference(?Mudancas $reference): static
+    {
+        $this->reference = $reference;
 
         return $this;
     }

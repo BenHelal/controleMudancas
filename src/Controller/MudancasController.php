@@ -849,10 +849,20 @@ class MudancasController extends AbstractController
                     $mud->setAreaResp($areaResp);
                     $mud->setMudS($ms);
                    // dd($emailConfigSoftware);
+
+                   //for refrence  to the process in mudanças
+                    $all_mudancas = $em->getRepository(Mudancas::class)->findAll();
+
                     $form = $this->createForm(MudancasType::class, $mud);
                     $form->handleRequest($request);
 
-                    if ($form->isSubmitted() && $form->isValid()) {
+                    if ($form->isSubmitted()) {
+                        $allValues = $request->request->all();
+                        $ref = $allValues['mudancas']['ref'];
+                        if($ref != ""){
+                            $mudRef = $em->getRepository(Mudancas::class)->find($ref);
+                            $ms->setReference($mudRef);
+                        }
                         $email = new  Email();
                         $email->setMudancas($mud);
                         $email->setSendTo($person);
@@ -1114,6 +1124,7 @@ class MudancasController extends AbstractController
                         'gestor' => false,
                         'form' => $form->createView(),
                         'person' => $person,
+                        'all_mudancas' => $all_mudancas,
                         'manager' => false
                     ]);
                 } else {

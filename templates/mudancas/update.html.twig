@@ -170,6 +170,13 @@
 			{% endif %}
 		{% elseif creation == 'false' %}
 
+				{% if m.mudS != null %}
+					{% if m.mudS.reference != null %}
+					<a href="{{path('upm',{id: m.mudS.reference.id})}}" >
+						Referência Mudança : {{m.mudS.reference.id}}  - {{m.mudS.reference.nomeMudanca}}.</br>
+					</a>
+					{% endif %}
+				{% endif %}
 			{{ form_start(form, {'attr':{'class':'form-group', 'id':'test'}}) }}
 			<div class="row">
 				<div class="col-md-12 mb-3">
@@ -235,41 +242,41 @@
 			</div>
 
 	
-	{% if m.mudS != null %}
-			<div class="chosen-container chosen-container-single 
-			chosen-container-active" title="" 
-			id="mudancas_manager_areaResp_chosen" 
-			style="width: 1459px;" bis_skin_checked="1">
-				<a class="chosen-single">
-  					<span>{{m.areaResp.name}}</span>
-  					<div bis_skin_checked="1"><b></b></div>
-				</a>
-				<div class="chosen-drop" bis_skin_checked="1">
-  					<div class="chosen-search" bis_skin_checked="1">
-    					<input class="chosen-search-input" type="text" autocomplete="off">
-  					</div>
-  					<ul class="chosen-results">
-						<li class="active-result" data-option-array-index="0">
-							034 – TI FILIAL (INFRAESTRUTURA E REDE)
-						</li>
-					</ul>
-				</div>
-			</div>
-			<div class="row" id="selectAreaResp" style="display: none;">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.areaResp) }}
-					{{ form_widget(form.areaResp,{'attr':{'class':'form-control','readonly':'readonly','id':'test' ,'rows': '12'}}) }}
-				</div>
-			</div>
-		{% else %}
-		
-			<div class="row" id="selectAreaResp">
-				<div class="col-md-12 mb-3">
-					{{ form_label(form.areaResp) }}
-					{{ form_widget(form.areaResp,{'attr':{'class':'form-control','readonly':'readonly','id':'test' ,'rows': '12'}}) }}
-				</div>
-			</div>
-	{% endif %}
+				{% if m.mudS != null %}
+						<div class="chosen-container chosen-container-single 
+						chosen-container-active" title="" 
+						id="mudancas_manager_areaResp_chosen" 
+						style="width: 1459px;" bis_skin_checked="1">
+							<a class="chosen-single">
+								<span>{{m.areaResp.name}}</span>
+								<div bis_skin_checked="1"><b></b></div>
+							</a>
+							<div class="chosen-drop" bis_skin_checked="1">
+								<div class="chosen-search" bis_skin_checked="1">
+									<input class="chosen-search-input" type="text" autocomplete="off">
+								</div>
+								<ul class="chosen-results">
+									<li class="active-result" data-option-array-index="0">
+										034 – TI FILIAL (INFRAESTRUTURA E REDE)
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="row" id="selectAreaResp" style="display: none;">
+							<div class="col-md-12 mb-3">
+								{{ form_label(form.areaResp) }}
+								{{ form_widget(form.areaResp,{'attr':{'class':'form-control','readonly':'readonly','id':'test' ,'rows': '12'}}) }}
+							</div>
+						</div>
+					{% else %}
+
+						<div class="row" id="selectAreaResp">
+							<div class="col-md-12 mb-3">
+								{{ form_label(form.areaResp) }}
+								{{ form_widget(form.areaResp,{'attr':{'class':'form-control','readonly':'readonly','id':'test' ,'rows': '12'}}) }}
+							</div>
+						</div>
+				{% endif %}
 
 			<div class="row">
 				<div class="col-md-12 mb-3">
@@ -641,7 +648,17 @@
 							</div>
 						</div>	
 						{% if 'soft' in  app.request.uri  %}
-								
+						<div class="row">
+							<div class="col-md-12 mb-3">
+							<select id="mudancas_ref" name="mudancas[ref]" required="required" 
+								class=" form-control" readonly="readonly" rows="12" >
+								<option value="">Escolha a referência de alterações, se existir ...</option>
+								{% for item in all_mudancas %}
+								<option value="{{item.id}}">{{item.id}} - {{item.nomeMudanca}}</option>	
+								{% endfor %}
+							</select>
+						</div>
+						</div>
 								<div class="row" id="selectAreaResp" style="display: none;">
 									<div class="col-md-12 mb-3">
 										{{ form_label(form.areaResp) }}
@@ -705,6 +722,10 @@
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
 	<script>
 $(document).ready(function () {
+
+
+
+
 const cost = document.getElementById('cost2');
 cost.style.display = 'none';});</script>
 				<script>
@@ -720,6 +741,7 @@ box.style.display = 'none';
 $(document).ready(function () {
 
 
+$('#mudancas_ref').chosen({});
 const box = document.getElementById('vcg');
 
 $('#mudancas_client').chosen({});

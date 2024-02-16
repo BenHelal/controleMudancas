@@ -135,8 +135,10 @@
 													{% set foo = true %}
 												{% endif %}
 											{% endfor %}
+													{% set thereIsItems = false %}
 											
 										{% if row.managerUserApp == null and row.addBy.function.manager == person and foo == false %}
+													{% set thereIsItems = true %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('approve',{id: row.id})}}">
 													<div>
@@ -150,7 +152,7 @@
 													</div>
 												</a>
 											</li>
-										{% elseif row.managerUserApp == null and row.addBy.function.manager == person  and foo == false  %}
+										{% elseif row.managerUserApp == null and row.addBy.function.manager == person  and foo == false  %}{% set thereIsItems = true %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('approve',{id: row.id})}}">
 													<div>
@@ -164,7 +166,7 @@
 													</div>
 												</a>
 											</li>
-										{% elseif row.appMan == null and row.areaResp.manager == person and foo == false %}
+										{% elseif row.appMan == null and row.areaResp.manager == person and foo == false %}{% set thereIsItems = true %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('upm',{id: row.id})}}">
 													<div>
@@ -178,7 +180,7 @@
 													</div>
 												</a>
 											</li>
-											{% elseif row.appMan == null and row.areaResp.manager == person  and foo == false %}
+											{% elseif row.appMan == null and row.areaResp.manager == person  and foo == false %}{% set thereIsItems = true %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('upm',{id: row.id})}}">
 													<div>
@@ -192,7 +194,7 @@
 													</div>
 												</a>
 											</li>
-										{% elseif row.mangerMudancas == person and foo == false  %}
+										{% elseif row.mangerMudancas == person and foo == false  %}{% set thereIsItems = true %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('upm',{id: row.id})}}">
 													<div>
@@ -206,7 +208,7 @@
 													</div>
 												</a>
 											</li>
-										{% elseif row.addBy == person and foo == false  %}
+										{% elseif row.addBy == person and foo == false  %}{% set thereIsItems = true %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('upm',{id: row.id})}}">
 													<div>
@@ -220,7 +222,7 @@
 													</div>
 												</a>
 											</li>
-										{% elseif  row.addBy.function.manager == person and row.managerUserApp == null and foo == true %}
+										{% elseif  row.addBy.function.manager == person and row.managerUserApp == null and foo == true %}{% set thereIsItems = true %}
 											
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('approve',{id: row.id})}}">
@@ -234,7 +236,7 @@
 													</div>
 												</a>
 											</li>
-										{% elseif  row.mangerMudancas != null and row.appGest == null and foo == true %}
+										{% elseif  row.mangerMudancas != null and row.appGest == null and foo == true %}{% set thereIsItems = true %}
 												<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('app_notif',{id: row.id})}}">
 													<div>
@@ -248,7 +250,7 @@
 													</div>
 												</a>
 											</li>
-											{% elseif row.appMan == null and row.areaResp.manager == person  and foo == true %}
+											{% elseif row.appMan == null and row.areaResp.manager == person  and foo == true %}{% set thereIsItems = true %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('upm',{id: row.id})}}">
 													<div>
@@ -262,7 +264,7 @@
 													</div>
 												</a>
 											</li>
-											{% else %}
+											{% elseif thereIsItems == true %}
 											
 										você não tem Pendências
 										{% endif %}
