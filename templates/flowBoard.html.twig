@@ -323,9 +323,9 @@
 		{% set muds = m.mudS  %}
 		{% for sg  in muds.stepsGestor %}
 			{% for step in sg.steps %}
-				{% if step.status == 'implantado' or step.status == 'aguardando implantação' or step.status == 'reprovado'  or step.status == 'não implementado'%}
+				{% if step.status == 'implementado' or step.status == 'aguardando implementação' or step.status == 'reprovado'  or step.status == 'não implementado'%}
 					{% set docs = 6 %}
-				{% elseif step.status == 'teste usario' %}
+				{% elseif step.status == 'teste usuário' %}
 					{% set docs = 5 %}
 				{% elseif step.status == 'teste ti' %}
 					{% set docs = 4 %}
