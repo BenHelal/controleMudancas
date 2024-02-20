@@ -13,7 +13,7 @@
 					{% for s in step %}
 						<div id="{{s.id}}" class="row col-md-12 mb-3 d-flex justify-content-between">
 							<div id="div" class="col-md-3 mb-3">
-								<label for="1">Arquivos</label>
+								<label for="1">Requisito</label>
 								<input class="form-control" id="{{s.id}}ariquivo" name="{{s.id}}ariquivo" value="{{s.ariquivo.step}}" type="text" readonly/>
 							</div>
 							<div id="div3" class="col-md-6 mb-3">
@@ -38,7 +38,7 @@
 								<label for="{{s.id}}file">Aprovação</label>
 								<select id="{{s.id}}stat" name="{{s.id}}stat" class="form-control">
 									<option selected value="">Selecione a opção</option>
-									<option value="Approvar">Approvar</option>
+									<option value="Approvar">Aprovar</option>
 									<option value="Reprovar">Reprovar</option>
 								</select>
 							</div>
@@ -60,7 +60,7 @@
 
 							{% if s.docTest != null %}
 								<div class="col-md-6 mb-3">
-									<label>Anexo Teste</label><br>
+									<label>Anexo do Teste</label><br>
 									<a href="{{ asset('assets/') }}{{m.id}}/{{s.docTest}}" style="
 																							  						border: none;
 																							  						background-color: #0c2c01;
@@ -76,7 +76,7 @@
 
 							{% if s.docClient != null %}
 								<div class="col-md-6 mb-3">
-									<label>O último anexo que Gestor adicionou :</label><br>
+									<label>O último anexo que Gestor adicionou </label><br>
 									<a href="{{ asset('assets/') }}{{m.id}}/{{s.docGestor}}" style="
 																							  						border: none;
 																							  						background-color: #0c2c01;
@@ -93,7 +93,7 @@
 
 							{% if s.docGestor != null %}
 								<div class="col-md-6 mb-3">
-									<label>O último anexo que você adicionou :</label><br>
+									<label>O último anexo que você adicionou </label><br>
 									<a href="{{ asset('assets/') }}{{m.id}}/{{s.docGestor}}" style="
 																							  						border: none;
 																							  						background-color: #0c2c01;
