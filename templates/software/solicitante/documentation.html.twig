@@ -250,11 +250,11 @@
 
 									<div class="col-md-3 mb-3">
 										{% if s.dateClientApp != null %}
-											<label>Data e hora de aprovação do cliente:<br> {{s.dateClientApp}}</label> <br>
+											<label>Data e hora de aprovação do cliente:<br> {{s.dateClientApp|date('d-m-Y H:i:s') }}</label> <br>
 										{% endif %}
 										<br>
 										{% if s.dateClientRep != null %}
-											<label>Data e hora da aprovação do Change Request: {{s.dateClientRep}}</label> <br>
+											<label>Data e hora da aprovação do Change Request: {{s.dateClientRep|date('d-m-Y H:i:s') }}</label> <br>
 										{% endif %}
 									</div>
 								</div>
