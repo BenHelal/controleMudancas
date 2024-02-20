@@ -283,7 +283,7 @@
 				{% for s in step %}
 					<div id="{{s.id}}" class="row col-md-12 mb-3 d-flex justify-content-between">
 						<div id="div" class="col-md-3 mb-3">
-							<label for="1">Arquivos</label>
+							<label for="1">Requisito</label>
 							<input class="form-control" id="{{s.id}}ariquivo" name="{{s.id}}ariquivo" value="{{s.ariquivo.step}}" type="text" readonly/>
 						</div>
 						<div id="div3" class="col-md-6 mb-3">
@@ -591,7 +591,7 @@ document.getElementById(i + 'test').appendChild(selectArquivo);
 
 const labelselectArquivo = document.createElement('label');
 labelselectArquivo.setAttribute('for', i + 'a');
-labelselectArquivo.innerHTML = "Arquivo";
+labelselectArquivo.innerHTML = "Requisito";
 document.getElementById(i + 'selectArquivo').appendChild(labelselectArquivo);
 
 const select = document.createElement("select");
@@ -626,7 +626,7 @@ document.getElementById(i + 'test').appendChild(div2);
 
 const label2 = document.createElement('label');
 label2.setAttribute('for', i + 'test');
-label2.innerHTML = "Data de entrega do teste de TI";
+label2.innerHTML = "Data de entrega do teste TI";
 document.getElementById(i + 'div2').appendChild(label2);
 
 const node2 = document.createElement("input");
@@ -681,7 +681,7 @@ document.getElementById(i + 'test').appendChild(div5);
 
 const label5 = document.createElement('label');
 label5.setAttribute('for', i + 'files');
-label5.innerHTML = "Anexo Teste";
+label5.innerHTML = "Anexo do Teste";
 document.getElementById(i + 'div5').appendChild(label5);
 
 const node5 = document.createElement("input");
