@@ -140,15 +140,14 @@ class NotifController extends AbstractController
                     $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '1']);
                                 $email = new  Email();
                                 $email->setMudancas($mudancas);
-                                $email->setSendTo($mudancas->getAddBy());
+                                $email->setSendTo($mudancas->getAreaResp()->getManager());
                                 $email->setSendBy($person);
                                 $email->setTitle($emailConfigSoftware->getSubjectMessage());
                                 $email->setBody($emailConfigSoftware->getTitleOfMessage());
                                 $em->persist($email);
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                            
                 }
-
+                
                 return $this->redirectToRoute('upm', ['id' => $id]);
                 
             }

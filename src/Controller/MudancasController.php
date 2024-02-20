@@ -457,18 +457,6 @@ class MudancasController extends AbstractController
                                 $em->flush();
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
 
-
-                                
-                                $emailConfigSoftware = $em->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '1']);
-                                $email = new  Email();
-                                $email->setMudancas($mud);
-                                $email->setSendTo($mud->getAreaResp()->getManager());
-                                $email->setSendBy($person);
-                                $email->setTitle($emailConfigSoftware->getSubjectMessage());
-                                $email->setBody($emailConfigSoftware->getTitleOfMessage());
-                                $em->persist($email);
-                                $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-
                                 $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($mud->getAreaResp()->getManager());
@@ -1565,7 +1553,6 @@ class MudancasController extends AbstractController
                                             $email->setBody($emailConfigSoftware->getTitleOfMessage());
                                             $em->persist($email);
                                             $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false,);
-                                        
                                             }
                                         }
 
