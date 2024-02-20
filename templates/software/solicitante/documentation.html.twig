@@ -393,15 +393,15 @@
 										<select id="1stat" name="{{s.id}}stat" class="form-control" onchange="yesnoCheck(this);" style="width:100% ;    height: 100%;" value="{{s.approveSol}}">
 											{% if s.approveSol == 'Approvar' %}
 												<option value="">Selecione a opção</option>
-												<option selected value="Approvar">Approvar</option>
+												<option selected value="Approvar">Aprovar</option>
 												<option value="Reprovar">Reprovar</option>
 											{% elseif s.approveSol == 'Reprovar' %}
 												<option value="">Selecione a opção</option>
-												<option value="Approvar">Approvar</option>
+												<option value="Approvar">Aprovar</option>
 												<option selected value="Reprovar">Reprovar</option>
 											{% else %}
 												<option selected value="">Selecione a opção</option>
-												<option value="Approvar">Approvar</option>
+												<option value="Approvar">Aprovar</option>
 												<option value="Reprovar">Reprovar</option>
 											{% endif %}
 										</select>
