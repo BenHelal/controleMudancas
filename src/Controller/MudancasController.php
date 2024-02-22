@@ -199,7 +199,7 @@ class MudancasController extends AbstractController
                 }
             }
             
-            $array2 = [];
+           /* $array2 = [];
             foreach ($array as $key => $value) {
                 $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
                 $oneOfSp = null;
@@ -210,8 +210,29 @@ class MudancasController extends AbstractController
                         array_push($array2, $value);
                     }
                 }
-            }
+            }*/
+            
+            $array2 = [];
+            foreach ($array as $key => $value) {
+                if($value->getManagerUserApp() == null){
+                    array_push($array2, $value);
+                }elseif($value->getAppMan() == null and $value->getAreaResp()->getManager() == $person  ){
 
+                    array_push($array2, $value);
+                }else{
+                    
+                
+                $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
+                $oneOfSp = null;
+                $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+                
+                foreach ($sps as $sp) {
+                    if($sp->getAppSectorMan() == null && $sp->getPerson() == $person ){
+                        array_push($array2, $value);
+                    }
+                }
+            }
+            }
 
             if ($req->getApproves() == 'yes') {
                 if ($manager != true && $gestor == false) {
