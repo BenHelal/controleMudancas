@@ -7,15 +7,6 @@
 	<div class="container" style="padding-left: 20px ;padding-right: 20px;">
 
 
-		<script>
-			setTimeout(function () {
-				
-				var myInput =   document.getElementById("myInput");
-				if (myInput.value == "") {
-					window.location.reload();
-  				}
-			}, 5000);
-		</script>
 		{% if creation == 'null' %}
 			{% if manager  %}
 				<link href="{{ asset('admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">

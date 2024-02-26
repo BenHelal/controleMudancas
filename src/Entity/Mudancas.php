@@ -153,7 +153,7 @@ class Mudancas
         return $this->typeMud;
     }
 
-    public function setTypeMud(string $typeMud): self
+    public function setTypeMud(?string $typeMud): self
     {
         $this->typeMud = $typeMud;
         return $this;
@@ -169,7 +169,7 @@ class Mudancas
         return $this->mudS;
     }
 
-    public function setMudS(MudancasSoftware $mudS): self
+    public function setMudS(?MudancasSoftware $mudS): self
     {
         $this->mudS = $mudS;
         return $this;

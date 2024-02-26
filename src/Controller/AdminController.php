@@ -44,6 +44,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpParser\Node\Stmt\Else_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -502,10 +503,12 @@ class AdminController extends AbstractController
             $ln =  $resultSet->fetchAllAssociative();
 
             if($mudancas->getTypeMud() == '1'){
-                $sql = 'Delete FROM mudancas_software WHERE id = :mudancas_id ;';
-                $stmt = $conn->prepare($sql);
-                $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getMudS()->getId()]);
-                $ln =  $resultSet->fetchAllAssociative();
+                $mudancasSoft = $em->getRepository(MudancasSoftware::class)->find($mudancas->getMudS()->getId());
+                $mudancas->setMudS(null);
+                $mudancas->setTypeMud(null);
+                $em->remove($mudancasSoft);
+                $em->flush();
+                    //throw new BadRequestException('Necessário informar a referência da mudança');
             }
 
             $sql = 'Delete FROM mudancas WHERE id = :mudancas_id ;';
