@@ -504,7 +504,7 @@ class AdminController extends AbstractController
             if($mudancas->getTypeMud() == '1'){
                 $sql = 'Delete FROM mudancas_software WHERE id = :mudancas_id ;';
                 $stmt = $conn->prepare($sql);
-                $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getMudS()]);
+                $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getMudS()->getId()]);
                 $ln =  $resultSet->fetchAllAssociative();
             }
 
