@@ -502,14 +502,18 @@ class AdminController extends AbstractController
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
 
-            if($mudancas->getMudS() != null){
+            if($mudancas->getMudS() != null){try {
+                //code...
                 $mudancasSoft = $em->getRepository(MudancasSoftware::class)->find($mudancas->getMudS()->getId());
                 $mudancasSoft->setReference(null);
                 $mudancas->setMudS(null);
                 $mudancas->setTypeMud(null);
                 $em->remove($mudancasSoft);
                 $em->flush();
-                    throw new BadRequestException('Necessário informar a referência da mudançass');
+                    
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
             }
 
             $sql = 'Delete FROM mudancas WHERE id = :mudancas_id ;';
