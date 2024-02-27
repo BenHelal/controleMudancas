@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+	<link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
+	<div class="container" style="padding-left: 20px ;padding-right: 20px;">
+	<div class="modal-body">	
+	<div class="modal-header">
+						<h4 class="modal-title" style="text-transform: capitalize;" id="exampleModalLongTitle">Sobre do código</h4>
+						</div>
+						<div class="modal-body">
+							<h5>Versão : {{version}}</h5>
+							<h5>Data última atualização : {{date}}</h5>
+						</div>
+						<div class="modal-header">
+							<h4 class="modal-title" id="exampleModalLongTitle">Política LGPD</h4>
+						</div>
+							<h5>POLÍTICA DE PRIVACIDADE</h5>
+							<br>
+							<p>Por meio dessa Política de Privacidade, a SERDIA pretende mostrar seu compromisso com o cumprimento 
+														de regulamentos e leis que derivam do processamento das informações necessárias para a prestação 
+														de seus serviços e do uso de Tecnologias de informação e comunicação. 
+														Em particular, a SERDIA expressa seu compromisso com o cumprimento dos regulamentos orientados 
+														para a proteção de dados pessoais. Nesse sentido, eles são considerados como um quadro de referência, 
+														principalmente:</p>
+							<p>
+								<ul>
+									<li>
+										Lei 13.709/2018 LGPD – Dispõe sobre a Lei Geral de Proteção de Dados Pessoais
+									</li>
+									<li>Lei nº 12.965/2014 MARCO CIVIL DA INTERNET – Estabelece princípios, garantias, 
+																	direitos e deveres para o uso da internet no Brasil</li>
+								</ul>
+							</p>
+							<p>Esta declaração se aplica a qualquer site, aplicativo, produto, software ou serviço pertencente à SERDIA. 
+														Ocasionalmente, um serviço será vinculado a uma declaração de privacidade diferente, 
+														que listará as práticas particulares de privacidade desse serviço.<br>Esta política pode ser atualizada periodicamente no qual lhe pedimos que revise via site.
+							</p>
+							<p></p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
+							<a href="http://www.serdia.com.br/site/pt-br/politica-lgpd/" class="btn btn-info mt-2 text-white">Mais detalhes</a>
+						</div>
+
+{% endblock %}

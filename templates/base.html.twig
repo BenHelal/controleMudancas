@@ -4,7 +4,14 @@
 	{% if login == 'true' %}
 		{% else %}
 			<header class="header">
-
+				<style>
+				#onhoverfb{
+                visibility: hidden;
+            }
+            #facebookicon:hover ~ #onhoverfb{
+                visibility: visible;
+            }
+				</style>
 				<meta charset="utf-8">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				<link rel="icon" href="{{ asset('assets/logo.png') }}">
@@ -71,7 +78,10 @@
 									<h3>Controle de Mudanças</h3>
 								</div>
 							</div>
-
+							<a  id="facebookicon" class="navbar-brand" href="{{path('about')}}">
+								<img src="{{ asset('info.png') }}"  width="20" height="20" />
+							</a>	
+            					<div id="onhoverfb"><bR>Sobre</div> 
 							<a class="navbar-brand" href="{{path('logout')}}">
 								Sair
 								<i class="fa fa-sign-out"></i>
