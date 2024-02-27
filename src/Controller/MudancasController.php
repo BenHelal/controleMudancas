@@ -602,13 +602,13 @@ class MudancasController extends AbstractController
                                 $time->format('Y-m-d H:i:s');
                                 $mud->setDateMUA($time);
                                 //nansen
-                                $email = new  Email();
+                               /* $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($person);
                                 $email->setSendBy($person);
                                 $email->setTitle('Aprovação automática da solicitação');
                                 $email->setBody('nansenAddBy');
-                                $em->persist($email);
+                                $em->persist($email);*/
 
                                 $email = new  Email();
                                 $email->setMudancas($mud);
@@ -643,22 +643,22 @@ class MudancasController extends AbstractController
                                 $time->format('Y-m-d H:i:s');
                                 $mud->setDateMUA($time);
                                 //nansen
-                                $email = new  Email();
+                               /* $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($person->getFunction()->getManager());
                                 $email->setSendBy($person);
                                 $email->setTitle('Aprovação automática da solicitação');
                                 $email->setBody('nansen');
-                                $em->persist($email);
+                                $em->persist($email);*/
 
                                 //nansen
-                                $email = new  Email();
+                               /*$email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($person);
                                 $email->setSendBy($person);
                                 $email->setTitle('Aprovação automática da solicitação');
                                 $email->setBody('nansenAddBy');
-                                $em->persist($email);
+                                $em->persist($email);*/
 
                                 //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                                 $email = new  Email();
@@ -914,13 +914,13 @@ class MudancasController extends AbstractController
                                 $time->format('Y-m-d H:i:s');
                                 $mud->setDateMUA($time);
                                 //nansen
-                                $email = new  Email();
+                               /* $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($person);
                                 $email->setSendBy($person);
                                 $email->setTitle('Aprovação automática da solicitação');
                                 $email->setBody('nansenAddBy');
-                                $em->persist($email);
+                                $em->persist($email);*/
 
 
 
@@ -957,22 +957,22 @@ class MudancasController extends AbstractController
                                 $time->format('Y-m-d H:i:s');
                                 $mud->setDateMUA($time);
                                 //nansen
-                                $email = new  Email();
+                                /*$email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($person->getFunction()->getManager());
                                 $email->setSendBy($person);
                                 $email->setTitle('Aprovação automática da solicitação');
                                 $email->setBody('nansen');
-                                $em->persist($email);
+                                $em->persist($email);*/
 
                                 //nansen
-                                $email = new  Email();
+                                /*$email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($person);
                                 $email->setSendBy($person);
                                 $email->setTitle('Aprovação automática da solicitação');
                                 $email->setBody('nansenAddBy');
-                                $em->persist($email);
+                                $em->persist($email);*/
 
                                 //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                                 $email = new  Email();
