@@ -67,8 +67,13 @@
 						{% if mud.managerUserAdd != null %} 
 							{% if mud.dateMUA != null  %}	
 								{{ mud.dateMUA|date('d-m-Y') }}
+							{% else %}
+								{% if mud.managerUserApp != null %}
+								Nenhuma data disponível
+								{% else %}						
+								Nenhuma data Informada
+								{% endif %}
 							{% endif %}
-						 {% endif %}
 						{% else %}
 							{{mud.dataCreation}}
 						{% endif %}
