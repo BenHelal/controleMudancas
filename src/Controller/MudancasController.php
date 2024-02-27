@@ -467,7 +467,7 @@ class MudancasController extends AbstractController
                                 $em->flush();
                                 $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
 
-                                foreach ($mud->getAreaImpact() as $key => $value) {
+                                /*foreach ($mud->getAreaImpact() as $key => $value) {
                                     $email = new  Email();
                                     $email->setMudancas($mud);
                                     $email->setSendTo($value->getCoordinator());
@@ -477,7 +477,7 @@ class MudancasController extends AbstractController
                                     $em->persist($email);
                                     $em->flush();
                                     $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                }
+                                }*/
                             }
 
                             return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
@@ -539,7 +539,7 @@ class MudancasController extends AbstractController
 
                         /************************SOFTWARE********************************************/
 
-                        if ($mud->getNansenNumber() == null) {
+                       /* if ($mud->getNansenNumber() == null) {
                             if ($mud->getAddBy() == $person && $mud->getAddBy()->getFunction()->getManager() == $person) {
                                 date_default_timezone_set("America/Sao_Paulo");
                                 $time = new \DateTime();
@@ -564,16 +564,16 @@ class MudancasController extends AbstractController
                                 $em->persist($email);
                                 $em->flush();*/
                                 //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                $email = new  Email();
+                           /*     $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($mud->getAreaResp()->getManager());
                                 $email->setSendBy($person);
                                 $email->setTitle('ÁREA Resp gerente');
                                 $email->setBody('managerAreaResp');
-                                $em->persist($email);
+                                $em->persist($email);*/
 
                                 //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                foreach ($mud->getAreaImpact() as $key => $value) {
+                                /*foreach ($mud->getAreaImpact() as $key => $value) {
                                     $email = new  Email();
                                     $email->setMudancas($mud);
                                     $email->setSendTo($value->getCoordinator());
@@ -582,8 +582,8 @@ class MudancasController extends AbstractController
                                     $email->setBody('managerArea');
                                     $em->persist($email);
                                     //    $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                }
-                            } else {
+                                }*/
+                           /* } else {
                                 $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($person->getFunction()->getManager());
@@ -594,7 +594,7 @@ class MudancasController extends AbstractController
                             }
 
                             $em->flush();
-                        } else {
+                        } else {*/
                             if ($mud->getAddBy() == $person && $mud->getAddBy()->getFunction()->getManager() == $person) {
                                 date_default_timezone_set("America/Sao_Paulo");
                                 $time = new \DateTime();
@@ -626,7 +626,7 @@ class MudancasController extends AbstractController
                                 $em->persist($email);
 
                                 //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                foreach ($mud->getAreaImpact() as $key => $value) {
+                                /*foreach ($mud->getAreaImpact() as $key => $value) {
                                     $email = new  Email();
                                     $email->setMudancas($mud);
                                     $email->setSendTo($value->getCoordinator());
@@ -635,7 +635,7 @@ class MudancasController extends AbstractController
                                     $email->setBody('managerArea');
                                     $em->persist($email);
                                     //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                }
+                                }*/
                             } else {
                                 date_default_timezone_set("America/Sao_Paulo");
                                 $time = new \DateTime();
@@ -669,7 +669,7 @@ class MudancasController extends AbstractController
                                 $em->persist($email);
 
                                 //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                foreach ($mud->getAreaImpact() as $key => $value) {
+                               /* foreach ($mud->getAreaImpact() as $key => $value) {
                                     $email = new  Email();
                                     $email->setMudancas($mud);
                                     $email->setSendTo($value->getCoordinator());
@@ -678,11 +678,11 @@ class MudancasController extends AbstractController
                                     $email->setBody('managerArea');
                                     $em->persist($email);
                                     //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                }
+                                }*/
                             }
 
                             $em->flush();
-                        }
+                      //  }
                         $sec = $em->getRepository(Sector::class)->findBy(['manager' => $person]);
                         foreach ($sec as $key => $value) {
                             if ($value === $mud->getAreaResp()) {
@@ -707,7 +707,7 @@ class MudancasController extends AbstractController
                         /**
                          * ------------------------------------------------------------
                          **/
-                        $nansenName =  $form["nansenName"]->getData();
+                        /*$nansenName =  $form["nansenName"]->getData();
                         if ($nansenName != "") {
                             $mud->setApproved('approved');
                             $process->setMudancas($mud);
@@ -736,7 +736,8 @@ class MudancasController extends AbstractController
                                 $SectorProcess->setComment("validar pelo Código Nansen");
                                 $em->persist($SectorProcess);
                             }
-                        } elseif ($mud->getAddBy() == $mud->getAddBy()->getFunction()->getManager()) {
+                        }*/
+                        if ($mud->getAddBy() == $mud->getAddBy()->getFunction()->getManager()) {
                             $mud->setManagerUserAdd($person->getFunction()->getManager());
                             $process->setMudancas($mud);
                             $process->setStatus('created');
@@ -862,7 +863,7 @@ class MudancasController extends AbstractController
 
                         /************************SOFTWARE********************************************/
 
-                        if ($mud->getNansenNumber() == null) {
+                       /* if ($mud->getNansenNumber() == null) {
                             if ($mud->getAddBy() == $person && $mud->getAddBy()->getFunction()->getManager() == $person) {
                                 date_default_timezone_set("America/Sao_Paulo");
                                 $time = new \DateTime();
@@ -886,7 +887,7 @@ class MudancasController extends AbstractController
                                 $em->persist($email);
 
                                 //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                foreach ($mud->getAreaImpact() as $key => $value) {
+                               /* foreach ($mud->getAreaImpact() as $key => $value) {
                                     $email = new  Email();
                                     $email->setMudancas($mud);
                                     $email->setSendTo($value->getCoordinator());
@@ -895,8 +896,8 @@ class MudancasController extends AbstractController
                                     $email->setBody('managerArea');
                                     $em->persist($email);
                                     //    $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                }
-                            } else {
+                                }*/
+                          /*  } else {
                                 $email = new  Email();
                                 $email->setMudancas($mud);
                                 $email->setSendTo($person->getFunction()->getManager());
@@ -907,7 +908,7 @@ class MudancasController extends AbstractController
                             }
 
                             $em->flush();
-                        } else {
+                        } else {*/
                             if ($mud->getAddBy() == $person && $mud->getAddBy()->getFunction()->getManager() == $person) {
                                 date_default_timezone_set("America/Sao_Paulo");
                                 $time = new \DateTime();
@@ -941,7 +942,7 @@ class MudancasController extends AbstractController
                                 $em->persist($email);
 
                                 //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                foreach ($mud->getAreaImpact() as $key => $value) {
+                              /*  foreach ($mud->getAreaImpact() as $key => $value) {
                                     $email = new  Email();
                                     $email->setMudancas($mud);
                                     $email->setSendTo($value->getCoordinator());
@@ -950,7 +951,7 @@ class MudancasController extends AbstractController
                                     $email->setBody('managerArea');
                                     $em->persist($email);
                                     //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                }
+                                }*/
                             } else {
                                 date_default_timezone_set("America/Sao_Paulo");
                                 $time = new \DateTime();
@@ -984,7 +985,7 @@ class MudancasController extends AbstractController
                                 $em->persist($email);
 
                                 //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                foreach ($mud->getAreaImpact() as $key => $value) {
+                               /* foreach ($mud->getAreaImpact() as $key => $value) {
                                     $email = new  Email();
                                     $email->setMudancas($mud);
                                     $email->setSendTo($value->getCoordinator());
@@ -993,11 +994,11 @@ class MudancasController extends AbstractController
                                     $email->setBody('managerArea');
                                     $em->persist($email);
                                     //$this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                }
+                                }*/
                             }
 
                             $em->flush();
-                        }
+                       // }
                         $sec = $em->getRepository(Sector::class)->findBy(['manager' => $person]);
                         foreach ($sec as $key => $value) {
                             if ($value === $mud->getAreaResp()) {
@@ -1023,7 +1024,7 @@ class MudancasController extends AbstractController
                          * ------------------------------------------------------------
                          **/
                         $nansenName =  $form["nansenName"]->getData();
-                        if ($nansenName != "") {
+                        /*if ($nansenName != "") {
                             $mud->setApproved('approved');
                             $process->setMudancas($mud);
                             $process->setStatus('created');
@@ -1051,7 +1052,8 @@ class MudancasController extends AbstractController
                                 $SectorProcess->setComment("validar pelo Código Nansen");
                                 $em->persist($SectorProcess);
                             }
-                        } elseif ($mud->getAddBy() == $mud->getAddBy()->getFunction()->getManager()) {
+                        } else*/
+                        if ($mud->getAddBy() == $mud->getAddBy()->getFunction()->getManager()) {
                             $mud->setManagerUserAdd($person->getFunction()->getManager());
                             $process->setMudancas($mud);
                             $process->setStatus('created');
@@ -1492,7 +1494,7 @@ class MudancasController extends AbstractController
                                         }
                                     }
 
-                                    if ($mud->getNansenNumber() == null) {
+                                    /*if ($mud->getNansenNumber() == null) {
                                         $email = new  Email();
                                         $email->setMudancas($mud);
                                         $email->setSendTo($mud->getAddBy());
@@ -1502,7 +1504,7 @@ class MudancasController extends AbstractController
                                         $em->persist($email);
                                         $em->flush();
                                         $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                    } else {
+                                    *///} else {
                                         $email = new  Email();
                                         $email->setMudancas($mud);
                                         $email->setSendTo($mud->getAddBy());
@@ -1512,7 +1514,17 @@ class MudancasController extends AbstractController
                                         $em->persist($email);
                                         $em->flush();
                                         $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                    }
+                                    //}
+                                    foreach ($mud->getAreaImpact() as $key => $value) {
+                                    $email = new  Email();
+                                    $email->setMudancas($mud);
+                                    $email->setSendTo($value->getCoordinator());
+                                    $email->setSendBy($person);
+                                    $email->setTitle('ÁREA IMPACTADA');
+                                    $email->setBody('managerArea');
+                                    $em->persist($email);
+                                       $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                }
                                     foreach ($sps as $key => $sp) {
                                         foreach ($manager_dep as $key => $md) {
                                             if ($sp->getSector() == $md & $sp->getPerson() == $person) {
