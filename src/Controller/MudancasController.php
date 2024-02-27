@@ -1993,29 +1993,27 @@ class MudancasController extends AbstractController
             $em = $doctrine->getManager();
             //dd($session->get('name'));
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
-        $branch = trim(shell_exec('git branch --show-current'));
-        if($branch == 'local' | $branch == 'local2'| $branch == 'local4' | $branch == 'local5'){
-          
-            $date =trim(shell_exec("git log -1 --format='%cd' --date=format:'%d/%m/%Y' ")); 
-            $version =  $branch[0].'_1.'.$branch[strlen($branch)-1];
-           
-        }elseif($branch == 'prod'| $branch == 'prod1' | $branch == 'prod2'| $branch == 'prod3'| $branch == 'prod4'){
-           
-            $date =trim(shell_exec("git log -1 --format='%cd' --date=format:'%d/%m/%Y' ")); 
-            $version =  $branch[0].'_1.'.$branch[strlen($branch)-1];
-           
+            $branch = trim(shell_exec('git log -1'));
 
-        }elseif($branch == 'test9' | $branch == 'test2'  | $branch == 'test4' | $branch == 'test5'| $branch == 'test6'){
+
             
-            $date =trim(shell_exec("git log -1 --format='%cd' --date=format:'%d/%m/%Y'")); 
+            preg_match('/^commit [0-9a-f]{40}$/m', $branch, $matches);
+            $commitHash = trim($matches[0]);
+            $branch = trim(shell_exec(" git name-rev --name-only HEAD"));
+            $branch = substr($branch, strrpos($branch, '/') + 1);
+       if($branch == 'local' | $branch == 'local2'| $branch == 'local4' | $branch == 'local5'){    
+            $date =trim(shell_exec("git log -1 --format='%cd' --date=format:'%d/%m/%Y' ")); 
             $version =  $branch[0].'_1.'.$branch[strlen($branch)-1];
-           
+        }elseif($branch == 'prod'| $branch == 'prod1' | $branch == 'prod2'| $branch == 'prod3'| $branch == 'prod4'){       
+            $date =trim(shell_exec("git log -1 --format='%cd' --date=format:'%d/%m/%Y' ")); 
+            $version =  $branch[0].'_1.'.$branch[strlen($branch)-1];
+        }elseif($branch == 'test9' | $branch == 'test2'  | $branch == 'test4' | $branch == 'test5'| $branch == 'test6'){
+            $date =trim(shell_exec("git log -1 --format='%cd' --date=format:'%d/%m/%Y'")); 
+            $version =  $branch[0].'_1.'.$branch[strlen($branch)-1];  
         }else{        
             $date =trim(shell_exec("git log -1 --format='%cd' --date=format:'%d/%m/%Y' ")); 
             $version =  $branch[0].'_1.9';
         }   
-        $date = substr($date, 1, -1);
-        $date = substr($date, 1, -1);
 
         return $this->render('about.html.twig', [
             'controller_name' => 'Mudancas',
