@@ -2011,9 +2011,8 @@ class MudancasController extends AbstractController
             $version =  $branch[0].'_1.'.$branch[strlen($branch)-1];
            
         }else{        
-          
             $date =trim(shell_exec("git log -1 --format='%cd' --date=format:'%d/%m/%Y' ")); 
-            $version =  $branch[0].'_1.'.$branch[strlen($branch)-1];
+            $version =  $branch[0].'_1.9';
         }   
         $date = substr($date, 1, -1);
         $date = substr($date, 1, -1);
