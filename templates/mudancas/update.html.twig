@@ -702,7 +702,6 @@
 							{% endif %}
 
 						</div>
-
 				{% if person.function != null %}
 						{% if person.permission == 'ler criar atualização' or person.permission =='ler criar' or person.permission =='tudo' %}
 							<div class="row">
@@ -715,6 +714,14 @@
 						{{ form_end(form) }}
 			{% endif %}
 
+
+				{% if creation == 'false' and   m.done != 'Feito' and  m.implemented == null and m.areaResp.name == "021 – TI MATRIZ (INFRAESTRUTURA E REDE)" and m.areaResp.manager == person   %}
+					<div class="row">
+								<div class="col-md-6 mb-3">
+									<a id="btn"  href="{{path('migrateSoft',{'id':m.id} )}}"  class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Migrar mudança para software</a>
+								</div>
+							</div>
+				{% endif %}
 
 				<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 				<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

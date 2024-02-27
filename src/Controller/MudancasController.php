@@ -1128,6 +1128,27 @@ class MudancasController extends AbstractController
     }
 
 
+      #[Route('/createMudancas/migrateSoft/{id}', name: 'migrateSoft')]
+    public function migrateSoft(ManagerRegistry $doctrine, Request $request, $id): Response
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        //$request->header_remove();
+            $em = $doctrine->getManager();
+            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+             $mud = $em->getRepository(Mudancas::class)->find($id);
+            if($mud->getAreaResp()->getName() == "021 – TI MATRIZ (INFRAESTRUTURA E REDE)" && $mud->getAreaResp()->getManager() == $person){
+                $mud->setTypeMud("1");
+             //create new Mudancas software 
+             $ms = new MudancasSoftware();
+             $em->persist($ms);
+             $mud->setMudS($ms);
+             $em->flush();
+            }
+                return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
+       
+    }
+
     #[Route('/updateMudancas/{id}', name: 'upm')]
     public function update(ManagerRegistry $doctrine, Request $request, $id)
     {

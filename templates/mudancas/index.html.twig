@@ -367,6 +367,7 @@
 							<div class="col-md-8 order-md-1" style="padding-left: 0px;">
 
 							{% endif %}
+							{% set mud = mud|reverse %}
 							{% if manager == false  %}
 								{% for m in mud %}
 									{% if m.addBy.id == person.id %}
@@ -652,6 +653,7 @@
 									{% endif %}
 								{% endfor %}
 							{% else %}
+							{% set ln = ln|reverse %}
 								{% for m in ln %}
 									{% if m.done != 'Feito' or ( m.done == 'Feito' and m.implemented == null ) %}
 										<div id="myTable" class="list-group">

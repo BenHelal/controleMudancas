@@ -181,7 +181,7 @@ class MudancasSoftwareController extends AbstractController
     }
 
 
-
+    
 
     #[Route('/mudancas/software/Gestor/Mudança/{id}', name: 'gestor_software')]
     public function Gestor(ManagerRegistry $doctrine, Request $request, $id)
