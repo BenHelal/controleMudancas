@@ -760,7 +760,6 @@ class MudancasController extends AbstractController
                                 $em->persist($SectorProcess);
                             }
 
-                            $em->flush();
                             if ($manager) {
                                 return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
                             }
@@ -783,7 +782,6 @@ class MudancasController extends AbstractController
                                 $SectorProcess->setPerson($value->getCoordinator());
                                 $em->persist($SectorProcess);
                             }
-                            $em->flush();
                             if ($manager) {
                                 return $this->redirectToRoute('approve', ['id' => $mud->getId()]);
                             }

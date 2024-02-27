@@ -23,14 +23,6 @@ class MudancasManagerType extends AbstractType
             ->add('nomeMudanca',TextareaType::class,[
                 'label'=> 'Nome da mudança'
             ])
-            ->add('nansenName',null,[
-                'label'=> 'Nome do Projeto Nansen',
-                'empty_data' => ''
-            ])
-            ->add('nansenNumber',null,[
-                'label'=> 'Código Nansen',
-                'empty_data' => ''
-            ])
             ->add('descMudanca',TextareaType::class,[
                 'label' => 'Descrição da Mudança'
             ])
