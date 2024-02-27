@@ -203,6 +203,17 @@
 				</div>
 			</div>
 
+			<div class="row" id="nanseForm">
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.nansenName) }}
+					{{ form_widget(form.nansenName,{'attr':{'class':'form-control', 'rows': '4','id':'testnansenName'}}) }}
+				</div>
+				<div class="col-md-12 mb-3">
+					{{ form_label(form.nansenNumber) }}
+					{{ form_widget(form.nansenNumber,{'attr':{'class':'form-control', 'rows': '4' ,'id':'test'}}) }}
+				</div>
+			</div>
+
 			<div class="row">
 				<div class="col-md-12 mb-3">
 					{{ form_label(form.justif) }}
@@ -598,6 +609,16 @@
 										Existe Projeto Nansen
 									</label>
 								</div>
+							</div>
+						</div>
+						<div class="row" id="nanseForm">
+							<div class="col-md-12 mb-3">
+								{{ form_label(form.nansenName) }}
+								{{ form_widget(form.nansenName,{'attr':{'class':'form-control', 'rows': '4'}}) }}
+							</div>
+							<div class="col-md-12 mb-3">
+								{{ form_label(form.nansenNumber) }}
+								{{ form_widget(form.nansenNumber,{'attr':{'class':'form-control', 'rows': '4'}}) }}
 							</div>
 						</div>
 						<div class="row">
