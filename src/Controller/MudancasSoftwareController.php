@@ -92,13 +92,47 @@ class MudancasSoftwareController extends AbstractController
             $em = $doctrine->getManager();
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $allMudancas = $em->getRepository(Mudancas::class)->findByType("1");
-        
+            
+            $array = [];
+            foreach ($allMudancas as $key => $value) {
+                # code...
+                            /**
+             * get the Process with mudancas 
+             * to can get The Sector 
+             * and check the situation of the mudancas  
+             */
+            $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
+
+            /**
+             * get the List of SectorProcess 
+             * to can access to the sector 
+             */
+            $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+            $mudSoft = $value->getMudS();
+
+
+            $areaImpactadaDidntApp = false;
+            //fetch the sectorPress 
+            foreach ($sps as $key => $sp) {
+                /**
+                 *  Check if there is one of the manager reject the mudancas
+                 *  then close the Mudancas
+                 */
+                if ($sp->getAppSectorMan() == null ) {
+                    $areaImpactadaDidntApp = true;
+                }
+            }
+
+            if ($areaImpactadaDidntApp == false) {
+                array_push($array, $value);
+            }
+            }
 
             return $this->render('mudancas_software/changeOrderView.html.twig', [
                 'controller_name' => 'MudancasSoftwareController',
                 'login' => 'null',
                 'creation' => 'false',
-                'm' => $allMudancas,
+                'm' => $array,
                 'person' => $person,
             ]);
         }else{
@@ -181,7 +215,7 @@ class MudancasSoftwareController extends AbstractController
     }
 
 
-    
+
 
     #[Route('/mudancas/software/Gestor/Mudança/{id}', name: 'gestor_software')]
     public function Gestor(ManagerRegistry $doctrine, Request $request, $id)
