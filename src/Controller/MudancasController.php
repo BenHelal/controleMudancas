@@ -1022,7 +1022,7 @@ class MudancasController extends AbstractController
                         /**
                          * ------------------------------------------------------------
                          **/
-                        $nansenName =  $form["nansenName"]->getData();
+                        $nansenName =  null;
                         /*if ($nansenName != "") {
                             $mud->setApproved('approved');
                             $process->setMudancas($mud);
@@ -1789,7 +1789,7 @@ class MudancasController extends AbstractController
                 return $this->redirectToRoute('app_request');
             }
             $dep = $em->getRepository(Departemant::class)->findOneBy(['name' => $person->getDepartemant()]);
-            $manager = $em->getRepository(Manager::class)->findOneBy(['person' => $person]);
+           // $manager = $em->getRepository(Manager::class)->findOneBy(['person' => $person]);
             $mudancas = $em->getRepository(Mudancas::class)->findAll();
             $listNotif = [];
             $conn = $doctrine->getConnection();
@@ -1846,7 +1846,7 @@ class MudancasController extends AbstractController
                     array_push($mudancas, $dm->getMudancas());
                 }
                 */
-                if ($manager == null) {
+               /* if ($manager == null) {
                     return $this->render('mudancas/history.html.twig', [
                         'controller_name' => 'Mudancas',
                         'login' => 'null',
@@ -1856,19 +1856,20 @@ class MudancasController extends AbstractController
                         'person' => $person,
                         'gestor' => false
                     ]);
-                } else {
+                } else {*/
                     return $this->render('mudancas/history.html.twig', [
                         'controller_name' => 'Mudancas',
                         'login' => 'null',
                         'creation' => 'null',
                         'mud' => array_reverse($mudancas),
-                        'manager' => true, 'percent' => $val,
+                        'manager' => true, 
+                        'percent' => $val,
                         'size' => $size,
                         'gestor' => false,
                         'ln' => $listNotif,
                         'person' => $person
                     ]);
-                }
+                //}
             } else {
                 return $this->redirectToRoute('app_request');
             }
