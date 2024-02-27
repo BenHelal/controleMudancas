@@ -13,7 +13,7 @@ class IpAdress
         }elseif($branch == 'prod'| $branch == 'prod1' | $branch == 'prod2'){
             return "sistemas.serdia.com.br";
 
-        }elseif($branch == 'test' | $branch == 'test2'  | $branch == 'test4' | $branch == 'test5'| $branch == 'test6'){
+        }elseif($branch == 'test9' | $branch == 'test2'  | $branch == 'test4' | $branch == 'test5'| $branch == 'test6'){
             return "10.100.1.180";
         }else{
             //return "sistemas.serdia.com.br";    
