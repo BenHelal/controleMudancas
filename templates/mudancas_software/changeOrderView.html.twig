@@ -45,7 +45,10 @@
             {% else %}
             <select class="order-selectss" onchange="changeOrder(this, {{ item.id }})">
                 {% for i in 1..m|length %}
-                    <option value="{{ i }}" {% if i == item.orderNumber %}selected{% endif %}>{{ i }}</option>
+                    {% if item.ordeNumber != null %}
+                        <option value="{{ i }}" {% if i == item.orderNumber %}selected{% endif %}>{{ i }}</option>
+                        {% else %}
+                    {% endif %}
                 {% endfor %}
             </select>
             {% endif %}
