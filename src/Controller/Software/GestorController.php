@@ -531,7 +531,7 @@ class GestorController extends AbstractController
 
             $imp = true;
             foreach ($s as $key => $value) {
-                if ($value->getStatus() != 'implementado' && $value->getStatus()  != 'reprovado' && $value->getStatus()  != 'não implementado') {
+                if ($value->getStatus() != 'implementado' && $value->getStatus()  != 'reprovado' && $value->getAriquivo()->getApproveSol()  != 'Reprovar' && $value->getStatus()  != 'não implementado') {
                     $imp = false;
                 }
             }

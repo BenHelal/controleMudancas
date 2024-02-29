@@ -198,14 +198,17 @@
 						</div>
 
 
-							
-								<div id="div6" class="col-md-2 mb-3">
+							<div id="div6" class="col-md-2 mb-3">
 									<label for="{{s.id}}file">Aprovação</label>
 									<input id="{{s.id}}stat" name="{{s.id}}stat" 
-										 {% if s.dateClientApp !=  null and s.dateClientRep != null %}  value="{{s.approveSol}}" style="width: 100%; background-color: red;" 
+										 {% if s.dateClientApp == null && s.approve_sol != null %}  
+										 	value="{{s.approveSol}}" style="width: 100%; background-color: red;" 
 											{% set yourVariable = "false" %}
-											{% elseif s.dateClientApp != null  %} 
-											{% set yourVariable = "true" %} value="Aprovar" style="width: 100%; background-color: #20c997;" {% else %} {% set yourVariable = "true" %} {% endif %} type="text" readonly/>
+										{% elseif s.dateClientApp != null %} 
+											{% set yourVariable = "true" %} 
+												value="Aprovar" style="width: 100%; background-color: #20c997;" {% else %} 
+											{% set yourVariable = "true" %} 
+										{% endif %} type="text" readonly/>
 
 								</div>
 						{% if s.doc != null %}
