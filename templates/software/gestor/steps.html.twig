@@ -360,8 +360,9 @@
 
 	{% if m.mangerMudancas  == person and muds.appGestor == null  %}
 
-	
+{% if sd|length != 0 %}
 <a id="btn" class="btn btn-info mt-2 text-white" onclick="myFunction()" role="button">Adicionar nova fase</a>
+{% endif %}
 
 	{% endif %}
 	{% if step|length != 0   and imp == true and haveArq == false %}
