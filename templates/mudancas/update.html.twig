@@ -505,7 +505,7 @@
 
 			<div class="row">
 				<div class="col-md-1 mb-3">
-					<a class="btn btn-info mt-2 text-white" href="{{path('flow',{'id':m.id} )}}">
+					<a  style="width: 400px;" class="btn btn-info mt-2 text-white" href="{{path('flow',{'id':m.id} )}}">
 						Verificar Aprovações
 					</a>
 				</div>
@@ -557,20 +557,20 @@
 									{% if  m.mangerMudancas == null %}
 										<div class="row">
 											<div class="col-md-6 mb-3">
-												<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+												<button style="width: 400px;" class="btn btn-info mt-2 text-white" >Atualizar</button>
 											</div>
 										</div>
 									{% elseif  m.appGest == null %}
 										<div class="row">
 											<div class="col-md-6 mb-3">
-												<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+												<button style="width: 400px;" class="btn btn-info mt-2 text-white" >Atualizar</button>
 											</div>
 										</div>
 									{% endif %}
 								{% elseif gestor %}
 									<div class="row">
 										<div class="col-md-6 mb-3">
-											<button class="btn btn-info mt-2 text-white" style="background-color: #0c2c01; border-color: #0c2c01;">Atualizar</button>
+											<button style="width: 400px;" class="btn btn-info mt-2 text-white" >Atualizar</button>
 											{{m.done }}
 										</div>
 									</div>
@@ -706,7 +706,7 @@
 						{% if person.permission == 'ler criar atualização' or person.permission =='ler criar' or person.permission =='tudo' %}
 							<div class="row">
 								<div class="col-md-6 mb-3">
-									<button id="btn" tyle="witdh: 200px" class="	btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Adicionar</button>
+									<button id="btn"style="width: 400px;"  class="	btn btn-info mt-2 text-white"  >Adicionar</button>
 								</div>
 							</div>
 						{% endif %}
@@ -718,7 +718,7 @@
 				{% if creation == 'false' and   m.done != 'Feito' and  m.implemented == null and m.areaResp.name == "021 – TI MATRIZ (INFRAESTRUTURA E REDE)" and m.areaResp.manager == person   %}
 					<div class="row">
 								<div class="col-md-6 mb-3">
-									<a id="btn"  style="witdh: 200px" href="{{path('migrateSoft',{'id':m.id} )}}"  class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Migrar mudança para software</a>
+									<a id="btn"  style="width: 400px;" href="{{path('migrateSoft',{'id':m.id} )}}"  class="btn btn-info mt-2 text-white"  >Migrar mudança para software</a>
 								</div>
 					</div>
 				{% endif %}
