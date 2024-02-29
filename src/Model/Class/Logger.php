@@ -10,7 +10,7 @@ class Logger extends LoggerSingleton{
     /**
      * Singleton's constructor is called only once, 
      */
-    protected function __construct()
+    public function __construct()
     {
         $this->fileHandle = fopen('php://stderr', 'w');
     }

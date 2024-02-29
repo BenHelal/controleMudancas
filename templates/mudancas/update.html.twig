@@ -718,9 +718,9 @@
 				{% if creation == 'false' and   m.done != 'Feito' and  m.implemented == null and m.areaResp.name == "021 – TI MATRIZ (INFRAESTRUTURA E REDE)" and m.areaResp.manager == person   %}
 					<div class="row">
 								<div class="col-md-6 mb-3">
-									<a id="btn"  href="{{path('migrateSoft',{'id':m.id} )}}"  class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Migrar mudança para software</a>
+									<a id="btn"  style="witdh: 200px" href="{{path('migrateSoft',{'id':m.id} )}}"  class="btn btn-info mt-2 text-white" style="background-color: #0c2c01;border-color: #0c2c01;">Migrar mudança para software</a>
 								</div>
-							</div>
+					</div>
 				{% endif %}
 
 				<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>

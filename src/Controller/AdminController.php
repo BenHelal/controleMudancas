@@ -9,7 +9,6 @@ use App\Entity\Departemant;
 use App\Entity\DepartemantMudancass;
 use App\Entity\Email;
 use App\Entity\EmailToSendConfig;
-use App\Entity\Manager;
 use App\Entity\Mudancas;
 use App\Entity\MudancasSoftware;
 use App\Entity\Person;
@@ -83,7 +82,6 @@ class AdminController extends AbstractController
                     //get ALL list Departemant
                     $dep = $em->getRepository(Departemant::class)->findAll();
                     //get All list mudancas
-                    $m = $em->getRepository(Manager::class)->findAll();
                     $mudancas = $em->getRepository(Mudancas::class)->findAll();
                     $val = sizeof($mudancas);
                     $val2 = 0;
@@ -95,16 +93,30 @@ class AdminController extends AbstractController
                         }
                     }
                     // dd($val2);
+                    $listrequest = $em->getRepository(Requestper::class)->findAll();    
                     $val = intval($this->presentNotDone($val, $val2));
                     $size = sizeof($mudancas);
+
+                    $mudSoft = [];
+                    $mudNorm = [];
+                    foreach ($mudancas as $key => $value) {
+                        if($value->getMudS() != null ){
+                            array_push($mudSoft,$value);
+                        }else{
+                            
+                            array_push($mudNorm,$value);
+                        }
+                    }
                     return $this->render('admin/dash.html.twig', [
                         'controller_name' => 'AdminController',
                         'percent' => $val,
                         'size' => $size,
+                        'sizeSoft' => sizeof( $mudSoft),
+                        'sizeNorm' => sizeof( $mudNorm),
                         'mud' => $arr,
-                        'm' => $m,
+                        'listrequest' => array_reverse($listrequest),
                         'p' => $p,
-                        'mudancas' => $mudancas
+                        'mudancas' => array_reverse($mudancas),
                     ]);
                 }
             } else {
@@ -181,69 +193,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    //add manager
-    #[Route('/am', name: 'managers')]
-    public function amanagers(ManagerRegistry $doctrine, Request $request)
-    {
-        $session = new Session();
-        $session = $request->getSession();
-        if ($session->get('token_admin') != '') {
-            $em = $doctrine->getManager();
-            $p = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
-            if ($p->getRole() == null) {
-                return $this->redirectToRoute('app_mudancas');
-            } else {
-                $manager = new Manager();
-                $m = $em->getRepository(Manager::class)->findAll();
-                $form = $this->createForm(ManagerType::class, $manager);
-                $form->handleRequest($request);
-                if ($form->isSubmitted() && $form->isValid()) {
-                    $persons = $form["persons"]->getData();
-                    foreach ($persons as $person) {
-                        $manager = $em->getRepository(Manager::class)->findOneBy(['person' => $person]);
-                        $person->setPermission('tudo');
-                        if ($manager == null) {
-                            $manager = new Manager();
-                            $manager->setPerson($person);
-                            $em->persist($manager);
-                            $em->flush();
-                        }
-                        $em->persist($person);
-                        $em->flush();
-                    }
-                    return $this->redirectToRoute('managers');
-                }
-                return $this->render('admin/manager.html.twig', [
-                    'controller_name' => 'Atualizar Mudancas',
-                    'login' => 'null',
-                    'creation' => 'false',
-                    'managers' => $m,
-                    'p' => $p,
-                    'form' => $form->createView(),
-                ]);
-            }
-        } else {
 
-            return $this->redirectToRoute('app_mudancas');
-        }
-    }
-
-    //delete manager 
-    #[Route('/dm/{id}', name: 'dm')]
-    public function dmanagers($id, ManagerRegistry $doctrine, Request $request)
-    {
-        $session = new Session();
-        $session = $request->getSession();
-        if ($session->get('token_admin') != '') {
-            $em = $doctrine->getManager();
-            $p = $em->getRepository(Manager::class)->find($id);
-            $em->remove($p);
-            $em->flush();
-            return $this->redirectToRoute('managers');
-        } else {
-            return $this->redirectToRoute('app_mudancas');
-        }
-    }
 
 
     //list person 
@@ -526,6 +476,89 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('app_mudancas');
         }
     }
+
+
+    #[Route('/deleteAllqehenoifehfoigvhntrzghiehfaeuifhfheazucohgruheuieahzcuigeaoefc', name: 'deleteAll')]
+    public function deleteAllmud(ManagerRegistry $doctrine, Request $request): Response
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $mudancass = $em->getRepository(Mudancas::class)->findAll();
+            $conn = $doctrine->getConnection();
+            foreach ($mudancass as $key => $mudancas) {
+                $id = $mudancas->getId();
+                # code...
+             $mudf = $mudancas->getTypeMud();
+
+             $sql = 'select * FROM process WHERE mudancas_id = :mudancas_id ;';
+             $stmt = $conn->prepare($sql);
+             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+             $ln =  $resultSet->fetchAllAssociative();
+
+
+
+             foreach ($ln as $key => $value) {
+                 $sql = 'Delete FROM sector_process WHERE process_id = :mudancas_id ;';
+                 $stmt = $conn->prepare($sql);
+                 $resultSet = $stmt->executeQuery(['mudancas_id' => $value['id']]);
+                 $ln2 =  $resultSet->fetchAllAssociative();
+             }
+             $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
+             $stmt = $conn->prepare($sql);
+             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+             $ln =  $resultSet->fetchAllAssociative();
+             $sql = 'Delete FROM process WHERE mudancas_id = :mudancas_id ;';
+             $stmt = $conn->prepare($sql);
+             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+             $ln =  $resultSet->fetchAllAssociative();
+
+             /**testet */
+             $sql = 'DELETE em
+             FROM email em
+             WHERE em.mudancas_id = :email;';
+             $stmt = $conn->prepare($sql);
+             $resultSet = $stmt->executeQuery(['email' => $mudancas->getId()]);
+             $ln =  $resultSet->fetchAllAssociative();
+
+             $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
+             $stmt = $conn->prepare($sql);
+             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+             $ln =  $resultSet->fetchAllAssociative();
+
+
+             $sql = 'Delete FROM api_token WHERE mud_id = :mudancas_id ;';
+             $stmt = $conn->prepare($sql);
+             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+             $ln =  $resultSet->fetchAllAssociative();
+
+             if($mudancas->getMudS() != null){try {
+                 //code...
+                 $mudancasSoft = $em->getRepository(MudancasSoftware::class)->find($mudancas->getMudS()->getId());
+                 $mudancasSoft->setReference(null);
+                 $mudancas->setMudS(null);
+                 $mudancas->setTypeMud(null);
+                 $em->remove($mudancasSoft);
+                 $em->flush();
+
+             } catch (\Throwable $th) {
+                 //throw $th;
+             }
+             }
+
+             $sql = 'Delete FROM mudancas WHERE id = :mudancas_id ;';
+             $stmt = $conn->prepare($sql);
+             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+             $ln =  $resultSet->fetchAllAssociative();
+
+            }
+             return $this->redirectToRoute('export');
+        } else {
+            return $this->redirectToRoute('app_mudancas');
+        }
+    }
+
 
     #[Route('/addpersonmanual', name: 'addperson')]
     public function addPerson(ManagerRegistry $doctrine, Request $request)

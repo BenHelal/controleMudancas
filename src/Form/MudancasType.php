@@ -66,6 +66,7 @@ class MudancasType extends AbstractType
                     },
                     'choice_label' => 'name',
                     'placeholder' => 'Escolha o setor responsável...',
+                    'required' => true, 
                     'label' => 'Área Responsável pela mudança'
                 
             ))

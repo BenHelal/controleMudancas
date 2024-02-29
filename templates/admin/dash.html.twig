@@ -15,6 +15,7 @@ window.location.reload();
 <!-- Begin Page Content -->
 <div class="container-fluid">
     <!-- Content Row -->
+    
     <div class="row">
         <div class="col-xl-6 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
@@ -54,7 +55,42 @@ window.location.reload();
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{size}}</div>
                             </div>
                             <div class="col-auto">
-                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                <i class="fas fa-cube fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="row">
+            <div class="col-xl-6 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Número de mudanças normal</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{sizeNorm}}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-archive fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Número de mudanças de software</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{sizeSoft}}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-window-restore fa-2x text-gray-300"></i>
                             </div>
                         </div>
                     </div>
@@ -66,45 +102,44 @@ window.location.reload();
     <div class="row">
         <div class="card shadow col-xl-6 col-md-6 mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">lista de gerentes</h6>
-                <label for="exampleFormControlInput1">Procurar gerentes</label>
+                <h6 class="m-0 font-weight-bold text-primary">lista de solicitação</h6>
+                <label for="exampleFormControlInput1">Procurar empregador</label>
                 <input type="email" class="form-control" id="myInputM" placeholder="Procurar..">
     
             </div>
             <div class="card-body">
                 <div class="table-responsive">
     
-                    {% for m in m %}
-                    <div id="myTableM" class="list-group" style="width: 100%;">
-                        <div class="row" style="width: 100%;">
-                            <a href="#"
-                                class="list-group-item list-group-item-action flex-column align-items-start">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <medium>Nome: {{m.person.name}}</medium>
-                                </div>
-                                <div class="d-flex w-100 justify-content-between">
-                                    <medium>última conexão: {{m.person.lastConnection}}</medium>
-                                </div>
-                                <div class="d-flex w-100 justify-content-between">
-                                    <medium>departamento: {{m.person.departemant}}</medium>
-                                </div>
-                                <div class="d-flex w-100 justify-content-between">
-                                    <medium>Função: {% if m.person.role != ''  %}
-                                        {{m.person.role}}
-                                        {% else %}
-                                        gerente
-                                        {% endif %}</medium>
-                                </div>
-                                <input hidden type="text" id="name" value="{{m.person.name}}"/>
-                                <input hidden type="text" id="id" value="{{path('dm',{'id':m.id} )}}"/>
-                            </a>
-                        </div>
-                        <div class="row" style="width: 100%;">
-                            <a id="submit"  data-toggle="modal" data-target="#dm" class="list-group-item list-group-item-action flex-column align-items-start">
-                                remover {{m.person.name}} da lista de gerentes
-                            </a>
-                        </div>
-                    </div>
+                    {% for m in listrequest %}
+						{% if m.person != null %}
+							<div id="myTable" class="list-group" style="width: 100%;">
+								<div class="row" style="width: 100%;">
+									<a href="{{path('requestAdmin',{'id':m.id} )}}" class="list-group-item list-group-item-action flex-column align-items-start">
+										<div class="d-flex w-100 justify-content-between">
+											<medium>Nome do titular:
+												{{ m.person ? m.person.name }}</medium>
+										</div>
+										<div class="d-flex w-100 justify-content-between">
+											<medium>Departamento:
+												{{  m.person ? m.person.departemant}}</medium>
+										</div>
+										<div class="d-flex w-100 justify-content-between">
+											<medium>Data hora do pedido:
+												{{m.date}}</medium>
+										</div>
+										<div class="d-flex w-100 justify-content-between">
+											<medium>Aprova:
+												{% if m.approves == null %}
+													sem permissão
+												{% else %}
+													{{m.approves}}
+												{% endif %}
+											</medium>
+										</div>
+									</a>
+								</div>
+							</div>
+						{% endif %}
                     {% endfor %}
                 </div>
             </div>
