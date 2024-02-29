@@ -530,9 +530,15 @@ class GestorController extends AbstractController
             }
 
             $imp = true;
+            $haveArq = true;
             foreach ($s as $key => $value) {
-                if ($value->getStatus() != 'implementado' && $value->getStatus()  != 'reprovado' && $value->getAriquivo()->getApproveSol()  != 'Reprovar' && $value->getStatus()  != 'não implementado') {
+                if ($value->getStatus() != 'implementado' && $value->getStatus()  != 'reprovado'  && $value->getStatus()  != 'não implementado') {
                     $imp = false;
+                }
+
+
+                if($value->getAriquivo()->getApproveSol()  != 'Reprovar'){
+                    $haveArq = false;
                 }
             }
 
@@ -585,7 +591,7 @@ class GestorController extends AbstractController
 
                 $em->flush();
             }
-dd($imp);
+
 
             return $this->render('software/gestor/steps.html.twig', [
                 'login' => 'null',
@@ -599,6 +605,7 @@ dd($imp);
                 'formImp' => $formImp,
                 'imp' => $imp,
                 'step' => $s,
+                'haveArq' => $haveArq
             ]);
         } else {
             return $this->redirectToRoute('app_login');

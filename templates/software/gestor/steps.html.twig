@@ -364,7 +364,7 @@
 <a id="btn" class="btn btn-info mt-2 text-white" onclick="myFunction()" role="button">Adicionar nova fase</a>
 
 	{% endif %}
-	{% if step|length != 0   and imp == true %}
+	{% if step|length != 0   and imp == true and haveArq == false %}
 
 		{{ form_start(formApp, {'attr':{'class':'form-group'}}) }}
 		<div class="row">
