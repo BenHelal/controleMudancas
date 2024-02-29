@@ -201,7 +201,7 @@
 							<div id="div6" class="col-md-2 mb-3">
 									<label for="{{s.id}}file">Aprovação</label>
 									<input id="{{s.id}}stat" name="{{s.id}}stat" 
-										 {% if s.dateClientApp == null && s.approve_sol != null %}  
+										 {% if s.dateClientApp == null %}  
 										 	value="{{s.approveSol}}" style="width: 100%; background-color: red;" 
 											{% set yourVariable = "false" %}
 										{% elseif s.dateClientApp != null %} 
