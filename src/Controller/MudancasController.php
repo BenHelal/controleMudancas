@@ -572,7 +572,6 @@ class MudancasController extends AbstractController
                         $em->persist($email);
 
 
-                        /************************SOFTWARE********************************************/
                         if ($mud->getAddBy() == $person && $mud->getAddBy()->getFunction()->getManager() == $person) {
                             date_default_timezone_set("America/Sao_Paulo");
                             $time = new \DateTime();
@@ -676,6 +675,7 @@ class MudancasController extends AbstractController
                                 $SectorProcess->setSector($value);
                                 $SectorProcess->setPerson($value->getCoordinator());
                                 $em->persist($SectorProcess);
+                                $em->flush();
                             }
 
                             if ($manager) {
@@ -699,6 +699,7 @@ class MudancasController extends AbstractController
                                 $SectorProcess->setSector($value);
                                 $SectorProcess->setPerson($value->getCoordinator());
                                 $em->persist($SectorProcess);
+                                $em->flush();
                             }
                             if ($manager) {
                                 return $this->redirectToRoute('approve', ['id' => $mud->getId()]);
