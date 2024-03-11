@@ -109,7 +109,12 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Emails:</h6>
                         <a class="collapse-item" href="{{ path('email') }}">e-mail de configuração</a>
-                      
+                        {% if  p.departemant == 'TI' and p.function.name == "021 – TI MATRIZ (INFRAESTRUTURA E REDE)" %}
+                            <!--h6 class="collapse-header">Gerenciamento de IA:</!--h6>
+                            <a class="collapse-item" href="{{ path('permissionIAGenerator') }}">Permissões Usuários de IA</a>
+                            <a class="collapse-item" href="{{ path('permissionIAToken') }}">Gerenciamento <br>API de token</a>
+                             <a class="collapse-item" href="{{ path('logIAGenerator') }}">log<br>API de token</a-->
+                        {% endif %}
                     </div>
                 </div>
             </li>
