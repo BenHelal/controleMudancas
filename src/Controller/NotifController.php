@@ -150,9 +150,7 @@ class NotifController extends AbstractController
                                 $emails = $em->getRepository(Email::class)->findBy(['mudancas' => $mudancas]);
                                 $ems = [];
                                 foreach ($emails as $key => $value) {
-                                    if ($value->getClient() == null) {
-                                        $this->sendEmail($doctrine, $request, $value->getSendTo(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false);
-                                    } else {
+                                    if ($value->getClient() != null) {
                                         $this->sendEmail($doctrine, $request, $value->getClient(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false, $value->getClient());
                                     }
                                 }
