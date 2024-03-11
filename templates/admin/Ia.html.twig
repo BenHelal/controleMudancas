@@ -1,0 +1,120 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block body %}
+    {% if page == 1 %}
+	<div
+		class="container-fluid">
+
+		<!-- DataTales Example -->
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				{{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
+				<div class="row">
+					<div class="col-md-12 mb-3">
+						{{ form_label(form.persons) }}
+						{{ form_widget(form.persons,{'attr':{'class':'form-control chosen-select',
+               															 'data-placeholder':'Escolha o setor.....', 'rows': '12'}}) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 mb-3">
+						<button class="btn btn-info mt-2 text-white">Enviar</button>
+					</div>
+				</div>
+				{{ form_end(form) }}
+
+
+			</div>
+		</div>
+
+	</div>
+
+        {% elseif page == 2 %}
+
+	<div
+		class="container-fluid">
+
+		<!-- DataTales Example -->
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<div class="row">
+					<div class="col-md-12 mb-3"><label for="ia_persons" class="required">Token de IA</label>
+				    <input type="text"  value="{{token}}"  class="form-control" />	</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 mb-3">
+						<a class="btn btn-info mt-2 text-white" data-toggle="modal" data-target="#SignModal2" type="submit">Alterar token</a>
+                    </div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="modal fade" id="SignModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<form class="form-group" id="formTabMat"  action="{{path('changeIAToken') }}" method="post">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Você está pronto para alterar o Token? </h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">A API do IA usada neste sistema é baseada no Gemini Api é totalmente gratuita<br>Se você alterar o token da API por outro token, certifique-se de que ele funcione bem, pois isso pode quebrar o gerador de IA no aplicativo
+						<br>
+						<br>
+                        <div class="form-group">
+							<label for="username">Token:</label>
+							<input id="token" name="token" placeholder="token" class="form-control" value="{{token}}"/>
+						</div>
+
+                        
+                        <div class="form-group">
+							<label for="username">Login:</label>
+							<input id="username" name="username" placeholder="nome de usuário" class="form-control" value=""/>
+						</div>
+
+						<div class="form-group">
+							<label for="password">Senha:</label>
+							<input id="password" name="password" placeholder="senha" class="form-control" type="password" value=""/>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+						<input id="btnSub" class="btn btn-info" type="submit" value="Alterar"/>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+    {% else %}
+    
+
+	<div class="container-fluid">
+		<!-- DataTales Example -->
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<div class="row">
+                    {% for ialog  in logs %}
+					    <div class="col-md-12 mb-3">
+                            <label for="ia_persons" class="required">{{ialog.person.name}} {{ialog.log}} {{ialog.createAt|date('d-m-Y H:i:s')}}</label>
+				        </div>
+                    {% endfor %}
+			    </div>
+		    </div>
+	    </div>
+	</div>
+    {% endif %}
+
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+	<script>
+
+		$(document).ready(function () {
+$('#ia_persons').chosen({});
+});
+	</script>
+
+{% endblock %}

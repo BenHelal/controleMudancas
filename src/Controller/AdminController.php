@@ -9,6 +9,8 @@ use App\Entity\Departemant;
 use App\Entity\DepartemantMudancass;
 use App\Entity\Email;
 use App\Entity\EmailToSendConfig;
+use App\Entity\IA;
+use App\Entity\IALog;
 use App\Entity\Mudancas;
 use App\Entity\MudancasSoftware;
 use App\Entity\Person;
@@ -23,6 +25,7 @@ use App\Form\ConfigemailType;
 use App\Form\EditPersonType;
 use App\Form\EmailToSendConfigType;
 use App\Form\EmailType;
+use App\Form\IAType;
 use App\Form\ManagerType;
 use App\Form\PermissionType;
 use App\Form\PersonType;
@@ -65,6 +68,174 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('app_admin');
     }
 
+    #[Route("/logIAGenerator", name: "logIAGenerator")]
+    public function logIAGenerator(ManagerRegistry $doctrine, Request $request)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $p = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            $s = $em->getRepository(Sector::class)->findOneBy(['name' => '021 – TI MATRIZ (INFRAESTRUTURA E REDE)']);
+            if (($p->getDepartemant() == 'TI' && $p->getFunction()->getName() == "021 – TI MATRIZ (INFRAESTRUTURA E REDE)") || ($p = $s->getManager())) {
+                // list user have permission to access to this features .
+                $ia = $em->getRepository(IA::class)->find(1);
+                if ($ia == null) {
+                    $ia = new  IA();
+
+                    $em->persist($ia);
+                    $em->flush();
+                }
+                $logs = $em->getRepository(IALog::class)->findAll();
+                return $this->render('admin/ia.html.twig', [
+                    'controller_name' => 'AdminController',
+                    'logs' => $logs,
+                    'p' => $p,
+                    'page' => 3
+                ]);
+            } else {
+                return $this->redirectToRoute('dash_admin');
+            }
+        } else {
+            return $this->redirectToRoute('logoutAdmin');
+        }
+    }
+
+    #[Route("/permissionIAGenerator", name: "permissionIAGenerator")]
+    public function permissionIAGenerator(ManagerRegistry $doctrine, Request $request)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $p = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            $s = $em->getRepository(Sector::class)->findOneBy(['name' => '021 – TI MATRIZ (INFRAESTRUTURA E REDE)']);
+            if (($p->getDepartemant() == 'TI' && $p->getFunction()->getName() == "021 – TI MATRIZ (INFRAESTRUTURA E REDE)") || ($p = $s->getManager())) {
+                // list user have permission to access to this features .
+                $ia = $em->getRepository(IA::class)->find(1);
+                if ($ia == null) {
+                    $ia = new  IA();
+
+                    $em->persist($ia);
+                    $em->flush();
+                }
+                $person = $ia->getPersons();
+                $arrayperson = [];
+                foreach ($person as $value) {
+                    array_push($arrayperson, $value->getName());
+                }
+                $form = $this->createForm(IAType::class, $ia);
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    date_default_timezone_set("America/Sao_Paulo");
+                    $time = new \DateTimeImmutable();
+
+                    $arrayperson2 = [];
+                    foreach ($ia->getPersons() as $value) {
+                        array_push($arrayperson2, $value->getName());
+                    }
+                    $difference = array_diff($arrayperson2, $arrayperson);
+                    $log = new IALog();
+                    if (sizeof($difference) != 0) {
+                        $log->setLog("adicionar " . implode(", ", $difference) . " à lista de permissões IA");
+                    } else {
+                        $difference = array_diff($arrayperson, $arrayperson2);
+                        $log->setLog("exclui " . implode(", ", $difference) . " to permission list IA");
+                    }
+                    $log->setCreateAt($time);
+                    $log->setPerson($p);
+                    $em->persist($log);
+                    $em->flush();
+                    return $this->redirectToRoute('permissionIAGenerator');
+                }
+                return $this->render('admin/ia.html.twig', [
+                    'controller_name' => 'AdminController',
+                    'form' => $form,
+                    'p' => $p,
+                    'page' => 1
+                ]);
+            } else {
+                return $this->redirectToRoute('dash_admin');
+            }
+        } else {
+            return $this->redirectToRoute('logoutAdmin');
+        }
+    }
+
+    #[Route("/permissionIAToken", name: "permissionIAToken")]
+    public function permissionIAToken(ManagerRegistry $doctrine, Request $request)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $p = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            $s = $em->getRepository(Sector::class)->findOneBy(['name' => '021 – TI MATRIZ (INFRAESTRUTURA E REDE)']);
+            if (($p->getDepartemant() == 'TI' && $p->getFunction()->getName() == "021 – TI MATRIZ (INFRAESTRUTURA E REDE)") || ($p = $s->getManager())) {
+                // list user have permission to access to this features .
+                $ia = $em->getRepository(IA::class)->find(1);
+                if ($ia == null) {
+                    $ia = new  IA();
+
+                    $em->persist($ia);
+                    $em->flush();
+                }
+                return $this->render('admin/ia.html.twig', [
+                    'controller_name' => 'AdminController',
+                    'p' => $p,
+                    'token' => $ia->getApiToken(),
+                    'page' => 2
+                ]);
+            } else {
+                return $this->redirectToRoute('dash_admin');
+            }
+        } else {
+            return $this->redirectToRoute('logoutAdmin');
+        }
+    }
+
+    #[Route('/popup', name: 'popup')]
+    public function popup(): Response
+    {
+        return $this->render('admin/popup.html.twig');
+    }
+
+    #[Route("/changeIAToken", name: "changeIAToken")]
+    public function changeIAToken(ManagerRegistry $doctrine, Request $request)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $p = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+            $s = $em->getRepository(Sector::class)->findOneBy(['name' => '021 – TI MATRIZ (INFRAESTRUTURA E REDE)']);
+            if (($p->getDepartemant() == 'TI' && $p->getFunction()->getName() == "021 – TI MATRIZ (INFRAESTRUTURA E REDE)") || ($p = $s->getManager())) {
+                $data = $this->authAssinar($request->get('username'), $request->get('password'), $doctrine, $request);
+                $ia = $em->getRepository(IA::class)->find(1);
+                if ($data) {
+                    $ia->setApiToken($request->get('token'));
+
+                    date_default_timezone_set("America/Sao_Paulo");
+                    $time = new \DateTimeImmutable();
+
+                    $log = new IALog();
+                    $log->setLog("altera Token IA");
+                    $log->setCreateAt($time);
+                    $log->setPerson($p);
+                    $em->persist($log);
+                    $em->flush();
+                    return $this->redirectToRoute('permissionIAToken');
+                } else {
+                    return $this->redirectToRoute('popup');
+                }
+            } else {
+                return $this->redirectToRoute('dash_admin');
+            }
+        } else {
+            return $this->redirectToRoute('logoutAdmin');
+        }
+    }
+
     #[Route('/dashboard', name: 'dash_admin')]
     public function dash(ManagerRegistry $doctrine, Request $request): Response
     {
@@ -93,26 +264,26 @@ class AdminController extends AbstractController
                         }
                     }
                     // dd($val2);
-                    $listrequest = $em->getRepository(Requestper::class)->findAll();    
+                    $listrequest = $em->getRepository(Requestper::class)->findAll();
                     $val = intval($this->presentNotDone($val, $val2));
                     $size = sizeof($mudancas);
 
                     $mudSoft = [];
                     $mudNorm = [];
                     foreach ($mudancas as $key => $value) {
-                        if($value->getMudS() != null ){
-                            array_push($mudSoft,$value);
-                        }else{
-                            
-                            array_push($mudNorm,$value);
+                        if ($value->getMudS() != null) {
+                            array_push($mudSoft, $value);
+                        } else {
+
+                            array_push($mudNorm, $value);
                         }
                     }
                     return $this->render('admin/dash.html.twig', [
                         'controller_name' => 'AdminController',
                         'percent' => $val,
                         'size' => $size,
-                        'sizeSoft' => sizeof( $mudSoft),
-                        'sizeNorm' => sizeof( $mudNorm),
+                        'sizeSoft' => sizeof($mudSoft),
+                        'sizeNorm' => sizeof($mudNorm),
                         'mud' => $arr,
                         'listrequest' => array_reverse($listrequest),
                         'p' => $p,
@@ -140,6 +311,45 @@ class AdminController extends AbstractController
         }
     }
 
+    public function authAssinar($username, $password, $doctrine, $request)
+    {
+
+        $password = hash('whirlpool', $password);
+        $url = 'http://10.100.1.253/a/connection.php?sys=1&user=' . $username . '&pass=' . $password . '';
+        // Create a new cURL resource
+        $ch = curl_init($url);
+        // Setup request to send json via POST
+        $data = array();
+        $payload = json_encode(array("user" => $data));
+        // Attach encoded JSON string to the POST fields
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        // Set the content type to application/json
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        // Return response instead of outputting
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // Execute the POST request
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $personJSON = $result;
+        $person = json_decode($personJSON);
+
+        if ($person->status == 'Error') {
+            return false;
+        } else {
+            $session = new Session();
+            $session = $request->getSession();
+            if ($session->get('token_jwt') != '') {
+                $em = $doctrine->getManager();
+                $personSing = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+                $person =  $em->getRepository(Person::class)->findOneBy(['name' => $person->name]);
+                if ($person == $personSing) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
 
     #[Route('/request', name: 'app_request')]
     public function request(ManagerRegistry $doctrine, Request $request): Response
@@ -452,18 +662,18 @@ class AdminController extends AbstractController
             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
             $ln =  $resultSet->fetchAllAssociative();
 
-            if($mudancas->getMudS() != null){try {
-                //code...
-                $mudancasSoft = $em->getRepository(MudancasSoftware::class)->find($mudancas->getMudS()->getId());
-                $mudancasSoft->setReference(null);
-                $mudancas->setMudS(null);
-                $mudancas->setTypeMud(null);
-                $em->remove($mudancasSoft);
-                $em->flush();
-                    
-            } catch (\Throwable $th) {
-                //throw $th;
-            }
+            if ($mudancas->getMudS() != null) {
+                try {
+                    //code...
+                    $mudancasSoft = $em->getRepository(MudancasSoftware::class)->find($mudancas->getMudS()->getId());
+                    $mudancasSoft->setReference(null);
+                    $mudancas->setMudS(null);
+                    $mudancas->setTypeMud(null);
+                    $em->remove($mudancasSoft);
+                    $em->flush();
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
             }
 
             $sql = 'Delete FROM mudancas WHERE id = :mudancas_id ;';
@@ -490,70 +700,69 @@ class AdminController extends AbstractController
             foreach ($mudancass as $key => $mudancas) {
                 $id = $mudancas->getId();
                 # code...
-             $mudf = $mudancas->getTypeMud();
+                $mudf = $mudancas->getTypeMud();
 
-             $sql = 'select * FROM process WHERE mudancas_id = :mudancas_id ;';
-             $stmt = $conn->prepare($sql);
-             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-             $ln =  $resultSet->fetchAllAssociative();
+                $sql = 'select * FROM process WHERE mudancas_id = :mudancas_id ;';
+                $stmt = $conn->prepare($sql);
+                $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+                $ln =  $resultSet->fetchAllAssociative();
 
 
 
-             foreach ($ln as $key => $value) {
-                 $sql = 'Delete FROM sector_process WHERE process_id = :mudancas_id ;';
-                 $stmt = $conn->prepare($sql);
-                 $resultSet = $stmt->executeQuery(['mudancas_id' => $value['id']]);
-                 $ln2 =  $resultSet->fetchAllAssociative();
-             }
-             $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
-             $stmt = $conn->prepare($sql);
-             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-             $ln =  $resultSet->fetchAllAssociative();
-             $sql = 'Delete FROM process WHERE mudancas_id = :mudancas_id ;';
-             $stmt = $conn->prepare($sql);
-             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-             $ln =  $resultSet->fetchAllAssociative();
+                foreach ($ln as $key => $value) {
+                    $sql = 'Delete FROM sector_process WHERE process_id = :mudancas_id ;';
+                    $stmt = $conn->prepare($sql);
+                    $resultSet = $stmt->executeQuery(['mudancas_id' => $value['id']]);
+                    $ln2 =  $resultSet->fetchAllAssociative();
+                }
+                $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
+                $stmt = $conn->prepare($sql);
+                $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+                $ln =  $resultSet->fetchAllAssociative();
+                $sql = 'Delete FROM process WHERE mudancas_id = :mudancas_id ;';
+                $stmt = $conn->prepare($sql);
+                $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+                $ln =  $resultSet->fetchAllAssociative();
 
-             /**testet */
-             $sql = 'DELETE em
+                /**testet */
+                $sql = 'DELETE em
              FROM email em
              WHERE em.mudancas_id = :email;';
-             $stmt = $conn->prepare($sql);
-             $resultSet = $stmt->executeQuery(['email' => $mudancas->getId()]);
-             $ln =  $resultSet->fetchAllAssociative();
+                $stmt = $conn->prepare($sql);
+                $resultSet = $stmt->executeQuery(['email' => $mudancas->getId()]);
+                $ln =  $resultSet->fetchAllAssociative();
 
-             $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
-             $stmt = $conn->prepare($sql);
-             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-             $ln =  $resultSet->fetchAllAssociative();
+                $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
+                $stmt = $conn->prepare($sql);
+                $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+                $ln =  $resultSet->fetchAllAssociative();
 
 
-             $sql = 'Delete FROM api_token WHERE mud_id = :mudancas_id ;';
-             $stmt = $conn->prepare($sql);
-             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-             $ln =  $resultSet->fetchAllAssociative();
+                $sql = 'Delete FROM api_token WHERE mud_id = :mudancas_id ;';
+                $stmt = $conn->prepare($sql);
+                $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+                $ln =  $resultSet->fetchAllAssociative();
 
-             if($mudancas->getMudS() != null){try {
-                 //code...
-                 $mudancasSoft = $em->getRepository(MudancasSoftware::class)->find($mudancas->getMudS()->getId());
-                 $mudancasSoft->setReference(null);
-                 $mudancas->setMudS(null);
-                 $mudancas->setTypeMud(null);
-                 $em->remove($mudancasSoft);
-                 $em->flush();
+                if ($mudancas->getMudS() != null) {
+                    try {
+                        //code...
+                        $mudancasSoft = $em->getRepository(MudancasSoftware::class)->find($mudancas->getMudS()->getId());
+                        $mudancasSoft->setReference(null);
+                        $mudancas->setMudS(null);
+                        $mudancas->setTypeMud(null);
+                        $em->remove($mudancasSoft);
+                        $em->flush();
+                    } catch (\Throwable $th) {
+                        //throw $th;
+                    }
+                }
 
-             } catch (\Throwable $th) {
-                 //throw $th;
-             }
-             }
-
-             $sql = 'Delete FROM mudancas WHERE id = :mudancas_id ;';
-             $stmt = $conn->prepare($sql);
-             $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-             $ln =  $resultSet->fetchAllAssociative();
-
+                $sql = 'Delete FROM mudancas WHERE id = :mudancas_id ;';
+                $stmt = $conn->prepare($sql);
+                $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+                $ln =  $resultSet->fetchAllAssociative();
             }
-             return $this->redirectToRoute('export');
+            return $this->redirectToRoute('export');
         } else {
             return $this->redirectToRoute('app_mudancas');
         }
@@ -820,9 +1029,9 @@ class AdminController extends AbstractController
 
         if ($session->get('token_admin') != '') {
 
-            
+
             $em = $doctrine->getManager();
-                      /**
+            /**
              * Check Sector
              * 
              */
@@ -864,7 +1073,7 @@ class AdminController extends AbstractController
         }
     }
 
-    
+
 
     #[Route('/delete/sector/{id}', name: 'delete_sector')]
     public  function deletesectorById($id, ManagerRegistry $doctrine, Request $request)
@@ -1023,32 +1232,32 @@ class AdminController extends AbstractController
     {
         try {
             //code...
-        $session = new Session();
-        $session = $request->getSession();
+            $session = new Session();
+            $session = $request->getSession();
 
-        if ($session->get('token_admin') != '') {
-            $em = $doctrine->getManager();
-            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
-            $emails = $doctrine->getManager()->getRepository(EmailToSendConfig::class)->findAll();
+            if ($session->get('token_admin') != '') {
+                $em = $doctrine->getManager();
+                $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+                $emails = $doctrine->getManager()->getRepository(EmailToSendConfig::class)->findAll();
 
-            /*$form = $this->createForm(emailType::class, $emails);
+                /*$form = $this->createForm(emailType::class, $emails);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $em->flush();
                 return $this->redirectToRoute('email');
             }*/
-            return $this->render('admin/emailsList.html.twig', [
-                'controller_name' => 'Atualizar Mudancas',
-                'p' => $person,
-                'emails' => $emails,
-                'type' => 'list'
-            ]);
-        } else {
-            return $this->redirectToRoute('app_mudancas');
+                return $this->render('admin/emailsList.html.twig', [
+                    'controller_name' => 'Atualizar Mudancas',
+                    'p' => $person,
+                    'emails' => $emails,
+                    'type' => 'list'
+                ]);
+            } else {
+                return $this->redirectToRoute('app_mudancas');
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
         }
-    } catch (\Throwable $th) {
-        //throw $th;
-    }
     }
 
     #[Route('/AddEmails', name: 'AddEmails')]
@@ -1056,69 +1265,69 @@ class AdminController extends AbstractController
     {
         try {
             //code...
-        $session = new Session();
-        $session = $request->getSession();
+            $session = new Session();
+            $session = $request->getSession();
 
-        if ($session->get('token_admin') != '') {
-            $em = $doctrine->getManager();
-            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
-            //$emails = $doctrine->getManager()->getRepository(EmailToSendConfig::class)->findAll();
-            $email = new EmailToSendConfig();
-            $form = $this->createForm(EmailToSendConfigType::class, $email);
-            $form->handleRequest($request);
-            
-            if ($form->isSubmitted() && $form->isValid()) { 
-                $em->persist($email);
-                $em->flush();
-                return $this->redirectToRoute('emails');
+            if ($session->get('token_admin') != '') {
+                $em = $doctrine->getManager();
+                $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+                //$emails = $doctrine->getManager()->getRepository(EmailToSendConfig::class)->findAll();
+                $email = new EmailToSendConfig();
+                $form = $this->createForm(EmailToSendConfigType::class, $email);
+                $form->handleRequest($request);
+
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $em->persist($email);
+                    $em->flush();
+                    return $this->redirectToRoute('emails');
+                }
+                return $this->render('admin/emailsList.html.twig', [
+                    'controller_name' => 'Atualizar Mudancas',
+                    'p' => $person,
+                    'email' => $email,
+                    'form' => $form,
+                    'type' => 'create'
+                ]);
+            } else {
+                return $this->redirectToRoute('app_mudancas');
             }
-            return $this->render('admin/emailsList.html.twig', [
-                'controller_name' => 'Atualizar Mudancas',
-                'p' => $person,
-                'email' => $email,
-                'form' => $form,
-                'type' => 'create'
-            ]);
-        } else {
-            return $this->redirectToRoute('app_mudancas');
+        } catch (\Throwable $th) {
         }
-    } catch (\Throwable $th) {
-    }
     }
 
 
     #[Route('/UpdateEmails/{id}', name: 'UpdateEmails')]
-    public function UpdateEmails(ManagerRegistry $doctrine,$id, Request $request)
+    public function UpdateEmails(ManagerRegistry $doctrine, $id, Request $request)
     {
         try {
             //code...
-        $session = new Session();
-        $session = $request->getSession();
+            $session = new Session();
+            $session = $request->getSession();
 
-        if ($session->get('token_admin') != '') {
-            $em = $doctrine->getManager();
-            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
-            $email = $doctrine->getManager()->getRepository(EmailToSendConfig::class)->find($id);
-            $form = $this->createForm(EmailToSendConfigType::class, $email);
-            $form->handleRequest($request);
-            
-            if ($form->isSubmitted() && $form->isValid()) { 
-                $em->persist($email);
-                $em->flush();
-                return $this->redirectToRoute('emails');
+            if ($session->get('token_admin') != '') {
+                $em = $doctrine->getManager();
+                $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+                $email = $doctrine->getManager()->getRepository(EmailToSendConfig::class)->find($id);
+                $form = $this->createForm(EmailToSendConfigType::class, $email);
+                $form->handleRequest($request);
+
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $em->persist($email);
+                    $em->flush();
+                    return $this->redirectToRoute('emails');
+                }
+                return $this->render('admin/emailsList.html.twig', [
+                    'controller_name' => 'Atualizar Mudancas',
+                    'p' => $person,
+                    'email' => $email,
+                    'form' => $form,
+                    'type' => 'create'
+                ]);
+            } else {
+                return $this->redirectToRoute('app_mudancas');
             }
-            return $this->render('admin/emailsList.html.twig', [
-                'controller_name' => 'Atualizar Mudancas',
-                'p' => $person,
-                'email' => $email,
-                'form' => $form,
-                'type' => 'create'
-            ]);
-        } else {
-            return $this->redirectToRoute('app_mudancas');
+        } catch (\Throwable $th) {
         }
-    } catch (\Throwable $th) {
-    }
     }
 
     #[Route('/email/{id}', name: 'emailAdmin')]
@@ -1267,9 +1476,9 @@ class AdminController extends AbstractController
 
 
                     // Assume $sectorId and $processId are variables you're working with.
-                    
+
                     if (($value != "null" || $value != "") && ($key === 'status')) {
-                       
+
                         /**Status search 
                          * 
                          * Solicitação Aprovada
@@ -1287,72 +1496,59 @@ class AdminController extends AbstractController
 
                             $whereConditions[] = "mud.app_man = ?";
                             $parameters[] = null;
-                        } 
-                        elseif ($value === 'Solicitação Reprovada') {
+                        } elseif ($value === 'Solicitação Reprovada') {
                             $whereConditions[] = "mud.manager_user_app = ?";
                             $parameters[] = 2;
 
                             $whereConditions[] = "mud.app_man = ?";
                             $parameters[] = null;
-                        } 
-                        elseif ($value === 'Mudança Aceita') {
+                        } elseif ($value === 'Mudança Aceita') {
                             $whereConditions[] = "mud.app_man = ?";
                             $parameters[] = 1;
 
                             $whereConditions[] = "mud.app_gest = ?";
                             $parameters[] = null;
-                        } 
-                        elseif ($value === 'Mudança Rejeitada') {
+                        } elseif ($value === 'Mudança Rejeitada') {
                             $whereConditions[] = "mud.app_man = ?";
                             $parameters[] = 2;
-                        } 
-                        elseif ($value === 'Mudança Aprovada') {
+                        } elseif ($value === 'Mudança Aprovada') {
                             $whereConditions[] = "mud.app_gest = ?";
                             $parameters[] = 1;
-                        } 
-                        elseif ($value === 'Mudança Reprovada') {
+                        } elseif ($value === 'Mudança Reprovada') {
                             $whereConditions[] = "mud.app_gest = ?";
                             $parameters[] = 2;
-                        } 
-                        elseif ($value === 'Mudança implementada') {
+                        } elseif ($value === 'Mudança implementada') {
                             $whereConditions[] = "mud.implemented = ?";
                             $parameters[] = 1;
-                        } 
-                        elseif ($value === 'Mudança não implementada  implementadas e fechadas') {
+                        } elseif ($value === 'Mudança não implementada  implementadas e fechadas') {
                             $whereConditions[] = "mud.manager_user_app = ?";
                             $parameters[] = 2;
                         }
-                    }elseif (($value != "null" || $value != "") && ($key === 'dateInicio')) {
+                    } elseif (($value != "null" || $value != "") && ($key === 'dateInicio')) {
                         //dateInicio search
                         $whereConditions[] = "sp.sector_id = ?";
                         $parameters[] = $value;
-                    }
-                    elseif (($value != "null" || $value != "") && ($key === 'dateTermino')) {
+                    } elseif (($value != "null" || $value != "") && ($key === 'dateTermino')) {
                         //dateTermino search 
                         $whereConditions[] = "sp.sector_id = ?";
                         $parameters[] = $value;
-                    }
-                    elseif (($value != "null" || $value != "") && ($key === 'tipo')) {
+                    } elseif (($value != "null" || $value != "") && ($key === 'tipo')) {
                         ///tipo search 
                         $whereConditions[] = "sp.sector_id = ?";
                         $parameters[] = $value;
-                    }
-                    elseif (($value != "null" || $value != "") && ($key === 'area')) {
+                    } elseif (($value != "null" || $value != "") && ($key === 'area')) {
                         //area search
                         $whereConditions[] = "sp.sector_id = ?";
                         $parameters[] = $value;
-                    }
-                    elseif (($value != "null" || $value != "") && ($key === 'client')) {
+                    } elseif (($value != "null" || $value != "") && ($key === 'client')) {
                         //client search 
                         $whereConditions[] = "sp.sector_id = ?";
                         $parameters[] = $value;
-                    }
-                    elseif (($value != "null" || $value != "") && ($key === 'person')) {
+                    } elseif (($value != "null" || $value != "") && ($key === 'person')) {
                         //person search 
                         $whereConditions[] = "sp.sector_id = ?";
                         $parameters[] = $value;
-                    }
-                    elseif (($value != "null" || $value != "") && ($key === 'dateApp')) {
+                    } elseif (($value != "null" || $value != "") && ($key === 'dateApp')) {
                         //dateApp search 
                         $whereConditions[] = "sp.sector_id = ?";
                         $parameters[] = $value;
@@ -1372,11 +1568,11 @@ class AdminController extends AbstractController
                 $stmt = $conn->prepare($sql);
                 $stmt->execute($parameters);
                 $resultSet = $stmt->executeQuery();
-                        // get the id of the Porcess
-                        // dd($process->getId());
-                
+                // get the id of the Porcess
+                // dd($process->getId());
+
                 $dm =  $resultSet->fetchAllAssociative();
-                dd($dm);                       
+                dd($dm);
             } else {
 
 

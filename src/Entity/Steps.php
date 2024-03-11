@@ -20,7 +20,7 @@ class Steps
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $comments = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -68,8 +68,23 @@ class Steps
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $screendevend = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $ia = null;
+
     #[ORM\OneToOne(targetEntity: self::class, cascade: ['persist', 'remove'])]
     private ?self $Step = null;
+
+        /***  */
+    public function getIa(): ?string
+    {
+        return $this->ia;
+    }
+
+    public function setIa(string $ia): self
+    {
+        $this->ia = $ia;
+        return $this;
+    }
 
 
     /***  */

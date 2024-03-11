@@ -5,7 +5,8 @@
 
 {% block body %}
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+ 
 	<style>
 		@import url('https://unpkg.com/open-props/open-props.min.css');
 		@import url('https://unpkg.com/open-props/normalize.min.css');
@@ -281,6 +282,83 @@
 		{% if step is null %}
 			{% else %}
 				{% for s in step %}
+					{% if s.ia =="ia" %}
+						<div id="{{s.id}}" class="row col-md-12 mb-3 d-flex justify-content-between">
+							<div id="div" class="col-md-3 mb-3">
+								<label for="1">Requisito</label>
+								<input class="form-control" id="{{s.id}}ariquivo" name="{{s.id}}ariquivo" value="{{s.ariquivo.step}}" type="text" readonly/>
+							</div>
+							<div id="div3" class="col-md-4 mb-3">
+								<label for="{{s.id}}desc">Título</label>
+								<input id="{{s.id}}title" class="form-control" name="{{s.id}}title" value="{{s.title}}" type="text" readonly/>
+							</div>
+
+							<div id="div2" class="col-md-3 mb-3">
+								<label for="{{s.id}}date">Data de entrega do teste de TI</label><br>
+								<input id="{{s.id}}date" name="{{s.id}}date" value="{{s.dateCreation|date('d-m-Y')}}" style="width: 100%" type="text" readonly/>
+							</div>
+							<div id="div2" class="col-md-1 mb-3">
+								<a href="{{path('app_software_gestor_IA_deletestepIa',{'id': s.id,'ids':m.id}) }}" s style="font-size: 16px; padding: 10px 20px; background-color: red; color: white; border: none; border-radius: 5px;">
+												<i class="fa fa-trash-o fa-lg"></i>
+								</a>
+							</div>
+							<div id="div3" class="col-md-12 mb-3">
+								<label for="{{s.id}}desc">Comentário</label>
+								<input id="{{s.id}}desc" class="form-control" name="{{s.id}}desc" value="{{s.comments}}" type="text" readonly/>
+							</div>
+							{% if s.doc != null %}
+								<div class="col-md-6 mb-3">
+									<label>Anexo</label><br>
+									<button onclick="location.href='{{ asset('assets/') }}{{m.id}}/{{s.doc}}'" class="download-button">
+												<div class="docs">
+													<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="20" width="20" viewbox="0 0 24 24">
+														<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+														<polyline points="14 2 14 8 20 8"></polyline>
+														<line y2="13" x2="8" y1="13" x1="16"></line>
+														<line y2="17" x2="8" y1="17" x1="16"></line>
+														<polyline points="10 9 9 9 8 9"></polyline>
+													</svg>Anexo</div>
+												<div class="download">
+													<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="24" width="24" viewbox="0 0 24 24">
+														<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+														<polyline points="7 10 12 15 17 10"></polyline>
+														<line y2="3" x2="12" y1="15" x1="12"></line>
+													</svg>
+												</div>
+											</button>
+								</div>
+							{% endif %}
+
+							{% if s.docTest != null %}
+								<div class="col-md-6 mb-3">
+									<label>Anexo De Teste</label><br>
+
+									<button onclick="location.href='{{ asset('assets/') }}{{m.id}}/{{s.docTest}}'" class="download-button">
+												<div class="docs">
+													<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="20" width="20" viewbox="0 0 24 24">
+														<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+														<polyline points="14 2 14 8 20 8"></polyline>
+														<line y2="13" x2="8" y1="13" x1="16"></line>
+														<line y2="17" x2="8" y1="17" x1="16"></line>
+														<polyline points="10 9 9 9 8 9"></polyline>
+													</svg>Anexo de Teste</div>
+												<div class="download">
+													<svg class="css-i6dzq1" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="currentColor" height="24" width="24" viewbox="0 0 24 24">
+														<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+														<polyline points="7 10 12 15 17 10"></polyline>
+														<line y2="3" x2="12" y1="15" x1="12"></line>
+													</svg>
+												</div>
+											</button>
+								</div>
+							{% endif %}
+						</div>	
+	
+	
+	<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
+		
+					
+					{% else %}
 					<div id="{{s.id}}" class="row col-md-12 mb-3 d-flex justify-content-between">
 						<div id="div" class="col-md-3 mb-3">
 							<label for="1">Requisito</label>
@@ -347,6 +425,7 @@
 						{% endif %}
 					</div>
 					<hr style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
+					{% endif %}
 				{% endfor %}
 		{% endif %}
 	</div>
@@ -362,6 +441,89 @@
 
 {% if sd|length != 0 %}
 <a id="btn" class="btn btn-info mt-2 text-white" onclick="myFunction()" role="button">Adicionar nova fase</a>
+
+	{% if iaPerm %}
+{% set filePath = 'IASteps' ~ m.id %}
+
+{% if filePath starts with 'IASteps' %}
+	<a style="margin-left: 10px" class="btn btn-info mt-2 text-white" href="{{path('downIA',{'id':m.id})}}" role="button">Baixar arquivo IA Steps</a>
+{% endif %}
+				<a style="margin-left: 10px" class="btn btn-info mt-2 text-white" data-toggle="modal" data-target="#iagenReq" role="button">Use IA para gerar fases</a>
+	
+				<!-- Modal LGPD -->
+			<div class="modal fade" id="iagenReq" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+				<form class="form-group" action="{{path('app_software_gestor_IA_fases',{'id':m.id} )}}"  onsubmit="return validateInput()" enctype="multipart/form-data" method="post">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4 class="modal-title" id="exampleModalLongTitle">Gerar fases</h4>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<h5>
+									Política de Confidencialidade:</h5>
+								</br>
+								<p>
+									<ul>
+										<li>
+
+											Os utilizadores estão proibidos de divulgar qualquer informação relacionada com clientes, fornecedores ou qualquer detalhe relacionado com custos dentro desta campo. Isso inclui, mas não se limita a, nomes, endereços, informações financeiras ou qualquer outro detalhe identificativo.
+										</li>
+										<li>
+											Os utilizadores só podem fornecer descrições gerais de ideias ou conceitos que não revelem informações específicas sobre clientes, fornecedores ou custos. Essas descrições devem ser suficientemente abstratas para evitar a identificação de qualquer entidade específica ou informação financeira.
+										</li>
+										<li>
+											Os utilizadores são responsáveis por garantir que qualquer informação que forneçam esteja em conformidade com esta política. As violações podem resultar na remoção do conteúdo e na possível suspensão do acesso à plataforma.
+										</li>
+										<li>
+											Os utilizadores devem usar discrição e evitar discutir clientes específicos, fornecedores ou detalhes financeiros em qualquer comunicação ou interação dentro desta plataforma.
+										</li>
+										<li>
+											Quaisquer questões ou preocupações relacionadas com esta política devem ser dirigidas aos administradores da plataforma para esclarecimento e orientação.
+										</li>
+										<li>Esta política foi elaborada para proteger a confidencialidade de informações sensíveis e garantir o cumprimento de normas legais e éticas. Espera-se que os utilizadores cumpram estas diretrizes em todos os momentos.
+										</li>
+									</ul>
+								</p>
+								</br>
+								<h5>IA Gerar fases:</h5>
+								</br>
+								<div class="row">
+									<div id="div3" class="col-md-12 mb-3">
+										<label for="{{m.id}}desc">Descrições gerais de fases</label>
+										<textarea id="{{m.id}}desc"  class="form-control"  placeholder="descrições gerais de ideias....." name="{{m.id}}desc" rows="4" cols="50"></textarea>
+									</div>
+									<div id="div3" class="col-md-12 mb-3">
+										<input type="checkbox" id="c5" name="c5" value="and translate to english">
+										<label for="c5">Traduzir para o inglês</label>
+									</div>
+								</div>
+							</div>
+			
+							<div class="modal-footer">
+								<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
+								<button type="submit" class="btn btn-info mt-2 text-white btn-secondary" class="btn btn-info mt-2 text-white">
+										Enviar
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+    <script>
+        function validateInput() {
+            var input = document.getElementById("{{m.id}}desc").value;
+            var strings = input.split(" ");
+            if (strings.length < 10) {
+                alert("A entrada deve conter mais de 10 palavras.");
+            }
+        }
+
+		
+    </script>
+{% endif %}
 {% endif %}
 
 	{% endif %}

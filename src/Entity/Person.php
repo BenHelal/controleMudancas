@@ -43,11 +43,17 @@ class Person
     #[ORM\ManyToOne]
     private ?Sector $function = null;
 
+    #[ORM\ManyToOne(inversedBy: 'listOfChangeResp')]
+    private ?IA $iA = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
-
+    public function __toString(): string
+    {
+        return $this->getName(); // Assuming getName() returns the person's name
+    }
     public function getName(): ?string
     {
         return $this->name;
@@ -155,6 +161,18 @@ class Person
     public function setFunction(?Sector $function): self
     {
         $this->function = $function;
+
+        return $this;
+    }
+
+    public function getIA(): ?IA
+    {
+        return $this->iA;
+    }
+
+    public function setIA(?IA $iA): static
+    {
+        $this->iA = $iA;
 
         return $this;
     }

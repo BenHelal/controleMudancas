@@ -6,6 +6,7 @@ use App\Entity\ApiToken;
 use App\Entity\ConfigEmail;
 use App\Entity\Email;
 use App\Entity\EmailToSendConfig;
+use App\Entity\IA;
 use App\Entity\Mudancas;
 use App\Entity\Person;
 use App\Entity\Process;
@@ -28,6 +29,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
+use GeminiAPI\Client as GeminiAPIClient;
+use GeminiAPI\Resources\Parts\TextPart;
 use ZipArchive;
 
 class GestorController extends AbstractController
@@ -107,18 +110,18 @@ class GestorController extends AbstractController
             }
 
             $isTheLastApprove = true;
-            if($mud->getMudS() == null){
+            if ($mud->getMudS() == null) {
                 $isTheLastApprove = false;
-            } 
+            }
 
             $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
             $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
             foreach ($sps as $key => $sp) {
-                if($sp->getAppSectorMan() != 1 ){
+                if ($sp->getAppSectorMan() != 1) {
                     $isTheLastApprove = false;
-                } 
+                }
             }
-            
+            $ia = $em->getRepository(IA::class)->find(1);
 
             return $this->render('software/gestor/documentation.html.twig', [
                 'login' => 'null',
@@ -130,6 +133,7 @@ class GestorController extends AbstractController
                 'sd' => $SD,
                 'files' => $filesAssociative,
                 'iTLA' => $isTheLastApprove,
+                'iaPerm' => $ia->HeIsPerm($person)
             ]);
         } else {
             return $this->redirectToRoute('app_login');
@@ -182,13 +186,13 @@ class GestorController extends AbstractController
             }*/
             if ($request->files->get($fileKey) !== null) {
                 foreach ($request->files->get($fileKey) as $key => $value) {
-                    
+
                     date_default_timezone_set("America/Sao_Paulo");
-                    
+
                     $time = new \DateTime();
                     $formattedTime = $time->format('Y-m-d_H-i-s'); // Use underscore instead of colon for filename
                     $fileName = $formattedTime . '_' . $value->getClientOriginalName();
-                    
+
                     $publicDirectory = $this->getParameter('kernel.project_dir');
                     $excelFilepath = $publicDirectory . '/public/assets/' . $mud->getId() . '/documentation/' . $steps->getId();
                     $value->move($excelFilepath, $fileName);
@@ -221,12 +225,97 @@ class GestorController extends AbstractController
         $email->setBody('AddArquivos');
         $em->persist($email);
         $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-*/
+        */
 
         $em->flush();
         // Add any additional logic or response if needed after the loop
 
         return $this->redirectToRoute('app_software_gestor_documentation', ['id' => $id]);
+    }
+
+    /**
+     * generate documentations AI from description project
+     * @Route("/software/gestor/IA/documentation/{id}", name="app_software_gestor_IA_documentation")
+     * @return Response
+     */
+    public function IADocumentation(ManagerRegistry $doctrine, Request $request, $id): Response
+    {
+        $session = $request->getSession();
+        if ($session->get('token_jwt') === '') {
+            return $this->redirectToRoute('app_login');
+        }
+        $em = $doctrine->getManager();
+        $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+        $ia = $em->getRepository(IA::class)->find(1);
+        if ($ia->HeIsPerm($person)) {
+            $mud = $em->getRepository(Mudancas::class)->find($id);
+            if (!$mud) {
+                // Handle case when the Mudancas entity with the given $id is not found.
+                // You might want to return an appropriate response or redirect.
+                return new Response('Mudancas not found', 404);
+            }
+            $data = $request->request; 
+            $input = $data->get(strval($id) . 'desc');
+            $words = str_word_count($input);
+
+            if ($words > 10) {
+
+                $client = new GeminiAPIClient('AIzaSyCsf41aD_WbpzTYYSIzLN4aBOcrspiCQpM');
+                $response = $client->geminiPro()->generateContent(
+                    new TextPart($input . '., develope the idea and generate description more details'.$data->get('c1').' '.$data->get('c2').'   '.$data->get('c3').'  '.$data->get('c4').'  , in  portuguese , '.$data->get('c5')),
+                );
+
+                $phpWord = new \PhpOffice\PhpWord\PhpWord();
+                // Add a section to the document
+                $section = $phpWord->addSection();
+                // Add a title
+
+                // Add an image
+                $imagePath = 'serdia_logo.png';
+                $section->addImage($imagePath, array('width' => 200, 'height' => 40, 'marginTop' => 10, 'marginLeft' => 10));
+                $section->addText('Documentação gerada por IA', array('size' => 16, 'bold' => true));
+                $section->addTextBreak();
+                // Add text to the section
+                $array = explode("\n", $response->text());
+                foreach ($array as $value) {
+                    // Regular expression to find text between **
+                    $pattern = '/\*\*(.*?)\*\*/';
+                    preg_match_all($pattern, $value, $matches);
+
+                    // Replace ** with empty string and apply bold formatting
+                    foreach ($matches[0] as $match) {
+                        $replace = str_replace('**', '', $match);
+                        $value = str_replace($match, $replace, $value);
+                    }
+
+                    // Add the modified text to the document
+                    $section->addText($value);
+                    // Add a new line
+                    $section->addTextBreak();
+                }
+
+                $filename = 'IADoc'.$id.'.docx';
+                $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+                $objWriter->save($filename);
+
+                $publicDirectory = $this->getParameter('kernel.project_dir');
+                $excelFilepath = $publicDirectory . '/public/' . $filename;
+
+                $response = new BinaryFileResponse($excelFilepath);
+                $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+                $response->setContentDisposition(
+                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                    'hello_word.docx'
+                );
+
+                return $response;
+            } else {
+                echo "A entrada deve conter mais de 10 palavras.";
+                return $this->redirectToRoute('app_software_gestor_documentation', ['id' => $id]);
+            }
+        } else {
+            return $this->redirectToRoute('app_software_gestor_documentation', ['id' => $id]);
+        }
     }
 
     /**
@@ -369,7 +458,7 @@ class GestorController extends AbstractController
         $session = new Session();
         $session = $request->getSession();
         if ($session->get('token_jwt') != '') {
-            
+
             $em = $doctrine->getManager();
             $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $mud = $em->getRepository(Mudancas::class)->find($id);
@@ -537,7 +626,7 @@ class GestorController extends AbstractController
                 }
 
 
-                if($value->getAriquivo()->getApproveSol()  != 'Reprovar'){
+                if ($value->getAriquivo()->getApproveSol()  != 'Reprovar') {
                     $haveArq = false;
                 }
             }
@@ -592,7 +681,7 @@ class GestorController extends AbstractController
                 $em->flush();
             }
 
-
+            $ia = $em->getRepository(IA::class)->find(1);
             return $this->render('software/gestor/steps.html.twig', [
                 'login' => 'null',
                 'person' => $person,
@@ -605,6 +694,7 @@ class GestorController extends AbstractController
                 'formImp' => $formImp,
                 'imp' => $imp,
                 'step' => $s,
+                'iaPerm' => $ia->HeIsPerm($person),
                 'haveArq' => $haveArq
             ]);
         } else {
@@ -612,6 +702,205 @@ class GestorController extends AbstractController
         }
     }
 
+    
+    /**
+     * generate tasks AI from description project
+     * @Route("/software/gestor/IA/fases/{id}", name="app_software_gestor_IA_fases")
+     * @return Response
+     */
+    public function IAfases(ManagerRegistry $doctrine, Request $request, $id): Response
+    {
+        $session = $request->getSession();
+        if ($session->get('token_jwt') === '') {
+            return $this->redirectToRoute('app_login');
+        }
+        $em = $doctrine->getManager();
+        $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+        $ia = $em->getRepository(IA::class)->find(1);
+        if ($ia->HeIsPerm($person)) {
+            $mud = $em->getRepository(Mudancas::class)->find($id);
+            if (!$mud) {
+                // Handle case when the Mudancas entity with the given $id is not found.
+                // You might want to return an appropriate response or redirect.
+                return new Response('Mudancas not found', 404);
+            }
+            $data = $request->request; 
+            $input = $data->get(strval($id) . 'desc');
+            $words = str_word_count($input);
+
+            if ($words > 10) {
+
+                $client = new GeminiAPIClient('AIzaSyCsf41aD_WbpzTYYSIzLN4aBOcrspiCQpM');
+                $response = $client->geminiPro()->generateContent(
+                    new TextPart($input . '., develope the idea and generate Lista de afazeres , in  portuguese , '.$data->get('c5')),
+                );
+
+                $phpWord = new \PhpOffice\PhpWord\PhpWord();
+                // Add a section to the document
+                $section = $phpWord->addSection();
+                // Add a title
+
+                // Add an image
+                $imagePath = 'serdia_logo.png';
+                $section->addImage($imagePath, array('width' => 200, 'height' => 40, 'marginTop' => 10, 'marginLeft' => 10));
+                $section->addText('Documentação gerada por IA', array('size' => 16, 'bold' => true));
+                $section->addTextBreak();
+
+                preg_match_all('/(\d+)\.\s*(.+)/', $response->text(), $matches, PREG_SET_ORDER);
+                $todoList = [];
+                foreach ($matches as $match) {
+                    $todoList[$match[1]] = trim($match[2]);
+                }
+                // Add text to the section
+                $array = explode("\n", $response->text());
+                foreach ($array as $value) {
+                    // Regular expression to find text between **
+                    $pattern = '/\*\*(.*?)\*\*/';
+                    preg_match_all($pattern, $value, $matches);
+
+                    // Replace ** with empty string and apply bold formatting
+                    foreach ($matches[0] as $match) {
+                        $replace = str_replace('**', '', $match);
+                        $value = str_replace($match, $replace, $value);
+                    }
+
+                    // Add the modified text to the document
+                    $section->addText($value);
+                    // Add a new line
+                    $section->addTextBreak();
+                }
+
+
+                $mud = $em->getRepository(Mudancas::class)->find($id);
+                $muds = $mud->getMudS();
+                //steps Gestor 
+                $sd = [];
+                $SD =  $muds->getStepsGestor();
+    
+                foreach ($SD as $key => $value) {
+                    # code...
+                    if ($value->getApproveSol() == 'Approvar') {
+                        array_push($sd, $value);
+                    }
+                }
+                $after1 = false;
+                $key = array_search("", $array); // Find the key of the empty string value
+
+                foreach ($array as $key => $value) {
+                    if ($value=="") {
+                        unset($array[$key]);
+                    } // Remove the element from the array
+                } 
+                
+                foreach ($array as $key => $value) {
+                    try {
+                        //code...
+                        if (strlen($value) >= 3 && is_numeric($value[0])) {
+                            if (intval($value[0]) == 1) {
+                                $after1 = true;
+                            }
+                        } else {
+                            if (!$after1) {
+                                unset($array[$key]);
+                                continue;   // Remove the element from the array
+                            }elseif ($value=[0] == '*') {
+                                unset($array[$key]); 
+                                continue;  
+                            } 
+                        }
+                    } catch (\Throwable $th) {
+                        //throw $th;
+                    }
+                }
+                
+              
+
+                $filename = 'IASteps'.$id.'.docx';
+                $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+                $objWriter->save($filename);
+
+                $publicDirectory = $this->getParameter('kernel.project_dir');
+                $excelFilepath = $publicDirectory . '/public/' . $filename;
+                $title = "";
+                $comments = "";
+                foreach ($array as $key => $value) {
+                    if (is_numeric($value[0])) {
+                        $title = $value;
+                        $comments = "";
+                    } else {
+                        $comments =  $value;
+                    }
+                    $step = new Steps();
+                    $step->setTitle($title);
+                    $step->setComments($comments);
+                    $step->setAriquivo($sd[0]);
+                    $step->setIa('ia');
+                    date_default_timezone_set("America/Sao_Paulo");
+                    $time = new \DateTime();
+                    $step->setDateCreation($time->format('Y-m-d H:i:s'));
+                    if($step->getComments()!=''){
+                    $em->persist($step);
+                    $em->flush();}
+                }
+                return $this->redirectToRoute('app_software_gestor_steps', ['id' => $id]);
+
+            } else {
+                echo "A entrada deve conter mais de 10 palavras.";
+                return $this->redirectToRoute('app_software_gestor_steps', ['id' => $id]);
+            }
+        } else {
+            return $this->redirectToRoute('app_software_gestor_steps', ['id' => $id]);
+        }
+    }
+
+    /**
+     * generate tasks AI from description project
+     * @Route("/software/gestor/IA/deletestepIa/{id}/{ids}", name="app_software_gestor_IA_deletestepIa")
+     * @return Response
+     */
+    public function IAdeletestepIa(ManagerRegistry $doctrine, Request $request, $id,$ids): Response
+    {
+        $session = $request->getSession();
+        if ($session->get('token_jwt') === '') {
+            return $this->redirectToRoute('app_login');
+        }
+        $em = $doctrine->getManager();
+        $step = $em->getRepository(Steps::class)->find($id);
+        $em->remove($step);
+        $em->flush();
+         
+        return $this->redirectToRoute('app_software_gestor_steps', ['id' => $ids]);
+    }
+    
+    
+    /**
+     * generate tasks AI from description project
+     * @Route("/software/gestor/IA/downIA/{id}", name="downIA")
+     * @return Response
+     */
+    public function downIA(ManagerRegistry $doctrine, Request $request, $id): Response
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_jwt') != '') {
+            $filename = 'IASteps'.$id.'.docx';
+
+            $publicDirectory = $this->getParameter('kernel.project_dir');
+            $excelFilepath = $publicDirectory . '/public/' . $filename;
+
+            $response = new BinaryFileResponse($excelFilepath);
+            $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+            $response->setContentDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $filename
+            );
+
+            return $response;
+        } else {
+            return $this->redirectToRoute('app_login');
+        }
+
+    }
 
     /**
      * Renders the Test TI page for the GestorController.
@@ -686,6 +975,92 @@ class GestorController extends AbstractController
         $em->flush();
         // Add any additional logic or response if needed after the loop
         return $this->redirectToRoute('app_software_gestor_steps', ['id' => $id]);
+    }
+
+
+    /**
+     * generate documentations AI from description project
+     * @Route("/software/gestor/IA/steps/{id}", name="app_software_gestor_IA_steps")
+     * @return Response
+     */
+    public function IASteps(ManagerRegistry $doctrine, Request $request, $id): Response
+    {
+       $session = $request->getSession();
+        if ($session->get('token_jwt') === '') {
+            return $this->redirectToRoute('app_login');
+        }
+        $em = $doctrine->getManager();
+        $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+        $ia = $em->getRepository(IA::class)->find(1);
+        if ($ia->HeIsPerm($person)) {
+            $mud = $em->getRepository(Mudancas::class)->find($id);
+            if (!$mud) {
+                // Handle case when the Mudancas entity with the given $id is not found.
+                // You might want to return an appropriate response or redirect.
+                return new Response('Mudancas not found', 404);
+            }
+            $data = $request->request; 
+            $input = $data->get(strval($id) . 'desc');
+            $words = str_word_count($input);
+
+            if ($words > 10) {
+
+                $client = new GeminiAPIClient($ia->getApiToken());
+                $response = $client->geminiPro()->generateContent(
+                    new TextPart($input . '., develope the idea and generate description more details'.$data->get('c1').' '.$data->get('c2').'   '.$data->get('c3').'  '.$data->get('c4').'  , in  portuguese , '.$data->get('c5')),
+                );
+
+                $phpWord = new \PhpOffice\PhpWord\PhpWord();
+                // Add a section to the document
+                $section = $phpWord->addSection();
+                // Add a title
+
+                // Add an image
+                $imagePath = 'serdia_logo.png';
+                $section->addImage($imagePath, array('width' => 200, 'height' => 40, 'marginTop' => 10, 'marginLeft' => 10));
+                $section->addText('Documentação gerada por IA', array('size' => 16, 'bold' => true));
+                $section->addTextBreak();
+                // Add text to the section
+                $array = explode("\n", $response->text());
+                foreach ($array as $value) {
+                    // Regular expression to find text between **
+                    $pattern = '/\*\*(.*?)\*\*/';
+                    preg_match_all($pattern, $value, $matches);
+
+                    // Replace ** with empty string and apply bold formatting
+                    foreach ($matches[0] as $match) {
+                        $replace = str_replace('**', '', $match);
+                        $value = str_replace($match, $replace, $value);
+                    }
+
+                    // Add the modified text to the document
+                    $section->addText($value);
+                    // Add a new line
+                    $section->addTextBreak();
+                }
+
+                $filename = 'IADoc'.$id.'.docx';
+                $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+                $objWriter->save($filename);
+
+                $publicDirectory = $this->getParameter('kernel.project_dir');
+                $excelFilepath = $publicDirectory . '/public/' . $filename;
+
+                $response = new BinaryFileResponse($excelFilepath);
+                $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+                $response->setContentDisposition(
+                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                    'hello_word.docx'
+                );
+
+                return $response;
+            } else {
+                echo "A entrada deve conter mais de 10 palavras.";
+                return $this->redirectToRoute('app_software_gestor_documentation', ['id' => $id]);
+            }
+        } else {
+            return $this->redirectToRoute('app_software_gestor_documentation', ['id' => $id]);
+        }
     }
 
 
@@ -795,9 +1170,9 @@ class GestorController extends AbstractController
                                 date_default_timezone_set("America/Sao_Paulo");
                                 $time = new \DateTime();
                                 $formattedTime = $time->format('Y-m-d H:i:s');
-                                $values->setDateClientRep($formattedTime );
-                                
-                                
+                                $values->setDateClientRep($formattedTime);
+
+
                                 $em->flush();
                             }
                         }
@@ -921,16 +1296,9 @@ class GestorController extends AbstractController
                 ]));
             }
 
-
-            //$mail->Subject  = "ASSUNTO"; // Assunto da mensagem
-            //$mail->Body = "HTML FORMAT";
-
             // Envia o e-mail
             $mail->Send();
             return $mail;
-            // Limpa os destinatários e os anexos
-            // $mail->ClearAllRecipients();
-            //$mail->ClearAttachments();
 
             return $this->redirectToRoute('app_mudancas');
         } catch (Exception $e) {

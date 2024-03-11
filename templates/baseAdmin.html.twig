@@ -103,12 +103,18 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEmail"
                     aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
-                    <span>Emails</span>
+                    <span>Configurações</span>
                 </a>
                 <div id="collapseEmail" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Emails:</h6>
                         <a class="collapse-item" href="{{ path('email') }}">e-mail de configuração</a>
+                        {% if  p.departemant == 'TI' and p.function.name == "021 – TI MATRIZ (INFRAESTRUTURA E REDE)" %}
+                            <h6 class="collapse-header">Gerenciamento de IA:</h6>
+                            <a class="collapse-item" href="{{ path('permissionIAGenerator') }}">Permissões Usuários de IA</a>
+                            <a class="collapse-item" href="{{ path('permissionIAToken') }}">Gerenciamento <br>API de token</a>
+                            <a class="collapse-item" href="{{ path('logIAGenerator') }}">log<br>API de token</a>
+                        {% endif %}
                     </div>
                 </div>
             </li>
@@ -298,11 +304,13 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
     <!-- Bootstrap core JavaScript-->
-    <script src="{{ asset('admin/vendor/jquery/jquery.min.js')}}"></script>
     <script src="{{ asset('admin/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="{{ asset('admin/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
+    
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+  
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('admin/js/sb-admin-2.min.js')}}"></script>
