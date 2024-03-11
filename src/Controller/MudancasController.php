@@ -578,13 +578,13 @@ class MudancasController extends AbstractController
                             $time->format('Y-m-d H:i:s');
                             $mud->setDateMUA($time);
                             //nansen
-                            $email = new  Email();
+                           /* $email = new  Email();
                             $email->setMudancas($mud);
                             $email->setSendTo($person);
                             $email->setSendBy($person);
                             $email->setTitle('Aprovação automática da solicitação');
                             $email->setBody('nansenAddBy');
-                            $em->persist($email);
+                            $em->persist($email);*/
 
                             
                             $email = new  Email();
@@ -594,16 +594,17 @@ class MudancasController extends AbstractController
                             $email->setTitle('Aprovação gerente do solicitante');
                             $email->setBody('manager1APP');
                             $em->persist($email);
+                            //nansen
                             $email = new  Email();
                             $email->setMudancas($mud);
-                            $email->setSendTo($mud->getAreaResp()->getManager());
+                            $email->setSendTo($person->getFunction()->getManager());
                             $email->setSendBy($person);
-                            $email->setTitle('ÁREA Resp gerente');
-                            $email->setBody('managerAreaResp');
+                            $email->setTitle('Aprovação automática da solicitação');
+                            $email->setBody('manager1');
                             $em->persist($email);
-                            
+
                         } 
-                            if ($mud->getAddBy() == $person && $mud->getAddBy()->getFunction()->getManager() == $person) {
+                        if ($mud->getAddBy() == $person && $mud->getAddBy()->getFunction()->getManager() == $person) {
                                 date_default_timezone_set("America/Sao_Paulo");
                                 $time = new \DateTime();
                                 $time->format('Y-m-d H:i:s');
@@ -615,25 +616,30 @@ class MudancasController extends AbstractController
                                 $email->setTitle('Aprovação gerente do solicitante');
                                 $email->setBody('manager1APP');
                                 $em->persist($email);
-                                $email = new  Email();
-                                $email->setMudancas($mud);
-                                $email->setSendTo($mud->getAreaResp()->getManager());
-                                $email->setSendBy($person);
-                                $email->setTitle('ÁREA Resp gerente');
-                                $email->setBody('managerAreaResp');
-                                $em->persist($email);
+                                
+                            //nansen
+                            $email = new  Email();
+                            $email->setMudancas($mud);
+                            $email->setSendTo($person->getFunction()->getManager());
+                            $email->setSendBy($person);
+                            $email->setTitle('Aprovação automática da solicitação');
+                            $email->setBody('manager1');
+                            $em->persist($email);
+
                             } else {
                                 date_default_timezone_set("America/Sao_Paulo");
                                 $time = new \DateTime();
                                 $time->format('Y-m-d H:i:s');
                                 $mud->setDateMUA($time);
+                                //nansen
                                 $email = new  Email();
                                 $email->setMudancas($mud);
-                                $email->setSendTo($mud->getAreaResp()->getManager());
+                                $email->setSendTo($person->getFunction()->getManager());
                                 $email->setSendBy($person);
-                                $email->setTitle('ÁREA Resp gerente');
-                                $email->setBody('managerAreaResp');
+                                $email->setTitle('Aprovação automática da solicitação');
+                                $email->setBody('manager1');
                                 $em->persist($email);
+    
                             }
 
                             $em->flush();
@@ -797,13 +803,16 @@ class MudancasController extends AbstractController
                                 $email->setBody('manager1APP');
                                 $em->persist($email);
 
-                                $email = new  Email();
-                                $email->setMudancas($mud);
-                                $email->setSendTo($mud->getAreaResp()->getManager());
-                                $email->setSendBy($person);
-                                $email->setTitle('ÁREA Resp gerente');
-                                $email->setBody('managerAreaResp');
-                                $em->persist($email);
+                                
+                            //nansen
+                            $email = new  Email();
+                            $email->setMudancas($mud);
+                            $email->setSendTo($person->getFunction()->getManager());
+                            $email->setSendBy($person);
+                            $email->setTitle('Aprovação automática da solicitação');
+                            $email->setBody('manager1');
+                            $em->persist($email);
+
 
                             } else {
                                 date_default_timezone_set("America/Sao_Paulo");
@@ -811,13 +820,15 @@ class MudancasController extends AbstractController
                                 $time->format('Y-m-d H:i:s');
                                 $mud->setDateMUA($time);
                                 
-                                $email = new  Email();
-                                $email->setMudancas($mud);
-                                $email->setSendTo($mud->getAreaResp()->getManager());
-                                $email->setSendBy($person);
-                                $email->setTitle('ÁREA Resp gerente');
-                                $email->setBody('managerAreaResp');
-                                $em->persist($email);
+                                
+                            //nansen
+                            $email = new  Email();
+                            $email->setMudancas($mud);
+                            $email->setSendTo($person->getFunction()->getManager());
+                            $email->setSendBy($person);
+                            $email->setTitle('Aprovação automática da solicitação');
+                            $email->setBody('manager1');
+                            $em->persist($email);
 
                             }
 
