@@ -446,7 +446,7 @@
 {% set filePath = 'IASteps' ~ m.id %}
 
 {% if filePath starts with 'IASteps' %}
-	<a style="margin-left: 10px" class="btn btn-info mt-2 text-white" href="{{path('downIA',{'id':m.id})}}" role="button">Baixar arquivo IA Steps</a>
+	<a style="margin-left: 10px" class="btn btn-info mt-2 text-white" id="btnIA" href="{{path('downIA',{'id':m.id})}}" role="button">Baixar arquivo IA Steps</a>
 {% endif %}
 				<a style="margin-left: 10px" class="btn btn-info mt-2 text-white" data-toggle="modal" data-target="#iagenReq" role="button">Use IA para gerar fases</a>
 	
@@ -504,7 +504,7 @@
 			
 							<div class="modal-footer">
 								<button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
-								<button type="submit" class="btn btn-info mt-2 text-white btn-secondary" class="btn btn-info mt-2 text-white">
+								<button type="submit"   id="btnIA" class="btn btn-info mt-2 text-white btn-secondary" class="btn btn-info mt-2 text-white">
 										Enviar
 								</button>
 							</div>
@@ -513,6 +513,14 @@
 				</form>
 			</div>
     <script>
+  				document.addEventListener("DOMContentLoaded", function() {
+  				  var btn = document.getElementById("btnIA");
+  				  var timeout = Math.floor(Math.random() * (60000 - 30000)) + 30000; // Random time between 30s and 1min
+  				  btn.disabled = true;
+  				  setTimeout(function() {
+  				    btn.disabled = false;
+  				  }, timeout);
+  				});
         function validateInput() {
             var input = document.getElementById("{{m.id}}desc").value;
             var strings = input.split(" ");

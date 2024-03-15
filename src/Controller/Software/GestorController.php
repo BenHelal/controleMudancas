@@ -260,6 +260,8 @@ class GestorController extends AbstractController
 
             if ($words > 10) {
 
+                try {
+                    //code...
                 $client = new GeminiAPIClient('AIzaSyCsf41aD_WbpzTYYSIzLN4aBOcrspiCQpM');
                 $response = $client->geminiPro()->generateContent(
                     new TextPart($input . '., develope the idea and generate description more details'.$data->get('c1').' '.$data->get('c2').'   '.$data->get('c3').'  '.$data->get('c4').'  , in  portuguese , '.$data->get('c5')),
@@ -305,10 +307,15 @@ class GestorController extends AbstractController
                 $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
                 $response->setContentDisposition(
                     ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                    'hello_word.docx'
+                    $filename
                 );
 
                 return $response;
+            } catch (\Throwable $th) {
+                //throw $th;
+                
+                return $this->redirectToRoute('app_software_gestor_documentation', ['id' => $id]);
+            }
             } else {
                 echo "A entrada deve conter mais de 10 palavras.";
                 return $this->redirectToRoute('app_software_gestor_documentation', ['id' => $id]);
@@ -730,9 +737,10 @@ class GestorController extends AbstractController
 
             if ($words > 10) {
 
+                try {
                 $client = new GeminiAPIClient('AIzaSyCsf41aD_WbpzTYYSIzLN4aBOcrspiCQpM');
                 $response = $client->geminiPro()->generateContent(
-                    new TextPart($input . '., develope the idea and generate Lista de afazeres , in  portuguese , '.$data->get('c5')),
+                    new TextPart($input . '.,develop the idea and generate To-Do List in number point , in Portuguese , '.$data->get('c5')),
                 );
 
                 $phpWord = new \PhpOffice\PhpWord\PhpWord();
@@ -783,35 +791,14 @@ class GestorController extends AbstractController
                         array_push($sd, $value);
                     }
                 }
-                $after1 = false;
-                $key = array_search("", $array); // Find the key of the empty string value
 
-                foreach ($array as $key => $value) {
-                    if ($value=="") {
-                        unset($array[$key]);
-                    } // Remove the element from the array
-                } 
+
+                preg_match_all('/(\d+)\.\s*(.+)/', $response->text(), $matches, PREG_SET_ORDER);
+
+                $pattern = '/\d+\.\s*(.*)/';
+                preg_match_all($pattern, $response->text(), $matches);
                 
-                foreach ($array as $key => $value) {
-                    try {
-                        //code...
-                        if (strlen($value) >= 3 && is_numeric($value[0])) {
-                            if (intval($value[0]) == 1) {
-                                $after1 = true;
-                            }
-                        } else {
-                            if (!$after1) {
-                                unset($array[$key]);
-                                continue;   // Remove the element from the array
-                            }elseif ($value=[0] == '*') {
-                                unset($array[$key]); 
-                                continue;  
-                            } 
-                        }
-                    } catch (\Throwable $th) {
-                        //throw $th;
-                    }
-                }
+                $array = $matches[1];
                 
               
 
@@ -824,15 +811,11 @@ class GestorController extends AbstractController
                 $title = "";
                 $comments = "";
                 foreach ($array as $key => $value) {
-                    if (is_numeric($value[0])) {
-                        $title = $value;
-                        $comments = "";
-                    } else {
-                        $comments =  $value;
-                    }
+                    
+                    $parts = explode(':', $value, 2);
                     $step = new Steps();
-                    $step->setTitle($title);
-                    $step->setComments($comments);
+                    $step->setTitle($parts[0]);
+                    $step->setComments($parts[1]);
                     $step->setAriquivo($sd[0]);
                     $step->setIa('ia');
                     date_default_timezone_set("America/Sao_Paulo");
@@ -844,6 +827,10 @@ class GestorController extends AbstractController
                 }
                 return $this->redirectToRoute('app_software_gestor_steps', ['id' => $id]);
 
+                //code...
+            } catch (\Throwable $th) {
+                return $this->redirectToRoute('app_software_gestor_steps', ['id' => $id]);
+            }
             } else {
                 echo "A entrada deve conter mais de 10 palavras.";
                 return $this->redirectToRoute('app_software_gestor_steps', ['id' => $id]);
