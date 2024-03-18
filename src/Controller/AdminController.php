@@ -1092,6 +1092,7 @@ class AdminController extends AbstractController
         }
     }
 
+    #[Route('/edit/sector/{id}', name: 'edit_sector')]
     public  function sectorById($id, ManagerRegistry $doctrine, Request $request)
     {
         $session = new Session();
@@ -1153,7 +1154,6 @@ class AdminController extends AbstractController
         }
     }
 
-    #[Route('/edit/sector/{id}', name: 'edit_sector')]
     public  function sectorById2($id, ManagerRegistry $doctrine, Request $request)
     {
         $session = new Session();

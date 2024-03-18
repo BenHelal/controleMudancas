@@ -1419,6 +1419,7 @@ class MudancasController extends AbstractController
                                 return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
                             } elseif ($gestor) {
 
+                                $mud->setAreaResp($areaResp);
                                 date_default_timezone_set("America/Sao_Paulo");
                                 $time = new \DateTime();
                                 $mud->setDateAG($time);
@@ -1454,7 +1455,6 @@ class MudancasController extends AbstractController
                                     $em->persist($mud);
                                     $em->flush();
                                 }
-                                $mud->setAreaResp($areaResp);
                                 $mangerOfAreaDidntApp = false;
                                 foreach ($sps as $key => $sp) {
                                     if ($sp->getAppSectorMan() == 2 && $sp->getAppSectorMan() != null) {
