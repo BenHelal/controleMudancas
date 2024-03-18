@@ -541,7 +541,9 @@ class MudancasController extends AbstractController
 
     #[Route('/createMudancas', name: 'cm')]
     public function create(ManagerRegistry $doctrine, Request $request): Response
-    { try {
+    { 
+        
+        try {
         $session = new Session();
         $session = $request->getSession();
         //$request->header_remove();
@@ -1271,7 +1273,7 @@ class MudancasController extends AbstractController
                                             } else {
                                                 $cl = null;
                                             }
-                                            $this->sendEmail($doctrine, $request, $mud->getClient(), $mud, $person, 'client', false, $mud->getClient());
+                                            //$this->sendEmail($doctrine, $request, $mud->getClient(), $mud, $person, 'client', false, $mud->getClient());
                                         }
                                     }
                                     $emails = $em->getRepository(Email::class)->findBy(['mudancas' => $mud]);
