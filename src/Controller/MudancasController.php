@@ -90,6 +90,56 @@ class MudancasController extends AbstractController
             $coordinatorArray = $em->getRepository(Sector::class)->findBy(['coordinator' => $person]);
             $managerArray = $em->getRepository(Sector::class)->findBy(['manager' => $person]);
             $mudanca = $em->getRepository(Mudancas::class)->findAll();
+
+            foreach ($mudanca as $key => $mu) {
+                # code...
+                if($mu->getClient() != null){
+                    $token = $em->getRepository(ApiToken::class)->findOneBy(['mud' => $mu]);
+    
+                    if($token != null){
+                    $url = "10.100.2.61/ClientExteranlAcces/public/get/data";
+                    //The data you want to send via POST
+                    $fields = [
+                        'token'=> $token->getToken(),
+                        'id'=> $mu->getId(),
+                    ];
+        
+                    //url-ify the data for the POST
+                    $fields_string = http_build_query($fields);
+        
+                    //open connection
+                    $ch = curl_init();
+        
+                    //set the url, number of POST vars, POST data
+                    curl_setopt($ch, CURLOPT_URL, $url);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+        
+                    //So that curl_exec returns the contents of the cURL; rather than echoing it
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+                    //execute post
+                    $client = curl_exec($ch);
+                    $cl = json_decode($client, true);
+                    }else{
+                        $cl = null;
+                    }
+                    $conn = $doctrine->getConnection();
+    
+                    $appClt = $cl['mud']['TokenData']['appClt'];
+                    
+                   
+                        if($appClt == "2"){
+                            $isTheLastApprove = false;
+                            
+                            $mu->setImplemented(2);
+                            $mu->setDone('Feito');
+                            $em->flush();
+                        }
+                        
+                }
+            }
+
             $mudancas = [];
             $gestorArray = $em->getRepository(Mudancas::class)->findBy(['mangerMudancas' => $person]);
             $notifGestor = [];
