@@ -631,11 +631,11 @@ class MudancasController extends AbstractController
                         $em->persist($mud);
                         $emails = $em->getRepository(Email::class)->findBy(['mudancas' => $mud]);
                         $ems = [];
-                        /*foreach ($emails as $key => $value) {
+                        foreach ($emails as $key => $value) {
                             if ($value->getClient() == null) {
                                 $this->sendEmail($doctrine, $request, $value->getSendTo(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false);
                             } 
-                        }*/
+                        }
                         if ($mud->getAddBy() == $mud->getAddBy()->getFunction()->getManager()) {
                             $mud->setManagerUserAdd($person->getFunction()->getManager());
                             $process->setMudancas($mud);
@@ -820,11 +820,11 @@ class MudancasController extends AbstractController
                         
                         $emails = $em->getRepository(Email::class)->findBy(['mudancas' => $mud]);
                         $ems = [];
-                        /*foreach ($emails as $key => $value) {
+                        foreach ($emails as $key => $value) {
                             if ($value->getClient() == null) {
                                 $this->sendEmail($doctrine, $request, $value->getSendTo(), $value->getMudancas(), $value->getSendBy(), $value->getBody(), false);
                             } 
-                        }*/
+                        }
                         
                         $nansenName =  $form["nansenName"]->getData();
                         
