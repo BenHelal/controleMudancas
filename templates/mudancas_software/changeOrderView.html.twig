@@ -48,7 +48,7 @@
                     {% if item.orderNumber != null %}
                         <option value="{{ i }}" {% if i == item.orderNumber %}selected{% endif %}>{{ i }}</option>
                         {% else %}
-                        <option value="{{ m|length + 1 }}" {% if i == item.orderNumber %}selected{% endif %}>{{ m|length }}</option>
+                        <option value="{{ m|length + 1 }}" {% if i == item.orderNumber %}selected{% endif %}>N.A</option>
                     {% endif %}
                 {% endfor %}
             </select>
