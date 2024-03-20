@@ -1254,7 +1254,6 @@ class MudancasController extends AbstractController
                                             if($value->getDataCreation() == null){
                                                 
                                                 $dateTime = \DateTime::createFromFormat('Y-m-d H:i', $mud->getDateAM());
-                                                $dateTime->format(DateTimeInterface::RFC2822);
                                                 $value->setDataCreation($dateTime);
                                                 $value->setAppSectorMan($form["appMan"]->getData());
                                                 $value->setComment($form["comMan"]->getData());
