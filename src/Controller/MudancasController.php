@@ -1251,15 +1251,19 @@ class MudancasController extends AbstractController
                                     foreach ($sps as $key => $value) {
                                         if ($value->getPerson() == $person) {
                                             if($value->getDataCreation() == null){
-                                                $value->setDataCreation($mud->getDateAM());
+                                                
+                                                $dateTime = \DateTime::createFromFormat('Y-m-d H:i', $mud->getDateAM());
+                                        
+                                                $value->setDataCreation($dateTime);
                                                 $value->setAppSectorMan($form["appMan"]->getData());
                                                 $value->setComment($form["comMan"]->getData());
                                                 $em->flush();
                                             }
                                         }
                                     } 
-                                }else{if($mud->getDateAM() != null){
-                                    $mud->setDateAM($time);}
+                                }else{
+                                    
+                                    $mud->setDateAM($time);
                                     $mud->setAppMan($form["appMan"]->getData());
                                     $mud->setComMan($form["comMan"]->getData());
                                     $em->persist($mud);
