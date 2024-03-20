@@ -1256,6 +1256,7 @@ class MudancasController extends AbstractController
                                                 $value->setDataCreation($time);
                                                 $value->setAppSectorMan($form["appMan"]->getData());
                                                 $value->setComment($form["comMan"]->getData());
+                                                $em->flush();
                                             }
                                         }
                                     } 
@@ -1267,15 +1268,15 @@ class MudancasController extends AbstractController
                                     $em->flush();
                                     $number_sector_app = 0;
                                     foreach ($sps as $key => $value) {
-                                        if ($value->getPerson() == $person) {
-                                            date_default_timezone_set("America/Sao_Paulo");
-                                            $time = new \DateTime();
-                                            $value->setDataCreation($time);
-                                            $value->setAppSectorMan($form["appMan"]->getData());
-                                            $value->setComment($form["comMan"]->getData());
-                                            $em->persist($value);
-                                            $em->flush();
-                                        };
+                                            if ($value->getPerson() == $person) {if($value->getDataCreation() == null){
+                                                date_default_timezone_set("America/Sao_Paulo");
+                                                $time = new \DateTime();
+                                                $value->setDataCreation($time);
+                                                $value->setAppSectorMan($form["appMan"]->getData());
+                                                $value->setComment($form["comMan"]->getData());
+                                                $em->flush();
+                                            }
+                                        }
                                     }
                                     $manager_dep = [];
                                     $areaImpact =  $mud->getAreaImpact();
@@ -1477,7 +1478,7 @@ class MudancasController extends AbstractController
                                     $em->flush();
 
                                     return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
-                                        
+
                                 }
                             } elseif ($gestor) {
 
