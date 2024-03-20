@@ -1250,17 +1250,27 @@ class MudancasController extends AbstractController
                                 $time = new \DateTime();
                                 if($mud->getDateAM() != null){
                                     foreach ($sps as $key => $value) {
-                                        if ($value->getPerson() == $person) {
-                                            if($value->getDataCreation() == null){
-                                                
-                                                $dateTime = \DateTime::createFromFormat('Y-m-d H:i', $mud->getDateAM());
-                                                $value->setDataCreation($dateTime);
-                                                $value->setAppSectorMan($form["appMan"]->getData());
-                                                $value->setComment($form["comMan"]->getData());
-                                                $em->flush();
-                                            }
+                                        if ($value->getPerson() !== $person) {
+                                          continue; // Skip if person doesn't match
                                         }
-                                    } 
+                                      
+                                        if ($value->getDataCreation() === null) {
+                                          $dateTime = \DateTime::createFromFormat('Y-m-d H:i', $mud->getDateAM());
+                                          if ($dateTime === false) {
+                                            // Handle parsing error (e.g., throw exception)
+                                          } else {
+                                            $formattedDate = $dateTime->format(DateTimeInterface::RFC2822);
+                                            $value->setDataCreation($formattedDate);
+                                          }
+                                          updateItemFields($value, $form["appMan"]->getData(), $form["comMan"]->getData());
+                                          $em->flush();
+                                        }
+                                      }
+                                      
+                                      function updateItemFields($item, $appSectorManData, $commentData) {
+                                        $item->setAppSectorMan($appSectorManData);
+                                        $item->setComment($commentData);
+                                      }
                                 }else{
                                     
                                     $mud->setDateAM($time);
