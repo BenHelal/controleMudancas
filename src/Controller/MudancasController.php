@@ -24,6 +24,7 @@ use App\Form\MudancasgestorToAppType;
 use App\Form\MudancasType;
 use App\Model\Class\IpAdress;
 use App\Model\Class\Logger;
+use DateTimeInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -1253,7 +1254,7 @@ class MudancasController extends AbstractController
                                             if($value->getDataCreation() == null){
                                                 
                                                 $dateTime = \DateTime::createFromFormat('Y-m-d H:i', $mud->getDateAM());
-                                        
+                                                $dateTime->format(DateTimeInterface::RFC2822);
                                                 $value->setDataCreation($dateTime);
                                                 $value->setAppSectorMan($form["appMan"]->getData());
                                                 $value->setComment($form["comMan"]->getData());
