@@ -1192,9 +1192,9 @@ class MudancasController extends AbstractController
                             }
                         }
                         if ($gestor == true && $mangerOfAreaDidntApp == false) {
-                        if ($mud->getTypeMud() == 1) {
-                            return $this->redirectToRoute('solfirst_software', ['id' => $mud->getId()]);
-                        }
+                            if ($mud->getTypeMud() == 1) {
+                                return $this->redirectToRoute('solfirst_software', ['id' => $mud->getId()]);
+                            }
                             $formImp->handleRequest($request);
                             if ($formImp->isSubmitted()) {
 
@@ -1251,17 +1251,15 @@ class MudancasController extends AbstractController
                                     foreach ($sps as $key => $value) {
                                         if ($value->getPerson() == $person) {
                                             if($value->getDataCreation() == null){
-                                                date_default_timezone_set("America/Sao_Paulo");
-                                                $time = new \DateTime();
-                                                $value->setDataCreation($time);
+                                                $value->setDataCreation($mud->getDateAM());
                                                 $value->setAppSectorMan($form["appMan"]->getData());
                                                 $value->setComment($form["comMan"]->getData());
                                                 $em->flush();
                                             }
                                         }
                                     } 
-                                }else{
-                                    $mud->setDateAM($time);
+                                }else{if($mud->getDateAM() != null){
+                                    $mud->setDateAM($time);}
                                     $mud->setAppMan($form["appMan"]->getData());
                                     $mud->setComMan($form["comMan"]->getData());
                                     $em->persist($mud);
