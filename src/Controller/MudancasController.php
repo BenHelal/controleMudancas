@@ -1241,36 +1241,50 @@ class MudancasController extends AbstractController
 
 
                         if ($form->isSubmitted() && $form->isValid()) {
+                            $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
+                            $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+    
                             if ($manager && $gestor == false) {
                                 date_default_timezone_set("America/Sao_Paulo");
                                 $time = new \DateTime();
-                                $mud->setDateAM($time);
-                                $mud->setAppMan($form["appMan"]->getData());
-                                $mud->setComMan($form["comMan"]->getData());
-                                $em->persist($mud);
-                                $em->flush();
-                                $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $mud]);
-                                $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
-                                $number_sector_app = 0;
-                                foreach ($sps as $key => $value) {
-                                    if ($value->getPerson() == $person) {
-                                        date_default_timezone_set("America/Sao_Paulo");
-                                        $time = new \DateTime();
-                                        $value->setDataCreation($time);
-                                        $value->setAppSectorMan($form["appMan"]->getData());
-                                        $value->setComment($form["comMan"]->getData());
-                                        $em->persist($value);
-                                        $em->flush();
-                                    };
-                                }
-                                $manager_dep = [];
-                                $areaImpact =  $mud->getAreaImpact();
-                                foreach ($areaImpact as $key => $ai) {
-                                    if ($ai->getManager() == $person) {
-                                        array_push($manager_dep, $ai);
+                                if($mud->getDateAM() != null){
+                                    foreach ($sps as $key => $value) {
+                                        if ($value->getPerson() == $person) {
+                                            if($value->getDataCreation() == null){
+                                                date_default_timezone_set("America/Sao_Paulo");
+                                                $time = new \DateTime();
+                                                $value->setDataCreation($time);
+                                                $value->setAppSectorMan($form["appMan"]->getData());
+                                                $value->setComment($form["comMan"]->getData());
+                                            }
+                                        }
+                                    } 
+                                }else{
+                                    $mud->setDateAM($time);
+                                    $mud->setAppMan($form["appMan"]->getData());
+                                    $mud->setComMan($form["comMan"]->getData());
+                                    $em->persist($mud);
+                                    $em->flush();
+                                    $number_sector_app = 0;
+                                    foreach ($sps as $key => $value) {
+                                        if ($value->getPerson() == $person) {
+                                            date_default_timezone_set("America/Sao_Paulo");
+                                            $time = new \DateTime();
+                                            $value->setDataCreation($time);
+                                            $value->setAppSectorMan($form["appMan"]->getData());
+                                            $value->setComment($form["comMan"]->getData());
+                                            $em->persist($value);
+                                            $em->flush();
+                                        };
                                     }
-                                }
-                                if ($mud->getAppMan() == 1) {
+                                    $manager_dep = [];
+                                    $areaImpact =  $mud->getAreaImpact();
+                                    foreach ($areaImpact as $key => $ai) {
+                                        if ($ai->getManager() == $person) {
+                                            array_push($manager_dep, $ai);
+                                        }
+                                    }
+                                    if ($mud->getAppMan() == 1) {
                                     if ($mud->getClient() != null) {
                                         if ($mud->getClient()->getRespEmail() != null) {
                                             $token = new ApiToken($mud->getClient(), $mud);
@@ -1359,27 +1373,23 @@ class MudancasController extends AbstractController
                                         $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
                                     //}
                                     foreach ($mud->getAreaImpact() as $key => $value) {
-                                    $email = new  Email();
-                                    $email->setMudancas($mud);
-                                    $email->setSendTo($value->getCoordinator());
-                                    $email->setSendBy($person);
-                                    $email->setTitle('ÁREA IMPACTADA');
-                                    $email->setBody('managerArea');
-                                    $em->persist($email);
-                                       $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
-                                }
+                                        $email = new  Email();
+                                        $email->setMudancas($mud);
+                                        $email->setSendTo($value->getCoordinator());
+                                        $email->setSendBy($person);
+                                        $email->setTitle('ÁREA IMPACTADA');
+                                        $email->setBody('managerArea');
+                                        $em->persist($email);
+                                           $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false);
+                                    }
                                     foreach ($sps as $key => $sp) {
                                         foreach ($manager_dep as $key => $md) {
                                             if ($sp->getSector() == $md & $sp->getPerson() == $person) {
-
                                                 date_default_timezone_set("America/Sao_Paulo");
                                                 $time = new \DateTime();
-
                                                 $sp->setDataCreation($time);
                                                 $sp->setComment('Aprovado sem ressalva');
                                                 $sp->setAppSectorMan($mud->getAppMan());
-
-
                                                 $em->persist($sp);
                                                 $em->flush();
                                             }
@@ -1412,7 +1422,7 @@ class MudancasController extends AbstractController
                                         }
 
                                     }
-                                } elseif ($mud->getAppMan() == 2) {
+                                    } elseif ($mud->getAppMan() == 2) {
                                     $mud->setImplemented(2);
                                     if ($mud->getNansenNumber() == null) {
                                         $email = new  Email();
@@ -1462,11 +1472,13 @@ class MudancasController extends AbstractController
                                             }
                                         }
                                     }
-                                }
-                                $em->persist($mud);
-                                $em->flush();
+                                    }
+                                    $em->persist($mud);
+                                    $em->flush();
 
-                                return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
+                                    return $this->redirectToRoute('upm', ['id' => $mud->getId()]);
+                                        
+                                }
                             } elseif ($gestor) {
 
                                 $mud->setAreaResp($areaResp);
