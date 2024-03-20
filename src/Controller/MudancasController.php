@@ -24,6 +24,7 @@ use App\Form\MudancasgestorToAppType;
 use App\Form\MudancasType;
 use App\Model\Class\IpAdress;
 use App\Model\Class\Logger;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -1254,11 +1255,11 @@ class MudancasController extends AbstractController
                                             if($value->getDataCreation() == null){
                                                 
                                                 $dateTime = \DateTime::createFromFormat('Y-m-d H:i', $mud->getDateAM());
-                                                if ($dateTime === false) {
-                                                  // Handle parsing error (e.g., throw exception)
-                                                } else {
-                                                  $formattedDate = $dateTime->format(DateTimeInterface::RFC2822);
-                                                  $value->setDataCreation($formattedDate);
+                                                try {
+                                                    $dateTime = new DateTimeImmutable($mud->getDateAM());
+                                                    $value->setDataCreation($dateTime);
+                                                } catch (Exception $e) {
+                                                    // Handle parsing error (e.g., throw exception)
                                                 }
                                                 $value->setDataCreation($dateTime);
                                                 $value->setAppSectorMan($form["appMan"]->getData());
