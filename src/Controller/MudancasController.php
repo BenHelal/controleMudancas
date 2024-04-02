@@ -48,6 +48,23 @@ use Symfony\Component\Validator\Constraints\Length;
 class MudancasController extends AbstractController
 {
 
+    #[Route('/changedate/{id}', name:'changeDate')]
+    public function changeDate(ManagerRegistry $doctrine, Request $request, $id)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_jwt') != '') {
+            $em = $doctrine->getManager();
+            $mud = $em->getRepository(Mudancas::class)->find($id);
+
+            $mud->setEndMudancas($request->request->get('dateTime'));
+            $em->flush();
+            return $this->redirectToRoute('upm', ['id' => $id]); 
+        } else {
+            return $this->redirectToRoute('log_employer');
+        }
+    }
+
     #[Route('/errorUsing', name: "errorTest")]
     public function error(ManagerRegistry $doctrine, Request $request)
     {
@@ -958,7 +975,7 @@ class MudancasController extends AbstractController
     }
 
 
-      #[Route('/createMudancas/migrateSoft/{id}', name: 'migrateSoft')]
+    #[Route('/createMudancas/migrateSoft/{id}', name: 'migrateSoft')]
     public function migrateSoft(ManagerRegistry $doctrine, Request $request, $id): Response
     {
         $session = new Session();
@@ -1269,7 +1286,6 @@ class MudancasController extends AbstractController
                                         }
                                     } 
                                 }else{
-                                    
                                     $mud->setDateAM($time);
                                     $mud->setAppMan($form["appMan"]->getData());
                                     $mud->setComMan($form["comMan"]->getData());

@@ -154,7 +154,7 @@ class DeveloperController extends AbstractController
             $email->setTitle($emailConfigSoftware->getSubjectMessage());
             $email->setBody($emailConfigSoftware->getTitleOfMessage());
             $entityManager->persist($email);
-            $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false,);
+            $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false,null,null, $task);
         }
 
         if (!$task) {
@@ -232,7 +232,7 @@ class DeveloperController extends AbstractController
 
 
 
-    public function sendEmail(ManagerRegistry $doctrine, Request $request, $sendTo, $mud, $per, $demand,  $gestor, $client = null, $com = null)
+    public function sendEmail(ManagerRegistry $doctrine, Request $request, $sendTo, $mud, $per, $demand,  $gestor, $client = null, $com = null, $fase = null)
     {
 
         $em = $doctrine->getManager();
@@ -288,6 +288,7 @@ class DeveloperController extends AbstractController
                     'token' => $ApiToken,
                     'ip'        => $ipAdress->getIpAdress(),
                     'name'      => $client->getResp(),
+                    'fase'      => $fase,
                     'gestor'    => $gestor,
                     'demand'    =>  $demand
                 ]));
@@ -305,6 +306,7 @@ class DeveloperController extends AbstractController
                     'ip'        => $ipAdress->getIpAdress(),
                     'name'      => $sendTo->getName(),
                     'gestor'    => $gestor,
+                    'fase'      => $fase,
                     'com' => $com,
                     'demand'    =>  $demand
                 ]));
