@@ -126,110 +126,21 @@
 													{% set foo = true %}
 												{% endif %}
 											{% endfor %}
-													{% set thereIsItems = false %}
 											
-										{% if row.managerUserApp == null and row.addBy.function.manager == person and foo == false %}
-													{% set thereIsItems = true %}
+										{% set foo = false %}
+										
+											{% for item in row.areaImpact %}
+												{% if item.coordinator == person %}
+													{% set foo = true %}
+												{% endif %}
+											{% endfor %}
+										
+								
+											{% if foo == true %}
+											{% if row.appMan != null %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
-												<a href="{{path('approve',{id: row.id})}}">
-													<div>
-														<h6 class="my-0">Nome da Mudança:
-															{{row.nomeMudanca}}
-														</h6>
-
-														<small class="text-muted">Número da mudança :
-															{{row.id}}
-														</small>
-													</div>
-												</a>
-											</li>
-										{% elseif row.managerUserApp == null and row.addBy.function.manager == person  and foo == false  %}{% set thereIsItems = true %}
-											<li class="list-group-item d-flex justify-content-between lh-condensed">
-												<a href="{{path('approve',{id: row.id})}}">
-													<div>
-														<h6 class="my-0">Nome do Mudança:
-															{{row.nomeMudanca}}
-														</h6>
-
-														<small class="text-muted">Número da mudança :
-															{{row.id}}
-														</small>
-													</div>
-												</a>
-											</li>
-										{% elseif row.appMan == null and row.areaResp.manager == person and foo == false %}{% set thereIsItems = true %}
-											<li class="list-group-item d-flex justify-content-between lh-condensed">
-												<a href="{{path('upm',{id: row.id})}}">
-													<div>
-														<h6 class="my-0">Nome do Mudança:
-															{{row.nomeMudanca}}
-														</h6>
-
-														<small class="text-muted">Número da mudança :
-															{{row.id}}
-														</small>
-													</div>
-												</a>
-											</li>
-											{% elseif row.appMan == null and row.areaResp.manager == person  and foo == false %}{% set thereIsItems = true %}
-											<li class="list-group-item d-flex justify-content-between lh-condensed">
-												<a href="{{path('upm',{id: row.id})}}">
-													<div>
-														<h6 class="my-0">Nome do Mudança:
-															{{row.nomeMudanca}}
-														</h6>
-
-														<small class="text-muted">Número da mudança :
-															{{row.id}}
-														</small>
-													</div>
-												</a>
-											</li>
-										{% elseif row.mangerMudancas == person and foo == false  %}{% set thereIsItems = true %}
-											<li class="list-group-item d-flex justify-content-between lh-condensed">
-												<a href="{{path('upm',{id: row.id})}}">
-													<div>
-														<h6 class="my-0">Nome do Mudança:
-															{{row.nomeMudanca}}
-														</h6>
-
-														<small class="text-muted">Número da mudança :
-															{{row.id}}
-														</small>
-													</div>
-												</a>
-											</li>
-										{% elseif row.addBy == person and foo == false  %}{% set thereIsItems = true %}
-											<li class="list-group-item d-flex justify-content-between lh-condensed">
-												<a href="{{path('upm',{id: row.id})}}">
-													<div>
-														<h6 class="my-0">Nome do Mudança:
-															{{row.nomeMudanca}}
-														</h6>
-
-														<small class="text-muted">Número da mudança :
-															{{row.id}}
-														</small>
-													</div>
-												</a>
-											</li>
-										{% elseif  row.addBy.function.manager == person and row.managerUserApp == null and foo == true %}{% set thereIsItems = true %}
-											
-											<li class="list-group-item d-flex justify-content-between lh-condensed">
-												<a href="{{path('approve',{id: row.id})}}">
-													<div>
-														<h6 class="my-0">Nome do Mudança:
-															{{row.nomeMudanca}}
-														</h6>
-														<small class="text-muted">Número da mudança :
-															{{row.id}}
-														</small>
-													</div>
-												</a>
-											</li>
-										{% elseif  row.mangerMudancas != null and row.appGest == null and foo == true %}{% set thereIsItems = true %}
-												<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('app_notif',{id: row.id})}}">
+													Aprovado pelo Coordenador da Área Impactada
 													<div>
 														<h6 class="my-0">Nome do Mudança:
 															{{row.nomeMudanca}}
@@ -241,26 +152,72 @@
 													</div>
 												</a>
 											</li>
-											{% elseif row.appMan == null and row.areaResp.manager == person  and foo == true %}{% set thereIsItems = true %}
-											<li class="list-group-item d-flex justify-content-between lh-condensed">
-												<a href="{{path('upm',{id: row.id})}}">
-													<div>
-														<h6 class="my-0">Nome do Mudança:
-															{{row.nomeMudanca}}
-														</h6>
-
-														<small class="text-muted">Número da mudança :
-															{{row.id}}
-														</small>
-													</div>
-												</a>
-											</li>
-											{% elseif thereIsItems == true %}
-											
-										você não tem Pendências
+												
+											{% endif %}
+											{% endif %}
 										{% endif %}
-									{% endif %}
 								{% endfor %}
+							
+
+								{% if ln == null %}
+									{% else %}
+									{% for row in ln %}
+										{% if row.done != 'Feito'%}
+										{% if row.appMan == null and row.areaResp.manager == person %}
+											
+										<li class="list-group-item d-flex justify-content-between lh-condensed">
+												<a href="{{path('approve',{id: row.id})}}">Aprovação do gerente do Aprovação
+													<div>
+														<h6 class="my-0">Nome do Mudança:
+															{{row.nomeMudanca}}
+														</h6>
+														<small class="text-muted">Número da mudança :
+															{{row.id}}
+														</small>
+													</div>
+												</a>
+											</li>{% elseif row.managerUserApp == null and row.addBy.function.manager == person  %}
+											<li class="list-group-item d-flex justify-content-between lh-condensed">
+												<a href="{{path('approve',{id: row.id})}}">Aprovação do gerente do Solicitante
+													<div>
+														<h6 class="my-0">Nome do Mudança:
+															{{row.nomeMudanca}}
+														</h6>
+														<small class="text-muted">Número da mudança :
+															{{row.id}}
+														</small>
+													</div>
+												</a>
+											</li>
+									{% endif %}
+									{% endif %}
+									{% endfor %}
+
+								{% endif %}
+
+
+								{% if ln == null %}
+									{% else %}
+									{% for row in ln %}
+										{% if row.done != 'Feito'%}
+										{% if row.mangerMudancas == person %}
+										<li class="list-group-item d-flex justify-content-between lh-condensed">
+												<a href="{{path('upm',{id: row.id})}}">Aprovação do gestor do Aprovação
+													<div>
+														<h6 class="my-0">Nome do Mudança:
+															{{row.nomeMudanca}}
+														</h6>
+														<small class="text-muted">Número da mudança :
+															{{row.id}}
+														</small>
+													</div>
+												</a>
+											</li>
+									{% endif %}
+									{% endif %}
+									{% endfor %}
+
+								{% endif %}
 							{% endif %}
 						</ul>
 					</div>
@@ -280,6 +237,7 @@
 										você não tem Pendências
 									{% else %}
 								{% for row in ln %}
+								
 									{% if row.done != 'Feito'%}
 										{% set foo = false %}
 										
@@ -342,7 +300,6 @@
 											{% endfor %}
 										
 											{% if foo == true %}
-											
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('app_notif',{id: row.id})}}">
 													<div>
@@ -367,7 +324,6 @@
 							<div class="col-md-8 order-md-1" style="padding-left: 0px;">
 
 							{% endif %}
-							{% set mud = mud|reverse %}
 							{% if manager == false  %}
 								{% for m in mud %}
 									{% if m.addBy.id == person.id %}
@@ -653,7 +609,6 @@
 									{% endif %}
 								{% endfor %}
 							{% else %}
-							{% set ln = ln|reverse %}
 								{% for m in ln %}
 									{% if m.done != 'Feito' or ( m.done == 'Feito' and m.implemented == null ) %}
 										<div id="myTable" class="list-group">

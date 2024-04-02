@@ -144,18 +144,16 @@ class MudancasController extends AbstractController
                         $cl = null;
                     }
                     $conn = $doctrine->getConnection();
-    
-                    $appClt = $cl['mud']['TokenData']['appClt'];
-                    
-                   
+                    try {
+                        $appClt = $cl['mud']['TokenData']['appClt'];
                         if($appClt == "2"){
-                            $isTheLastApprove = false;
-                            
+                            $isTheLastApprove = false;    
                             $mu->setImplemented(2);
                             $mu->setDone('Feito');
                             $em->flush();
                         }
-                        
+                    } catch (\Throwable $th) {
+                    }
                 }
             }
 
@@ -304,6 +302,18 @@ class MudancasController extends AbstractController
 
             $array2 = [];
             foreach ($array as $key => $value) {
+
+                if($value->getMangerMudancas() == $person){
+                  
+                    if ($value->getDone() == null) {
+                        array_push($array2, $value);
+                        $gestor = true;
+                    } elseif ($value->getDone() == 'Feito' && $value->getImplemented() == null) {
+                        array_push($array2, $value);
+                        $gestor = true;
+                    }  
+                }
+
                 if($value->getManagerUserApp() == null){
                     array_push($array2, $value);
                 }elseif($value->getAppMan() == null and $value->getAreaResp()->getManager() == $person  ){
