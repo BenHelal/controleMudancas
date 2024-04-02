@@ -546,9 +546,10 @@ class GestorController extends AbstractController
             }
 
             $data = $request->request;
-            for ($i = 1; $i <= sizeof($data) / 6; $i++) {
-
+                
                 foreach ($s as $key => $value) {
+                    
+                    $task = $em->getRepository(Steps::class)->find($value->getId());
                     if ($request->files->get(strval($value->getId()) . 'files') != null) {
                         $fileName = $value->getId() . '_TEST_Gestor_' . $muds->getId() . '.' . $request->files->get(strval($value->getId()) . 'files')->guessExtension();
                         $publicDirectory = $this->getParameter('kernel.project_dir');
@@ -569,7 +570,7 @@ class GestorController extends AbstractController
                         $email->setTitle($emailConfigSoftware->getSubjectMessage());
                         $email->setBody($emailConfigSoftware->getTitleOfMessage());
                         $em->persist($email);
-                        $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, com: $data->get($value->getId() . 'de'));
+                        $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, com: $data->get($value->getId() . 'de'),fase:$task);
                     } elseif ($data->get($value->getId() . 'stat') == 'Reprovar') {
                         $value->setStatus("pendência");
                         $em->flush();
@@ -586,7 +587,7 @@ class GestorController extends AbstractController
                                 $email->setTitle($emailConfigSoftware->getSubjectMessage());
                                 $email->setBody($emailConfigSoftware->getTitleOfMessage());
                                 $em->persist($email);
-                                $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, com: $data->get($value->getId() . 'de'));
+                                $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, com: $data->get($value->getId() . 'de'),fase:$task);
                             }
                         }
                     } elseif ($data->get($value->getId() . 'stat') == 'não implementado') {
@@ -607,10 +608,9 @@ class GestorController extends AbstractController
                         $email->setTitle($emailConfigSoftware->getSubjectMessage());
                         $email->setBody($emailConfigSoftware->getTitleOfMessage());
                         $em->persist($email);
-                        $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, com: $data->get($value->getId() . 'de'));
+                        $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, com: $data->get($value->getId() . 'de'),fase:$task);
                     }
                 }
-            }
             return $this->redirectToRoute('app_software_gestor_test', ['id' => $id]);
         } else {
             return $this->redirectToRoute('app_login');
@@ -1258,7 +1258,8 @@ class GestorController extends AbstractController
         $demand,
         $gestor,
         $client = null,
-        $com = null
+        $com = null,
+        $fase = null
     ) {
 
         $em = $doctrine->getManager();
@@ -1314,6 +1315,7 @@ class GestorController extends AbstractController
                     'ip'        => $ipAdress->getIpAdress(),
                     'name'      => $client->getResp(),
                     'gestor'    => $gestor,
+                    'fase' => $fase,
                     'demand'    =>  $demand
                 ]));
             } else {
@@ -1330,6 +1332,7 @@ class GestorController extends AbstractController
                     'ip'        => $ipAdress->getIpAdress(),
                     'name'      => $sendTo->getName(),
                     'gestor'    => $gestor,
+                    'fase' => $fase,
                     'demand'    =>  $demand,
                     'com' => $com
                 ]));
