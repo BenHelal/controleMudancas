@@ -591,7 +591,7 @@
 						{{ form_end(form) }}
 
 					{% else %}
-						{{ form_start(form, {'attr':{'class':'form-group'}}) }}
+						{{ form_start(form, {'attr':{'class':'form-group' , 'id':'myForm' ,'onsubmit':'submitForm(event)'}}) }}
 						<div class="row">
 							<div class="col-md-12 mb-3">
 								{{ form_label(form.nomeMudanca) }}
@@ -709,9 +709,25 @@
 						{% if person.permission == 'ler criar atualização' or person.permission =='ler criar' or person.permission =='tudo' %}
 							<div class="row">
 								<div class="col-md-6 mb-3">
-									<button id="btn"style="width: 400px;"  class="	btn btn-info mt-2 text-white"  >Adicionar</button>
+									<button id="btn"style="width: 400px;"  onclick="disableButton()" class="	btn btn-info mt-2 text-white"  >Adicionar</button>
 								</div>
 							</div>
+
+							  <script> function submitForm(event) {
+            event.preventDefault(); // Prevent form submission
+            var form = document.getElementById('myForm');
+            var button = document.getElementById('btn');
+
+            // Disable button and change text
+            button.disabled = true;
+            button.innerHTML = 'Em processamento...';
+
+            // Simulate form submission (you can replace this with your actual submission logic)
+            setTimeout(function() {
+                form.submit();
+            }, 1000); // Simulating a delay of 1 second
+        }
+    </script>
 						{% endif %}
 				{% endif %}
 						{{ form_end(form) }}
