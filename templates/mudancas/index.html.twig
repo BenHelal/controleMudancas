@@ -137,7 +137,6 @@
 										
 								
 											{% if foo == true %}
-											{% if row.appMan != null %}
 											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('app_notif',{id: row.id})}}">
 													Aprovado pelo Coordenador da Área Impactada
@@ -153,7 +152,6 @@
 												</a>
 											</li>
 												
-											{% endif %}
 											{% endif %}
 										{% endif %}
 								{% endfor %}

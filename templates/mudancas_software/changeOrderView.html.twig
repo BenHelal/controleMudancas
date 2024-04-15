@@ -31,31 +31,52 @@
 </div>
 
   <ul id="item-listss">
-  {% set sortedItems = m|sort((a, b) => a.orderNumber <=> b.orderNumber) %}
+{% set sortedItems = m|sort((a, b) =>
+    a.orderNumber is not null and b.orderNumber is not null
+    ? a.orderNumber <=> b.orderNumber
+    : a.orderNumber is not null
+        ? -1
+        : b.orderNumber is not null
+            ? 1
+            : 0
+) %}
 
 {% for item in sortedItems %}
         {% if item.implemented == null %}
-    
-        <li class="draggabledsss" data-id="{{ item.id }}">
+        
+        <li  class="draggabledsss" data-id="{{ item.id }}"
             <span>Codigo da mudança: {{ item.id }} <br>
                 Nome da mudança: {{ item.nomeMudanca }}<br>
             </span>
             {% if item.areaResp.manager != person %}
-                {{ item.orderNumber }} <br>
+                 {% if item.orderNumber != null and item.muds.iniciar != null %}
+                        {{ item.orderNumber }}
+               
+                    {% elseif item.orderNumber == null and item.muds.iniciar != null %} {{ m|length -1  }} 
+                    {% else %}N.A 
+                    {% endif %}
+                 <br>
             {% else %}
             <select class="order-selectss" onchange="changeOrder(this, {{ item.id }})">
                 {% for i in 1..m|length %}
-                    {% if item.orderNumber != null %}
-                        <option value="{{ i }}" {% if i == item.orderNumber %}selected{% endif %}>{{ i }}</option>
-                        {% else %}
-                        <option value="{{ m|length + 1 }}" {% if i == item.orderNumber %}selected{% endif %}>N.A</option>
+                    {% if item.orderNumber != null and item.muds.iniciar != null %}                       
+                        <option  
+                                value="{{ i }}"  
+                            {% if i == item.orderNumber %} 
+                                 selected 
+                            {% endif %}
+                        > 
+                            {{ i  }} 
+                        </option>
+                    {% elseif item.orderNumber == null and item.muds.iniciar != null %}
+                        <option value="{{ m|length }}"  {% if m|length == item.orderNumber %} selected{% endif %} > {{ m|length }}</option>
+                    {% else %}
+                        <option value="N.A" selected >N.A</option>
                     {% endif %}
                 {% endfor %}
             </select>
             {% endif %}
         </li>
-        {% else %}
-        
         {% endif %}
     {% endfor %}
 </ul>
@@ -76,7 +97,9 @@
     function updateOrder(items) {
         Array.from(items).forEach((item, index) => {
             const orderSelect = item.querySelector('.order-selectss');
-            orderSelect.selectedIndex = index;
+            if (orderSelect.value !== "N.A") {
+                orderSelect.selectedIndex = index;
+            }
         });
     }
 
@@ -84,15 +107,20 @@ function changeOrder(select, itemId) {
     const listItem = select.closest('.draggabledsss');
     const newIndex = parseInt(select.value) - 1;
 
-    itemList.insertBefore(listItem, itemList.children[newIndex]);
-    updateOrder(itemList.children);
+    // Check if select.value is not "N.A"
+    if (select.value !== "N.A") {
+        itemList.insertBefore(listItem, itemList.children[newIndex]);
+        updateOrder(itemList.children);
+    }
 
     const orderData = getOrderData(itemList);
 
     // Find the orderData entry for the item being changed
     const changedItem = orderData.find(item => item.id === itemId);
     if (changedItem) {
-        changedItem.order = select.value;
+        if (changedItem.value != "N.A") {
+            changedItem.order = select.value;
+        }
     }
 
     updateOrderOnServer(orderData);

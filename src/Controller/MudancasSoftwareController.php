@@ -95,36 +95,39 @@ class MudancasSoftwareController extends AbstractController
             
             $array = [];
             foreach ($allMudancas as $key => $value) {
-                # code...
-                            /**
-             * get the Process with mudancas 
-             * to can get The Sector 
-             * and check the situation of the mudancas  
-             */
-            $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
-
-            /**
-             * get the List of SectorProcess 
-             * to can access to the sector 
-             */
-            $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
-            $mudSoft = $value->getMudS();
-
-
-            $areaImpactadaDidntApp = false;
-            //fetch the sectorPress 
-            foreach ($sps as $key => $sp) {
-                /**
-                 *  Check if there is one of the manager reject the mudancas
-                 *  then close the Mudancas
+                if ($value->getImplemented() == null ) {
+                    # code...
+                                /**
+                 * get the Process with mudancas 
+                 * to can get The Sector 
+                 * and check the situation of the mudancas  
                  */
-                if ($sp->getAppSectorMan() == null ) {
-                    $areaImpactadaDidntApp = true;
-                }
-            }
+                $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
 
-            if ($areaImpactadaDidntApp == false) {
-                array_push($array, $value);
+                /**
+                 * get the List of SectorProcess 
+                 * to can access to the sector 
+                 */
+                $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+                $mudSoft = $value->getMudS();
+
+
+                $areaImpactadaDidntApp = false;
+                //fetch the sectorPress 
+                foreach ($sps as $key => $sp) {
+                    /**
+                     *  Check if there is one of the manager reject the mudancas
+                     *  then close the Mudancas
+                     */
+                    if ($sp->getAppSectorMan() == null ) {
+                        $areaImpactadaDidntApp = true;
+                    }
+                }
+
+                if ($areaImpactadaDidntApp == false) {
+                    array_push($array, $value);
+                }
+                # code...
             }
             }
 
@@ -274,12 +277,28 @@ class MudancasSoftwareController extends AbstractController
                 $time->format('Y-m-d H:i:s');
                 $mud->setDateOfImp($time);
 
-                $em->flush();
                 if ($mud->getImplemented() == 1) {
                     return $this->redirectToRoute('imp', ['id' => $mud->getId()]);
                 } elseif ($mud->getImplemented() == 2) {
                     return $this->redirectToRoute('impnoa', ['id' => $mud->getId()]);
                 }
+
+
+                $allmu = $em->getRepository(Mudancas::class)->findAll();
+                $orders = 0 ;
+                foreach ($allmu as $key => $itemToOrder) {
+                    if($itemToOrder->getMudS() != null){
+                        if($itemToOrder == $mud){
+                            $orders = $itemToOrder->getOrderNumber();
+                            $mud->setOrderNumber(null);
+                        }else{
+                            if($itemToOrder->getOrderNumber() > $orders){
+                                $itemToOrder->setOrderNumber($itemToOrder->getOrderNumber() -1 );
+                            }
+                        }
+                    }
+                }
+                $em->flush();
             }
 
             $formTesters = $this->createForm(MudancasSoftwareTestersType::class, $mudSoft);
@@ -362,6 +381,23 @@ class MudancasSoftwareController extends AbstractController
                     $mud->setDateAG($time);
                     $em->flush();
                 }
+
+                $allmu = $em->getRepository(Mudancas::class)->findAll();
+                $orders = 0 ;
+                foreach ($allmu as $key => $itemToOrder) {
+                    if($itemToOrder->getMudS() != null){
+                        if($orders <= $itemToOrder->getOrderNumber()){
+                            $orders = $itemToOrder->getOrderNumber()+1;
+                        }
+                    }
+
+                    if($itemToOrder == $mud){
+                        if($itemToOrder->getMudS() == null){
+                            $mud->setOrderNumber($orders);
+                        }
+                    }
+                }
+                $em->flush();
 
                 if ($mud->getAppGest() == 1) {
                     $email = new  Email();

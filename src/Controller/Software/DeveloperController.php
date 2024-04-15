@@ -144,8 +144,7 @@ class DeveloperController extends AbstractController
         $person =  $entityManager->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
 
         $mud = $entityManager->getRepository(Mudancas::class)->find($id);
-
-        if($task->getStatus() != $newStatus){
+       if($task->getStatus() != $newStatus){
             $emailConfigSoftware = $entityManager->getRepository(EmailToSendConfig::class)->findOneBy(['titleOfMessage' => '7']);
             $email = new  Email();
             $email->setMudancas($mud);
@@ -154,7 +153,7 @@ class DeveloperController extends AbstractController
             $email->setTitle($emailConfigSoftware->getSubjectMessage());
             $email->setBody($emailConfigSoftware->getTitleOfMessage());
             $entityManager->persist($email);
-            $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false,null,null, $task);
+            $this->sendEmail($doctrine, $request, $email->getSendTo(), $email->getMudancas(), $email->getSendBy(), $email->getBody(), false, fase:$task, newStatus:$newStatus);
         }
 
         if (!$task) {
@@ -232,7 +231,7 @@ class DeveloperController extends AbstractController
 
 
 
-    public function sendEmail(ManagerRegistry $doctrine, Request $request, $sendTo, $mud, $per, $demand,  $gestor, $client = null, $com = null, $fase = null)
+    public function sendEmail(ManagerRegistry $doctrine, Request $request, $sendTo, $mud, $per, $demand,  $gestor, $client = null, $com = null, $fase = null, $newStatus= null)
     {
 
         $em = $doctrine->getManager();
@@ -289,6 +288,7 @@ class DeveloperController extends AbstractController
                     'ip'        => $ipAdress->getIpAdress(),
                     'name'      => $client->getResp(),
                     'fase'      => $fase,
+                    'newStatus' => $newStatus,
                     'gestor'    => $gestor,
                     'demand'    =>  $demand
                 ]));
@@ -307,6 +307,7 @@ class DeveloperController extends AbstractController
                     'name'      => $sendTo->getName(),
                     'gestor'    => $gestor,
                     'fase'      => $fase,
+                    'newStatus' => $newStatus,
                     'com' => $com,
                     'demand'    =>  $demand
                 ]));

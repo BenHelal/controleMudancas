@@ -712,7 +712,13 @@ próximas etapas desta mudança.<br>
 								Nome da mudança:{{mud.nomeMudanca}} <br>
 								Nome da fase:{{fase.title}} <br>
 								Codigo da fase:{{fase.id}} <br>
-								Fase: Teste da mudança<br>				
+								{% if newStatus != null %}
+									O desenvolvedor mudou o status de {% if fase.status == null %}
+										Pendência{% else %}
+{{fase.status}}
+									{% endif %} para {{newStatus}}
+								<br>{% endif %}
+								Fase: Teste da mudança <br>				
 								Por gentileza verifique a tarefa para esta mudança.
 								<p class="block text-center">
 									<a href="http://{{ip}}/controlemudancas/public/software/gestor/test/{{mud.id}}" class="btn">Para acessar a Mudança clique aqui!
