@@ -53,7 +53,9 @@
                         {{ item.orderNumber }}
                
                     {% elseif item.orderNumber == null and item.muds.iniciar != null %} {{ m|length -1  }} 
-                    {% else %}N.A 
+                    {% elseif item.orderNumber == null and item.muds.iniciar == null %}N.A 
+                    {% else %}
+                     {{ item.orderNumber }}
                     {% endif %}
                  <br>
             {% else %}
@@ -70,12 +72,20 @@
                         </option>
                     {% elseif item.orderNumber == null and item.muds.iniciar != null %}
                         <option value="{{ m|length }}"  {% if m|length == item.orderNumber %} selected{% endif %} > {{ m|length }}</option>
-                    {% else %}
+                    {% elseif item.orderNumber == null and item.muds.iniciar == null %}
                         <option value="{{i}}" > {{i}}</option>
-                        {% if i == m|length %}
-                             <option value="0" selected >N.A</option>
-                        {% endif %}
-                    {% endif %}
+                            {% if i == m|length %}
+                                 <option value="0" selected >N.A</option>
+                            {% endif %}
+                        {% else %}
+                           <option  
+                                value="{{ i }}"  
+                            {% if i == item.orderNumber %} 
+                                 selected 
+                            {% endif %}
+                        > 
+                            {{ i }} 
+                        </option>{% endif %}
                 {% endfor %}
             </select>
             {% endif %}
