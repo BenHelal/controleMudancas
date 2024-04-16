@@ -71,7 +71,10 @@
                     {% elseif item.orderNumber == null and item.muds.iniciar != null %}
                         <option value="{{ m|length }}"  {% if m|length == item.orderNumber %} selected{% endif %} > {{ m|length }}</option>
                     {% else %}
-                        <option value="N.A" selected >N.A</option>
+                        <option value="{{i}}" > {{i}}</option>
+                        {% if i == m|length %}
+                             <option value="0" selected >N.A</option>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
             </select>
