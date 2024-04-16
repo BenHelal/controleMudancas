@@ -126,10 +126,9 @@
 					{{ form_widget(formInit.dateInicio,{'attr':{'class':'date form-control','rows': '4','id':'testnomeMudanca'}}) }}
 				</div>
 
-			{% if iTLA == true and m.orderNumber != null  %}
-					
+			{% if iTLA == true and (m.orderNumber is not null and m.orderNumber != 0) %}
 				<button class="btn btn-info mt-2 text-white">
-					Enviar {{m.orderNumber }}
+					Enviar
 				</button>
 				{% else %}
 
