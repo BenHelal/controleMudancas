@@ -82,67 +82,51 @@ class MudancasSoftwareController extends AbstractController
             return $this->redirectToRoute('log_employer');
         }
     }
-
     #[Route('/order/mud/', name:'orderMudancas')]
     public function orderMudanc(ManagerRegistry $doctrine, Request $request)
     {
-        $session = new Session();
         $session = $request->getSession();
         if ($session->get('token_jwt') != '') {
             $em = $doctrine->getManager();
-            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
             $allMudancas = $em->getRepository(Mudancas::class)->findByType("1");
-            
+    
             $array = [];
-            foreach ($allMudancas as $key => $value) {
-                if ($value->getImplemented() == null ) {
-                    # code...
-                                /**
-                 * get the Process with mudancas 
-                 * to can get The Sector 
-                 * and check the situation of the mudancas  
-                 */
+            $array2 = [];
+            foreach ($allMudancas as $value) {
                 $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
-
-                /**
-                 * get the List of SectorProcess 
-                 * to can access to the sector 
-                 */
                 $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
                 $mudSoft = $value->getMudS();
-
-
+    
                 $areaImpactadaDidntApp = false;
-                //fetch the sectorPress 
-                foreach ($sps as $key => $sp) {
-                    /**
-                     *  Check if there is one of the manager reject the mudancas
-                     *  then close the Mudancas
-                     */
-                    if ($sp->getAppSectorMan() == null ) {
+                foreach ($sps as $sp) {
+                    if ($sp->getAppSectorMan() == null) {
                         $areaImpactadaDidntApp = true;
+                        break;
                     }
                 }
-
-                if ($areaImpactadaDidntApp == false) {
-                    array_push($array, $value);
+    
+                if ($value->getImplemented() == null && $value->getMudS()->getIniciar() == null && !$areaImpactadaDidntApp) {
+                    $array[] = $value;
                 }
-                # code...
+    
+                if ($value->getImplemented() == null && $value->getMudS()->getIniciar() != null && !$areaImpactadaDidntApp) {
+                    $array2[] = $value;
+                }
             }
-            }
-
+    
             return $this->render('mudancas_software/changeOrderView.html.twig', [
                 'controller_name' => 'MudancasSoftwareController',
                 'login' => 'null',
                 'creation' => 'false',
                 'm' => $array,
+                'm2' => $array2,
                 'person' => $person,
             ]);
-        }else{
+        } else {
             return $this->redirectToRoute('log_employer');
         }
     }
-
     
     #[Route('/updateorder', name: 'updateorder', methods:["POST"])]
     public function updateOrder(ManagerRegistry $doctrine, Request $request)
