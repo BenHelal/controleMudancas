@@ -139,11 +139,17 @@
 										 {% if s.dateClientApp == null %}  
 											{% set yourVariable = "false" %} value="{{s.approveSol}}" style="width: 100%; background-color: red;" 
 										{% elseif s.dateClientApp != null and  s.dateClientRep != null and s.approveSol != "Approvar"  %} 
-											{% set yourVariable = "true" %} value="Approvar" style="width: 100%; background-color: #20c997;" 
+											{% set yourVariable = "true" %} value="Aprovado" style="width: 100%; background-color: #20c997;" 
 										{% elseif s.dateClientApp != null and s.dateClientRep == null and s.approveSol != "Approvar" %} 
-											{% set yourVariable = "true" %} value="{{s.approveSol}}" style="width: 100%; background-color: red;"  
+											{% set yourVariable = "true" %} {% if s.approveSol == "Approvar" %}value="Aprovado" 
+												{% elseif s.approveSol == "Reprovar"  %}
+													value="Reprovado" 
+											{% endif %} style="width: 100%; background-color: red;"  
 										{% elseif s.dateClientApp != null and s.dateClientRep == null and s.approveSol == "Approvar" %} 
-											{% set yourVariable = "true" %} value="{{s.approveSol}}" style="width: 100%; background-color: #20c997;"  
+											{% set yourVariable = "true" %} {% if s.approveSol == "Approvar" %}value="Aprovado" 
+												{% elseif s.approveSol == "Reprovar"  %}
+													value="Reprovado" 
+											{% endif %} style="width: 100%; background-color: #20c997;"  
 										{% else %} 
 											{% set yourVariable = "true" %} 
 										{% endif %}

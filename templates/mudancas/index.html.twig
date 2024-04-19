@@ -79,9 +79,6 @@
 				text-align: center;
 				">Você não possui acesso para abrir ou gerenciar mudanças,</br> entre em contato com o Sistema de gestão de qualidade (SGQ).</p>
 		{% endif %}
-	<div class="form-group">
-		<input type="text" class="form-control" id="myInput" placeholder="Procurar..">
-	</div>
 
 	{% if creation == 'null' %}
 		{% if mud is empty and manager == false %}
@@ -322,6 +319,14 @@
 							<div class="col-md-8 order-md-1" style="padding-left: 0px;">
 
 							{% endif %}
+							<h4 class="d-flex justify-content-between align-items-center mb-3">
+									<span class="text-muted">Mudanças :
+									</span>
+									<span class="badge badge-secondary badge-pill"></span>
+								</h4>
+	<div class="form-group">
+		<input type="text" class="form-control" id="myInput" placeholder="Procurar..">
+	</div>
 							{% if manager == false  %}
 								{% for m in mud %}
 									{% if m.addBy.id == person.id %}
