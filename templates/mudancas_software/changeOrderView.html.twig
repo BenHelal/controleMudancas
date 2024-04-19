@@ -67,7 +67,6 @@ Priorização
         <li  class="draggabledsss" data-id="{{ item.id }}">
             <span>Codigo da mudança: {{ item.id }} <br>
                 Nome da mudança: {{ item.nomeMudanca }}<br>
-            </span>
             {% if item.areaResp.manager != person %} Prioridade: 
                  {% if item.orderNumber != null and item.muds.iniciar != null %}
                         {{ item.orderNumber }}
@@ -111,6 +110,7 @@ Priorização
                 {% endfor %}
             </select>
             {% endif %}
+            </span>
             </span>
         </li>
         {% endif %}
