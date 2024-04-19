@@ -110,8 +110,11 @@
 							<span class="text-muted">Pendências:
 							</span>
 							<span class="badge badge-secondary badge-pill"></span>
-						</h4>
-						<ul class="list-group mb-3 sticky-top">
+						</h4>	
+						<div class="form-group">
+							<input type="text" class="form-control" id="myInputssss" placeholder="Procurar..">
+						</div>
+						<div id="myTable2"  class="list-group mb-3 sticky-top">
 							{% if ln2 == null %}
 								você não tem Pendências
 							{% else %}
@@ -134,7 +137,6 @@
 										
 								
 											{% if foo == true %}
-											<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('app_notif',{id: row.id})}}">
 													Aprovado pelo Coordenador da Área Impactada
 													<div>
@@ -147,7 +149,6 @@
 														</small>
 													</div>
 												</a>
-											</li>
 												
 											{% endif %}
 										{% endif %}
@@ -160,7 +161,6 @@
 										{% if row.done != 'Feito'%}
 										{% if row.appMan == null and row.areaResp.manager == person %}
 											
-										<li class="list-group-item d-flex justify-content-between lh-condensed">
 												<a href="{{path('approve',{id: row.id})}}">Aprovação do gerente do Aprovação
 													<div>
 														<h6 class="my-0">Nome do Mudança:
@@ -171,8 +171,7 @@
 														</small>
 													</div>
 												</a>
-											</li>{% elseif row.managerUserApp == null and row.addBy.function.manager == person  %}
-											<li class="list-group-item d-flex justify-content-between lh-condensed">
+											{% elseif row.managerUserApp == null and row.addBy.function.manager == person  %}
 												<a href="{{path('approve',{id: row.id})}}">Aprovação do gerente do Solicitante
 													<div>
 														<h6 class="my-0">Nome do Mudança:
@@ -183,7 +182,6 @@
 														</small>
 													</div>
 												</a>
-											</li>
 									{% endif %}
 									{% endif %}
 									{% endfor %}
@@ -196,8 +194,7 @@
 									{% for row in ln %}
 										{% if row.done != 'Feito'%}
 										{% if row.mangerMudancas == person %}
-										<li class="list-group-item d-flex justify-content-between lh-condensed">
-												<a href="{{path('upm',{id: row.id})}}">Aprovação do gestor do Aprovação
+									<a href="{{path('upm',{id: row.id})}}">Aprovação do gestor do Aprovação
 													<div>
 														<h6 class="my-0">Nome do Mudança:
 															{{row.nomeMudanca}}
@@ -207,16 +204,23 @@
 														</small>
 													</div>
 												</a>
-											</li>
 									{% endif %}
 									{% endif %}
 									{% endfor %}
 
 								{% endif %}
 							{% endif %}
-						</ul>
+						</div>
 					</div>
+			<script>
 
+				$("#myInputssss").on("keyup", function () {
+var value = $(this).val().toLowerCase();
+$("#myTable2 a").filter(function () {
+$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+});
+});
+</script>
 					<div class="col-md-8 order-md-1" style="padding-left: 0px;">
 
 					{% elseif gestor %}
@@ -226,8 +230,11 @@
 									<span class="text-muted">Pendências :
 									</span>
 									<span class="badge badge-secondary badge-pill"></span>
-								</h4>
-								<ul class="list-group mb-3 sticky-top">
+								</h4>	
+								<div class="form-group">
+									<input type="text" class="form-control" id="myInput2" placeholder="Procurar..">
+								</div>
+								<ul id="myTable2"  class="list-group mb-3 sticky-top">
 									{% if ln == null %}
 										você não tem Pendências
 									{% else %}
@@ -723,9 +730,12 @@ $("#myTable a").filter(function () {
 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 });
 });
+
+
 			</script>
 			<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 			<script>
+
 
 
 				{% if  creation == 'false' %}
@@ -867,5 +877,7 @@ $('#product_client').chosen({});
 function emailChecker() {
 swal({title: "Tome cuidado ?", text: "Mudancas adicionado pelo Empregador não tinha Email!", icon: "warning", buttons: true});
 }
+
+
 </script>
 				{% endblock %}
