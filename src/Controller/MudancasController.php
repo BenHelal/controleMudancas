@@ -301,37 +301,48 @@ class MudancasController extends AbstractController
             }
 
             $array2 = [];
+            $array3 = [];
             foreach ($array as $key => $value) {
 
                 if($value->getMangerMudancas() == $person){
                   
                     if ($value->getDone() == null) {
-                        array_push($array2, $value);
+                        if (!in_array($value, $array3)) {array_push($array3, $value);}
                         $gestor = true;
                     } elseif ($value->getDone() == 'Feito' && $value->getImplemented() == null) {
-                        array_push($array2, $value);
+                        
+                        if (!in_array($value, $array3)) {array_push($array3, $value);}
                         $gestor = true;
                     }  
                 }
 
                 if($value->getManagerUserApp() == null){
-                    array_push($array2, $value);
+                    
+                    if (!in_array($value, $array3)) {array_push($array3, $value);}
                 }elseif($value->getAppMan() == null and $value->getAreaResp()->getManager() == $person  ){
 
-                    array_push($array2, $value);
-                }else{
                     
-                
+                    if (!in_array($value, $array3)) {array_push($array3, $value);}
+                }
+                    
+            }  
+            
+            
+            foreach ($array as $key => $value) { if($value->getManagerUserApp() == null){
+                    
+                if (!in_array($value, $array2)) {array_push($array2, $value);}
+            }
                 $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
                 $oneOfSp = null;
                 $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
                 
                 foreach ($sps as $sp) {
+                    
                     if($sp->getAppSectorMan() == null && $sp->getPerson() == $person ){
-                        array_push($array2, $value);
+                       
+                        if (!in_array($value, $array2)) {array_push($array2, $value);}
                     }
                 }
-            }
             }
 
             if ($req->getApproves() == 'yes') {
@@ -370,6 +381,7 @@ class MudancasController extends AbstractController
                         'gestor' => false,
                         'ln' => $array,
                         'ln2' => $array2,
+                        'ln3' => $array3,
                         'person' => $person
                     ]);
                 }

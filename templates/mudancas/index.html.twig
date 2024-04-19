@@ -155,9 +155,9 @@
 								{% endfor %}
 							
 
-								{% if ln == null %}
+								{% if ln3 == null %}
 									{% else %}
-									{% for row in ln %}
+									{% for row in ln3 %}
 										{% if row.done != 'Feito'%}
 										{% if row.appMan == null and row.areaResp.manager == person %}
 											
@@ -189,9 +189,9 @@
 								{% endif %}
 
 
-								{% if ln == null %}
+								{% if ln3 == null %}
 									{% else %}
-									{% for row in ln %}
+									{% for row in ln3 %}
 										{% if row.done != 'Feito'%}
 										{% if row.mangerMudancas == person %}
 									<a href="{{path('upm',{id: row.id})}}">Aprovação do gestor do Aprovação
