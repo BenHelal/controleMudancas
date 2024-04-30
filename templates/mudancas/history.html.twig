@@ -338,7 +338,13 @@
 												<p style="color :#008B83">Status:  Mudança Rejeitada</p>
 											</medium>
 										</div>
-									{% endif %}
+									{% endif %}<div class="d-flex w-100 justify-content-between">
+	            								    <span> Tipo : {% if m.muds != null %}
+																Mudanças Software
+														{% else %}
+															Mudanças Normal
+													{% endif %}</span>
+	            								</div>
 								</a>
 							</div>
 						{% endif %}
