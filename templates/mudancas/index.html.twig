@@ -331,9 +331,26 @@ $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 									</span>
 									<span class="badge badge-secondary badge-pill"></span>
 								</h4>
-	<div class="form-group">
-		<input type="text" class="form-control" id="myInput" placeholder="Procurar..">
-	</div>
+<div class="form-group d-flex w-100 justify-content-between">
+									<div style="width:100%;">
+	    								<label for="typeSelect">Procurar :</label>
+										<input type="email" class="form-control" id="myInput" placeholder="Procurar..">
+									</div>
+									<div style="width:50%;">
+	  									<label for="typeSelect">Filtrar por tipo :</label>
+	  									<select class="form-control" id="typeSelect">
+	  									    <option value="all">Todos</option>
+	  									    {% set allTypes = ['Mudanças Software', 'Mudanças Normal'] %}
+	  									    {% for type in allTypes %}
+												{% if type =="Cintas" %}
+	  									       	 		<option value="Mudanças Software">{{ type }}</option>
+													{% else %}	
+	  									        		<option value="{{ type }}">{{ type }}</option>
+												{% endif %}
+	  									    {% endfor %}
+	  									</select>
+									</div>
+								</div>
 							{% if manager == false  %}
 								{% for m in mud %}
 									{% if m.addBy.id == person.id %}
@@ -631,6 +648,7 @@ $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 									{% if m.done != 'Feito' or ( m.done == 'Feito' and m.implemented == null ) %}
 										<div id="myTable" class="list-group">
 											<a href="{{path('approve',{id: m.id})}}" class="list-group-item list-group-item-action flex-column align-items-start">
+												
 												<div class="d-flex w-100 justify-content-between">
 													<h5 class="mb-1">Número da mudança :
 														{{m.id}}</h5>
@@ -722,6 +740,13 @@ $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 														</medium>
 													</div>
 												{% endif %}
+	            								<div class="d-flex w-100 justify-content-between">
+	            								    <span> Tipo : {% if m.muds != null %}
+																Mudanças Software
+														{% else %}
+															Mudanças Normal
+													{% endif %}</span>
+	            								</div>
 											</a>
 										</div>
 									{% endif %}
@@ -734,7 +759,25 @@ $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 				{% endif %}
 			{% endif %}
 			<script>
+    $("#typeSelect").on("change", function () {
+        // Get the selected type
+        var selectedType = $(this).val().toLowerCase();
 
+        // Filter the list of items based on the selected type
+        $("#myTable a").filter(function () {
+            // Adjust the selector to match the structure of your HTML for the type name
+            var typeText = $(this).find('.d-flex.w-100.justify-content-between span').text().toLowerCase();
+
+            // Check if the item should be displayed based on the selected type
+            var showItem = false;
+            if (selectedType === "all") {
+                showItem = true; // Show all items when "All" is selected
+            } else {
+                showItem = typeText.indexOf(selectedType) > -1;
+            }
+            $(this).toggle(showItem);
+        });
+    });
 				$("#myInput").on("keyup", function () {
 var value = $(this).val().toLowerCase();
 $("#myTable a").filter(function () {

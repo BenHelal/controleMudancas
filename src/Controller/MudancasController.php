@@ -1942,7 +1942,7 @@ class MudancasController extends AbstractController
             $version =  $branch[0].'_1.9';
         }   
 
-        return $this->render('about.html.twig', [
+        return $this->render('software/about.html.twig', [
             'controller_name' => 'Mudancas',
             'login' => 'null',
             'creation' => 'null',
