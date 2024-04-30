@@ -185,7 +185,6 @@ class GestorController extends AbstractController
                 'sd' => $SD,
                 'files' => $filesAssociative,
                 'iTLA' => $isTheLastApprove,
-                'iaPerm' => $ia->HeIsPerm($person)
             ]);
         } else {
             return $this->redirectToRoute('app_login');
@@ -753,7 +752,6 @@ class GestorController extends AbstractController
                 'formImp' => $formImp,
                 'imp' => $imp,
                 'step' => $s,
-                'iaPerm' => $ia->HeIsPerm($person),
                 'haveArq' => $haveArq
             ]);
         } else {
