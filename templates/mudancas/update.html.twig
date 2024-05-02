@@ -167,7 +167,16 @@
 
 			{% endif %}
 		{% elseif creation == 'false' %}
-
+		
+		<div class="col-md-12" style="
+    text-align: center;
+">
+							
+										<h5>Nome da mudança:
+											{{m.nomeMudanca}}</h5>
+								<h5>Número da mudança:
+											{{m.id}}</h5>
+							</div>
 			{{ form_start(form, {'attr':{'class':'form-group', 'id':'test'}}) }}
 			<div class="row">
 				<div class="col-md-12 mb-3">
