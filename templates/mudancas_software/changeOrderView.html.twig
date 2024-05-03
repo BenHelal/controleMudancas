@@ -74,7 +74,7 @@
 									<br>
 								    {% if item.areaResp.manager == person and item.orderNumber == null %}
                                         
-		                                   	<a class="btn btn-info mt-2 text-white" href="{{path('orderToPrio',{'id':item.id} )}}">Voltar</a>
+		                                   	<a class="btn btn-info mt-2 text-white" href="{{path('orderToPrio',{'id':item.id} )}}">Priorizar</a>
 								    {% endif %}
 								</span>
 							</span>
@@ -110,7 +110,7 @@
                  {% if item.orderNumber != null and item.muds.iniciar != null %}
                         {{ item.orderNumber }}
                
-                    {% elseif item.orderNumber == null and item.muds.iniciar != null %} {{ m|length -1  }} 
+                    {% elseif item.orderNumber == null and item.muds.iniciar != null %} {{ m2|length -1  }} 
                     {% elseif item.orderNumber == null and item.muds.iniciar == null %}N.A 
                     {% else %}
                      {{ item.orderNumber }}
@@ -120,7 +120,7 @@
             <span>
             Prioridade: 
             <select class="order-selectss" onchange="changeOrder(this, {{ item.id }})">
-                {% for i in 1..m|length %}
+                {% for i in 1..m2|length %}
                     {% if item.orderNumber != null and item.muds.iniciar != null %}                       
                         <option  
                                 value="{{ i }}"  
@@ -131,7 +131,7 @@
                             {{ i  }} 
                         </option>
                     {% elseif item.orderNumber == null and item.muds.iniciar != null %}
-                        <option value="{{ m|length }}"  {% if m|length == item.orderNumber %} selected{% endif %} > {{ m|length }}</option>
+                        <option value="{{ m|length }}"  {% if m|length == item.orderNumber %} selected{% endif %} > {{ m2|length }}</option>
                     {% elseif item.orderNumber == null and item.muds.iniciar == null %}
                         <option value="{{i}}" > {{i}}</option>
                             {% if i == m|length %}
