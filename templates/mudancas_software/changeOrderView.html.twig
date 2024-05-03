@@ -1,57 +1,48 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-  <style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+	<style>
 
-    #item-listss {
-      list-style-type: none;
-      padding: 0;
-      margin: 0px;
-      border: 1px solid #ccc;
-    }
-    #item-list2 {
-      list-style-type: none;
-      padding: 0;
-      margin: 0px;
-      border: 1px solid #ccc;
-    }
-    .draggabledsss {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
-      margin: 5px;
-      background-color: #f4f4f4;
-      cursor: grab;
-    }
+		#item-listss,#item-list2,#item-list3 {
+			list-style-type: none;
+			padding: 0;
+			margin: 0;
+			border: 1px solid #ccc;
+		}
+		.draggabledsss {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 10px;
+			margin: 5px;
+			background-color: #f4f4f4;
+			cursor: grab;
+		}
 
-.vl {
-  border-left: 2px solid #444444;
-  height: 300px;
-  position: absolute;
-  left: 50%;
-  margin-left: -3px;
-  top: 10;
-}
-</style>
+		.vl {
+			border-left: 2px solid #444444;
+			height: 300px;
+			position: absolute;
+			left: 50%;
+			margin-left: -3px;
+			top: 10;
+		}
+	</style>
 
 
-<div class="container mt-3">
-    <button class="btn btn-success" style="background-color : #17a2b8" onclick="voltar()">Voltar</button>
-</div>
-<div class ="row">
-
-
-<div class="col-md-6 mb-4">
-Priorização
+	<div class="container mt-3">
+		<button class="btn btn-success" style="background-color : #17a2b8" onclick="voltar()">Voltar</button>
+	</div>
+	<div class="row">
+		<div class="col-md-4 mb-4">Sem priorização
 			<div class="form-group">
-				<input type="email" class="form-control" id="myInput" placeholder="Procurar..">
+				<input type="email" class="form-control" id="myInput3" placeholder="Procurar..">
 			</div>
-  <ul  style="    padding-left: 0%;"  id="item-listss">
-    {% set sortedItems = m|sort((a, b) =>
+			<ul style="    padding-left: 0%;"  id="item-list3">
+				{% set sortedItems = m|sort((a, b) =>
         a.orderNumber is not null and b.orderNumber is not null
         ? a.orderNumber <=> b.orderNumber
         : a.orderNumber is not null
@@ -60,12 +51,60 @@ Priorização
                 ? 1
                 : 0
     ) %}
-    
-    {% for item in sortedItems %}
-            {% if item.implemented == null %}
-        
-        <li  class="draggabledsss" data-id="{{ item.id }}">
-            <span>Codigo da mudança: {{ item.id }} <br>
+
+				{% for item in sortedItems %}
+					{% if item.implemented == null %}
+
+						<li class="draggabledsss" data-id="{{ item.id }}">
+							<span>Codigo da mudança:
+								{{ item.id }}
+								<br>
+								Nome da mudança:
+								{{ item.nomeMudanca }}<br>
+									Prioridade:
+									{% if item.orderNumber != null and item.muds.iniciar != null %}
+										{{ item.orderNumber }}
+
+									{% elseif item.orderNumber == null and item.muds.iniciar != null %}
+										{{ m|length -1  }}
+										{% elseif item.orderNumber == null and item.muds.iniciar == null %}N.A
+									{% else %}
+										{{ item.orderNumber }}
+									{% endif %}
+									<br>
+								    {% if item.areaResp.manager == person and item.orderNumber == null %}
+                                        
+		                                   	<a class="btn btn-info mt-2 text-white" href="{{path('orderToPrio',{'id':item.id} )}}">Voltar</a>
+								    {% endif %}
+								</span>
+							</span>
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+
+		<div class="col-md-4 mb-4">
+			Priorização
+			<div class="form-group">
+				<input type="email" class="form-control" id="myInput" placeholder="Procurar..">
+			</div>
+            <ul style="    padding-left: 0%;" id="item-listss">
+				{% set sortedItems = m2|sort((a, b) =>
+        a.orderNumber is not null and b.orderNumber is not null
+        ? a.orderNumber <=> b.orderNumber
+        : a.orderNumber is not null
+            ? -1
+            : b.orderNumber is not null
+                ? 1
+                : 0
+    ) %}
+
+
+				{% for item in sortedItems %}
+					{% if item.implemented == null %}
+
+						<li class="draggabledsss" data-id="{{ item.id }}">            <span>Codigo da mudança: {{ item.id }} <br>
                 Nome da mudança: {{ item.nomeMudanca }}<br>
             {% if item.areaResp.manager != person %} Prioridade: 
                  {% if item.orderNumber != null and item.muds.iniciar != null %}
@@ -99,14 +138,23 @@ Priorização
                                  <option value="0" selected >N.A</option>
                             {% endif %}
                         {% else %}
+                         {% if i == item.orderNumber %} 
+                           <option  
+                                value="{{ item.orderNumber }}"  
+                           
+                                 selected 
+                        > 
+                            {{ item.orderNumber  }} 
+                        </option>
+                        {% else %}
+                        
                            <option  
                                 value="{{ i }}"  
-                            {% if i == item.orderNumber %} 
-                                 selected 
-                            {% endif %}
+                                 
                         > 
-                            {{ i }} 
-                        </option>{% endif %}
+                            {{ i  }} 
+                        </option>
+                            {% endif %}{% endif %}
                 {% endfor %}
             </select>
             {% endif %}
@@ -116,13 +164,13 @@ Priorização
         {% endif %}
     {% endfor %}
 </ul>
-</div>
-<div class="col-md-6 mb-4">Em andamento
+		</div>
+		<div class="col-md-4 mb-4">Em andamento
 			<div class="form-group">
 				<input type="email" class="form-control" id="myInput2" placeholder="Procurar..">
 			</div>
-  <ul style="    padding-left: 0%;"  id="item-list2">
-    {% set sortedItems2 = m2|sort((a, b) =>
+			<ul style="    padding-left: 0%;" id="item-list2">
+				{% set sortedItems2 = m3|sort((a, b) =>
         a.orderNumber is not null and b.orderNumber is not null
         ? a.orderNumber <=> b.orderNumber
         : a.orderNumber is not null
@@ -131,65 +179,69 @@ Priorização
                 ? 1
                 : 0
     ) %}
-    
-    {% for item in sortedItems2 %}
-            {% if item.implemented == null %}
-        
-        <li  class="draggabledsss" data-id="{{ item.id }}">
-            <span>Codigo da mudança: {{ item.id }} <br>
-                Nome da mudança: {{ item.nomeMudanca }}<br>
-           {% if item.mudS.stepsGestor != null %}
-		{% set docs = 2 %}
-		{% set docsmin = 7 %}
-		{% set muds = item.mudS  %}
-		{% for sg  in muds.stepsGestor %}
-			{% for step in sg.steps %}
-				{% if step.status == 'implementado' or step.status == 'aguardando implementação' or step.status == 'reprovado'  or step.status == 'não implementado'%}
-					{% set docs = 6 %}
-				{% elseif step.status == 'teste usuário' %}
-					{% set docs = 5 %}
-				{% elseif step.status == 'teste ti' %}
-					{% set docs = 4 %}
-				{% elseif step.status == 'em andamento' or step.status == 'pendência' %}
-					{% set docs = 3 %}
-				{% else %}
-					{% set docs = 2 %}
-				{% endif %}
+
+				{% for item in sortedItems2 %}
+					{% if item.implemented == null %}
+
+						<li class="draggabledsss" data-id="{{ item.id }}">
+							<span>Codigo da mudança:
+								{{ item.id }}
+								<br>
+								Nome da mudança:
+								{{ item.nomeMudanca }}<br>
+								{% if item.mudS.stepsGestor != null %}
+									{% set docs = 2 %}
+									{% set docsmin = 7 %}
+									{% set muds = item.mudS  %}
+									{% for sg  in muds.stepsGestor %}
+										{% for step in sg.steps %}
+											{% if step.status == 'implementado' or step.status == 'aguardando implementação' or step.status == 'reprovado'  or step.status == 'não implementado'%}
+												{% set docs = 6 %}
+											{% elseif step.status == 'teste usuário' %}
+												{% set docs = 5 %}
+											{% elseif step.status == 'teste ti' %}
+												{% set docs = 4 %}
+											{% elseif step.status == 'em andamento' or step.status == 'pendência' %}
+												{% set docs = 3 %}
+											{% else %}
+												{% set docs = 2 %}
+											{% endif %}
 
 
-				{% if docs <= docsmin %}
-					{% set docsmin = docs %}
-				{% endif %}
+											{% if docs <= docsmin %}
+												{% set docsmin = docs %}
+											{% endif %}
 
-			{% endfor %}
+										{% endfor %}
 
-		{% else %}
-			{% set docs = 1 %}
+									{% else %}
+										{% set docs = 1 %}
 
-		{% endfor %}
-	{% else %}
-		{% set docs = 1 %}
-        
+									{% endfor %}
+								{% else %}
+									{% set docs = 1 %}
 
-	{% endif %}
-    
-    {% if docs == 1 %}Fase: Mudança Iniciada
-    {% elseif docs == 2 %}Fase: Documentação
-    {% elseif docs == 3 %}Fase: Desenvolvimento
-    {% elseif docs == 4 %}Fase: Teste de TI
-    {% elseif docs == 5 %}Fase: Teste do Solicitante
-    {% elseif docs == 6 %}Fase: Implementação
-        
-    {% endif %}
-    
-                 <br>
-            </span>
-        </li>
-        {% endif %}
-    {% endfor %}
-</ul></div>
-</div>
-<script>
+
+								{% endif %}
+
+								{% if docs == 1 %}Fase: Mudança Iniciada
+									{% elseif docs == 2 %}Fase: Documentação
+									{% elseif docs == 3 %}Fase: Desenvolvimento
+									{% elseif docs == 4 %}Fase: Teste de TI
+									{% elseif docs == 5 %}Fase: Teste do Solicitante
+									{% elseif docs == 6 %}Fase: Implementação
+
+								{% endif %}
+
+								<br>
+							</span>
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<script>
 
 
 		$("#myInput").on("keyup", function () {
@@ -198,92 +250,93 @@ $("#item-listss li").filter(function () {
 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 });
 });
-
-		$("#myInput2").on("keyup", function () {
+		$("#myInput3").on("keyup", function () {
+var value = $(this).val().toLowerCase();
+$("#item-list3 li").filter(function () {
+$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+});
+});
+$("#myInput2").on("keyup", function () {
 var value = $(this).val().toLowerCase();
 $("#item-list2 li").filter(function () {
 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 });
 });
-    const itemList = document.getElementById('item-listss');
+const itemList = document.getElementById('item-listss');
 
-    new Sortable(itemList, {
-        animation: 150,
-        handle: '.draggabledsss',
-        onUpdate: function (evt) {
-            updateOrder(evt.from.children);
-            const orderData = getOrderData(itemList);
-            updateOrderOnServer(orderData);
-        }
-    });
+new Sortable(itemList, {
+animation: 150,
+handle: '.draggabledsss',
+onUpdate: function (evt) {
+updateOrder(evt.from.children);
+const orderData = getOrderData(itemList);
+updateOrderOnServer(orderData);
+}
+});
 
-    function updateOrder(items) {
-        Array.from(items).forEach((item, index) => {
-            const orderSelect = item.querySelector('.order-selectss');
-            if (orderSelect.value !== "N.A") {
-                orderSelect.selectedIndex = index;
-            }
-        });
-    }
-
-function changeOrder(select, itemId) {
-    const listItem = select.closest('.draggabledsss');
-    const newIndex = parseInt(select.value) - 1;
-
-    // Check if select.value is not "N.A"
-    if (select.value !== "N.A") {
-        itemList.insertBefore(listItem, itemList.children[newIndex]);
-        updateOrder(itemList.children);
-    }
-
-    const orderData = getOrderData(itemList);
-
-    // Find the orderData entry for the item being changed
-    const changedItem = orderData.find(item => item.id === itemId);
-    if (changedItem) {
-        if (changedItem.value != "N.A") {
-            changedItem.order = select.value;
-        }
-    }
-
-    updateOrderOnServer(orderData);
+function updateOrder(items) {
+Array.from(items).forEach((item, index) => {
+const orderSelect = item.querySelector('.order-selectss');
+if (orderSelect.value !== "N.A") {
+orderSelect.selectedIndex = index;
+}
+});
 }
 
-    function getOrderData(itemList) {
-        const orderData = [];
-        Array.from(itemList.children).forEach(item => {
-            orderData.push({
-                id: item.getAttribute('data-id'),
-                order: item.querySelector('.order-selectss').value
-            });
-        });
-        return orderData;
-    }
+function changeOrder(select, itemId) {
+const listItem = select.closest('.draggabledsss');
+const newIndex = parseInt(select.value) - 1;
 
-    function updateOrderOnServer(orderData) {
-        // Send AJAX request to update order on the server
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ path('updateorder') }}", true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+// Check if select.value is not "N.A"
+if (select.value !== "N.A") {
+itemList.insertBefore(listItem, itemList.children[newIndex]);
+updateOrder(itemList.children);
+}
 
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    console.log('Order updated on the server');
-                } else {
-                    console.error('Error updating order on the server');
-                }
-            }
-        };
+const orderData = getOrderData(itemList);
 
-        xhr.send('orderData=' + encodeURIComponent(JSON.stringify(orderData)));
-    }
-</script>
+// Find the orderData entry for the item being changed
+const changedItem = orderData.find(item => item.id === itemId);
+if (changedItem) {
+if (changedItem.value != "N.A") {
+changedItem.order = select.value;
+}
+}
 
-<script>
-    function voltar() {
-        window.history.back();
-    }
-</script>
+updateOrderOnServer(orderData);
+}
+
+function getOrderData(itemList) {
+const orderData = [];
+Array.from(itemList.children).forEach(item => {
+orderData.push({id: item.getAttribute('data-id'), order: item.querySelector('.order-selectss').value});
+});
+return orderData;
+}
+
+function updateOrderOnServer(orderData) { // Send AJAX request to update order on the server
+const xhr = new XMLHttpRequest();
+xhr.open('POST', "{{ path('updateorder') }}", true);
+xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+xhr.onreadystatechange = function () {
+if (xhr.readyState === XMLHttpRequest.DONE) {
+if (xhr.status === 200) {
+console.log('Order updated on the server');
+} else {
+console.error('Error updating order on the server');
+}
+}
+};
+
+xhr.send('orderData=' + encodeURIComponent(JSON.stringify(orderData)));
+}
+	</script>
+
+	<script>
+		function voltar() {
+window.history.back();
+}
+	</script>
 
 {% endblock %}

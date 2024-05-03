@@ -82,6 +82,50 @@ class MudancasSoftwareController extends AbstractController
             return $this->redirectToRoute('log_employer');
         }
     }
+
+    #[Route('/order2/mud/{id}', name:'orderToPrio')]
+    public function orderToPrio(ManagerRegistry $doctrine, Request $request,$id)
+    {
+        $session = $request->getSession();
+        if ($session->get('token_jwt') != '') {
+            $em = $doctrine->getManager();
+            $mud = $em->getRepository(Mudancas::class)->find($id); 
+            $allMudancas = $em->getRepository(Mudancas::class)->findByType("1");
+    
+            $array = [];
+            foreach ($allMudancas as $value) {
+                $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
+                $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);
+                $mudSoft = $value->getMudS();
+    
+                $areaImpactadaDidntApp = false;
+                foreach ($sps as $sp) {
+                    if ($sp->getAppSectorMan() == null) {
+                        $areaImpactadaDidntApp = true;
+                        break;
+                    }
+                }
+                
+                if ($value->getImplemented() == null && $value->getOrderNumber() != null && $value->getMudS()->getIniciar() == null && !$areaImpactadaDidntApp) {
+                    $array[] = $value;
+                }
+            }
+            $max = 0;
+            foreach ($array as $key => $value) {
+                # code...
+                if ($value->getOrderNumber() >= $max){
+                    $max = $value->getOrderNumber();
+                }
+            }
+            $max = $max + 1;
+            $mud->setOrderNumber($max);
+            $em->flush(); 
+            return $this->redirectToRoute('orderMudancas');
+        } else {
+            return $this->redirectToRoute('log_employer');
+        }
+    }
+
     #[Route('/order/mud/', name:'orderMudancas')]
     public function orderMudanc(ManagerRegistry $doctrine, Request $request)
     {
@@ -106,21 +150,27 @@ class MudancasSoftwareController extends AbstractController
                     }
                 }
     
-                if ($value->getImplemented() == null && $value->getMudS()->getIniciar() == null && !$areaImpactadaDidntApp) {
+                if ($value->getImplemented() == null && $value->getOrderNumber() == null && $value->getMudS()->getIniciar() == null && !$areaImpactadaDidntApp) {
                     $array[] = $value;
+                }
+                if ($value->getImplemented() == null && $value->getOrderNumber() != null && $value->getMudS()->getIniciar() == null && !$areaImpactadaDidntApp) {
+                    $array2[] = $value;
                 }
     
                 if ($value->getImplemented() == null && $value->getMudS()->getIniciar() != null && !$areaImpactadaDidntApp) {
-                    $array2[] = $value;
+                    $array3[] = $value;
                 }
+
             }
     
+
             return $this->render('mudancas_software/changeOrderView.html.twig', [
                 'controller_name' => 'MudancasSoftwareController',
                 'login' => 'null',
                 'creation' => 'false',
                 'm' => $array,
                 'm2' => $array2,
+                'm3' => $array3,
                 'person' => $person,
             ]);
         } else {
