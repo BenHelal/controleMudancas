@@ -229,7 +229,15 @@
 
 <div class="card">
 	<!-- Icons and links -->
-
+		<div class="col-md-12" style="
+    text-align: center;
+">
+							
+										<h5>Nome da mudança:
+											{{m.nomeMudanca}}</h5>
+								<h5>Número da mudança:
+											{{m.id}}</h5>
+							</div>
 	{% set dev = false %}
 	{% for item in m.mudS.developers %}
 		{% if item == person %}
