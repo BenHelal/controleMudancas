@@ -17,7 +17,7 @@ class IpAdress
             return "10.100.1.180";
         }else{
             //return "sistemas.serdia.com.br";    
-            return "10.100.1.180";
+            return "sistemas.serdia.com.br";
             //return "10.100.1.180";
         }
     }
