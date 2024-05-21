@@ -614,77 +614,74 @@ class AdminController extends AbstractController
     public function deletemud(ManagerRegistry $doctrine, Request $request, $id): Response
     {
         $session = new Session();
-        $session = $request->getSession();
-        if ($session->get('token_admin') != '') {
-            $em = $doctrine->getManager();
-            $mudancas = $em->getRepository(Mudancas::class)->find($id);
-            $conn = $doctrine->getConnection();
-            $mudf = $mudancas->getTypeMud();
+$session = $request->getSession();
+if ($session->get('token_admin') != '') {
+    $em = $doctrine->getManager();
+    $mudancas = $em->getRepository(Mudancas::class)->find($id);
+    $conn = $doctrine->getConnection();
+    $mudf = $mudancas->getTypeMud();
 
-            $sql = 'select * FROM process WHERE mudancas_id = :mudancas_id ;';
-            $stmt = $conn->prepare($sql);
-            $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-            $ln =  $resultSet->fetchAllAssociative();
+    // Get all processes related to mudancas
+    $sql = 'SELECT * FROM process WHERE mudancas_id = :mudancas_id;';
+    $stmt = $conn->prepare($sql);
+    $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+    $ln = $resultSet->fetchAllAssociative();
+
+    // Delete from sector_process table
+    foreach ($ln as $key => $value) {
+        $sql = 'DELETE FROM sector_process WHERE process_id = :process_id;';
+        $stmt = $conn->prepare($sql);
+        $stmt->executeQuery(['process_id' => $value['id']]);
+    }
+
+    // Delete from mudancas_sector table
+    $sql = 'DELETE FROM mudancas_sector WHERE mudancas_id = :mudancas_id;';
+    $stmt = $conn->prepare($sql);
+    $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+    // Delete from export_mud table
+    $sql = 'DELETE FROM export_mud WHERE mudanca_id = :process_id;';
+    $stmt = $conn->prepare($sql);
+    $stmt->executeQuery(['process_id' => $mudancas->getId()]);
+    // Delete from process table
+    $sql = 'DELETE FROM process WHERE mudancas_id = :mudancas_id;';
+    $stmt = $conn->prepare($sql);
+    $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+
+    // Delete from email table
+    $sql = 'DELETE FROM email WHERE mudancas_id = :mudancas_id;';
+    $stmt = $conn->prepare($sql);
+    $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+
+    // Delete from api_token table
+    $sql = 'DELETE FROM api_token WHERE mud_id = :mudancas_id;';
+    $stmt = $conn->prepare($sql);
+    $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
 
 
 
-            foreach ($ln as $key => $value) {
-                $sql = 'Delete FROM sector_process WHERE process_id = :mudancas_id ;';
-                $stmt = $conn->prepare($sql);
-                $resultSet = $stmt->executeQuery(['mudancas_id' => $value['id']]);
-                $ln2 =  $resultSet->fetchAllAssociative();
-            }
-            $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
-            $stmt = $conn->prepare($sql);
-            $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-            $ln =  $resultSet->fetchAllAssociative();
-            $sql = 'Delete FROM process WHERE mudancas_id = :mudancas_id ;';
-            $stmt = $conn->prepare($sql);
-            $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-            $ln =  $resultSet->fetchAllAssociative();
-
-            /**testet */
-            $sql = 'DELETE em
-            FROM email em
-            WHERE em.mudancas_id = :email;';
-            $stmt = $conn->prepare($sql);
-            $resultSet = $stmt->executeQuery(['email' => $mudancas->getId()]);
-            $ln =  $resultSet->fetchAllAssociative();
-
-            $sql = 'Delete FROM mudancas_sector WHERE mudancas_id = :mudancas_id ;';
-            $stmt = $conn->prepare($sql);
-            $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-            $ln =  $resultSet->fetchAllAssociative();
-
-
-            $sql = 'Delete FROM api_token WHERE mud_id = :mudancas_id ;';
-            $stmt = $conn->prepare($sql);
-            $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-            $ln =  $resultSet->fetchAllAssociative();
-
-            if ($mudancas->getMudS() != null) {
-                try {
-                    //code...
-                    $mudancasSoft = $em->getRepository(MudancasSoftware::class)->find($mudancas->getMudS()->getId());
-                    $mudancasSoft->setReference(null);
-                    $mudancas->setMudS(null);
-                    $mudancas->setTypeMud(null);
-                    $em->remove($mudancasSoft);
-                    $em->flush();
-                } catch (\Throwable $th) {
-                    //throw $th;
-                }
-            }
-
-            $sql = 'Delete FROM mudancas WHERE id = :mudancas_id ;';
-            $stmt = $conn->prepare($sql);
-            $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-            $ln =  $resultSet->fetchAllAssociative();
-
-            return $this->redirectToRoute('export');
-        } else {
-            return $this->redirectToRoute('app_mudancas');
+    // Handle mudancasSoft if it exists
+    if ($mudancas->getMudS() != null) {
+        try {
+            $mudancasSoft = $em->getRepository(MudancasSoftware::class)->find($mudancas->getMudS()->getId());
+            $mudancasSoft->setReference(null);
+            $mudancas->setMudS(null);
+            $mudancas->setTypeMud(null);
+            $em->remove($mudancasSoft);
+            $em->flush();
+        } catch (\Throwable $th) {
+            // Handle exception if necessary
         }
+    }
+
+    // Finally, delete from mudancas table
+    $sql = 'DELETE FROM mudancas WHERE id = :mudancas_id;';
+    $stmt = $conn->prepare($sql);
+    $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
+
+    return $this->redirectToRoute('export');
+} else {
+    return $this->redirectToRoute('app_mudancas');
+}
     }
 
 
