@@ -1,0 +1,53 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block body %}
+	<link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css"/>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+
+	<div class="container-fluid">
+
+			<div class="card" style="margin: 50px">
+				<div class="card-header">
+					Editar Projevisa
+				</div>
+				<div class="card-header">
+					<div class="card-body">
+						{{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
+						{{ form_label(form.user) }}
+						{{ form_widget(form.user, {'attr': {'class':'form-control'}}) }}
+
+						<div class="row">
+							<div class="col-md-6 mb-3">
+								<button class="btn btn-info mt-2 text-white">Enviar</button>
+							</div>
+						</div>
+
+						{{ form_end(form)}}
+					</div>
+				</div>
+
+		</div>
+
+		<script>
+
+
+			$(document).ready(function () {
+$('#sector_Departemant').chosen({});
+});
+$(document).ready(function () {
+$("#myInput").on("keyup", function () {
+
+var value = $(this).val().toLowerCase();
+
+$("#myTable a").filter(function () {
+$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+});
+});
+});
+		</script>
+	{% endblock %}

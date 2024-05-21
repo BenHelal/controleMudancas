@@ -17,6 +17,7 @@ use App\Entity\Person;
 use App\Entity\Requestper;
 use App\Entity\Sector;
 use App\Entity\Process;
+use App\Entity\Projevisa;
 use App\Entity\SectorProcess;
 use App\Form\AddClientType;
 use App\Form\AddPersonType;
@@ -29,6 +30,7 @@ use App\Form\IAType;
 use App\Form\ManagerType;
 use App\Form\PermissionType;
 use App\Form\PersonType;
+use App\Form\ProjevisaType;
 use App\Form\RequestadminType;
 use App\Form\RequestperType;
 use App\Form\SectorType;
@@ -1086,6 +1088,41 @@ if ($session->get('token_admin') != '') {
             return $this->redirectToRoute('app_sectors');
         } else {
             return $this->redirectToRoute('app_admin');
+        }
+    }
+
+    #[Route('/edit/projevisa', name: 'edit_projevisa')]
+    public  function projevisaById( ManagerRegistry $doctrine, Request $request)
+    {
+        $session = new Session();
+        $session = $request->getSession();
+        if ($session->get('token_admin') != '') {
+            $em = $doctrine->getManager();
+            $projevisa = $em->getRepository(Projevisa::class)->find(1);
+            if($projevisa == null) {
+                $projevisa = new Projevisa();
+                $em->persist($projevisa);
+                $em->flush();
+            } 
+            $person = $em->getRepository(Person::class)->findOneBy(['name' => $session->get('admin_name')]);
+
+            $form = $this->createForm(ProjevisaType::class, $projevisa);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em->persist($projevisa);
+                $em->flush();
+                return $this->redirectToRoute('app_sectors');
+            }
+            return $this->render('admin/projevisa.html.twig', [
+                'controller_name' => 'Atualizar Mudancas',
+                'login' => 'null',
+                'type' => 'update',
+                'p' => $person,
+                's' => $projevisa,
+                'form' => $form->createView(),
+            ]);
+        } else {
+            return $this->redirectToRoute('app_mudancas');
         }
     }
 

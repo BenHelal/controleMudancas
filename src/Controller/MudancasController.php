@@ -12,6 +12,7 @@ use App\Entity\Mudancas;
 use App\Entity\MudancasSoftware;
 use App\Entity\Person;
 use App\Entity\Process;
+use App\Entity\Projevisa;
 use App\Entity\Requestper;
 use App\Entity\Sector;
 use App\Entity\SectorProcess;
@@ -56,8 +57,8 @@ class MudancasController extends AbstractController
         if ($session->get('token_jwt') != '') {
             $em = $doctrine->getManager();
             $mud = $em->getRepository(Mudancas::class)->find($id);
-
             $mud->setEndMudancas($request->request->get('dateTime'));
+            $mud->setJustifications($request->request->get('justifications'));
             $em->flush();
             return $this->redirectToRoute('upm', ['id' => $id]); 
         } else {
@@ -273,6 +274,20 @@ class MudancasController extends AbstractController
                     }
                     if ($mangerArea  && $muda->getImplemented() == null) {
                         array_push($array, $muda);
+                    }
+
+                    if ($muda->getMudS() != null ) {
+                        
+                        $developersList =  $muda->getMudS()->getDevelopers();
+                        $developers = false;
+                        foreach ($developersList as $key => $value) {
+                            if ($value == $person ) {
+                                $developers = true;
+                            }
+                        }
+                        if ($developers  && $muda->getImplemented() == null) {
+                            array_push($array, $muda);
+                        }
                     }
                 }
 
@@ -634,7 +649,6 @@ class MudancasController extends AbstractController
     public function create(ManagerRegistry $doctrine, Request $request): Response
     { 
         
-        try {
         $session = new Session();
         $session = $request->getSession();
         //$request->header_remove();
@@ -656,6 +670,8 @@ class MudancasController extends AbstractController
                     $form->handleRequest($request);
 
                     if ($form->isSubmitted() && $form->isValid()) {
+
+                        
                         $email = new  Email();
                         $email->setMudancas($mud);
                         $email->setSendTo($person);
@@ -664,6 +680,24 @@ class MudancasController extends AbstractController
                         $email->setBody('create');
                         $em->persist($email);
 
+                        $projevisaUser = $em->getRepository(Projevisa::class)->find(1);
+                        $projevisa = isset($_POST['Projevisa']) ? 1 : 0;
+                        
+                        if($projevisa ){
+                            
+                            $mud->setProjevisa(1);
+                            if ($projevisaUser->getUser() != null) {
+                                # code...
+                                
+                            $email = new  Email();
+                            $email->setMudancas($mud);
+                            $email->setSendTo($projevisaUser->getUser());
+                            $email->setSendBy($person);
+                            $email->setTitle('Novo mudancas');
+                            $email->setBody('projevisa');
+                            $em->persist($email);
+                            }
+                        }
 
                         if ($mud->getAddBy() == $person && $mud->getAddBy()->getFunction()->getManager() == $person) {
                             date_default_timezone_set("America/Sao_Paulo");
@@ -799,12 +833,7 @@ class MudancasController extends AbstractController
             }
         } else {
             return $this->redirectToRoute('log_employer');
-        } } catch (\Throwable $th) {
-     
-            $logger = new Logger();
-            $logger->log('Error add new CM', ['exception' => $th]);
-            return $this->redirectToRoute('errorTest');
-            }
+        } 
     }
 
     #[Route('/createMudancas/soft', name: 'cmSoft')]

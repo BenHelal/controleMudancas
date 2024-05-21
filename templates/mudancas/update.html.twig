@@ -201,7 +201,18 @@
 					{{ form_widget(form.descMudanca,{'attr':{'class':'form-control', 'rows': '4','id':'testdescMudanca'}}) }}
 				</div>
 			</div>
-
+			<div class="row">
+				<div class="col-md-12 mb-3">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" {% if m.projevisa == 1 %}
+							checked
+						{% endif %} id="Projevisa" name="Projevisa">
+						<label class="form-check-label" for="flexCheckDefault">
+							Projevisa
+						</label>
+					</div>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-md-12 mb-3">
 					<div class="form-check">
@@ -356,7 +367,35 @@
 					<div class="col-md-12 mb-3">
 						{{ form_label(form.endMudancas) }} <a  data-toggle="modal" data-target="#Editar_Date" href="#">
        	 														<i class="fas fa-edit icon"></i>Editar
-    														</a>
+    														</a> 
+															
+															{% if m.justifications != null %}
+   																<style>
+   																    .hover-text {
+   																        display: none;
+   																        position: absolute;
+   																        background-color: white;
+   																        border: 1px solid #ccc;
+   																        padding: 5px;
+   																        border-radius: 5px;
+   																        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   																        z-index: 10; /* Ensure the hover text appears above other elements */
+   																    }
+
+   																    .icon-wrapper {
+   																        position: relative;
+   																        display: inline-block;
+   																    }
+
+   																    .icon-wrapper:hover .hover-text {
+   																        display: block;
+   																    }
+   																</style>
+   																<div class="icon-wrapper">
+   																    <i class="fa fa-info-circle" aria-hidden="true"></i>
+   																    <div class="hover-text">{{ m.justifications }}</div>
+   																</div>
+															{% endif %}
 						{{ form_widget(form.endMudancas,{'attr':{'class':'date form-control',}}) }} 
 					</div>
 				</div>	
@@ -617,6 +656,16 @@
 						<div class="row">
 							<div class="col-md-12 mb-3">
 								<div class="form-check">
+									<input class="form-check-input" type="checkbox" value="1" id="Projevisa" name="Projevisa">
+									<label class="form-check-label" for="flexCheckDefault">
+										Projevisa
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12 mb-3">
+								<div class="form-check">
 									<input class="form-check-input" type="checkbox" value="" onclick="validate()" id="nansen">
 									<label class="form-check-label" for="flexCheckDefault">
 										Existe Projeto Nansen
@@ -768,7 +817,12 @@
    									    <h5>Editar Data estimada</h5>
    									    <p>Data estimada de Termino</p>
    									    <input type="text" name="dateTime" id="dateTime" value="{{ m.endMudancas }}" class="date form-control"/>
+   									
+									
+   									    <p>justifications</p>
+   									    <textarea type="textarea" name="justifications" id="justifications" class="form-control">{{ m.justifications }}</textarea>
    									</div>
+									
    									<div class="modal-footer">
    									    <button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
    									    <button type="submit" class="btn btn-info mt-2 text-white btn-secondary">Submit</button>

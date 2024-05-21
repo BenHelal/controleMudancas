@@ -80,7 +80,10 @@
 
 						<br>
 						{{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
-
+						
+						{{ form_label(form.activation) }}
+						{{ form_widget(form.activation, {'attr': {'class':'form-control'}}) }}
+						
 						{{ form_label(form.resp) }}
 						{{ form_widget(form.resp, {'attr': {'class':'form-control'}}) }}
 

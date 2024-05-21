@@ -70,17 +70,21 @@ class MudancasType extends AbstractType
                     'label' => 'Área Responsável pela mudança'
                 
             ))
-            ->add('client',EntityType::class,array(
+            ->add('client', EntityType::class, [
                 'class' => Client::class,
-                'query_builder' => function(EntityRepository $er){
-                    return $er->createQueryBuilder('s')->orderBy('s.id','DESC');
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('s')
+                              ->where('s.activation = :activated')
+                              ->setParameter('activated', true)
+                              ->orderBy('s.id', 'DESC');
                 },
                 'choice_label' => 'name',
-                'label'=> 'Escolha o Cliente',
+                'label' => 'Escolha o Cliente',
                 'placeholder' => 'Escolha o Cliente',
-                'required' => false, 
-                'expanded'  => false,
-                'multiple' => false))
+                'required' => false,
+                'expanded' => false,
+                'multiple' => false
+            ])
                 
             /*->add('descClient',TextareaType::class, [
                 'label' => 'Descrição do Impacto para o cliente',

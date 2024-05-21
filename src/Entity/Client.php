@@ -54,8 +54,14 @@ class Client
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $resp_email = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?bool $active = null;
+
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: ApiToken::class)]
     private Collection $apiTokens;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $activation = null;
 
     public function __construct()
     {
@@ -250,6 +256,18 @@ class Client
                 $apiToken->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActivation(): ?bool
+    {
+        return $this->activation;
+    }
+
+    public function setActivation(?bool $activation): static
+    {
+        $this->activation = $activation;
 
         return $this;
     }

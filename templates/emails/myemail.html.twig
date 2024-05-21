@@ -375,6 +375,18 @@ próximas etapas desta mudança.<br>
 							<a href="http://{{ip}}/controleMudancas/public/updateMudancas/{{mud.id}}" class="btn">Para acessar a mudança clique aqui!
 							</a>
 						</p>
+					{% elseif demand == 'projevisa' %}
+						<h1 class="text-center">Olá
+							{{ name }},<br></h1>
+						Atenção, esta mudança impacta no projeto arquitetônico da Serdia (projevisa), por gentileza descrever na aprovação de área impactada os processos necessários sob sua responsabilidade para realizar esta alteração.<br>
+						Mudança:
+						{{mud.id }}
+						{{mud.nomeMudanca}}<br>
+						Por gentileza acessar e executar o processo desta mudança.
+						<p class="block text-center">
+							<a href="http://{{ip}}/controleMudancas/public/updateMudancas/{{mud.id}}" class="btn">Para acessar a mudança clique aqui!
+							</a>
+						</p>
 
 					{% elseif demand == 'approved_gestor' %}
 						<h1 class="text-center">Olá

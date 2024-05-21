@@ -45,6 +45,20 @@ class Mudancas
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $nansenNumber = null;
     
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $projevisa = null;
+
+    public function getProjevisa(): ?string
+    {
+        return $this->projevisa;
+    }
+
+    public function setProjevisa(?string $projevisa): self
+    {
+        $this->projevisa = $projevisa;
+        return $this;
+    }
+
     #[ORM\ManyToOne]
     private ?Person $addBy = null;
 
@@ -131,6 +145,9 @@ class Mudancas
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $typeMud = null;
     
+    #[ORM\Column(length: 4294967295, nullable: true)]
+    private ?string $justifications = null;
+    
 
     #[ORM\Column(nullable: true)]
     private  ?int $orderNumber;
@@ -146,7 +163,16 @@ class Mudancas
     {
         $this->orderNumber = $orderNumber;
     }
+    public function getJustifications(): ?string
+    {
+        return $this->justifications;
+    }
 
+    public function setJustifications(?string $justifications): self
+    {
+        $this->justifications = $justifications;
+        return $this;
+    }
 
     public function getTypeMud(): ?string
     {
