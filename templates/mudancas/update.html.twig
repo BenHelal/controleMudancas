@@ -807,25 +807,25 @@
 						<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h4 class="modal-title" id="exampleModalLongTitle">Editar Date Time</h4>
+									<h4 class="modal-title" id="exampleModalLongTitle">
+   									    Editar Data estimada</h4>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
 									</button>
 								</div>
 								<form style="width: 100%;" class="form-group" action="{{ path('changeDate', {'id': m.id}) }}" method="post">
    									<div class="modal-body">
-   									    <h5>Editar Data estimada</h5>
    									    <p>Data estimada de Termino</p>
    									    <input type="text" name="dateTime" id="dateTime" value="{{ m.endMudancas }}" class="date form-control"/>
    									
 									
-   									    <p>justifications</p>
+   									    <p>justificativa</p>
    									    <textarea type="textarea" name="justifications" id="justifications" class="form-control">{{ m.justifications }}</textarea>
    									</div>
 									
    									<div class="modal-footer">
    									    <button type="button" class="btn btn-info mt-2 text-white btn-secondary" data-dismiss="modal">Cancelar</button>
-   									    <button type="submit" class="btn btn-info mt-2 text-white btn-secondary">Submit</button>
+   									    <button type="submit" class="btn btn-info mt-2 text-white btn-secondary">Enviar</button>
    									</div>
 								</form>
 							</div>
