@@ -150,13 +150,13 @@
 				$(document).ready(function () {
 
 var selectElement = document.getElementById('client_activation');
-
+{%if type == "update" %}
     if ({{ s.activation }} == 1) {
         selectElement.value = "1";
     } else {
         selectElement.value = "0";
     }
-
+{% endif %}
 $('#sector_Departemant').chosen({});
 });
 $(document).ready(function () {
