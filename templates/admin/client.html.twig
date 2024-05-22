@@ -22,7 +22,12 @@
 				<div class="card-body">
 					<div class="table-responsive">
 						{% for m in list %}
-							<div id="myTable" class="list-group" style="width: 100%;">
+							<div id="myTable" class="list-group" {% if m.activation == 1 %}
+							
+								style=" width: 100%; background-color : green"
+								{% else %}
+								style=" width: 100%; background-color : red"
+							{% endif %} >
 								<div class="row" style="width: 100%;">
 									<a href="{{path('edit_client',{'id':m.id} )}}" class="list-group-item list-group-item-action flex-column align-items-start">
 										<div class="d-flex w-100 justify-content-between">
@@ -61,44 +66,52 @@
 				</div>
 			</div>
 		{% elseif type == "update" %}
+<div class="card" style="margin: 50px">
+    <div class="card-header">
+        Editar Cliente
+    </div>
+    <div class="card-body">
+        <div class="d-flex w-100 justify-content-between">
+            <medium>Nome : {{ s.name }}</medium>
+        </div>
+        <div class="d-flex w-100 justify-content-between">
+            <medium>CNPJ : {{ s.cnpj }}</medium>
+        </div>
+        <br>
+         {{ form_start(form, {'attr': {'class': 'form-group', 'style': 'padding-left: 20px; padding-right: 20px', 'onsubmit': 'return validateForm()'}}) }}
+        {{ form_label(form.activation) }}
+        {{ form_widget(form.activation, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.activation) }}
 
-			<div class="card" style="margin: 50px">
-				<div class="card-header">
-					Editar Cliente
-				</div>
-				<div class="card-header">
+        {{ form_label(form.resp) }}
+        {{ form_widget(form.resp, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.resp) }}
 
-					<div class="card-body">
-						<div class="d-flex w-100 justify-content-between">
-							<medium>Nome :
-								{{s.name}}</medium>
-						</div>
-						<div class="d-flex w-100 justify-content-between">
-							<medium>CNPJ :
-								{{s.cnpj}}</medium>
-						</div>
+        {{ form_label(form.resp_email) }}
+        {{ form_widget(form.resp_email, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.resp_email) }}
 
-						<br>
-						{{ form_start(form,{'attr':{'class':'form-group', 'style':'padding-left: 20px; padding-right: 20px'}})}}
-						
-						{{ form_label(form.activation) }}
-						{{ form_widget(form.activation, {'attr': {'class':'form-control'}}) }}
-						
-						{{ form_label(form.resp) }}
-						{{ form_widget(form.resp, {'attr': {'class':'form-control'}}) }}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <button class="btn btn-info mt-2 text-white">Enviar</button>
+            </div>
+        </div>
 
-						{{ form_label(form.resp_email) }}
-						{{ form_widget(form.resp_email, {'attr': {'class':'form-control'}}) }}
+        {{ form_end(form) }}
+    </div>
+</div><script>
+    function validateForm() {
+        const activation = document.getElementById('client_activation').value;
+        const resp = document.getElementById('client_resp').value;
+        const respEmail = document.getElementById('client_resp_email').value;
 
-						<div class="row">
-							<div class="col-md-6 mb-3">
-								<button class="btn btn-info mt-2 text-white">Enviar</button>
-							</div>
-						</div>
-
-						{{ form_end(form)}}
-					</div>
-				</div>
+        if (activation !== '' && activation !== '0' && activation !== 'false' && resp === '' && respEmail === '') {
+            alert('O campo de ativação não poderá ser preenchido se o nome do responsável e o e-mail do responsável forem nulos');
+            return false; // Prevent form submission
+        }
+        return true; // Allow form submission
+    }
+</script>
 			{% elseif type == "create" %}
 
 				<div class="card" style="margin: 50px">

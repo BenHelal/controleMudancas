@@ -6,6 +6,9 @@ use App\Repository\ClientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
 class Client
@@ -68,7 +71,19 @@ class Client
         $this->apiTokens = new ArrayCollection();
     }
 
+    public static function loadValidatorMetadata(ClassMetadata $metadata): void
+    {
+        $metadata->addConstraint(new Assert\Callback('validateActivation'));
+    }
 
+    public function validateActivation(ExecutionContextInterface $context, $payload): void
+    {
+        if ($this->activation !== null && $this->resp === null && $this->resp_email === null) {
+            $context->buildViolation('The activation field cannot be filled if both resp and resp_email are null.')
+                ->atPath('activation')
+                ->addViolation();
+        }
+    }
     public function getId(): ?int
     {
         return $this->id;
