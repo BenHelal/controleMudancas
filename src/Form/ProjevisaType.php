@@ -11,22 +11,16 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 class ProjevisaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('user',
-            EntityType::class,
-            array(
-                'class' => Person::class,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('s')->orderBy('s.name', 'DESC');
-                },
-                'choice_label' => 'name',
-                'label' => 'Gestor Projevisa'
-            ));
+            ->add('user',EmailType::class,[
+                'label'=> 'E-mail Projevisa',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

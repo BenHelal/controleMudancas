@@ -13,24 +13,26 @@ class Projevisa
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Person $user = null;
+    #[ORM\Column( length: 255, nullable:true)]
+    private  ?string $user = null;
+
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?Person
+    public function getUser(): ?string
     {
         return $this->user;
     }
 
-    public function setUser(Person $user): static
+    public function setUser(string $user): self
     {
         $this->user = $user;
-
         return $this;
     }
+
+
 }

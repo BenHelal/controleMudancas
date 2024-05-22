@@ -262,6 +262,22 @@ class MudancasController extends AbstractController
                         if ($mangerArea  && $muda->getImplemented() == null) {
                             array_push($array, $muda);
                         }
+
+                        else{
+                        $dev = false;
+                        if($muda->getMudS() != null){
+                            foreach ($muda->getMudS()->getDevelopers() as $key => $value) {
+                                if ($value == $person ) {
+                                    $dev = true;
+                                }
+                            }
+                            if ($dev && $muda->getImplemented() == null) {
+                                array_push($array, $muda);
+                            }
+                        }
+
+
+                    }
                     }
                 } else {
                     $areaImpact =  $muda->getAreaImpact();
@@ -274,20 +290,20 @@ class MudancasController extends AbstractController
                     }
                     if ($mangerArea  && $muda->getImplemented() == null) {
                         array_push($array, $muda);
-                    }
-
-                    if ($muda->getMudS() != null ) {
-                        
-                        $developersList =  $muda->getMudS()->getDevelopers();
-                        $developers = false;
-                        foreach ($developersList as $key => $value) {
-                            if ($value == $person ) {
-                                $developers = true;
+                    }else{
+                        $dev = false;
+                        if($muda->getMudS() != null){
+                            foreach ($muda->getMudS()->getDevelopers() as $key => $value) {
+                                if ($value == $person ) {
+                                    $dev = true;
+                                }
+                            }
+                            if ($dev && $muda->getImplemented() == null) {
+                                array_push($array, $muda);
                             }
                         }
-                        if ($developers  && $muda->getImplemented() == null) {
-                            array_push($array, $muda);
-                        }
+
+
                     }
                 }
 
@@ -685,17 +701,10 @@ class MudancasController extends AbstractController
                         
                         if($projevisa ){
                             
-                            $mud->setProjevisa(1);
                             if ($projevisaUser->getUser() != null) {
-                                # code...
-                                
-                            $email = new  Email();
-                            $email->setMudancas($mud);
-                            $email->setSendTo($projevisaUser->getUser());
-                            $email->setSendBy($person);
-                            $email->setTitle('Novo mudancas');
-                            $email->setBody('projevisa');
-                            $em->persist($email);
+
+                                $this->sendEmail($doctrine, $request, $projevisaUser->getUser(), $mud,$person, "projevisa", false);
+                            
                             }
                         }
 
@@ -1868,6 +1877,25 @@ class MudancasController extends AbstractController
                 ]));
             } else {
                 
+                if($demand == "projevisa"){
+                    
+                $mail->AddAddress($sendTo, $sendTo);
+                
+                $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
+                $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
+                $mail->Subject  = $config->getSubject();
+                $mail->msgHTML($this->renderView('emails/myemail.html.twig', [
+                    'name'      =>  'Controle de Mudanças',
+                    'mud'       =>  $mud,
+                    'sendTo'    => $sendTo,
+                    'per'       =>  $per,
+                    'ip'        => $ipAdress->getIpAdress(),
+                    'name'      => $sendTo,
+                    'gestor'    => $gestor,
+                    'demand'    =>  $demand
+                ]));
+                }else{
+                    
                 $mail->AddAddress($sendTo->getEmail(), $sendTo->getName());
                 $mail->IsHTML(true); // Define que o e-mail será enviado como HTML
                 $mail->CharSet = $config->getChartSet(); // Charset da mensagem (opcional)
@@ -1882,6 +1910,8 @@ class MudancasController extends AbstractController
                     'gestor'    => $gestor,
                     'demand'    =>  $demand
                 ]));
+                }
+               
             }
 
 

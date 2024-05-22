@@ -137,6 +137,7 @@ class MudancasSoftwareController extends AbstractController
     
             $array = [];
             $array2 = [];
+            $array3 = [];
             foreach ($allMudancas as $value) {
                 $process = $em->getRepository(Process::class)->findOneBy(['mudancas' => $value]);
                 $sps = $em->getRepository(SectorProcess::class)->findBy(['process' => $process]);

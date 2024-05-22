@@ -622,45 +622,51 @@ if ($session->get('token_admin') != '') {
     $mudancas = $em->getRepository(Mudancas::class)->find($id);
     $conn = $doctrine->getConnection();
     $mudf = $mudancas->getTypeMud();
-
+    
     // Get all processes related to mudancas
     $sql = 'SELECT * FROM process WHERE mudancas_id = :mudancas_id;';
     $stmt = $conn->prepare($sql);
     $resultSet = $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
     $ln = $resultSet->fetchAllAssociative();
-
+    
     // Delete from sector_process table
     foreach ($ln as $key => $value) {
         $sql = 'DELETE FROM sector_process WHERE process_id = :process_id;';
         $stmt = $conn->prepare($sql);
         $stmt->executeQuery(['process_id' => $value['id']]);
     }
-
+    
     // Delete from mudancas_sector table
     $sql = 'DELETE FROM mudancas_sector WHERE mudancas_id = :mudancas_id;';
     $stmt = $conn->prepare($sql);
     $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-    // Delete from export_mud table
-    $sql = 'DELETE FROM export_mud WHERE mudanca_id = :process_id;';
-    $stmt = $conn->prepare($sql);
-    $stmt->executeQuery(['process_id' => $mudancas->getId()]);
+    
+    // Check if the export_mud table exists
+    $tableCheckSql = "SHOW TABLES LIKE 'export_mud';";
+    $tableExists = $conn->fetchOne($tableCheckSql);
+    
+    if ($tableExists) {
+        // Delete from export_mud table
+        $sql = 'DELETE FROM export_mud WHERE mudanca_id = :process_id;';
+        $stmt = $conn->prepare($sql);
+        $stmt->executeQuery(['process_id' => $mudancas->getId()]);
+    }
+    
     // Delete from process table
     $sql = 'DELETE FROM process WHERE mudancas_id = :mudancas_id;';
     $stmt = $conn->prepare($sql);
     $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-
+    
     // Delete from email table
     $sql = 'DELETE FROM email WHERE mudancas_id = :mudancas_id;';
     $stmt = $conn->prepare($sql);
     $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-
+    
     // Delete from api_token table
     $sql = 'DELETE FROM api_token WHERE mud_id = :mudancas_id;';
     $stmt = $conn->prepare($sql);
     $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-
-
-
+    
     // Handle mudancasSoft if it exists
     if ($mudancas->getMudS() != null) {
         try {
@@ -674,12 +680,12 @@ if ($session->get('token_admin') != '') {
             // Handle exception if necessary
         }
     }
-
+    
     // Finally, delete from mudancas table
     $sql = 'DELETE FROM mudancas WHERE id = :mudancas_id;';
     $stmt = $conn->prepare($sql);
     $stmt->executeQuery(['mudancas_id' => $mudancas->getId()]);
-
+    
     return $this->redirectToRoute('export');
 } else {
     return $this->redirectToRoute('app_mudancas');
@@ -1108,7 +1114,7 @@ if ($session->get('token_admin') != '') {
 
             $form = $this->createForm(ProjevisaType::class, $projevisa);
             $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid() ) {
                 $em->persist($projevisa);
                 $em->flush();
                 return $this->redirectToRoute('app_sectors');
