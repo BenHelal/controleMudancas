@@ -119,10 +119,7 @@
                  <br>
             {% else %}
             <span></a>
-			
-			<br>
-			<br>
-			<br>
+			<h3>
             Prioridade: 
             <select class="order-selectss" onchange="changeOrder(this, {{ item.id }})">
                 {% for i in 1..m2|length %}
@@ -162,6 +159,7 @@
                             {% endif %}{% endif %}
                 {% endfor %}
             </select>
+			</h3>
             {% endif %}
             </span>
             </span>
