@@ -104,7 +104,8 @@
 				{% for item in sortedItems %}
 					{% if item.implemented == null %}
 
-						<li class="draggabledsss" data-id="{{ item.id }}"> <a href="{{path('upm',{id: item.id})}}">           <span>Codigo da mudança: {{ item.id }} <br>
+						<li class="draggabledsss" data-id="{{ item.id }}"> <a href="{{path('upm',{id: item.id})}}">      
+						     <span>Codigo da mudança: {{ item.id }} <br>
                 Nome da mudança: {{ item.nomeMudanca }}<br>
             {% if item.areaResp.manager != person %} Prioridade: 
                  {% if item.orderNumber != null and item.muds.iniciar != null %}
@@ -117,7 +118,7 @@
                     {% endif %}
                  <br>
             {% else %}
-            <span>
+            <span></a>
             Prioridade: 
             <select class="order-selectss" onchange="changeOrder(this, {{ item.id }})">
                 {% for i in 1..m2|length %}
@@ -159,7 +160,7 @@
             </select>
             {% endif %}
             </span>
-            </span></a>
+            </span>
         </li>
         {% endif %}
     {% endfor %}
