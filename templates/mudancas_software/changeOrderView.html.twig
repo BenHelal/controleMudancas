@@ -104,67 +104,63 @@
 				{% for item in sortedItems %}
 					{% if item.implemented == null %}
 
-						<li class="draggabledsss" data-id="{{ item.id }}"> <a href="{{path('upm',{id: item.id})}}">           <span>Codigo da mudança: {{ item.id }} <br>
-                Nome da mudança: {{ item.nomeMudanca }}<br>
-            {% if item.areaResp.manager != person %} Prioridade: 
-                 {% if item.orderNumber != null and item.muds.iniciar != null %}
-                        {{ item.orderNumber }}
-               
-                    {% elseif item.orderNumber == null and item.muds.iniciar != null %} {{ m2|length -1  }} 
-                    {% elseif item.orderNumber == null and item.muds.iniciar == null %}N.A 
-                    {% else %}
-                     {{ item.orderNumber }}
-                    {% endif %}
-                 <br>
+<li class="draggabledsss" data-id="{{ item.id }}">
+    <a href="{{ path('upm', { id: item.id }) }}">
+        <span>
+            Codigo da mudança: {{ item.id }} <br>
+            Nome da mudança: {{ item.nomeMudanca }}<br>
+            {% if item.areaResp.manager != person %} 
+                Prioridade: 
+                {% if item.orderNumber != null and item.muds.iniciar != null %}
+                    {{ item.orderNumber }}
+                {% elseif item.orderNumber == null and item.muds.iniciar != null %}
+                    {{ m2|length - 1 }} 
+                {% elseif item.orderNumber == null and item.muds.iniciar == null %}
+                    N.A 
+                {% else %}
+                    {{ item.orderNumber }}
+                {% endif %}
+                <br>
             {% else %}
-            
-            </span></a>
-
-			<div>
-			<span>
-            Prioridade: 
-            <select class="order-selectss" onchange="changeOrder(this, {{ item.id }})">
-                {% for i in 1..m2|length %}
-                    {% if item.orderNumber != null and item.muds.iniciar != null %}                       
-                        <option  
-                                value="{{ i }}"  
-                            {% if i == item.orderNumber %} 
-                                 selected 
-                            {% endif %}
-                        > 
-                            {{ i  }} 
+        </span>
+    </a> 
+    <span>
+        Prioridade: 
+        <select class="order-selectss" onchange="changeOrder(this, {{ item.id }})">
+            {% for i in 1..m2|length %}
+                {% if item.orderNumber != null and item.muds.iniciar != null %}
+                    <option value="{{ i }}" {% if i == item.orderNumber %} selected {% endif %}>
+                        {{ i }}
+                    </option>
+                {% elseif item.orderNumber == null and item.muds.iniciar != null %}
+                    <option value="{{ m|length }}" {% if m|length == item.orderNumber %} selected{% endif %}>
+                        {{ m2|length }}
+                    </option>
+                {% elseif item.orderNumber == null and item.muds.iniciar == null %}
+                    <option value="{{ i }}">
+                        {{ i }}
+                    </option>
+                    {% if i == m|length %}
+                        <option value="0" selected>
+                            N.A
                         </option>
-                    {% elseif item.orderNumber == null and item.muds.iniciar != null %}
-                        <option value="{{ m|length }}"  {% if m|length == item.orderNumber %} selected{% endif %} > {{ m2|length }}</option>
-                    {% elseif item.orderNumber == null and item.muds.iniciar == null %}
-                        <option value="{{i}}" > {{i}}</option>
-                            {% if i == m|length %}
-                                 <option value="0" selected >N.A</option>
-                            {% endif %}
-                        {% else %}
-                         {% if i == item.orderNumber %} 
-                           <option  
-                                value="{{ item.orderNumber }}"  
-                           
-                                 selected 
-                        > 
-                            {{ item.orderNumber  }} 
+                    {% endif %}
+                {% else %}
+                    {% if i == item.orderNumber %}
+                        <option value="{{ item.orderNumber }}" selected>
+                            {{ item.orderNumber }}
                         </option>
-                        {% else %}
-                        
-                           <option  
-                                value="{{ i }}"  
-                                 
-                        > 
-                            {{ i  }} 
+                    {% else %}
+                        <option value="{{ i }}">
+                            {{ i }}
                         </option>
-                            {% endif %}{% endif %}
-                {% endfor %}
-            </select>
-            {% endif %}
-            </span>
-			</div>
-        </li>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </select>
+        {% endif %}
+    </span>
+</li>
         {% endif %}
     {% endfor %}
 </ul>
