@@ -1,248 +1,213 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-	<style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<style>
+    #item-listss, #item-list2, #item-list3 {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        border: 1px solid #ccc;
+    }
+    .draggabledsss {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        margin: 5px;
+        background-color: #f4f4f4;
+        cursor: grab;
+    }
+    .vl {
+        border-left: 2px solid #444444;
+        height: 300px;
+        position: absolute;
+        left: 50%;
+        margin-left: -3px;
+        top: 10;
+    }
+</style>
 
-		#item-listss,#item-list2,#item-list3 {
-			list-style-type: none;
-			padding: 0;
-			margin: 0;
-			border: 1px solid #ccc;
-		}
-		.draggabledsss {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 10px;
-			margin: 5px;
-			background-color: #f4f4f4;
-			cursor: grab;
-		}
+<div class="container mt-3">
+    <button class="btn btn-success" style="background-color: #17a2b8" onclick="voltar()">Voltar</button>
+</div>
 
-		.vl {
-			border-left: 2px solid #444444;
-			height: 300px;
-			position: absolute;
-			left: 50%;
-			margin-left: -3px;
-			top: 10;
-		}
-	</style>
+<div class="row">
+    <div class="col-md-4 mb-4">Sem priorização
+        <div class="form-group">
+            <input type="email" class="form-control" id="myInput3" placeholder="Procurar..">
+        </div>
+        <ul style="padding-left: 0%;" id="item-list3">
+            {% set sortedItems = m|sort((a, b) =>
+                a.orderNumber is not null and b.orderNumber is not null
+                ? a.orderNumber <=> b.orderNumber
+                : a.orderNumber is not null
+                    ? -1
+                    : b.orderNumber is not null
+                        ? 1
+                        : 0
+            ) %}
 
-
-	<div class="container mt-3">
-		<button class="btn btn-success" style="background-color : #17a2b8" onclick="voltar()">Voltar</button>
-	</div>
-	<div class="row">
-		<div class="col-md-4 mb-4">Sem priorização
-			<div class="form-group">
-				<input type="email" class="form-control" id="myInput3" placeholder="Procurar..">
-			</div>
-			<ul style="    padding-left: 0%;"  id="item-list3">
-				{% set sortedItems = m|sort((a, b) =>
-        a.orderNumber is not null and b.orderNumber is not null
-        ? a.orderNumber <=> b.orderNumber
-        : a.orderNumber is not null
-            ? -1
-            : b.orderNumber is not null
-                ? 1
-                : 0
-    ) %}
-
-				{% for item in sortedItems %}
-					{% if item.implemented == null %}
-
-						<li class="draggabledsss" data-id="{{ item.id }}">
-							<span>Codigo da mudança:
-								{{ item.id }}
-								<br>
-								Nome da mudança:
-								{{ item.nomeMudanca }}<br>
-									Prioridade:
-									{% if item.orderNumber != null and item.muds.iniciar != null %}
-										{{ item.orderNumber }}
-
-									{% elseif item.orderNumber == null and item.muds.iniciar != null %}
-										{{ m|length -1  }}
-										{% elseif item.orderNumber == null and item.muds.iniciar == null %}N.A
-									{% else %}
-										{{ item.orderNumber }}
-									{% endif %}
-									<br>
-								    {% if item.areaResp.manager == person and item.orderNumber == null %}
-                                        
-		                                   	<a class="btn btn-info mt-2 text-white" href="{{path('orderToPrio',{'id':item.id} )}}">Priorizar</a>
-								    {% endif %}
-								</span>
-							</span>
-						</li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-		</div>
-
-		<div class="col-md-4 mb-4">
-			Priorização
-			<div class="form-group">
-				<input type="email" class="form-control" id="myInput" placeholder="Procurar..">
-			</div>
-            <ul style="    padding-left: 0%;" id="item-listss">
-				{% set sortedItems = m2|sort((a, b) =>
-        a.orderNumber is not null and b.orderNumber is not null
-        ? a.orderNumber <=> b.orderNumber
-        : a.orderNumber is not null
-            ? -1
-            : b.orderNumber is not null
-                ? 1
-                : 0
-    ) %}
-
-
-				{% for item in sortedItems %}
-					{% if item.implemented == null %}
-
-						<li class="draggabledsss" data-id="{{ item.id }}"><div class="col-md-6 mb-4">   <a href="{{path('upm',{id: item.id})}}">        
-						 <span>Codigo da mudança: {{ item.id }} <br>
-                Nome da mudança: {{ item.nomeMudanca }}<br>
-            {% if item.areaResp.manager != person %} Prioridade: 
-                 {% if item.orderNumber != null and item.muds.iniciar != null %}
-                        {{ item.orderNumber }}
-               
-                    {% elseif item.orderNumber == null and item.muds.iniciar != null %} {{ m2|length -1  }} 
-                    {% elseif item.orderNumber == null and item.muds.iniciar == null %}N.A 
-                    {% else %}
-                     {{ item.orderNumber }}
-                    {% endif %}
-                 <br>
-            {% else %}
-            <span></a></div>
-			<div class="col-md-4 mb-4">
-            Prioridade: 
-            <select class="order-selectss" onchange="changeOrder(this, {{ item.id }})">
-                {% for i in 1..m2|length %}
-                    {% if item.orderNumber != null and item.muds.iniciar != null %}                       
-                        <option  
-                                value="{{ i }}"  
-                            {% if i == item.orderNumber %} 
-                                 selected 
+            {% for item in sortedItems %}
+                {% if item.implemented is null %}
+                    <li class="draggabledsss" data-id="{{ item.id }}">
+                        <span>Codigo da mudança: {{ item.id }}<br>
+                            Nome da mudança: {{ item.nomeMudanca }}<br>
+                            Prioridade:
+                            {% if item.orderNumber is not null and item.muds.iniciar is not null %}
+                                {{ item.orderNumber }}
+                            {% elseif item.orderNumber is null and item.muds.iniciar is not null %}
+                                {{ m|length - 1 }}
+                            {% elseif item.orderNumber is null and item.muds.iniciar is null %}
+                                N.A
+                            {% else %}
+                                {{ item.orderNumber }}
                             {% endif %}
-                        > 
-                            {{ i  }} 
-                        </option>
-                    {% elseif item.orderNumber == null and item.muds.iniciar != null %}
-                        <option value="{{ m|length }}"  {% if m|length == item.orderNumber %} selected{% endif %} > {{ m2|length }}</option>
-                    {% elseif item.orderNumber == null and item.muds.iniciar == null %}
-                        <option value="{{i}}" > {{i}}</option>
-                            {% if i == m|length %}
-                                 <option value="0" selected >N.A</option>
+                            <br>
+                            {% if item.areaResp.manager == person and item.orderNumber is null %}
+                                <a class="btn btn-info mt-2 text-white" href="{{ path('orderToPrio', {'id': item.id}) }}">Priorizar</a>
                             {% endif %}
-                        {% else %}
-                         {% if i == item.orderNumber %} 
-                           <option  
-                                value="{{ item.orderNumber }}"  
-                           
-                                 selected 
-                        > 
-                            {{ item.orderNumber  }} 
-                        </option>
-                        {% else %}
-                        
-                           <option  
-                                value="{{ i }}"  
-                                 
-                        > 
-                            {{ i  }} 
-                        </option>
-                            {% endif %}{% endif %}
-                {% endfor %}
-            </select>
-            {% endif %}
-            </span>
-            </span></div>
-        </li>
-        {% endif %}
-    {% endfor %}
-</ul>
-		</div>
-		<div class="col-md-4 mb-4">Em andamento
-			<div class="form-group">
-				<input type="email" class="form-control" id="myInput2" placeholder="Procurar..">
-			</div>
-			<ul style="    padding-left: 0%;" id="item-list2">
-				{% set sortedItems2 = m3|sort((a, b) =>
-        a.orderNumber is not null and b.orderNumber is not null
-        ? a.orderNumber <=> b.orderNumber
-        : a.orderNumber is not null
-            ? -1
-            : b.orderNumber is not null
-                ? 1
-                : 0
-    ) %}
+                        </span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
 
-				{% for item in sortedItems2 %}
-					{% if item.implemented == null %}
+    <div class="col-md-4 mb-4">Priorização
+        <div class="form-group">
+            <input type="email" class="form-control" id="myInput" placeholder="Procurar..">
+        </div>
+        <ul style="padding-left: 0%;" id="item-listss">
+            {% set sortedItems = m2|sort((a, b) =>
+                a.orderNumber is not null and b.orderNumber is not null
+                ? a.orderNumber <=> b.orderNumber
+                : a.orderNumber is not null
+                    ? -1
+                    : b.orderNumber is not null
+                        ? 1
+                        : 0
+            ) %}
 
-						<li class="draggabledsss" data-id="{{ item.id }}">
-							<span>Codigo da mudança:
-								{{ item.id }}
-								<br>
-								Nome da mudança:
-								{{ item.nomeMudanca }}<br>
-								{% if item.mudS.stepsGestor != null %}
-									{% set docs = 2 %}
-									{% set docsmin = 7 %}
-									{% set muds = item.mudS  %}
-									{% for sg  in muds.stepsGestor %}
-										{% for step in sg.steps %}
-											{% if step.status == 'implementado' or step.status == 'aguardando implementação' or step.status == 'reprovado'  or step.status == 'não implementado'%}
-												{% set docs = 6 %}
-											{% elseif step.status == 'teste usuário' %}
-												{% set docs = 5 %}
-											{% elseif step.status == 'teste ti' %}
-												{% set docs = 4 %}
-											{% elseif step.status == 'em andamento' or step.status == 'pendência' %}
-												{% set docs = 3 %}
-											{% else %}
-												{% set docs = 2 %}
-											{% endif %}
+            {% for item in sortedItems %}
+                {% if item.implemented is null %}
+                    <li class="draggabledsss" data-id="{{ item.id }}">
+                        <div>
+                            <a href="{{ path('upm', {id: item.id}) }}">
+                                <span>Codigo da mudança: {{ item.id }}<br>
+                                    Nome da mudança: {{ item.nomeMudanca }}<br>
+                                    {% if item.areaResp.manager != person %}
+                                        Prioridade:
+                                        {% if item.orderNumber is not null and item.muds.iniciar is not null %}
+                                            {{ item.orderNumber }}
+                                        {% elseif item.orderNumber is null and item.muds.iniciar is not null %}
+                                            {{ m2|length - 1 }}
+                                        {% elseif item.orderNumber is null and item.muds.iniciar is null %}
+                                            N.A
+                                        {% else %}
+                                            {{ item.orderNumber }}
+                                        {% endif %}
+                                        <br>
+                                    {% else %}
+                                        Prioridade:
+                                        <select class="order-selectss" onchange="changeOrder(this, {{ item.id }})">
+                                            {% for i in 1..m2|length %}
+                                                {% if item.orderNumber is not null and item.muds.iniciar is not null %}
+                                                    <option value="{{ i }}" {% if i == item.orderNumber %}selected{% endif %}>
+                                                        {{ i }}
+                                                    </option>
+                                                {% elseif item.orderNumber is null and item.muds.iniciar is not null %}
+                                                    <option value="{{ m|length }}" {% if m|length == item.orderNumber %}selected{% endif %}>
+                                                        {{ m2|length }}
+                                                    </option>
+                                                {% elseif item.orderNumber is null and item.muds.iniciar is null %}
+                                                    <option value="{{ i }}">{{ i }}</option>
+                                                    {% if i == m|length %}
+                                                        <option value="0" selected>N.A</option>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <option value="{{ item.orderNumber }}" {% if i == item.orderNumber %}selected{% endif %}>
+                                                        {{ item.orderNumber }}
+                                                    </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    {% endif %}
+                                </span>
+                            </a>
+                        </div>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
 
+    <div class="col-md-4 mb-4">Em andamento
+        <div class="form-group">
+            <input type="email" class="form-control" id="myInput2" placeholder="Procurar..">
+        </div>
+        <ul style="padding-left: 0%;" id="item-list2">
+            {% set sortedItems2 = m3|sort((a, b) =>
+                a.orderNumber is not null and b.orderNumber is not null
+                ? a.orderNumber <=> b.orderNumber
+                : a.orderNumber is not null
+                    ? -1
+                    : b.orderNumber is not null
+                        ? 1
+                        : 0
+            ) %}
 
-											{% if docs <= docsmin %}
-												{% set docsmin = docs %}
-											{% endif %}
+            {% for item in sortedItems2 %}
+                {% if item.implemented is null %}
+                    <li class="draggabledsss" data-id="{{ item.id }}">
+                        <span>Codigo da mudança: {{ item.id }}<br>
+                            Nome da mudança: {{ item.nomeMudanca }}<br>
+                            {% if item.mudS.stepsGestor is not null %}
+                                {% set docs = 2 %}
+                                {% set docsmin = 7 %}
+                                {% set muds = item.mudS %}
+                                {% for sg in muds.stepsGestor %}
+                                    {% for step in sg.steps %}
+                                        {% if step.status in ['implementado', 'aguardando implementação', 'reprovado', 'não implementado'] %}
+                                            {% set docs = 6 %}
+                                        {% elseif step.status == 'teste usuário' %}
+                                            {% set docs = 5 %}
+                                        {% elseif step.status == 'teste ti' %}
+                                            {% set docs = 4 %}
+                                        {% elseif step.status in ['em andamento', 'pendência'] %}
+                                            {% set docs = 3 %}
+                                        {% else %}
+                                            {% set docs = 2 %}
+                                        {% endif %}
 
-										{% endfor %}
+                                        {% if docs <= docsmin %}
+                                            {% set docsmin = docs %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            {% else %}
+                                {% set docs = 1 %}
+                            {% endif %}
 
-									{% else %}
-										{% set docs = 1 %}
+                            Fase:
+                            {% if docs == 1 %}Mudança Iniciada
+                            {% elseif docs == 2 %}Documentação
+                            {% elseif docs == 3 %}Desenvolvimento
+                            {% elseif docs == 4 %}Teste de TI
+                            {% elseif docs == 5 %}Teste do Solicitante
+                            {% elseif docs == 6 %}Implementação
+                            {% endif %}
+                            <br>
+                        </span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 
-									{% endfor %}
-								{% else %}
-									{% set docs = 1 %}
-
-
-								{% endif %}
-
-								{% if docs == 1 %}Fase: Mudança Iniciada
-									{% elseif docs == 2 %}Fase: Documentação
-									{% elseif docs == 3 %}Fase: Desenvolvimento
-									{% elseif docs == 4 %}Fase: Teste de TI
-									{% elseif docs == 5 %}Fase: Teste do Solicitante
-									{% elseif docs == 6 %}Fase: Implementação
-
-								{% endif %}
-
-								<br>
-							</span>
-						</li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-		</div>
-	</div>
 	<script>
 
 
