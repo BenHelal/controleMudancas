@@ -63,7 +63,7 @@ class MudancasController extends AbstractController
             $oldDateTime = $mud->getEndMudancas();
             if ($oldDateTime === null) {
                 // Handle the null case, e.g., set a default value or throw an exception
-                $oldDateTime = 'default value'; // Replace with an appropriate default value
+                $oldDateTime = 'N.A'; // Replace with an appropriate default value
             }
     
             $dt->setOldDateTime($oldDateTime);
