@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+	<link href="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/css/tom-select.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.1.0/dist/js/tom-select.complete.min.js"></script>
+	<div class="container" style="padding-left: 20px ;padding-right: 20px;">
+		<div class="py-5 text-center">
+			<h4>Nome da mudança:
+					{{mud.nomeMudanca}}</h4>
+				<h4>Número da mudança:
+					{{mud.id}}</h4>
+		</div>
+	</div>
+	<div class="row">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Tipo de Aprovação</th>
+					<th scope="col">Área/Cliente</th>
+					<th scope="col">Nome do Aprovador</th>
+					<th scope="col">Comentário</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				
+				{% if mud.DatesTermine != null %}
+						{% for item in mud.DatesTermine %}
+				<tr>
+						<th scope="row">Dados de Data estimada do término</th>
+						
+						<td>{{mud.mangerMudancas.name}}</td>
+						
+						<td>{{item.newDateTime}}</td>
+                <td>{{ item.justification }}</td>
+            <tr>{% endfor %}
+			{% endif %}
+			</tbody>
+			</table>
+				
+
+
+
+	</div>
+{% endblock %}

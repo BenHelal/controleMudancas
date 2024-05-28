@@ -145,8 +145,7 @@ class Mudancas
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $typeMud = null;
     
-    #[ORM\Column(length: 4294967295, nullable: true)]
-    private ?string $justifications = null;
+    
     
 
     #[ORM\Column(nullable: true)]
@@ -163,16 +162,8 @@ class Mudancas
     {
         $this->orderNumber = $orderNumber;
     }
-    public function getJustifications(): ?string
-    {
-        return $this->justifications;
-    }
 
-    public function setJustifications(?string $justifications): self
-    {
-        $this->justifications = $justifications;
-        return $this;
-    }
+    
 
     public function getTypeMud(): ?string
     {
@@ -248,6 +239,9 @@ class Mudancas
     #[ORM\JoinColumn(nullable: true)]
     private ?Client $client;
 
+    #[ORM\OneToMany(mappedBy: 'mudancas', targetEntity: DateTermine::class)]
+    private Collection $DatesTermine;
+
     public function getDescClient(): ?string
     {
         return $this->descClient;
@@ -263,6 +257,7 @@ class Mudancas
     public function __construct()
     {
         $this->areaImpact = new ArrayCollection();
+        $this->DatesTermine = new ArrayCollection();
 }
     public function getPdf(){
         return $this->pdf;
@@ -725,6 +720,36 @@ class Mudancas
     public function setClient(?Client $client): self
     {
         $this->client = $client;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DateTermine>
+     */
+    public function getDatesTermine(): Collection
+    {
+        return $this->DatesTermine;
+    }
+
+    public function addDatesTermine(DateTermine $datesTermine): static
+    {
+        if (!$this->DatesTermine->contains($datesTermine)) {
+            $this->DatesTermine->add($datesTermine);
+            $datesTermine->setMudancas($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDatesTermine(DateTermine $datesTermine): static
+    {
+        if ($this->DatesTermine->removeElement($datesTermine)) {
+            // set the owning side to null (unless already changed)
+            if ($datesTermine->getMudancas() === $this) {
+                $datesTermine->setMudancas(null);
+            }
+        }
+
         return $this;
     }
 

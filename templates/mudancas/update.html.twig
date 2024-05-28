@@ -369,33 +369,34 @@
        	 														<i class="fas fa-edit icon"></i>Editar
     														</a> 
 															
-															{% if m.justifications != null %}
-   																<style>
-   																    .hover-text {
-   																        display: none;
-   																        position: absolute;
-   																        background-color: white;
-   																        border: 1px solid #ccc;
-   																        padding: 5px;
-   																        border-radius: 5px;
-   																        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-   																        z-index: 10; /* Ensure the hover text appears above other elements */
-   																    }
+															{% if m.DatesTermine != null %}
+    <style>
+        .hover-text {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 10; /* Ensure the hover text appears above other elements */
+            max-width: 300px; /* Optional: Set a max-width to control the width of the text box */
+            word-wrap: break-word; /* Ensure long words break onto the next line */
+        }
 
-   																    .icon-wrapper {
-   																        position: relative;
-   																        display: inline-block;
-   																    }
+        .icon-wrapper {
+            position: relative;
+            display: inline-block;
+        }
 
-   																    .icon-wrapper:hover .hover-text {
-   																        display: block;
-   																    }
-   																</style>
-   																<div class="icon-wrapper">
-   																    <i class="fa fa-info-circle" aria-hidden="true"></i>
-   																    <div class="hover-text">{{ m.justifications }}</div>
-   																</div>
-															{% endif %}
+        .icon-wrapper:hover .hover-text {
+            display: block;
+        }
+    </style>
+    <div class="icon-wrapper"><a  href="{{path('datetimes',{'id':m.id} )}}">
+        <i class="fa fa-info-circle" aria-hidden="true"></i></a>
+    </div>
+{% endif %}
 						{{ form_widget(form.endMudancas,{'attr':{'class':'date form-control',}}) }} 
 					</div>
 				</div>	
@@ -820,7 +821,7 @@
    									
 									
    									    <p>justificativa</p>
-   									    <textarea type="textarea" name="justifications" id="justifications" class="form-control">{{ m.justifications }}</textarea>
+   									    <textarea type="textarea" name="justifications" id="justifications" class="form-control"></textarea>
    									</div>
 									
    									<div class="modal-footer">

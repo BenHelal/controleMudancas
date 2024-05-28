@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ApiToken;
 use App\Entity\ConfigEmail;
+use App\Entity\DateTermine;
 use App\Entity\Departemant;
 use App\Entity\Email;
 use App\Entity\EmailToSendConfig;
@@ -57,8 +58,14 @@ class MudancasController extends AbstractController
         if ($session->get('token_jwt') != '') {
             $em = $doctrine->getManager();
             $mud = $em->getRepository(Mudancas::class)->find($id);
-            $mud->setEndMudancas($request->request->get('dateTime'));
-            $mud->setJustifications($request->request->get('justifications'));
+            $dt = new DateTermine();
+            $dt->setNewDateTime($request->request->get('dateTime'));
+            $dt->setJustification($request->request->get('justifications'));
+            $dt->setMudancas($mud);
+            $em->persist($dt);
+
+            $mud->addDatesTermine($dt);
+            
             $em->flush();
             return $this->redirectToRoute('upm', ['id' => $id]); 
         } else {

@@ -217,4 +217,28 @@ class CloseMudController extends AbstractController
             return $this->redirectToRoute('log_employer');
         }
     }
+
+    #[Route('/dt/{id}', name: 'datetimes')]
+    public function index2(ManagerRegistry $doctrine, Request $request, $id): Response
+    {
+
+        $session = new Session();
+        $session = $request->getSession();
+
+        //$request->header_remove();
+        if ($session->get('token_jwt') != '') {
+            $em = $doctrine->getManager();
+
+            $person =  $em->getRepository(Person::class)->findOneBy(['name' => $session->get('name')]);
+            $mud = $em->getRepository(Mudancas::class)->find($id);
+            return $this->render('close_mud/index2.html.twig', [
+                'controller_name' => 'CloseMudController',
+                'login' => 'false',
+                'person' => $person,
+                'mud' => $mud,
+            ]);
+        } else {
+            return $this->redirectToRoute('log_employer');
+        }
+    }
 }

@@ -241,6 +241,17 @@
 						{% endif %}
 					</tr>
 				{% endif %}
+				{% if mud.DatesTermine != null %}
+						{% for item in mud.DatesTermine %}
+				<tr>
+						<th scope="row">Dados de Data estimada do término</th>
+						
+						<td>{{mud.mangerMudancas.name}}</td>
+						
+						<td>{{item.newDateTime}}</td>
+                <td>{{ item.justification }}</td>
+            <tr>{% endfor %}
+{% endif %}
 				{% if mud.implemented != null and mud.mangerMudancas != null  %}
 				
 				{% if mud.implemented != 2  or  mud.implemented != 1 %}
