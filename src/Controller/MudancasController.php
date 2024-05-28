@@ -59,8 +59,8 @@ class MudancasController extends AbstractController
             $em = $doctrine->getManager();
             $mud = $em->getRepository(Mudancas::class)->find($id);
             $dt = new DateTermine();
-            $dt->setNewDateTime($mud->setEndMudancas());
-            $dt->setOldDateTime($request->request->get('dateTime'));
+            $dt->setOldDateTime($mud->getEndMudancas());
+            $dt->setNewDateTime($request->request->get('dateTime'));
             $dt->setJustification($request->request->get('justifications'));
             $dt->setMudancas($mud);
             $em->persist($dt);
