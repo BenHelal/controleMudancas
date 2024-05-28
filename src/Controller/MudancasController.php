@@ -64,6 +64,7 @@ class MudancasController extends AbstractController
             $dt->setMudancas($mud);
             $em->persist($dt);
 
+            $mud->setEndMudancas($request->request->get('dateTime'));
             $mud->addDatesTermine($dt);
             
             $em->flush();
