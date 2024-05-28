@@ -14,6 +14,9 @@ class DateTermine
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    private ?string $oldDateTime = null;
+
+    #[ORM\Column(length: 255)]
     private ?string $newDateTime = null;
 
     #[ORM\Column(length: 255)]
@@ -25,6 +28,18 @@ class DateTermine
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getOldDateTime(): ?string
+    {
+        return $this->oldDateTime;
+    }
+
+    public function setOldDateTime(string $oldDateTime): static
+    {
+        $this->oldDateTime = $oldDateTime;
+
+        return $this;
     }
 
     public function getNewDateTime(): ?string

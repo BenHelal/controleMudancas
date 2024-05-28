@@ -18,6 +18,7 @@
 				<tr>
 					<th scope="col"></th>
 					<th scope="col">Nome do Gestor</th>
+					<th scope="col">Data antiga</th>
 					<th scope="col">Data da Alteração</th>
 					<th scope="col">Comentário</th>
 				</tr>
@@ -34,6 +35,12 @@
 						<td>{{mud.mangerMudancas.name}}</td>
 						
 						<td>{{item.newDateTime}}</td>
+						{% if item.oldDateTime != null %}
+							
+						<td>{{item.oldDateTime}}</td>
+						{% else %}
+						<td></td>
+						{% endif %}
                 <td>{{ item.justification }}</td>
             <tr>{% endfor %}
 			{% endif %}
