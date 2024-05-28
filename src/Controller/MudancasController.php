@@ -50,7 +50,7 @@ use Symfony\Component\Validator\Constraints\Length;
 class MudancasController extends AbstractController
 {
 
-    #[Route('/changedate/{id}', name:'changeDate')]
+    #[Route('/changedate/{id}', name: 'changeDate')]
     public function changeDate(ManagerRegistry $doctrine, Request $request, $id)
     {
         $session = new Session();
@@ -59,17 +59,24 @@ class MudancasController extends AbstractController
             $em = $doctrine->getManager();
             $mud = $em->getRepository(Mudancas::class)->find($id);
             $dt = new DateTermine();
-            $dt->setOldDateTime($mud->getEndMudancas());
+    
+            $oldDateTime = $mud->getEndMudancas();
+            if ($oldDateTime === null) {
+                // Handle the null case, e.g., set a default value or throw an exception
+                $oldDateTime = 'default value'; // Replace with an appropriate default value
+            }
+    
+            $dt->setOldDateTime($oldDateTime);
             $dt->setNewDateTime($request->request->get('dateTime'));
             $dt->setJustification($request->request->get('justifications'));
             $dt->setMudancas($mud);
             $em->persist($dt);
-
+    
             $mud->setEndMudancas($request->request->get('dateTime'));
             $mud->addDatesTermine($dt);
             
             $em->flush();
-            return $this->redirectToRoute('upm', ['id' => $id]); 
+            return $this->redirectToRoute('upm', ['id' => $id]);
         } else {
             return $this->redirectToRoute('log_employer');
         }

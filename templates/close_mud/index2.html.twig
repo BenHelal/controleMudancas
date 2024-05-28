@@ -33,14 +33,14 @@
 						<th scope="row">Dados de Data estimada do término</th>
 						
 						<td>{{mud.mangerMudancas.name}}</td>
-						
-						<td>{{item.newDateTime}}</td>
 						{% if item.oldDateTime != null %}
 							
 						<td>{{item.oldDateTime}}</td>
 						{% else %}
 						<td></td>
 						{% endif %}
+						<td>{{item.newDateTime}}</td>
+						
                 <td>{{ item.justification }}</td>
             <tr>{% endfor %}
 			{% endif %}
