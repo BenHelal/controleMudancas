@@ -376,7 +376,7 @@
 document.getElementById('myForm').addEventListener('submit', function(event) {
     const fileInput = document.getElementById('1file');
     if (fileInput && fileInput.files.length === 0) {
-        alert('Please select a file before submitting.');
+        alert('Obrigatório inserir documento.');
         event.preventDefault(); // Prevent form submission
     }
 });
