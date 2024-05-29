@@ -104,7 +104,7 @@
 				{% for item in sortedItems %}
 					{% if item.implemented == null %}
 
-						<li class="draggabledsss" data-id="{{ item.id }}"><div class="col-md-4 mb-4">   <a href="{{path('upm',{id: item.id})}}">        
+						<li class="draggabledsss" data-id="{{ item.id }}"><div class="col-md-5 mb-4">   <a href="{{path('upm',{id: item.id})}}">        
 						 <span>Codigo da mudança: {{ item.id }} <br>
                 Nome da mudança: {{ item.nomeMudanca }}<br>
             {% if item.areaResp.manager != person %} Prioridade: 
@@ -119,7 +119,7 @@
                  <br>
             {% else %}
             <span></a></div>
-			<div class="col-md-4 mb-4">
+			<div class="col-md-3 mb-4">
             Prioridade: 
             <select class="order-selectss" onchange="changeOrder(this, {{ item.id }})">
                 {% for i in 1..m2|length %}
