@@ -220,7 +220,7 @@ class GestorController extends AbstractController
 
 
         for ($i = 1; $i <= sizeof($data) / 3; $i++) {
-            if ($request->files->get($fileKey) !== null) {
+
             $steps = new StepsGestor();
             $steps->setMudancasSoftware($muds);
             $steps->setStep((string) $data->get($i));
@@ -235,7 +235,7 @@ class GestorController extends AbstractController
             /*foreach ($_FILES[strval($fileKey)]['name']) as $key => $value) {
                 # code...
             }*/
-           
+            if ($request->files->get($fileKey) !== null) {
                 foreach ($request->files->get($fileKey) as $key => $value) {
 
                     date_default_timezone_set("America/Sao_Paulo");
@@ -249,6 +249,7 @@ class GestorController extends AbstractController
                     $value->move($excelFilepath, $fileName);
                     $steps->setDoc('documentation');
                 }
+            }
 
             $filesKey = strval($i) . 'files';
             if ($request->files->get($filesKey) !== null) {
@@ -278,7 +279,6 @@ class GestorController extends AbstractController
         */
 
         $em->flush();
-    }
         // Add any additional logic or response if needed after the loop
 
         return $this->redirectToRoute('app_software_gestor_documentation', ['id' => $id]);
