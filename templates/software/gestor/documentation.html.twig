@@ -156,7 +156,7 @@
 					{% endif %}
 				{% endfor %}
 			{% endif %}
-			<form class="form-group" action="{{path('app_software_gestor_add_documentation',{'id':m.id} )}}" enctype="multipart/form-data" method="post">
+			<form class="form-group" action="{{path('app_software_gestor_add_documentation',{'id':m.id} )}}"  id="myForm" enctype="multipart/form-data" method="post">
 		<div class="row" name="test2" id="test2"></div>
 		<div class="col-md-12 mb-3">
 			<input id="btnSubsq" class="btn btn-info mt-2 text-white" type="submit" value="Salvar"/>
@@ -373,7 +373,13 @@
 
 	</script>
 	<script>
-
+document.getElementById('myForm').addEventListener('submit', function(event) {
+    const fileInput = document.getElementById('1file');
+    if (fileInput && fileInput.files.length === 0) {
+        alert('Please select a file before submitting.');
+        event.preventDefault(); // Prevent form submission
+    }
+});
 		$(document).ready(function () {
 $('#mudancas_software_devs_developers').chosen({});
 $('#mudancas_software_testers_testers').chosen({});
